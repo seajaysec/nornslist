@@ -2003,6 +2003,22 @@ class NornsScraper:
             tokens = [t for t in tokens if t]
             return tuple(sorted(set(tokens)))
 
+        def _norm_authors(v):
+            try:
+                if isinstance(v, (list, tuple, set)):
+                    items = list(v)
+                else:
+                    s = "" if pd.isna(v) else str(v)
+                    items = s.split(",") if s else []
+                tokens = []
+                for item in items:
+                    t = ("" if item is None else str(item)).strip().strip("'\"").lower()
+                    if t:
+                        tokens.append(t)
+                return tuple(sorted(set(tokens)))
+            except Exception:
+                return tuple()
+
         def _norm_url(v: str) -> str:
             try:
                 raw = "" if pd.isna(v) else str(v)
