@@ -19,13 +19,6 @@ jobs:
       with:
         python-version: '3.11'
         
-    - name: Install system dependencies for Playwright
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y libnss3 libatk1.0-0 libatk-bridge2.0-0 \
-          libcups2 libdrm2 libxkbcommon0 libxcomposite1 libxdamage1 \
-          libxfixes3 libxrandr2 libgbm1 libasound2
-        
     - name: Install GitHub CLI
       run: |
         type -p curl >/dev/null || sudo apt install curl -y
@@ -40,10 +33,10 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
         
-    - name: Install Playwright browsers
+    - name: Install Playwright browsers and dependencies
       run: |
         playwright install chromium
-        playwright install --with-deps chromium
+        playwright install-deps chromium
         
     - name: Run scraper
       env:
