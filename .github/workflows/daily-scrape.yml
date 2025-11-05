@@ -1,0 +1,97 @@
+name: Daily Scrape and Release
+
+on:
+  schedule:
+    # Run daily at 2:00 AM UTC (adjust timezone as needed)
+    - cron: '0 2 * * *'
+  workflow_dispatch: # Allow manual triggering
+
+jobs:
+  scrape-and-release:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+        
+    - name: Install system dependencies for Playwright
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libnss3 libatk1.0-0 libatk-bridge2.0-0 \
+          libcups2 libdrm2 libxkbcommon0 libxcomposite1 libxdamage1 \
+          libxfixes3 libxrandr2 libgbm1 libasound2
+        
+    - name: Install GitHub CLI
+      run: |
+        type -p curl >/dev/null || sudo apt install curl -y
+        curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
+        && sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg \
+        && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
+        && sudo apt update \
+        && sudo apt install gh -y
+        
+    - name: Install Python dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        
+    - name: Install Playwright browsers
+      run: |
+        playwright install chromium
+        playwright install --with-deps chromium
+        
+    - name: Run scraper
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        python norns_scraper.py
+        
+    - name: Commit updated spreadsheet
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add norns_scripts.xlsx
+        git diff --staged --quiet || git commit -m "Auto-update: Daily scrape $(date +'%Y-%m-%d')"
+        git push
+        
+    - name: Set date variables
+      id: date
+      run: |
+        echo "tag=daily-$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
+        echo "name=Daily Update - $(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
+        echo "timestamp=$(date +'%Y-%m-%d %H:%M:%S UTC')" >> $GITHUB_OUTPUT
+        
+    - name: Delete existing release if it exists (for same date)
+      run: |
+        if gh release view "${{ steps.date.outputs.tag }}" &>/dev/null; then
+          gh release delete "${{ steps.date.outputs.tag }}" --yes || true
+          git tag -d "${{ steps.date.outputs.tag }}" || true
+          git push origin :refs/tags/"${{ steps.date.outputs.tag }}" || true
+        fi
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      continue-on-error: true
+        
+    - name: Create daily release
+      uses: softprops/action-gh-release@v1
+      with:
+        tag: ${{ steps.date.outputs.tag }}
+        name: ${{ steps.date.outputs.name }}
+        body: |
+          Automated daily scrape of norns.community scripts.
+          
+          Generated on: ${{ steps.date.outputs.timestamp }}
+          Workflow run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        files: |
+          norns_scripts.xlsx
+        draft: false
+        prerelease: false
+        generate_release_notes: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
