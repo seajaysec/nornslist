@@ -40,6 +40,7 @@ class NornsScraper:
         "Demo": "demo",
         "Discussion URL": "discussion_url",
         "Project URL": "project_url",
+        "Documentation URL": "documentation_url",
         "Community URL": "community_url",
         "Playwright Status": "playwright_status",
         "Last Updated": "last_updated",
@@ -54,6 +55,48 @@ class NornsScraper:
         "Manual Override",
         "Missing Demo",
     ]
+
+    # Source of truth for the script catalog: monome/norns-community/community.json
+    # The norns.community website is regenerated from this file, so reading it
+    # directly is faster, more reliable, and immune to website redesigns.
+    COMMUNITY_JSON_URL = (
+        "https://raw.githubusercontent.com/monome/norns-community/main/community.json"
+    )
+
+    # Fields we expect on each community.json entry. Anything else is reported
+    # as a schema deviation at the end of a run so it can be PR'd upstream.
+    EXPECTED_JSON_FIELDS = {
+        "project_name",
+        "project_url",
+        "author",
+        "description",
+        "discussion_url",
+        "documentation_url",
+        "tags",
+    }
+
+    # Known typos in community.json mapped to their intended field name.
+    # Used both for defensive reads (so data isn't lost) and for the deviation
+    # report (so the user can PR a fix upstream).
+    KNOWN_JSON_TYPOS = {
+        "tag": "tags",
+        "documen0tation_url": "documentation_url",
+    }
+
+    # Fields tracked for snapshot-based drift detection. Each tuple is
+    # (Excel column, internal/JSON key, name of the static normalizer method).
+    # Demo, Last Updated, Playwright Status, Out of Sync, and Community URL are
+    # not tracked — they're either workflow state or computed values, not facts
+    # we're trying to detect upstream changes in.
+    TRACKED_DRIFT_FIELDS = (
+        ("Name", "project_name", "_norm_text"),
+        ("Author", "author", "_norm_authors"),
+        ("Tags", "tags", "_norm_tags"),
+        ("Description", "description", "_norm_text"),
+        ("Project URL", "project_url", "_norm_url"),
+        ("Discussion URL", "discussion_url", "_norm_url"),
+        ("Documentation URL", "documentation_url", "_norm_url"),
+    )
 
     def __init__(
         self,
@@ -83,6 +126,9 @@ class NornsScraper:
         self.demo_delay = demo_delay
         self.failed_demo_requests = []  # Track failed requests for retry
         self.playwright_conflicts = []  # Store conflicts for user resolution
+        self._community_json = None  # Lazy cache for community.json entries
+        self._slug_map = None  # Lazy cache for project_name -> URL slug
+        self.schema_deviations = []  # Typos/unknown JSON fields, reported at end-of-run
         self.summary_stats = {
             "scripts_added": 0,
             "scripts_updated": 0,
@@ -476,193 +522,207 @@ class NornsScraper:
             logger.error(f"Error fetching main page: {e}")
             return None
 
-    def extract_script_links(self, html_content):
-        """Extract script links from the main page"""
-        soup = BeautifulSoup(html_content, "html.parser")
+    def fetch_community_json(self):
+        """Fetch the canonical script catalog from monome/norns-community."""
+        if self._community_json is not None:
+            return self._community_json
+        try:
+            logger.info(f"Fetching community.json from {self.COMMUNITY_JSON_URL}")
+            response = self.session.get(self.COMMUNITY_JSON_URL, timeout=30)
+            response.raise_for_status()
+            data = response.json()
+            entries = data.get("entries") or []
+            logger.info(f"community.json provided {len(entries)} entries")
+            self._community_json = entries
+            return entries
+        except (requests.RequestException, ValueError) as e:
+            logger.error(f"Failed to fetch community.json: {e}")
+            self._community_json = []
+            return []
+
+    def fetch_slug_map(self):
+        """Harvest {project_name -> URL slug} from norns.community's index table.
+
+        Most entries have project_name == slug, but ~13 entries with non-ASCII
+        or special characters (apostrophes, dots, exclamation marks) get
+        normalized differently by the website (e.g. 'høst' -> 'hst',
+        "carter's delay" -> 'cartersdelay'). Harvesting from the live page
+        is more robust than reimplementing their slugifier.
+        """
+        if self._slug_map is not None:
+            return self._slug_map
+        html = self.get_main_page()
+        if not html:
+            logger.warning(
+                "Could not fetch index page; falling back to project_name as slug"
+            )
+            self._slug_map = {}
+            return self._slug_map
+        soup = BeautifulSoup(html, "html.parser")
+        table = soup.find("table", id="index-table")
+        if not table:
+            logger.warning(
+                "Index table not found on norns.community; falling back to project_name as slug"
+            )
+            self._slug_map = {}
+            return self._slug_map
+        body = table.find("tbody") or table
+        slug_map = {}
+        for row in body.find_all("tr"):
+            first_td = row.find("td")
+            if not first_td:
+                continue
+            link = first_td.find("a", href=True)
+            if not link:
+                continue
+            display_name = link.get_text().strip()
+            slug = link["href"].strip("/")
+            if display_name and slug:
+                slug_map[display_name] = slug
+        logger.info(f"Harvested {len(slug_map)} name->slug mappings from index page")
+        self._slug_map = slug_map
+        return slug_map
+
+    def _read_json_field(self, entry, field):
+        """Read a field from a community.json entry, falling back to known typo aliases.
+
+        Returns the value (or None). Records any deviation found onto self.schema_deviations.
+        """
+        if field in entry:
+            return entry[field]
+        # Look for typo aliases that map to this field
+        for typo, intended in self.KNOWN_JSON_TYPOS.items():
+            if intended == field and typo in entry:
+                return entry[typo]
+        return None
+
+    def _record_schema_deviations(self, entry):
+        """Inspect a single community.json entry and append any deviations to the report."""
+        slug_or_name = entry.get("project_name") or "<unnamed>"
+        for key in entry.keys():
+            if key in self.EXPECTED_JSON_FIELDS:
+                continue
+            if key in self.KNOWN_JSON_TYPOS:
+                self.schema_deviations.append(
+                    {
+                        "entry": slug_or_name,
+                        "kind": "typo",
+                        "field": key,
+                        "suggestion": self.KNOWN_JSON_TYPOS[key],
+                    }
+                )
+            else:
+                self.schema_deviations.append(
+                    {
+                        "entry": slug_or_name,
+                        "kind": "unknown_field",
+                        "field": key,
+                        "suggestion": None,
+                    }
+                )
+
+    def extract_script_links(self, html_content=None):
+        """Build the script link list from community.json + the index page slug map.
+
+        Returns a list of dicts: {"name": <slug>, "url": <community_url>, "json_entry": <dict>}
+        The `name` is the URL slug (not the display name) for backward compatibility
+        with downstream code that keys existing data by URL path.
+
+        The html_content parameter is accepted for backward compatibility but is
+        unused; slug harvesting is handled internally via fetch_slug_map().
+        """
+        del html_content  # unused; preserved for caller signature compatibility
+        entries = self.fetch_community_json()
+        if not entries:
+            return []
+        slug_map = self.fetch_slug_map()
+
         script_links = []
-        seen_paths = set()
-
-        # Find all script links in the main list
-        script_items = soup.find_all("li")
-
-        for item in script_items:
-            link = item.find("a")
-            if link and link.get("href"):
-                href = link.get("href")
-                # Skip if it's not a script link (like external links)
-                if (
-                    href.startswith("/")
-                    and not href.startswith("/author")
-                    and not href.startswith("/explore")
-                    and not href.startswith("/about")
-                ):
-                    script_name = href.strip("/")
-                    if script_name in seen_paths:
-                        continue
-                    seen_paths.add(script_name)
-                    script_url = urljoin(self.base_url, href)
-                    script_links.append({"name": script_name, "url": script_url})
+        seen_slugs = set()
+        for entry in entries:
+            self._record_schema_deviations(entry)
+            project_name = entry.get("project_name") or ""
+            if not project_name:
+                continue
+            # Prefer the harvested slug; fall back to project_name when the index page
+            # isn't reachable or this entry isn't in the map (most match 1:1).
+            slug = slug_map.get(project_name) or project_name
+            if slug in seen_slugs:
+                continue
+            seen_slugs.add(slug)
+            script_links.append(
+                {
+                    "name": slug,
+                    "url": f"{self.base_url}/{slug}/",
+                    "json_entry": entry,
+                }
+            )
 
         logger.info(f"Found {len(script_links)} script links")
         return script_links
 
     def scrape_script_details(
-        self, script_url, script_name, existing_data=None, discover_demo=True
+        self,
+        script_url,
+        script_name,
+        existing_data=None,
+        discover_demo=True,
+        json_entry=None,
     ):
-        """Scrape detailed information from a single script page"""
-        # Create a new session for each thread to avoid conflicts
-        session = requests.Session()
+        """Build script details from the community.json entry.
 
-        # Configure connection pool to handle high concurrency
-        adapter = requests.adapters.HTTPAdapter(
-            pool_connections=self.max_workers,
-            pool_maxsize=self.max_workers * 2,
-            max_retries=3,
-        )
-        session.mount("http://", adapter)
-        session.mount("https://", adapter)
+        community.json is the canonical source for all metadata fields (project_name,
+        author, tags, description, discussion_url, project_url, documentation_url) —
+        the norns.community website is regenerated from it. So we read directly
+        from JSON instead of scraping per-script HTML pages.
 
-        session.headers.update(
-            {
-                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
-            }
-        )
+        The Demo field is the only thing that still needs discovery; it's harvested
+        from the discussion thread on llllllll.co (unchanged from the old flow).
 
+        If no json_entry is provided (e.g. a caller didn't supply one), we look it
+        up in the cached catalog by slug. If still not found, we return None — the
+        catalog has authority, and a script not in it likely no longer exists.
+        """
         try:
-            logger.info(f"Scraping {script_name} from {script_url}...")
-            response = session.get(script_url)
-            response.raise_for_status()
+            entry = json_entry
+            if entry is None:
+                entry = self._lookup_json_entry_by_slug(script_name)
+            if entry is None:
+                logger.warning(
+                    f"No community.json entry for {script_name}; cannot build details"
+                )
+                return None
 
-            # Use html.parser for better compatibility
-            soup = BeautifulSoup(response.text, "html.parser")
+            tags_value = self._read_json_field(entry, "tags") or []
+            if not isinstance(tags_value, list):
+                tags_value = list(tags_value) if tags_value else []
 
-            # Initialize data structure - create fresh dict for each thread
             script_data = {
-                "project_name": script_name,
-                "author": "",
-                "tags": [],
-                "description": "",
+                "project_name": entry.get("project_name") or script_name,
+                "author": entry.get("author") or "",
+                "tags": list(tags_value),
+                "description": entry.get("description") or "",
                 "demo": "",
-                "discussion_url": "",
-                "project_url": "",
+                "discussion_url": entry.get("discussion_url") or "",
+                "project_url": entry.get("project_url") or "",
+                "documentation_url": self._read_json_field(entry, "documentation_url")
+                or "",
                 "community_url": script_url,
             }
 
-            # Check which fields we need to scrape based on existing data
-            fields_to_scrape = {
-                "project_name": True,
-                "author": True,
-                "tags": True,
-                "description": True,
-                "discussion_url": True,
-                "project_url": True,
-            }
+            # Carry an existing Demo value forward so we don't re-hit llllllll.co
+            # for scripts whose demo we already know.
+            existing_demo = ""
+            if existing_data is not None:
+                ev = existing_data.get("Demo", "")
+                try:
+                    if pd.notna(ev) and str(ev).strip() and str(ev) != "nan":
+                        existing_demo = str(ev).strip()
+                except Exception:
+                    existing_demo = ""
+            if existing_demo:
+                script_data["demo"] = existing_demo
 
-            if existing_data:
-                # Skip fields that are already populated
-                if (
-                    pd.notna(existing_data.get("Author"))
-                    and existing_data.get("Author") != ""
-                ):
-                    fields_to_scrape["author"] = False
-                    script_data["author"] = existing_data["Author"]
-                if (
-                    pd.notna(existing_data.get("Description"))
-                    and existing_data.get("Description") != ""
-                ):
-                    fields_to_scrape["description"] = False
-                    script_data["description"] = existing_data["Description"]
-                if (
-                    pd.notna(existing_data.get("Tags"))
-                    and existing_data.get("Tags") != ""
-                ):
-                    fields_to_scrape["tags"] = False
-                    script_data["tags"] = existing_data["Tags"]
-                if (
-                    pd.notna(existing_data.get("Discussion URL"))
-                    and existing_data.get("Discussion URL") != ""
-                ):
-                    fields_to_scrape["discussion_url"] = False
-                    script_data["discussion_url"] = existing_data["Discussion URL"]
-                if (
-                    pd.notna(existing_data.get("Project URL"))
-                    and existing_data.get("Project URL") != ""
-                ):
-                    fields_to_scrape["project_url"] = False
-                    script_data["project_url"] = existing_data["Project URL"]
-
-                # Log which fields we're skipping
-                skipped_fields = [
-                    field
-                    for field, should_scrape in fields_to_scrape.items()
-                    if not should_scrape
-                ]
-                if skipped_fields:
-                    logger.info(
-                        f"Skipping already populated fields for {script_name}: {skipped_fields}"
-                    )
-
-            # Extract data from the table
-            table = soup.find("table")
-            if table:
-                rows = table.find_all("tr")
-                for row in rows:
-                    cells = row.find_all("td")
-                    if len(cells) >= 2:
-                        key = cells[0].get_text().strip().lower()
-                        value_cell = cells[1]
-
-                        if key == "project name:" and fields_to_scrape["project_name"]:
-                            script_data["project_name"] = value_cell.get_text().strip()
-                        elif key == "project url:" and fields_to_scrape["project_url"]:
-                            link = value_cell.find("a")
-                            if link:
-                                script_data["project_url"] = link.get(
-                                    "href", ""
-                                ).strip()
-                        elif (
-                            key in ["author:", "authors:"]
-                            and fields_to_scrape["author"]
-                        ):
-                            # Find all links in the author cell and join them with commas
-                            links = value_cell.find_all("a")
-                            if links:
-                                # Extract all author names and join with commas
-                                author_names = [
-                                    link.get_text().strip() for link in links
-                                ]
-                                author_text = ", ".join(author_names)
-                                script_data["author"] = author_text
-                                logger.info(
-                                    f"Extracted author(s) for {script_name}: '{author_text}' (from {len(links)} links)"
-                                )
-                            else:
-                                logger.warning(
-                                    f"No author link found for {script_name}"
-                                )
-                                script_data["author"] = ""
-                        elif key == "description:" and fields_to_scrape["description"]:
-                            script_data["description"] = value_cell.get_text().strip()
-                        elif (
-                            key == "discussion url:"
-                            and fields_to_scrape["discussion_url"]
-                        ):
-                            link = value_cell.find("a")
-                            if link:
-                                script_data["discussion_url"] = link.get(
-                                    "href", ""
-                                ).strip()
-                        elif key == "tags:" and fields_to_scrape["tags"]:
-                            tag_links = value_cell.find_all("a", class_="project-tag")
-                            script_data["tags"] = [
-                                tag.get_text().strip() for tag in tag_links
-                            ]
-
-            # If no project URL found in table, use the script URL
-            if not script_data["project_url"]:
-                script_data["project_url"] = script_url
-
-            # Discover demo video if enabled and demo field is empty
             if (
                 discover_demo
                 and script_data["discussion_url"]
@@ -671,24 +731,279 @@ class NornsScraper:
                 demo_url = self.discover_demo_video(script_data["discussion_url"])
                 if demo_url:
                     script_data["demo"] = demo_url
-                    # Only set status if there was a conflict
-                    # Regular demo discovery without conflicts should not set status
                     logger.info(f"Discovered demo for {script_name}: {demo_url}")
 
             logger.debug(f"Final data for {script_name}: {script_data}")
             return script_data
 
-        except requests.RequestException as e:
-            logger.error(f"Error scraping {script_name}: {e}")
-            return None
         except Exception as e:
-            logger.error(f"Unexpected error scraping {script_name}: {e}")
+            logger.error(f"Unexpected error building {script_name} from JSON: {e}")
             return None
-        finally:
-            session.close()
+
+    def _lookup_json_entry_by_slug(self, slug):
+        """Find the community.json entry whose URL slug matches the given slug.
+
+        Builds and caches a reverse map (slug -> entry) the first time it's called.
+        Returns None if no match.
+        """
+        if not hasattr(self, "_slug_to_entry") or self._slug_to_entry is None:
+            entries = self.fetch_community_json()
+            slug_map = self.fetch_slug_map()
+            # name_to_slug -> slug_to_entry
+            name_to_entry = {e.get("project_name"): e for e in entries if e.get("project_name")}
+            self._slug_to_entry = {}
+            for name, entry in name_to_entry.items():
+                resolved_slug = slug_map.get(name) or name
+                self._slug_to_entry[resolved_slug] = entry
+        return self._slug_to_entry.get(slug)
+
+    # ---------------------------
+    # Field normalizers (shared by drift detection in merge_data, sync_check_only,
+    # and the snapshot machinery). Lifted from inline closures so all call sites
+    # use one definition.
+    # ---------------------------
+    @staticmethod
+    def _norm_text(v) -> str:
+        try:
+            s = "" if pd.isna(v) else str(v)
+        except Exception:
+            s = str(v) if v is not None else ""
+        s = s.strip().lower()
+        s = re.sub(r"\s+", " ", s)
+        return s
+
+    @staticmethod
+    def _norm_tags(v):
+        """Normalize tags from either a list/tuple/set or a comma-string into a sorted unique tuple."""
+        try:
+            if isinstance(v, (list, tuple, set)):
+                items = list(v)
+            else:
+                s = "" if pd.isna(v) else str(v)
+                s = s.strip()
+                if s.startswith("[") and s.endswith("]"):
+                    s = s[1:-1]
+                items = s.split(",") if s else []
+            tokens = []
+            for item in items:
+                t = ("" if item is None else str(item)).strip().strip("'\"").lower()
+                if t:
+                    tokens.append(t)
+            return tuple(sorted(set(tokens)))
+        except Exception:
+            return tuple()
+
+    @staticmethod
+    def _norm_authors(v):
+        """Normalize authors (list or comma-string) into a sorted unique tuple."""
+        try:
+            if isinstance(v, (list, tuple, set)):
+                items = list(v)
+            else:
+                s = "" if pd.isna(v) else str(v)
+                items = s.split(",") if s else []
+            tokens = []
+            for item in items:
+                t = ("" if item is None else str(item)).strip().strip("'\"").lower()
+                if t:
+                    tokens.append(t)
+            return tuple(sorted(set(tokens)))
+        except Exception:
+            return tuple()
+
+    @staticmethod
+    def _norm_url(v) -> str:
+        try:
+            raw = "" if pd.isna(v) else str(v)
+        except Exception:
+            raw = str(v) if v is not None else ""
+        raw = raw.strip()
+        if not raw:
+            return ""
+        try:
+            from urllib.parse import urlparse, urlunparse
+
+            p = urlparse(raw)
+            scheme = "https"
+            netloc = (p.netloc or "").lower().replace("www.", "")
+            path = (p.path or "").rstrip("/")
+            if path.endswith(".git"):
+                path = path[:-4]
+            return urlunparse((scheme, netloc, path, "", "", ""))
+        except Exception:
+            return raw.lower().rstrip("/")
+
+    # ---------------------------
+    # Snapshot-based drift detection
+    # ---------------------------
+    def _snapshot_path(self, excel_path: str) -> str:
+        """Sidecar JSON file alongside the xlsx, e.g. norns_scripts.snapshots.json."""
+        base, _ = os.path.splitext(excel_path)
+        return f"{base}.snapshots.json"
+
+    def _load_snapshots(self, excel_path: str) -> dict:
+        """Load drift snapshots from the sidecar file, or return {} if absent.
+
+        Snapshots are keyed by URL slug -> {field_internal_key: last_known_json_value}.
+        First-run absence is treated as "initialize this run" — see _compute_drift.
+        """
+        import json
+
+        path = self._snapshot_path(excel_path)
+        if not os.path.exists(path):
+            logger.info(
+                f"No snapshot file at {path} — drift will be initialized this run"
+            )
+            return {}
+        try:
+            with open(path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            if not isinstance(data, dict):
+                logger.warning(f"Snapshot file {path} is not a dict; ignoring")
+                return {}
+            logger.info(f"Loaded {len(data)} drift snapshot entries from {path}")
+            return data
+        except Exception as e:
+            logger.warning(f"Failed to load snapshots from {path}: {e}")
+            return {}
+
+    def _save_snapshots(self, excel_path: str, snapshots: dict) -> None:
+        """Persist drift snapshots to the sidecar JSON file."""
+        import json
+
+        path = self._snapshot_path(excel_path)
+        try:
+            with open(path, "w", encoding="utf-8") as f:
+                json.dump(snapshots, f, indent=2, sort_keys=True, ensure_ascii=False)
+            logger.info(f"Saved {len(snapshots)} drift snapshot entries to {path}")
+        except Exception as e:
+            logger.warning(f"Failed to save snapshots to {path}: {e}")
+
+    def _slug_for_row(self, row_or_url) -> str:
+        """Derive a URL slug from either a row dict (Community URL) or a raw URL string."""
+        if isinstance(row_or_url, dict):
+            url = row_or_url.get("Community URL", "") or row_or_url.get(
+                "community_url", ""
+            )
+        else:
+            url = row_or_url or ""
+        try:
+            url = str(url)
+        except Exception:
+            return ""
+        return url.replace("https://norns.community/", "").strip("/")
+
+    def _compute_drift(
+        self,
+        existing_script,
+        new_script,
+        post_merge_script,
+        snapshot_for_slug: dict,
+    ) -> str:
+        """Three-way drift detection with in-place snapshot updates.
+
+        Snapshot semantics: snapshot[field] holds the JSON value of the field
+        at the last run when xlsx and JSON agreed for that field. So:
+
+          - snapshot missing for a field -> first sighting; initialize to current
+            JSON, no drift reported. (Existing in-xlsx values are not analyzed
+            retroactively; this run becomes the baseline.)
+          - snapshot == current JSON -> JSON hasn't moved. No drift, regardless
+            of whether the user has overridden the value in xlsx.
+          - snapshot != current JSON, post-merge xlsx == current JSON -> the
+            user (or merge auto-fill) accepted the upstream change. Update
+            snapshot to current JSON, no drift.
+          - snapshot != current JSON, post-merge xlsx != current JSON -> real
+            drift: upstream moved while xlsx didn't follow. Snapshot stays put
+            so the drift signal persists across runs until resolved.
+
+        Returns the comma-joined Excel column names that have drifted.
+        Mutates `snapshot_for_slug` in place.
+        """
+        if snapshot_for_slug is None:
+            return ""
+        diffs = []
+        for excel_col, internal_key, norm_method_name in self.TRACKED_DRIFT_FIELDS:
+            norm_fn = getattr(self, norm_method_name)
+            new_v = new_script.get(internal_key, "") if new_script else ""
+            post_v = (
+                post_merge_script.get(excel_col, "") if post_merge_script else ""
+            )
+            snap_v = snapshot_for_slug.get(internal_key)  # may be missing/None
+
+            if snap_v is None:
+                # First sighting — initialize snapshot, do not report drift.
+                snapshot_for_slug[internal_key] = new_v
+                continue
+
+            new_norm = norm_fn(new_v)
+            if norm_fn(snap_v) == new_norm:
+                # JSON unchanged from snapshot. User overrides in xlsx are silent.
+                continue
+
+            # JSON has moved since snapshot.
+            if norm_fn(post_v) == new_norm:
+                # Post-merge xlsx tracks the new JSON value -> accepted.
+                snapshot_for_slug[internal_key] = new_v
+                continue
+
+            # Real drift: JSON moved, xlsx didn't follow.
+            diffs.append(excel_col)
+        return ", ".join(diffs)
+
+    def _preflight_playwright(self):
+        """Verify Playwright is installed AND a browser is available, before any work.
+
+        Demo discovery is a core part of the run; if Playwright can't launch we abort
+        rather than scrape 349 entries and then fail. Returns True on success, False
+        on any failure (after logging clear remediation steps).
+        """
+        try:
+            from playwright.sync_api import sync_playwright
+        except ImportError:
+            print()
+            print("=" * 70)
+            print("PREFLIGHT FAILED: Playwright is not installed")
+            print("Demo discovery requires Playwright. Install with:")
+            print("    pip install -r requirements.txt")
+            print("=" * 70)
+            return False
+
+        try:
+            with sync_playwright() as p:
+                browser = p.chromium.launch(
+                    headless=True,
+                    args=["--no-sandbox", "--disable-dev-shm-usage"],
+                )
+                browser.close()
+            return True
+        except Exception as e:
+            msg = str(e)
+            print()
+            print("=" * 70)
+            print("PREFLIGHT FAILED: Playwright cannot launch a browser")
+            print(f"Error: {msg.splitlines()[0] if msg else 'unknown'}")
+            if "Executable doesn't exist" in msg or "playwright install" in msg.lower():
+                print()
+                print("The Playwright Python package is installed but the browser")
+                print("binary is missing. Install it with:")
+                print("    playwright install chromium")
+            print()
+            print("To run paths that don't need Playwright, use:")
+            print("    --sync-check   (re-evaluate Out of Sync from JSON)")
+            print("    --dedupe       (deduplicate the existing xlsx)")
+            print("    --status-log   (apply Playwright statuses from a log file)")
+            print("=" * 70)
+            return False
 
     def scrape_all_scripts(self, test_filter=None):
         """Scrape all scripts from norns.community using parallel processing"""
+        # Preflight: fail fast if Playwright/browser isn't available, since demo
+        # discovery is a hard dependency of this code path.
+        if not self._preflight_playwright():
+            logger.error("Aborting: Playwright preflight failed (see message above)")
+            return
+
         # Get main page
         main_html = self.get_main_page()
         if not main_html:
@@ -730,6 +1045,11 @@ class NornsScraper:
                 community_url = row.get("Community URL", "")
 
                 # Store by project name
+                doc_url_value = (
+                    row.get("Documentation URL", "")
+                    if "Documentation URL" in existing_df.columns
+                    else ""
+                )
                 existing_scripts[project_name] = {
                     "community_url": community_url,
                     "has_author": pd.notna(row["Author"]) and row["Author"] != "",
@@ -741,6 +1061,11 @@ class NornsScraper:
                     and row["Discussion URL"] != "",
                     "has_project_url": pd.notna(row["Project URL"])
                     and row["Project URL"] != "",
+                    # Documentation URL is sparse upstream (~125/349 entries have it),
+                    # so we don't gate skip-eligibility on it — but we do track presence
+                    # so the sync flag can detect drift.
+                    "has_documentation_url": pd.notna(doc_url_value)
+                    and str(doc_url_value).strip() != "",
                     "playwright_status": (
                         row["Playwright Status"]
                         if "Playwright Status" in existing_df.columns
@@ -880,6 +1205,8 @@ class NornsScraper:
                         script_link["url"],
                         script_name,
                         existing_data,
+                        True,
+                        script_link.get("json_entry"),
                     )
                 ] = script_link
 
@@ -1101,16 +1428,19 @@ class NornsScraper:
         return rows
 
     def _scrape_by_community_url(self, community_url: str):
-        """Fetch single script page directly by community URL and extract comparable fields."""
-        # Derive script_name from path for logging only
+        """Build script details for sync-check by looking up the community.json entry."""
+        # Derive slug from URL path
         try:
-            script_name = community_url.replace("https://norns.community/", "").strip(
-                "/"
-            )
+            slug = community_url.replace("https://norns.community/", "").strip("/")
         except Exception:
-            script_name = community_url
+            slug = community_url
+        json_entry = self._lookup_json_entry_by_slug(slug)
         return self.scrape_script_details(
-            community_url, script_name, existing_data=None, discover_demo=False
+            community_url,
+            slug,
+            existing_data=None,
+            discover_demo=False,
+            json_entry=json_entry,
         )
 
     def sync_check_only(self, excel_path: str) -> int:
@@ -1152,6 +1482,13 @@ class NornsScraper:
 
         logger.info(f"Sync-check: processing {len(tasks)} row(s) from Excel")
 
+        # Pre-warm caches in the main thread to avoid each worker independently
+        # re-fetching community.json and the index page (the lazy `if cache is None`
+        # check isn't thread-safe under ThreadPoolExecutor).
+        self.fetch_community_json()
+        self.fetch_slug_map()
+        self._lookup_json_entry_by_slug("__warmup__")
+
         # Scrape in parallel
         scraped_by_idx = {}
         with ThreadPoolExecutor(max_workers=self.max_workers) as executor:
@@ -1167,117 +1504,24 @@ class NornsScraper:
                     scraped = {}
                 scraped_by_idx[idx] = scraped
 
-        # Normalizers reused from merge
-        def _norm_text(v: str) -> str:
-            try:
-                s = "" if pd.isna(v) else str(v)
-            except Exception:
-                s = str(v)
-            s = s.strip().lower()
-            s = re.sub(r"\s+", " ", s)
-            return s
-
-        def _norm_tags(v):
-            try:
-                if isinstance(v, (list, tuple, set)):
-                    items = list(v)
-                else:
-                    s = "" if pd.isna(v) else str(v)
-                    s = s.strip()
-                    if s.startswith("[") and s.endswith("]"):
-                        s = s[1:-1]
-                    items = s.split(",") if s else []
-                tokens = []
-                for item in items:
-                    t = ("" if item is None else str(item)).strip().strip("'\"").lower()
-                    if t:
-                        tokens.append(t)
-                return tuple(sorted(set(tokens)))
-            except Exception:
-                return tuple()
-
-        def _norm_authors(v):
-            try:
-                if isinstance(v, (list, tuple, set)):
-                    items = list(v)
-                else:
-                    s = "" if pd.isna(v) else str(v)
-                    items = s.split(",") if s else []
-                tokens = []
-                for item in items:
-                    t = ("" if item is None else str(item)).strip().strip("'\"").lower()
-                    if t:
-                        tokens.append(t)
-                return tuple(sorted(set(tokens)))
-            except Exception:
-                return tuple()
-
-        def _norm_url(v: str) -> str:
-            try:
-                raw = "" if pd.isna(v) else str(v)
-            except Exception:
-                raw = str(v)
-            raw = raw.strip()
-            if not raw:
-                return ""
-            try:
-                from urllib.parse import urlparse, urlunparse
-
-                p = urlparse(raw)
-                scheme = "https"
-                netloc = (p.netloc or "").lower().replace("www.", "")
-                path = (p.path or "").rstrip("/")
-                if path.endswith(".git"):
-                    path = path[:-4]
-                return urlunparse((scheme, netloc, path, "", "", ""))
-            except Exception:
-                return raw.lower().rstrip("/")
+        # Load drift snapshots; pass them through the shared drift helper.
+        # Sync-check has no merge step, so the "post-merge xlsx" we hand to
+        # _compute_drift is simply the existing xlsx row.
+        snapshots = self._load_snapshots(excel_path)
 
         # Compute and apply Out of Sync
         changed = 0
-        for idx, _ in tasks:
-            existing = df.iloc[idx]
+        for idx, community_url in tasks:
+            existing_row = df.iloc[idx]
+            existing_dict = existing_row.to_dict()
             scraped = scraped_by_idx.get(idx) or {}
-            diffs = []
+            slug = self._slug_for_row(community_url)
+            snap_for_slug = snapshots.setdefault(slug, {}) if slug else None
 
-            # Name (flag on any difference, including one-sided presence)
-            if _norm_text(existing.get("Name", "")) != _norm_text(
-                scraped.get("project_name", "")
-            ):
-                diffs.append("Name")
-
-            # Author (compare as sets; detect one-sided presence)
-            authors_existing = _norm_authors(existing.get("Author", ""))
-            authors_new = _norm_authors(scraped.get("author", ""))
-            if authors_existing != authors_new:
-                diffs.append("Author")
-
-            # Tags (set compare, flag when either side differs including one-sided presence)
-            tags_existing = _norm_tags(existing.get("Tags", ""))
-            tags_scraped = _norm_tags(scraped.get("tags", ""))
-            if tags_existing != tags_scraped:
-                diffs.append("Tags")
-
-            # Description (flag on any difference)
-            if _norm_text(existing.get("Description", "")) != _norm_text(
-                scraped.get("description", "")
-            ):
-                diffs.append("Description")
-
-            # Project URL (flag on any difference)
-            if _norm_url(existing.get("Project URL", "")) != _norm_url(
-                scraped.get("project_url", "")
-            ):
-                diffs.append("Project URL")
-
-            # Discussion URL (flag on any difference)
-            if _norm_url(existing.get("Discussion URL", "")) != _norm_url(
-                scraped.get("discussion_url", "")
-            ):
-                diffs.append("Discussion URL")
-
-            new_value = ", ".join(diffs)
-            old_value = existing.get("Out of Sync", "")
+            new_value = self._compute_drift(
+                existing_dict, scraped, existing_dict, snap_for_slug
+            )
+            old_value = existing_row.get("Out of Sync", "")
             if str(old_value) != str(new_value):
                 df.at[idx, "Out of Sync"] = new_value
                 changed += 1
@@ -1291,6 +1535,9 @@ class NornsScraper:
                 df.to_excel(excel_path, index=False, engine="openpyxl")
             except Exception:
                 pass
+
+        # Persist snapshot updates the drift helper made during this sync-check
+        self._save_snapshots(excel_path, snapshots)
         return changed
 
     def discover_demos_unified(self, existing_df):
@@ -1874,8 +2121,14 @@ class NornsScraper:
             logger.warning(f"Could not load existing Excel file: {e}")
             return None
 
-    def merge_data(self, new_data, existing_df=None):
-        """Merge new scraped data with existing data, preserving manual corrections"""
+    def merge_data(self, new_data, existing_df=None, snapshots=None):
+        """Merge new scraped data with existing data, preserving manual corrections.
+
+        If `snapshots` is provided, it's mutated in place with snapshot updates;
+        the caller is responsible for persisting it via _save_snapshots.
+        """
+        if snapshots is None:
+            snapshots = {}
         if existing_df is None:
             logger.info("No existing data to merge with")
             # Convert new data to Excel format
@@ -1885,6 +2138,13 @@ class NornsScraper:
                 for excel_col, internal_key in self.FIELD_MAP.items():
                     excel_script[excel_col] = script.get(internal_key, "")
                 excel_data.append(excel_script)
+                # First-run path: seed snapshots so future drift detection
+                # has a baseline. _compute_drift handles the missing-snapshot
+                # case by initializing without flagging anything.
+                slug = self._slug_for_row(excel_script)
+                if slug:
+                    snap_for_slug = snapshots.setdefault(slug, {})
+                    self._compute_drift(None, script, excel_script, snap_for_slug)
 
             # Store summary stats for first run
             added_details = []
@@ -1983,99 +2243,8 @@ class NornsScraper:
                     preserved_count += 1
             return merged_script, updated_fields
 
-        # Helpers to determine out-of-sync for selected fields
-        def _norm_text(v: str) -> str:
-            try:
-                s = "" if pd.isna(v) else str(v)
-            except Exception:
-                s = str(v)
-            s = s.strip().lower()
-            s = re.sub(r"\s+", " ", s)
-            return s
-
-        def _norm_tags(v: str):
-            try:
-                s = "" if pd.isna(v) else str(v)
-            except Exception:
-                s = str(v)
-            # split by comma
-            tokens = [t.strip().lower() for t in s.split(",")]
-            tokens = [t for t in tokens if t]
-            return tuple(sorted(set(tokens)))
-
-        def _norm_authors(v):
-            try:
-                if isinstance(v, (list, tuple, set)):
-                    items = list(v)
-                else:
-                    s = "" if pd.isna(v) else str(v)
-                    items = s.split(",") if s else []
-                tokens = []
-                for item in items:
-                    t = ("" if item is None else str(item)).strip().strip("'\"").lower()
-                    if t:
-                        tokens.append(t)
-                return tuple(sorted(set(tokens)))
-            except Exception:
-                return tuple()
-
-        def _norm_url(v: str) -> str:
-            try:
-                raw = "" if pd.isna(v) else str(v)
-            except Exception:
-                raw = str(v)
-            raw = raw.strip()
-            if not raw:
-                return ""
-            try:
-                from urllib.parse import urlparse, urlunparse
-
-                p = urlparse(raw)
-                scheme = "https"
-                netloc = (p.netloc or "").lower().replace("www.", "")
-                path = (p.path or "").rstrip("/")
-                if path.endswith(".git"):
-                    path = path[:-4]
-                return urlunparse((scheme, netloc, path, "", "", ""))
-            except Exception:
-                return raw.lower().rstrip("/")
-
-        def _compute_out_of_sync(existing_script, new_script):
-            if not existing_script:
-                return ""
-            diffs = []
-            # Name (flag on any difference, including one-sided presence)
-            if _norm_text(existing_script.get("Name", "")) != _norm_text(
-                new_script.get("project_name", "")
-            ):
-                diffs.append("Name")
-            # Author (compare as sets; detect one-sided presence)
-            authors_existing = _norm_authors(existing_script.get("Author", ""))
-            authors_new = _norm_authors(new_script.get("author", ""))
-            if authors_existing != authors_new:
-                diffs.append("Author")
-            # Tags (set compare, flag when either side differs including one-sided presence)
-            tags_existing = _norm_tags(existing_script.get("Tags", ""))
-            tags_new = _norm_tags(new_script.get("tags", ""))
-            if tags_existing != tags_new:
-                diffs.append("Tags")
-            # Description (flag on any difference)
-            if _norm_text(existing_script.get("Description", "")) != _norm_text(
-                new_script.get("description", "")
-            ):
-                diffs.append("Description")
-            # Project URL (flag on any difference)
-            if _norm_url(existing_script.get("Project URL", "")) != _norm_url(
-                new_script.get("project_url", "")
-            ):
-                diffs.append("Project URL")
-
-            # Discussion URL (flag on any difference)
-            if _norm_url(existing_script.get("Discussion URL", "")) != _norm_url(
-                new_script.get("discussion_url", "")
-            ):
-                diffs.append("Discussion URL")
-            return ", ".join(diffs)
+        # Drift detection moved to self._compute_drift (snapshot-aware, three-way diff).
+        # Snapshot mutations happen in place on the `snapshots` dict.
 
         # Process new scraped data (prefer URL-path keyed matching)
         processed_keys = set()  # Prefer URL path as key; fallback to Name
@@ -2097,11 +2266,20 @@ class NornsScraper:
                 existing_script = existing_by_name[script_name]
                 key_used = ("name", script_name)
 
+            # Resolve the snapshot bucket for this row by URL slug
+            slug_for_snapshot = url_key or self._slug_for_row(new_script)
+            snap_for_slug = (
+                snapshots.setdefault(slug_for_snapshot, {})
+                if slug_for_snapshot
+                else None
+            )
+
             if existing_script is not None:
                 merged_script, updated_fields = _merge_rows(existing_script, new_script)
-                # Compute Out of Sync vs scraped values
-                merged_script["Out of Sync"] = _compute_out_of_sync(
-                    existing_script, new_script
+                # Snapshot-aware drift: compares JSON to last-known snapshot, not
+                # to xlsx, so user overrides are silent until upstream actually moves.
+                merged_script["Out of Sync"] = self._compute_drift(
+                    existing_script, new_script, merged_script, snap_for_slug
                 )
                 if updated_fields:
                     updated_count += 1
@@ -2117,8 +2295,11 @@ class NornsScraper:
                 merged_script = {}
                 for excel_col, internal_key in self.FIELD_MAP.items():
                     merged_script[excel_col] = new_script.get(internal_key, "")
-                # No comparison available for brand new items
-                merged_script["Out of Sync"] = ""
+                # First sighting -> snapshot gets seeded with current JSON,
+                # nothing flagged.
+                merged_script["Out of Sync"] = self._compute_drift(
+                    None, new_script, merged_script, snap_for_slug
+                )
                 populated_fields = []
                 for excel_col in self.FIELD_MAP.keys():
                     if excel_col != "Playwright Status" and merged_script[excel_col]:
@@ -2455,37 +2636,51 @@ class NornsScraper:
                 cell = ws.cell(row=row_idx, column=7, value=project_value)
                 cell.font = Font(size=14)
 
+            # Documentation URL
+            doc_value = (
+                row["Documentation URL"]
+                if pd.notna(row.get("Documentation URL"))
+                else ""
+            )
+            if doc_value and str(doc_value).strip():
+                cell = ws.cell(row=row_idx, column=8, value=doc_value)
+                cell.hyperlink = str(doc_value)
+                cell.font = Font(size=14, color="0000FF", underline="single")
+            else:
+                cell = ws.cell(row=row_idx, column=8, value=doc_value)
+                cell.font = Font(size=14)
+
             # Community URL
             community_value = (
                 row["Community URL"] if pd.notna(row["Community URL"]) else ""
             )
             if community_value and str(community_value).strip():
-                cell = ws.cell(row=row_idx, column=8, value=community_value)
+                cell = ws.cell(row=row_idx, column=9, value=community_value)
                 cell.hyperlink = str(community_value)
                 cell.font = Font(size=14, color="0000FF", underline="single")
             else:
-                cell = ws.cell(row=row_idx, column=8, value=community_value)
+                cell = ws.cell(row=row_idx, column=9, value=community_value)
                 cell.font = Font(size=14)
 
             # Playwright Status
             playwright_status = (
                 row["Playwright Status"] if pd.notna(row["Playwright Status"]) else ""
             )
-            cell = ws.cell(row=row_idx, column=9, value=playwright_status)
+            cell = ws.cell(row=row_idx, column=10, value=playwright_status)
             cell.font = Font(size=14)
 
             # Last Updated
             last_updated_value = (
                 row["Last Updated"] if pd.notna(row.get("Last Updated")) else ""
             )
-            cell = ws.cell(row=row_idx, column=10, value=last_updated_value)
+            cell = ws.cell(row=row_idx, column=11, value=last_updated_value)
             cell.font = Font(size=14)
 
             # Out of Sync
             out_of_sync_value = (
                 row["Out of Sync"] if pd.notna(row.get("Out of Sync")) else ""
             )
-            cell = ws.cell(row=row_idx, column=11, value=out_of_sync_value)
+            cell = ws.cell(row=row_idx, column=12, value=out_of_sync_value)
             cell.font = Font(size=14)
 
         # Auto sizing
@@ -2506,7 +2701,7 @@ class NornsScraper:
 
         # Table
         last_row = len(df) + 1
-        table_range = f"A1:K{last_row}"
+        table_range = f"A1:L{last_row}"
         table = Table(displayName="NornsScripts", ref=table_range)
         style = TableStyleInfo(
             name="TableStyleDark11",
@@ -2536,9 +2731,12 @@ class NornsScraper:
         for script in self.script_data:
             script["tags"] = ", ".join(script["tags"])
 
-        # Load existing data and merge
+        # Load existing data + drift snapshots (sidecar JSON) and merge.
+        # Snapshots are mutated in place by merge_data; we save them after the
+        # xlsx is successfully written below.
         existing_df = self.load_existing_data(filename)
-        merged_data = self.merge_data(self.script_data, existing_df)
+        snapshots = self._load_snapshots(filename)
+        merged_data = self.merge_data(self.script_data, existing_df, snapshots)
 
         # Compute GitHub-based Last Updated for all rows (based on Project URL)
         try:
@@ -2627,16 +2825,30 @@ class NornsScraper:
                     cell = ws.cell(row=row_idx, column=7, value=project_value)
                     cell.font = Font(size=14)
 
+                # Documentation URL (as hyperlink)
+                doc_value = (
+                    row["Documentation URL"]
+                    if pd.notna(row.get("Documentation URL"))
+                    else ""
+                )
+                if doc_value and str(doc_value).strip():
+                    cell = ws.cell(row=row_idx, column=8, value=doc_value)
+                    cell.hyperlink = str(doc_value)
+                    cell.font = Font(size=14, color="0000FF", underline="single")
+                else:
+                    cell = ws.cell(row=row_idx, column=8, value=doc_value)
+                    cell.font = Font(size=14)
+
                 # Community URL (as hyperlink)
                 community_value = (
                     row["Community URL"] if pd.notna(row["Community URL"]) else ""
                 )
                 if community_value and str(community_value).strip():
-                    cell = ws.cell(row=row_idx, column=8, value=community_value)
+                    cell = ws.cell(row=row_idx, column=9, value=community_value)
                     cell.hyperlink = str(community_value)
                     cell.font = Font(size=14, color="0000FF", underline="single")
                 else:
-                    cell = ws.cell(row=row_idx, column=8, value=community_value)
+                    cell = ws.cell(row=row_idx, column=9, value=community_value)
                     cell.font = Font(size=14)
 
                 # Playwright Status (text only)
@@ -2645,21 +2857,21 @@ class NornsScraper:
                     if pd.notna(row["Playwright Status"])
                     else ""
                 )
-                cell = ws.cell(row=row_idx, column=9, value=playwright_status)
+                cell = ws.cell(row=row_idx, column=10, value=playwright_status)
                 cell.font = Font(size=14)
 
                 # Last Updated (text only, YYYY-MM-DD)
                 last_updated_value = (
                     row["Last Updated"] if pd.notna(row.get("Last Updated")) else ""
                 )
-                cell = ws.cell(row=row_idx, column=10, value=last_updated_value)
+                cell = ws.cell(row=row_idx, column=11, value=last_updated_value)
                 cell.font = Font(size=14)
 
                 # Out of Sync (text only)
                 out_of_sync_value = (
                     row["Out of Sync"] if pd.notna(row.get("Out of Sync")) else ""
                 )
-                cell = ws.cell(row=row_idx, column=11, value=out_of_sync_value)
+                cell = ws.cell(row=row_idx, column=12, value=out_of_sync_value)
                 cell.font = Font(size=14)
 
             # Auto-adjust column widths to fit all content
@@ -2683,7 +2895,7 @@ class NornsScraper:
 
             # Create table with Orange Table Style Dark 11
             last_row = len(df) + 1
-            table_range = f"A1:K{last_row}"  # Updated to include Out of Sync column
+            table_range = f"A1:L{last_row}"  # 12 columns through Out of Sync
             table = Table(displayName="NornsScripts", ref=table_range)
             style = TableStyleInfo(
                 name="TableStyleDark11",
@@ -2710,6 +2922,9 @@ class NornsScraper:
                 logger.info(f"Fallback save successful: {filename}")
             except Exception as e2:
                 logger.error(f"Fallback save also failed: {e2}")
+
+        # Persist drift snapshots (sidecar JSON) — mutated in place by merge_data
+        self._save_snapshots(filename, snapshots)
 
     def print_summary(self):
         """Print a summary of what was accomplished during scraping"""
@@ -2753,6 +2968,32 @@ class NornsScraper:
             1 for script in self.script_data if script.get("demo", "").strip()
         )
         print(f"\nDemo discovery: Found {demos_found} demo videos")
+
+        # Surface schema deviations in community.json so they can be PR'd upstream.
+        # We still ingest typo'd values defensively, so this is informational only.
+        if self.schema_deviations:
+            # Group by entry for readability
+            by_entry = {}
+            for d in self.schema_deviations:
+                by_entry.setdefault(d["entry"], []).append(d)
+
+            print(
+                f"\ncommunity.json schema deviations: {len(self.schema_deviations)} "
+                f"across {len(by_entry)} entries"
+            )
+            print("(values are still ingested via typo aliases; consider PRing upstream)")
+            for entry_name in sorted(by_entry.keys()):
+                print(f"  {entry_name}")
+                for d in by_entry[entry_name]:
+                    if d["kind"] == "typo" and d["suggestion"]:
+                        print(f"    typo: '{d['field']}' -> likely '{d['suggestion']}'")
+                    else:
+                        print(
+                            f"    unknown field: '{d['field']}' (no standard equivalent)"
+                        )
+            print(
+                "  Source: https://github.com/monome/norns-community/blob/main/community.json"
+            )
 
         print("=" * 60)
 
