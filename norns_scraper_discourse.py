@@ -434,6 +434,24 @@ class NornsScraper:
         except Exception as e:
             logger.warning(f"Failed to save external search cache to {path}: {e}")
 
+    # Hosts where HEAD validation is unreliable (we share an IP with a service
+    # that rate-limits us, or HEAD/GET semantics for the host are funky enough
+    # that a failed probe doesn't mean the URL is dead). For URLs on these
+    # hosts we keep them without HEAD-checking on the assumption that they
+    # reached us via Discourse in-thread context, which is itself validation.
+    _HEAD_VALIDATION_SKIP_HOSTS = ("llllllll.co",)
+
+    def _should_skip_head_validation(self, url):
+        if not url:
+            return False
+        u = url.lower()
+        for h in self._HEAD_VALIDATION_SKIP_HOSTS:
+            # Match host segment, not arbitrary substring (avoid false matches
+            # like "evil.com/llllllll.co/anything").
+            if f"://{h}/" in u or u.startswith(f"{h}/") or f"://{h}" == u.rstrip("/"):
+                return True
+        return False
+
     def _validate_demo_url(self, url, timeout=8):
         """HEAD-check (with GET fallback on 405) that a URL is reachable.
 
@@ -466,13 +484,32 @@ class NornsScraper:
         return "\n".join(live)
 
     def _validate_demo_urls(self, urls):
-        """Filter to URLs that pass _validate_demo_url. Parallel for speed."""
+        """Filter URLs by reachability with host-aware policy.
+
+        URLs on `_HEAD_VALIDATION_SKIP_HOSTS` (currently just llllllll.co)
+        are passed through without HEAD-checking. They reached us via
+        Discourse in-thread context — the post itself is validation —
+        and the same host rate-limits our IP, so HEAD failures are
+        diagnostically ambiguous rather than evidence of a dead link.
+        Concrete case the old behavior dropped: thebangs's
+        /uploads/.../e31b2c25 attachment, which appeared in-thread but
+        got HEAD-failed during a 429 storm and was wrongly removed.
+
+        For all other hosts, run the parallel HEAD-check as before.
+        Drop URLs that fail; preserve original order.
+        """
         if not urls:
             return urls
+        skip = [u for u in urls if self._should_skip_head_validation(u)]
+        check = [u for u in urls if not self._should_skip_head_validation(u)]
+
+        if not check:
+            return list(urls)
+
         # Cap workers low; these requests aren't throttled but we don't need to hammer.
-        workers = min(8, len(urls))
+        workers = min(8, len(check))
         with ThreadPoolExecutor(max_workers=workers) as ex:
-            futures = {ex.submit(self._validate_demo_url, u): u for u in urls}
+            futures = {ex.submit(self._validate_demo_url, u): u for u in check}
             ok = set()
             for f in as_completed(futures):
                 u = futures[f]
@@ -481,13 +518,17 @@ class NornsScraper:
                         ok.add(u)
                 except Exception:
                     pass
-        # Preserve original order, drop bad ones, log losses
+        ok.update(skip)  # skipped URLs are kept by policy
         kept = [u for u in urls if u in ok]
         if len(kept) < len(urls):
             dropped = [u for u in urls if u not in ok]
             logger.info(
                 f"Dropped {len(dropped)} unreachable demo URL(s): "
                 + ", ".join(d[:60] for d in dropped[:3])
+            )
+        if skip:
+            logger.debug(
+                f"Skipped HEAD validation for {len(skip)} URL(s) on trusted-context hosts"
             )
         return kept
 
@@ -895,17 +936,24 @@ class NornsScraper:
                     logger.debug(f"Anchor-slice fetch failed for {discussion_url}: {e}")
 
             # Fetch the canonical topic JSON for the rest of the discovery work.
-            r = self._discourse_get_with_retry(f"{base}/t/{slug}.json", timeout=20)
-            if r.status_code == 404 and topic_id_hint:
-                r2 = self._discourse_get_with_retry(
+            #
+            # Prefer the topic-id form when available — it's the always-
+            # resolvable canonical URL on Discourse. Bare-slug fetches 404
+            # for short/common slugs (concrete case: `sam` 404s as
+            # /t/sam.json but /t/23943.json works), and the previous
+            # 404→topic_id fallback only triggered on a clean 404 — during
+            # a 429 storm the slug-form returns 429, the fallback never
+            # fires, and the entire row is lost. Going topic-id-first
+            # eliminates a wasted round-trip on every short-slug script
+            # AND avoids the 429-pathological case.
+            if topic_id_hint:
+                r = self._discourse_get_with_retry(
                     f"{base}/t/{topic_id_hint}.json", timeout=20
                 )
-                if r2.status_code == 200:
-                    r = r2
-                    logger.debug(
-                        f"Recovered via topic_id {topic_id_hint} after slug 404 "
-                        f"for {discussion_url}"
-                    )
+            else:
+                r = self._discourse_get_with_retry(
+                    f"{base}/t/{slug}.json", timeout=20
+                )
             if r.status_code == 404:
                 if collected:
                     return self._finalize_demos(collected)
