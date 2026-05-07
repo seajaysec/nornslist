@@ -532,6 +532,21 @@ class NornsScraper:
             )
         return kept
 
+    @staticmethod
+    def _entry_url(entry):
+        """Extract the URL from a cache entry, tolerating both new dict schema
+        and legacy bare-string entries.
+
+        Legacy entries (bare strings from pre-smart-recheck cache files) are
+        treated as "URL only, no timestamps." Lookup logic invalidates them
+        anyway, so the URL is read here only for HEAD-validation purposes.
+        """
+        if isinstance(entry, str):
+            return entry
+        if isinstance(entry, dict):
+            return entry.get("url", "") or ""
+        return ""
+
     def _drop_dead_cache_urls(self, entries):
         """Filter cached external-search entries to drop dead URLs.
 
@@ -539,15 +554,21 @@ class NornsScraper:
         "we searched and found nothing", which is still valid. Only
         non-empty URLs that fail HEAD validation are dropped.
 
+        Tolerates both new dict-shape entries and legacy bare-string entries.
         Returns a new dict; does not mutate the input.
         """
         if not entries:
             return entries
-        urls = [u for u in entries.values() if u]
+        urls = [self._entry_url(v) for v in entries.values()]
+        urls = [u for u in urls if u]
         if not urls:
             return dict(entries)
         live = set(self._validate_demo_urls(urls))
-        cleaned = {k: v for k, v in entries.items() if (not v) or (v in live)}
+        cleaned = {
+            k: v
+            for k, v in entries.items()
+            if (not self._entry_url(v)) or (self._entry_url(v) in live)
+        }
         dropped = len(entries) - len(cleaned)
         if dropped:
             logger.info(
@@ -555,6 +576,89 @@ class NornsScraper:
                 f"({len(cleaned)} entries remaining)"
             )
         return cleaned
+
+    # ---------------------------
+    # Smart cache invalidation: per-entry timestamps + upstream signals
+    # ---------------------------
+    # The cache file stores `{signature, entries: {key: <entry>}}`. An entry
+    # is either:
+    #   - a bare string (legacy, pre-smart-recheck) — invalidated on lookup
+    #   - a dict with shape:
+    #       {
+    #         "url": str,                       # may be "" for cached negative
+    #         "repo_updated_at": str | None,    # GitHub Last Updated when cached (YYYY-MM-DD)
+    #         "thread_last_post_at": str | None,# Discourse last_posted_at when cached (ISO 8601)
+    #         "cached_at": str,                 # write timestamp (ISO 8601 UTC)
+    #         "transient_failure": bool,        # True if API was unavailable; always recheck
+    #       }
+    #
+    # Invalidation rules (any one triggers a recheck):
+    #   1. Entry is legacy (bare string) — drop, force recheck.
+    #   2. transient_failure=True — caching was a fallback; we never got a real signal.
+    #   3. cached_at older than _CACHE_TTL_DAYS — long-tail safety net for
+    #      cases where neither repo nor thread moved but a demo got uploaded
+    #      to YouTube anyway (rare but real).
+    #   4. current(repo_updated_at) > entry.repo_updated_at — author committed.
+    #   5. current(thread_last_post_at) > entry.thread_last_post_at — community posted.
+    #
+    # Missing signals on either side default to "no invalidation from this signal."
+    # That keeps transient upstream flakes (GitHub/Discourse 429) from forcing
+    # spurious cache invalidation.
+
+    _CACHE_TTL_DAYS = 180  # 6 months
+
+    @staticmethod
+    def _now_iso():
+        from datetime import datetime, timezone
+        return datetime.now(timezone.utc).isoformat()
+
+    def _make_cache_entry(self, url, repo_updated_at, thread_last_post_at, transient=False):
+        return {
+            "url": url or "",
+            "repo_updated_at": (repo_updated_at or None),
+            "thread_last_post_at": (thread_last_post_at or None),
+            "cached_at": self._now_iso(),
+            "transient_failure": bool(transient),
+        }
+
+    def _cache_lookup(self, key, current_repo_updated, current_thread_last_post):
+        """Return cached URL string if entry is fresh; otherwise None.
+
+        None means "treat as cache miss — re-run external search."
+        Empty string is a valid return: a cached negative we still trust.
+        """
+        entry = self._external_search_cache.get(key)
+        if entry is None:
+            return None
+        if not isinstance(entry, dict):
+            # Legacy bare-string entry — schema migration. Force recheck once
+            # so the entry recaches in the new dict shape.
+            return None
+        if entry.get("transient_failure"):
+            return None
+        # 6-month TTL safety net for cases neither upstream signal catches.
+        cached_at = entry.get("cached_at") or ""
+        if cached_at:
+            try:
+                from datetime import datetime, timezone
+                age = (datetime.now(timezone.utc) - datetime.fromisoformat(cached_at)).days
+                if age > self._CACHE_TTL_DAYS:
+                    return None
+            except (ValueError, TypeError):
+                # Malformed timestamp — be conservative, force recheck.
+                return None
+        # Compare upstream signals where both sides have a value.
+        cached_repo = entry.get("repo_updated_at") or ""
+        if current_repo_updated and cached_repo and current_repo_updated > cached_repo:
+            return None
+        cached_thread = entry.get("thread_last_post_at") or ""
+        if (
+            current_thread_last_post
+            and cached_thread
+            and current_thread_last_post > cached_thread
+        ):
+            return None
+        return entry.get("url", "") or ""
 
     def _load_vimeo_api_token(self):
         """Load Vimeo API token from env var VIMEO_API_TOKEN or vimeo.api file.
@@ -572,11 +676,15 @@ class NornsScraper:
         return ""
 
     def _vimeo_api_search(self, query, max_results=10):
-        """Search Vimeo via the API. Returns list of (videoId, title, description)."""
+        """Search Vimeo via the API.
+
+        Returns (results, available) — same contract as _youtube_api_search.
+        See that method's docstring for why caller cares about availability.
+        """
         if not hasattr(self, "_vimeo_api_token"):
             self._vimeo_api_token = self._load_vimeo_api_token()
         if not self._vimeo_api_token:
-            return []
+            return [], False
         try:
             r = self.session.get(
                 "https://api.vimeo.com/videos",
@@ -591,7 +699,7 @@ class NornsScraper:
                 logger.debug(
                     f"Vimeo API returned {r.status_code} for {query!r}: {r.text[:200]}"
                 )
-                return []
+                return [], False
             data = r.json()
             results = []
             for item in data.get("data") or []:
@@ -604,10 +712,10 @@ class NornsScraper:
                 title = item.get("name", "") or ""
                 desc = item.get("description", "") or ""
                 results.append((vid, title, desc))
-            return results
+            return results, True
         except Exception as e:
             logger.debug(f"Vimeo API request failed for {query!r}: {e}")
-            return []
+            return [], False
 
     def _load_youtube_api_key(self):
         """Load YouTube Data API key from env var YOUTUBE_API_KEY or local yt.api file.
@@ -625,10 +733,21 @@ class NornsScraper:
         return ""
 
     def _youtube_api_search(self, query, max_results=10):
-        """Search YouTube via the Data API. Returns list of (videoId, title, description).
+        """Search YouTube via the Data API.
 
-        Returns [] if no API key is configured or the request fails. API
-        results are higher signal than HTML scraping AND include the
+        Returns (results, available):
+          - results: list of (videoId, title, description)
+          - available: True if the API responded normally (whether or not it
+            returned hits), False if the API was unavailable for any reason
+            (no key, HTTP error including 403 quota, network failure)
+
+        Callers MUST check `available` before caching a negative — caching
+        a "no match" verdict from an unavailable API would poison the cache
+        with false negatives that survive until the matcher signature
+        bumps. With smart-recheck, transient_failure entries get retried
+        on the next run instead.
+
+        API results are higher-signal than HTML scraping AND include the
         description field, which is critical for disambiguating short-name
         scripts (e.g. 'ufo' demo's title is generic but description mentions
         'Monome Norns').
@@ -636,7 +755,7 @@ class NornsScraper:
         if not hasattr(self, "_youtube_api_key"):
             self._youtube_api_key = self._load_youtube_api_key()
         if not self._youtube_api_key:
-            return []
+            return [], False
         try:
             r = self.session.get(
                 "https://www.googleapis.com/youtube/v3/search",
@@ -653,7 +772,10 @@ class NornsScraper:
                 logger.debug(
                     f"YouTube API returned {r.status_code} for {query!r}: {r.text[:200]}"
                 )
-                return []
+                # All non-200s (403 quota, 401 bad key, 5xx) signal API
+                # unavailability — caller should treat resulting empty as
+                # transient, not a final negative.
+                return [], False
             data = r.json()
             results = []
             for item in data.get("items") or []:
@@ -663,12 +785,18 @@ class NornsScraper:
                 desc = snippet.get("description", "")
                 if vid:
                     results.append((vid, title, desc))
-            return results
+            return results, True
         except Exception as e:
             logger.debug(f"YouTube API request failed for {query!r}: {e}")
-            return []
+            return [], False
 
-    def _external_video_search(self, script_name, author=""):
+    def _external_video_search(
+        self,
+        script_name,
+        author="",
+        repo_updated_at="",
+        thread_last_post_at="",
+    ):
         """Search YouTube → Vimeo for a video demo of this norns script.
 
         Layered strategy:
@@ -681,15 +809,22 @@ class NornsScraper:
         substring in title required, plus norns/monome signal in
         title-or-description for short names.
 
-        Per-run in-memory cached.
+        Cache: backed by `_cache_lookup` for smart invalidation. Cached
+        entries get reused only if upstream signals (repo Last Updated,
+        Discourse last_posted_at) and 6-month TTL all agree they're still
+        fresh. When ALL search paths return empty AND at least one was
+        unavailable (API quota, network failure), the negative is recorded
+        as transient_failure=True so the next run unconditionally retries.
         """
         if not script_name:
             return ""
         if not hasattr(self, "_external_search_cache"):
             self._external_search_cache = {}
         cache_key = f"{author}|{script_name}"
-        if cache_key in self._external_search_cache:
-            return self._external_search_cache[cache_key]
+
+        cached = self._cache_lookup(cache_key, repo_updated_at, thread_last_post_at)
+        if cached is not None:
+            return cached
 
         # Build search queries. Per explicit guidance: when author is known,
         # ALWAYS include it. Never fall back to author-less search — that
@@ -700,19 +835,32 @@ class NornsScraper:
         else:
             queries = [f"norns {script_name}"]
 
+        # Track whether any search path was unavailable. If we end up with
+        # zero matches AND any path failed, the resulting negative is
+        # transient — we don't actually know it's a true "no match."
+        api_available_any = False
+        api_unavailable_any = False
+
         # Path 1: YouTube Data API (when key available — best signal).
         if not hasattr(self, "_youtube_api_key"):
             self._youtube_api_key = self._load_youtube_api_key()
         if self._youtube_api_key:
             for q in queries:
-                for vid, title, desc in self._youtube_api_search(q):
+                results, available = self._youtube_api_search(q)
+                if available:
+                    api_available_any = True
+                else:
+                    api_unavailable_any = True
+                for vid, title, desc in results:
                     if self._video_matches_script(script_name, title, desc, author=author):
                         url = f"https://www.youtube.com/watch?v={vid}"
                         logger.info(
                             f"External search hit (YT API, title='{title[:50]}'): "
                             f"{q!r} -> {url}"
                         )
-                        self._external_search_cache[cache_key] = url
+                        self._external_search_cache[cache_key] = self._make_cache_entry(
+                            url, repo_updated_at, thread_last_post_at
+                        )
                         return url
 
         # Path 2: YouTube HTML scrape (no API key required, but title-only
@@ -725,7 +873,9 @@ class NornsScraper:
                         f"External search hit (YT scrape, title='{title[:50]}'): "
                         f"{q!r} -> {url}"
                     )
-                    self._external_search_cache[cache_key] = url
+                    self._external_search_cache[cache_key] = self._make_cache_entry(
+                        url, repo_updated_at, thread_last_post_at
+                    )
                     return url
 
         # Path 3: Vimeo via API (when VIMEO_API_TOKEN / vimeo.api is configured).
@@ -736,7 +886,12 @@ class NornsScraper:
             self._vimeo_api_token = self._load_vimeo_api_token()
         if self._vimeo_api_token:
             for q in queries:
-                for vid, title, desc in self._vimeo_api_search(q):
+                results, available = self._vimeo_api_search(q)
+                if available:
+                    api_available_any = True
+                else:
+                    api_unavailable_any = True
+                for vid, title, desc in results:
                     if self._video_matches_script(
                         script_name, title, desc, author=author
                     ):
@@ -745,10 +900,22 @@ class NornsScraper:
                             f"External search hit (Vimeo API, title='{title[:50]}'): "
                             f"{q!r} -> {url}"
                         )
-                        self._external_search_cache[cache_key] = url
+                        self._external_search_cache[cache_key] = self._make_cache_entry(
+                            url, repo_updated_at, thread_last_post_at
+                        )
                         return url
 
-        self._external_search_cache[cache_key] = ""
+        # No match found. Decide whether this is a true negative (every
+        # search path responded normally but found nothing) or transient
+        # (at least one path was unavailable, so absence of a hit is
+        # diagnostically ambiguous).
+        transient = api_unavailable_any and not api_available_any
+        # If both happened (e.g., YT API quota'd but Vimeo API responded),
+        # we DID get a real signal from at least one source — treat as a
+        # legit negative and cache normally.
+        self._external_search_cache[cache_key] = self._make_cache_entry(
+            "", repo_updated_at, thread_last_post_at, transient=transient
+        )
         return ""
 
     @staticmethod
@@ -1019,8 +1186,26 @@ class NornsScraper:
             # Most legitimate norns demos are linked in the OP or first few replies;
             # if we got past Phase 1 with nothing, the author probably didn't link
             # a video in the thread, so YouTube/Vimeo search is our best shot.
+            #
+            # Pass upstream signals into the search so the cache can do
+            # smart-recheck: thread last_posted_at comes from the topic JSON
+            # we just loaded, repo_updated_at comes from the loaded xlsx state
+            # stashed on `self._upstream_repo_updated` at scrape_all_scripts
+            # start. Either signal absent (e.g. row not yet in xlsx, or
+            # last_posted_at missing from response) silently degrades to
+            # "no upstream signal," which means the cache only invalidates
+            # via 6-month TTL or transient_failure markers.
             if not collected and script_name:
-                ext = self._external_video_search(script_name, author=author)
+                thread_last_post = data.get("last_posted_at") or ""
+                repo_updated = ""
+                if hasattr(self, "_upstream_repo_updated"):
+                    repo_updated = self._upstream_repo_updated.get(script_name, "") or ""
+                ext = self._external_video_search(
+                    script_name,
+                    author=author,
+                    repo_updated_at=repo_updated,
+                    thread_last_post_at=thread_last_post,
+                )
                 if ext:
                     absorb([ext])
 
@@ -1883,11 +2068,20 @@ class NornsScraper:
         # Map both project names and URL paths to existing scripts
         existing_scripts = {}
         url_to_project_name = {}
+        # Snapshot of "Last Updated" per project, for the smart-recheck cache.
+        # _external_video_search reads this via self._upstream_repo_updated to
+        # decide whether a cached entry is still fresh (cached value == loaded
+        # xlsx value means the repo hasn't moved since we cached).
+        self._upstream_repo_updated = {}
 
         if existing_df is not None:
             for _, row in existing_df.iterrows():
                 project_name = row["Name"]
                 community_url = row.get("Community URL", "")
+                if "Last Updated" in existing_df.columns:
+                    last_updated = row.get("Last Updated", "")
+                    if pd.notna(last_updated) and str(last_updated).strip():
+                        self._upstream_repo_updated[project_name] = str(last_updated).strip()
 
                 # Store by project name
                 doc_url_value = (
