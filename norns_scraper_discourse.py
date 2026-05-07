@@ -393,11 +393,28 @@ class NornsScraper:
                 return {}
             entries = data["entries"]
             logger.info(f"Loaded {len(entries)} cached external searches from {path}")
+
+            # One-shot legacy migration: bare-string entries (pre-smart-recheck
+            # schema) get promoted to dict shape so they participate in the
+            # smart-recheck logic instead of being treated as cache-misses.
+            # We trust the URL as written (the matcher rules haven't changed
+            # since the legacy entry's signature, which we just validated).
+            # Stamp `cached_at` with `now` to start the 6-month TTL clock from
+            # migration time; leave upstream signals null (we don't know what
+            # they were at original cache time, so any future upstream movement
+            # will trigger a recheck via the normal lookup logic).
+            entries, migrated_count = self._migrate_legacy_entries(entries)
+            if migrated_count:
+                logger.info(
+                    f"Migrated {migrated_count} legacy bare-string cache "
+                    f"entries to dict schema (will persist on save)"
+                )
+
             cleaned = self._drop_dead_cache_urls(entries)
-            if len(cleaned) < len(entries):
-                # Persist the cleanup so future runs don't re-validate the
-                # same dead URLs. Cached negatives (empty values) are
-                # preserved by _drop_dead_cache_urls.
+            if migrated_count or len(cleaned) < len(entries):
+                # Persist migration and/or dead-link cleanup so subsequent
+                # runs don't redo this work. Cached negatives (empty url
+                # values) are preserved by _drop_dead_cache_urls.
                 self._save_external_searches(excel_path, cleaned)
             return cleaned
 
@@ -620,6 +637,45 @@ class NornsScraper:
             "cached_at": self._now_iso(),
             "transient_failure": bool(transient),
         }
+
+    def _migrate_legacy_entries(self, entries):
+        """One-shot upgrade: promote bare-string cache entries to dict shape.
+
+        Bare strings come from cache files written before smart-recheck. We
+        trust them on two grounds:
+          - The matcher signature was validated by the caller before this
+            runs, so the verdict (positive or negative) was produced by the
+            same matcher rules in effect today.
+          - Forcing a recheck just because the schema changed would burn
+            quota replicating verdicts we already have.
+
+        Stamping `cached_at` with `now` starts the 6-month TTL clock from
+        the migration moment, so legacy entries get re-checked at the same
+        cadence as freshly-written ones. Upstream signals are left as None
+        — we don't know what they were at original cache time, so the only
+        invalidation triggers for migrated entries are TTL or future
+        upstream movement (which still triggers recheck via the normal
+        lookup-time comparison once a real signal exists to compare).
+
+        Returns (migrated_dict, count_migrated). Does not mutate the input.
+        """
+        if not entries:
+            return entries, 0
+        out = {}
+        migrated = 0
+        for k, v in entries.items():
+            if isinstance(v, str):
+                out[k] = {
+                    "url": v,
+                    "repo_updated_at": None,
+                    "thread_last_post_at": None,
+                    "cached_at": self._now_iso(),
+                    "transient_failure": False,
+                }
+                migrated += 1
+            else:
+                out[k] = v
+        return out, migrated
 
     def _cache_lookup(self, key, current_repo_updated, current_thread_last_post):
         """Return cached URL string if entry is fresh; otherwise None.
