@@ -1,8 +1,18 @@
 #!/usr/bin/env python3
 """
-Norns Community Script Scraper
+Norns Community Script Scraper — Discourse-API variant (no Playwright).
 
-This script scrapes script details from norns.community and outputs them to an Excel file.
+This is the experimental B-track of the scraper. It drops the Playwright
+fallback entirely and instead queries Discourse's JSON API for demo discovery
+on llllllll.co. Two consequences:
+
+  1. No more browser dependency / no more `playwright install`. No preflight.
+  2. We can scan ALL posts in a thread (post_stream pagination), not just the
+     first ~20 the HTML page renders before its scroll-to-load kicks in.
+
+Run side-by-side with the original norns_scraper.py for A/B comparison; this
+file's default excel_path is `norns_scripts_discourse.xlsx` so the outputs
+don't collide.
 """
 
 import argparse
@@ -19,10 +29,9 @@ import questionary
 import requests
 from bs4 import BeautifulSoup
 from openpyxl import Workbook
-from openpyxl.styles import Font, PatternFill
+from openpyxl.styles import Alignment, Font, PatternFill
 from openpyxl.utils.dataframe import dataframe_to_rows
 from openpyxl.worksheet.table import Table, TableStyleInfo
-from playwright.sync_api import sync_playwright
 
 # Set up logging
 logging.basicConfig(
@@ -104,7 +113,7 @@ class NornsScraper:
         base_url="https://norns.community",
         max_workers=10,
         demo_delay=0.5,
-        excel_path="norns_scripts.xlsx",
+        excel_path="norns_scripts_discourse.xlsx",
     ):
         self.base_url = base_url
         self.max_workers = max_workers
@@ -130,7 +139,11 @@ class NornsScraper:
         self.script_data = []
         self.demo_delay = demo_delay
         self.failed_demo_requests = []  # Track failed requests for retry
-        self.playwright_conflicts = []  # Store conflicts for user resolution
+        # Note: playwright_conflicts list removed — Discourse variant has only
+        # one discovery method, so there are no conflicts to reconcile. The
+        # "Playwright Status" Excel column name is kept for A/B parity with the
+        # original scraper; this variant only emits "Missing Demo" / "Manual
+        # Override" / "" into it.
         self._community_json = None  # Lazy cache for community.json entries
         self._slug_map = None  # Lazy cache for project_name -> URL slug
         self.schema_deviations = []  # Typos/unknown JSON fields, reported at end-of-run
@@ -139,6 +152,17 @@ class NornsScraper:
         self._discourse_resolutions = {}
         self._discourse_resolutions_lock = threading.Lock()
         self._discourse_resolution_log = []  # New resolutions made this run, for report
+
+        # Global rate limiter for Discourse requests. With 8 worker threads
+        # we'd otherwise burst-fire and hit llllllll.co's anonymous-user rate
+        # limit (HTTP 429). Discourse's default is ~60 req/min (1 RPS); we cap
+        # at 2 RPS sustained to leave headroom and avoid bursts that trigger
+        # short-term throttling. This run is intended to be daily-CI accuracy,
+        # so we trade wall time for reliability.
+        self._discourse_rps = 2.0
+        self._discourse_min_interval = 1.0 / self._discourse_rps
+        self._discourse_last_request = 0.0
+        self._discourse_throttle_lock = threading.Lock()
         self.summary_stats = {
             "scripts_added": 0,
             "scripts_updated": 0,
@@ -152,12 +176,23 @@ class NornsScraper:
         self.github_token = self._load_github_token()
         self.github_session = self._init_github_session()
 
-    def discover_demo_video(self, discussion_url, _no_resolve=False):
-        """Discover demo video from discussion URL by looking for YouTube, Vimeo, or SoundCloud links.
+    def discover_demo_video(
+        self, discussion_url, _no_resolve=False, author="", script_name=""
+    ):
+        """Discover demo video from a discussion URL.
 
-        On a 404 (typical for stale Discourse topic IDs in upstream community.json),
-        we attempt _resolve_discourse_url and retry exactly once. The _no_resolve
-        flag prevents infinite recursion if the resolved URL also fails.
+        Dispatches based on URL shape:
+          - Discourse forum URLs (matches /t/<slug>[/<id>]) -> JSON API path,
+            which uses 4-phase priority: early-post video → external search →
+            rest-of-thread video → audio fallback.
+          - Anything else -> original HTML-page scrape (fallback for non-Discourse).
+
+        author/script_name are required for Phase 2 external search; they're
+        passed through from scrape_script_details which has them from
+        community.json. Optional for backward-compat; external search is
+        skipped if not provided.
+
+        Cache pre-check still applies to both branches.
         """
         if not discussion_url:
             return ""
@@ -177,337 +212,907 @@ class NornsScraper:
                     logger.debug(
                         f"Using cached Discourse resolution: {discussion_url} -> {cached}"
                     )
-                    return self.discover_demo_video(cached, _no_resolve=True)
+                    return self.discover_demo_video(
+                        cached,
+                        _no_resolve=True,
+                        author=author,
+                        script_name=script_name,
+                    )
+
+        # Discourse URL -> use JSON API for full-thread pagination
+        m = self._DISCOURSE_TOPIC_RE.match(discussion_url)
+        if m:
+            return self._discover_demo_via_discourse_api(
+                discussion_url,
+                m.group(1),
+                m.group(2),
+                m.group(3),
+                m.group(4),
+                author=author,
+                script_name=script_name,
+            )
+
+        # Non-Discourse URL (e.g. short-link redirects like l.llllllll.co/...).
+        # In practice, every entry in community.json today resolves through
+        # the Discourse path above, so this branch is rarely hit. When it is,
+        # external video search by script_name is more reliable than scraping
+        # an arbitrary redirect target — we don't know the page structure,
+        # and the in-thread context (which would justify trusting an
+        # untitled URL) doesn't exist for non-forum links.
+        if script_name and not _no_resolve:
+            ext = self._external_video_search(script_name, author=author)
+            if ext:
+                return ext
+
+        logger.debug(f"No demo found for non-Discourse URL: {discussion_url}")
+        return ""
+
+    # ---------------------------
+    # Discourse JSON API demo discovery (Discourse-only variant)
+    # ---------------------------
+    # Demo URL patterns split by media type. Discovery prioritizes VIDEO over
+    # AUDIO (script demos are more compelling as video). The full priority
+    # order is implemented in _discover_demo_via_discourse_api as a 4-phase
+    # search: early-post video -> external search -> rest-of-thread video ->
+    # audio fallback anywhere.
+    _VIDEO_LINK_PATTERNS = (
+        "youtube.com/watch",
+        "youtu.be/",
+        "m.youtube.com/watch",
+        "music.youtube.com/watch",
+        "vimeo.com/",
+        "instagram.com/",
+    )
+    _VIDEO_IFRAME_PATTERNS = (
+        "youtube.com/embed/",
+        "vimeo.com/video/",
+        "player.vimeo.com",
+    )
+    _AUDIO_LINK_PATTERNS = (
+        "soundcloud.com/",
+        # Direct audio-file links (Discourse uploads, zbs.fm, etc.) — norns
+        # authors sometimes attach raw .mp3 demos to their threads.
+        ".mp3",
+        ".wav",
+        ".m4a",
+        ".ogg",
+        ".flac",
+    )
+    _AUDIO_IFRAME_PATTERNS = (
+        "soundcloud.com/player",
+        "w.soundcloud.com",
+    )
+
+    # Backward-compat aliases (used by the legacy HTML scrape path in
+    # discover_demo_video for non-Discourse URLs).
+    _DEMO_LINK_PATTERNS = _VIDEO_LINK_PATTERNS + _AUDIO_LINK_PATTERNS
+    _DEMO_IFRAME_PATTERNS = _VIDEO_IFRAME_PATTERNS + _AUDIO_IFRAME_PATTERNS
+
+    # Max number of unique demo URLs to collect per script. Multiple demos in
+    # a single Excel cell are stored newline-separated; the cell hyperlink
+    # points to the first URL (Excel doesn't natively support multi-hyperlink
+    # cells), but all are visible/copyable in the cell text.
+    _DEMO_LIMIT = 3
+
+    # Signature for the external-search cache file. Bump this whenever
+    # `_video_matches_script` semantics change (or any other accept/reject
+    # rule for external search results) so the on-disk cache rebuilds itself
+    # rather than replaying stale false-positives through the new rules.
+    # Append a short reason to the version string for greppable history.
+    _MATCHER_SIGNATURE = "v1-strict-norns-required"
+
+    @staticmethod
+    def _write_demo_cell(ws, row_idx, value):
+        """Write the Demo cell at column 5, handling both single and multi-URL
+        (newline-separated) values. Hyperlinks the first URL; wraps text so all
+        URLs in a multi-cell are visible without clipping.
+        """
+        try:
+            v = "" if pd.isna(value) else str(value)
+        except Exception:
+            v = "" if value is None else str(value)
+        if v == "nan":
+            v = ""
+        v = v.strip()
+        cell = ws.cell(row=row_idx, column=5, value=v)
+        if not v:
+            cell.font = Font(size=14)
+            return
+        # Take the first non-empty line as the click target.
+        first_url = next((line.strip() for line in v.splitlines() if line.strip()), "")
+        if first_url:
+            cell.hyperlink = first_url
+            cell.font = Font(size=14, color="0000FF", underline="single")
+        else:
+            cell.font = Font(size=14)
+        # Wrap text so multi-line cells display all URLs.
+        if "\n" in v:
+            cell.alignment = Alignment(wrap_text=True, vertical="top")
+
+    def _throttle_discourse(self):
+        """Block until enough time has elapsed since the last Discourse request.
+
+        Called by all threads before any Discourse fetch. Single shared timestamp
+        means all workers cooperatively pace themselves below ``_discourse_rps``.
+        """
+        with self._discourse_throttle_lock:
+            now = time.monotonic()
+            since = now - self._discourse_last_request
+            if since < self._discourse_min_interval:
+                time.sleep(self._discourse_min_interval - since)
+            self._discourse_last_request = time.monotonic()
+
+    # ---------------------------
+    # External-cache persistence + ban-list + URL validation
+    # ---------------------------
+    def _external_search_path(self, excel_path):
+        base, _ = os.path.splitext(excel_path)
+        return f"{base}.external_searches.json"
+
+    def _load_external_searches(self, excel_path):
+        """Load persisted external-search results so daily CI doesn't re-search.
+
+        On-disk format (current):
+            {"signature": "<_MATCHER_SIGNATURE>", "entries": {key: url-or-empty}}
+
+        On-disk format (legacy, pre-signature): {key: url-or-empty}. Treated
+        as stale and discarded — the matcher rules that produced those entries
+        are unknown, so replaying them through the current matcher would
+        defeat the point of bumping the signature in the first place.
+
+        Cache key: "<author>|<script_name>". Empty values are intentional
+        cached negatives (we tried, found nothing). To force a re-search on a
+        row, delete its entry from the sidecar file.
+        """
+        import json
+
+        path = self._external_search_path(excel_path)
+        if not os.path.exists(path):
+            return {}
+        try:
+            with open(path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+        except Exception as e:
+            logger.warning(f"Failed to load external search cache from {path}: {e}")
+            return {}
+
+        # Current format: {"signature": "...", "entries": {...}}
+        if (
+            isinstance(data, dict)
+            and "signature" in data
+            and "entries" in data
+            and isinstance(data["entries"], dict)
+        ):
+            on_disk_sig = data.get("signature")
+            if on_disk_sig != self._MATCHER_SIGNATURE:
+                logger.info(
+                    f"Matcher signature changed ({on_disk_sig!r} → "
+                    f"{self._MATCHER_SIGNATURE!r}); rebuilding external "
+                    f"search cache (discarded {len(data['entries'])} entries)"
+                )
+                return {}
+            entries = data["entries"]
+            logger.info(f"Loaded {len(entries)} cached external searches from {path}")
+            cleaned = self._drop_dead_cache_urls(entries)
+            if len(cleaned) < len(entries):
+                # Persist the cleanup so future runs don't re-validate the
+                # same dead URLs. Cached negatives (empty values) are
+                # preserved by _drop_dead_cache_urls.
+                self._save_external_searches(excel_path, cleaned)
+            return cleaned
+
+        # Legacy format: bare {key: url} dict, no signature. Discard.
+        if isinstance(data, dict):
+            logger.info(
+                f"External search cache at {path} is in legacy (unsigned) "
+                f"format; rebuilding (discarded {len(data)} entries)"
+            )
+            return {}
+
+        logger.warning(
+            f"External search cache at {path} has unexpected shape; ignoring."
+        )
+        return {}
+
+    def _save_external_searches(self, excel_path, cache):
+        import json
+
+        if not cache:
+            return
+        path = self._external_search_path(excel_path)
+        payload = {
+            "signature": self._MATCHER_SIGNATURE,
+            "entries": cache,
+        }
+        try:
+            with open(path, "w", encoding="utf-8") as f:
+                json.dump(payload, f, indent=2, sort_keys=True, ensure_ascii=False)
+            logger.info(
+                f"Saved {len(cache)} external searches to {path} "
+                f"(sig={self._MATCHER_SIGNATURE})"
+            )
+        except Exception as e:
+            logger.warning(f"Failed to save external search cache to {path}: {e}")
+
+    def _validate_demo_url(self, url, timeout=8):
+        """HEAD-check (with GET fallback on 405) that a URL is reachable.
+
+        Returns True for 2xx-3xx. Used as a final pass before saving demo
+        URLs so dead links don't accumulate in the xlsx. Failure is a
+        soft-drop: we keep going if individual URLs error out.
+        """
+        if not url:
+            return False
+        try:
+            r = self.session.head(url, timeout=timeout, allow_redirects=True)
+            if r.status_code == 405:
+                # Some hosts (e.g. soundcloud) reject HEAD; fall back to GET stream
+                r = self.session.get(url, timeout=timeout, stream=True)
+                r.close()
+            return 200 <= r.status_code < 400
+        except Exception as e:
+            logger.debug(f"URL validation failed for {url[:80]}: {e}")
+            return False
+
+    def _finalize_demos(self, collected):
+        """Final pre-return pass: validate URLs are reachable, then join.
+
+        Used at every return point of the discovery API path so dead links
+        never reach the xlsx. Empty input returns empty string.
+        """
+        if not collected:
+            return ""
+        live = self._validate_demo_urls(collected)
+        return "\n".join(live)
+
+    def _validate_demo_urls(self, urls):
+        """Filter to URLs that pass _validate_demo_url. Parallel for speed."""
+        if not urls:
+            return urls
+        # Cap workers low; these requests aren't throttled but we don't need to hammer.
+        workers = min(8, len(urls))
+        with ThreadPoolExecutor(max_workers=workers) as ex:
+            futures = {ex.submit(self._validate_demo_url, u): u for u in urls}
+            ok = set()
+            for f in as_completed(futures):
+                u = futures[f]
+                try:
+                    if f.result():
+                        ok.add(u)
+                except Exception:
+                    pass
+        # Preserve original order, drop bad ones, log losses
+        kept = [u for u in urls if u in ok]
+        if len(kept) < len(urls):
+            dropped = [u for u in urls if u not in ok]
+            logger.info(
+                f"Dropped {len(dropped)} unreachable demo URL(s): "
+                + ", ".join(d[:60] for d in dropped[:3])
+            )
+        return kept
+
+    def _drop_dead_cache_urls(self, entries):
+        """Filter cached external-search entries to drop dead URLs.
+
+        Cached negatives (empty values) are preserved — those represent
+        "we searched and found nothing", which is still valid. Only
+        non-empty URLs that fail HEAD validation are dropped.
+
+        Returns a new dict; does not mutate the input.
+        """
+        if not entries:
+            return entries
+        urls = [u for u in entries.values() if u]
+        if not urls:
+            return dict(entries)
+        live = set(self._validate_demo_urls(urls))
+        cleaned = {k: v for k, v in entries.items() if (not v) or (v in live)}
+        dropped = len(entries) - len(cleaned)
+        if dropped:
+            logger.info(
+                f"Dropped {dropped} dead URL(s) from external search cache "
+                f"({len(cleaned)} entries remaining)"
+            )
+        return cleaned
+
+    def _load_vimeo_api_token(self):
+        """Load Vimeo API token from env var VIMEO_API_TOKEN or vimeo.api file.
+
+        Mirrors gh.api / yt.api pattern. Get one at https://developer.vimeo.com.
+        Empty return = no token, callers skip Vimeo (it's anonymous-search-broken).
+        """
+        token = os.getenv("VIMEO_API_TOKEN", "").strip()
+        if token:
+            return token
+        for path in ("vimeo.api", os.path.join(os.path.dirname(__file__), "vimeo.api")):
+            t = self._read_token_file(path)
+            if t:
+                return t
+        return ""
+
+    def _vimeo_api_search(self, query, max_results=10):
+        """Search Vimeo via the API. Returns list of (videoId, title, description)."""
+        if not hasattr(self, "_vimeo_api_token"):
+            self._vimeo_api_token = self._load_vimeo_api_token()
+        if not self._vimeo_api_token:
+            return []
+        try:
+            r = self.session.get(
+                "https://api.vimeo.com/videos",
+                params={"query": query, "per_page": max_results},
+                headers={
+                    "Authorization": f"Bearer {self._vimeo_api_token}",
+                    "Accept": "application/vnd.vimeo.*+json;version=3.4",
+                },
+                timeout=15,
+            )
+            if r.status_code != 200:
+                logger.debug(
+                    f"Vimeo API returned {r.status_code} for {query!r}: {r.text[:200]}"
+                )
+                return []
+            data = r.json()
+            results = []
+            for item in data.get("data") or []:
+                # link looks like https://vimeo.com/<id> (sometimes with /<hash>)
+                link = item.get("link", "")
+                m = re.search(r"vimeo\.com/(\d+)", link)
+                if not m:
+                    continue
+                vid = m.group(1)
+                title = item.get("name", "") or ""
+                desc = item.get("description", "") or ""
+                results.append((vid, title, desc))
+            return results
+        except Exception as e:
+            logger.debug(f"Vimeo API request failed for {query!r}: {e}")
+            return []
+
+    def _load_youtube_api_key(self):
+        """Load YouTube Data API key from env var YOUTUBE_API_KEY or local yt.api file.
+
+        Mirrors the gh.api / GITHUB_TOKEN pattern. Empty return = no key,
+        which means HTML scraping fallback is used.
+        """
+        key = os.getenv("YOUTUBE_API_KEY", "").strip()
+        if key:
+            return key
+        for path in ("yt.api", os.path.join(os.path.dirname(__file__), "yt.api")):
+            k = self._read_token_file(path)
+            if k:
+                return k
+        return ""
+
+    def _youtube_api_search(self, query, max_results=10):
+        """Search YouTube via the Data API. Returns list of (videoId, title, description).
+
+        Returns [] if no API key is configured or the request fails. API
+        results are higher signal than HTML scraping AND include the
+        description field, which is critical for disambiguating short-name
+        scripts (e.g. 'ufo' demo's title is generic but description mentions
+        'Monome Norns').
+        """
+        if not hasattr(self, "_youtube_api_key"):
+            self._youtube_api_key = self._load_youtube_api_key()
+        if not self._youtube_api_key:
+            return []
+        try:
+            r = self.session.get(
+                "https://www.googleapis.com/youtube/v3/search",
+                params={
+                    "part": "snippet",
+                    "q": query,
+                    "type": "video",
+                    "maxResults": max_results,
+                    "key": self._youtube_api_key,
+                },
+                timeout=15,
+            )
+            if r.status_code != 200:
+                logger.debug(
+                    f"YouTube API returned {r.status_code} for {query!r}: {r.text[:200]}"
+                )
+                return []
+            data = r.json()
+            results = []
+            for item in data.get("items") or []:
+                vid = (item.get("id") or {}).get("videoId")
+                snippet = item.get("snippet") or {}
+                title = snippet.get("title", "")
+                desc = snippet.get("description", "")
+                if vid:
+                    results.append((vid, title, desc))
+            return results
+        except Exception as e:
+            logger.debug(f"YouTube API request failed for {query!r}: {e}")
+            return []
+
+    def _external_video_search(self, script_name, author=""):
+        """Search YouTube → Vimeo for a video demo of this norns script.
+
+        Layered strategy:
+          1. If YouTube Data API key is configured, use it FIRST — richer
+             metadata (description) lets us disambiguate short script names.
+          2. Otherwise (or as fallback), HTML-scrape YouTube search.
+          3. Vimeo as final fallback (no API; first-result with name length gate).
+
+        All YouTube hits are filtered through _video_matches_script: name
+        substring in title required, plus norns/monome signal in
+        title-or-description for short names.
+
+        Per-run in-memory cached.
+        """
+        if not script_name:
+            return ""
+        if not hasattr(self, "_external_search_cache"):
+            self._external_search_cache = {}
+        cache_key = f"{author}|{script_name}"
+        if cache_key in self._external_search_cache:
+            return self._external_search_cache[cache_key]
+
+        # Build search queries. Per explicit guidance: when author is known,
+        # ALWAYS include it. Never fall back to author-less search — that
+        # generates false positives by ranking generic "norns SCRIPT" hits.
+        # Only use script-only as a last resort when author is missing entirely.
+        if author:
+            queries = [f"norns {author} {script_name}"]
+        else:
+            queries = [f"norns {script_name}"]
+
+        # Path 1: YouTube Data API (when key available — best signal).
+        if not hasattr(self, "_youtube_api_key"):
+            self._youtube_api_key = self._load_youtube_api_key()
+        if self._youtube_api_key:
+            for q in queries:
+                for vid, title, desc in self._youtube_api_search(q):
+                    if self._video_matches_script(script_name, title, desc, author=author):
+                        url = f"https://www.youtube.com/watch?v={vid}"
+                        logger.info(
+                            f"External search hit (YT API, title='{title[:50]}'): "
+                            f"{q!r} -> {url}"
+                        )
+                        self._external_search_cache[cache_key] = url
+                        return url
+
+        # Path 2: YouTube HTML scrape (no API key required, but title-only
+        # match — short script names without norns context will be filtered out).
+        for q in queries:
+            for vid, title in self._youtube_search_titled(q):
+                if self._video_matches_script(script_name, title, author=author):
+                    url = f"https://www.youtube.com/watch?v={vid}"
+                    logger.info(
+                        f"External search hit (YT scrape, title='{title[:50]}'): "
+                        f"{q!r} -> {url}"
+                    )
+                    self._external_search_cache[cache_key] = url
+                    return url
+
+        # Path 3: Vimeo via API (when VIMEO_API_TOKEN / vimeo.api is configured).
+        # Returns rich metadata (title + description) for accurate short-name
+        # disambiguation, same as YouTube API. Falls through silently if no
+        # token — anonymous Vimeo search is JS-rendered and not viable.
+        if not hasattr(self, "_vimeo_api_token"):
+            self._vimeo_api_token = self._load_vimeo_api_token()
+        if self._vimeo_api_token:
+            for q in queries:
+                for vid, title, desc in self._vimeo_api_search(q):
+                    if self._video_matches_script(
+                        script_name, title, desc, author=author
+                    ):
+                        url = f"https://vimeo.com/{vid}"
+                        logger.info(
+                            f"External search hit (Vimeo API, title='{title[:50]}'): "
+                            f"{q!r} -> {url}"
+                        )
+                        self._external_search_cache[cache_key] = url
+                        return url
+
+        self._external_search_cache[cache_key] = ""
+        return ""
+
+    @staticmethod
+    def _video_matches_script(script_name, title, description="", author=""):
+        """True if `title` (with optional description) plausibly identifies the script.
+
+        REQUIREMENTS (all must hold):
+          1. script_name (normalized to alphanumeric only) appears in title
+          2. "norns" or "monome" appears somewhere in title OR description
+
+        Both are mandatory regardless of script-name length. Long common-word
+        names like "parrot" used to bypass the norns-signal check, which let
+        through completely unrelated videos. We always require the norns/monome
+        signal as a non-negotiable accuracy floor.
+
+        Author is intentionally NOT used in matching: it's used in the search
+        query (to bias results) but not as a title-validation signal, since
+        Lines/GitHub usernames don't always match author names in YouTube titles.
+
+        Returns False on any failure — better to leave a row blank than
+        attribute a wrong video to a script.
+        """
+        if not script_name or not title:
+            return False
+        name_compact = re.sub(r"[\W_]+", "", script_name.lower())
+        if len(name_compact) < 3:
+            return False
+        title_compact = re.sub(r"[\W_]+", "", (title or "").lower())
+        desc_compact = re.sub(r"[\W_]+", "", (description or "").lower())
+        # Requirement 1: script name must appear in title
+        if name_compact not in title_compact:
+            return False
+        # Requirement 2: norns or monome must appear in title OR description
+        # (no author fallback — author signals search query, not title match)
+        haystack = title_compact + desc_compact
+        if "norns" in haystack or "monome" in haystack:
+            return True
+        return False
+
+    # Backward-compat alias.
+    @classmethod
+    def _title_matches_script(cls, script_name, title):
+        return cls._video_matches_script(script_name, title)
+
+    def _youtube_search_titled(self, query):
+        """Search YouTube; return list of (videoId, title) tuples in result order."""
+        import urllib.parse as _ul
+
+        encoded = _ul.quote_plus(query)
+        try:
+            r = self.session.get(
+                f"https://www.youtube.com/results?search_query={encoded}",
+                timeout=20,
+            )
+            if r.status_code != 200:
+                return []
+            results = []
+            seen = set()
+            # YouTube embeds video metadata as inline JSON; videoId and title
+            # appear in the same videoRenderer block. Non-greedy {0,500} bridges
+            # the variable middle without crossing into the next entry.
+            for m in re.finditer(
+                r'"videoId":"([\w\-]{11})".{0,500}?"title":\{"runs":\[\{"text":"([^"]+)"',
+                r.text,
+            ):
+                vid, title = m.group(1), m.group(2)
+                if vid in seen:
+                    continue
+                seen.add(vid)
+                # Decode JSON unicode escapes (& etc.)
+                try:
+                    title = bytes(title, "utf-8").decode("unicode_escape")
+                except Exception:
+                    pass
+                results.append((vid, title))
+                if len(results) >= 10:
+                    break
+            return results
+        except Exception as e:
+            logger.debug(f"YouTube search failed for {query!r}: {e}")
+            return []
+
+    def _discourse_get_with_retry(self, url, params=None, timeout=20, max_retries=10):
+        """GET with global throttle + automatic backoff on HTTP 429.
+
+        The throttle prevents bursts that trigger rate limiting in the first
+        place. The retry handles whatever still leaks through. Without both,
+        parallel runs of 4+ workers regularly drop demos to empty.
+        """
+        import random as _random
+
+        for attempt in range(max_retries + 1):
+            self._throttle_discourse()
+            try:
+                r = self.session.get(url, params=params, timeout=timeout)
+            except Exception:
+                raise
+            if r.status_code != 429:
+                return r
+            if attempt >= max_retries:
+                logger.warning(
+                    f"Discourse rate limit not lifted after {max_retries} retries: {url}"
+                )
+                return r
+            retry_after = r.headers.get("Retry-After", "")
+            try:
+                wait = float(retry_after) if retry_after else (2 ** attempt)
+            except ValueError:
+                wait = 2 ** attempt
+            wait = min(wait, 30) + _random.uniform(0, 0.5)
+            logger.debug(
+                f"429 on {url}; sleeping {wait:.1f}s (attempt {attempt + 1}/{max_retries})"
+            )
+            time.sleep(wait)
+        return r
+
+    def _discover_demo_via_discourse_api(
+        self,
+        discussion_url,
+        base,
+        slug,
+        topic_id_hint=None,
+        post_number_hint=None,
+        author="",
+        script_name="",
+    ):
+        """Discover demos via Discourse JSON API with 4-phase priority.
+
+        Phase 1: scan EARLY posts (anchor slice + first ~5 of thread) for VIDEO.
+        Phase 2: if no video yet, EXTERNAL search (YouTube → Vimeo).
+        Phase 3: scan REST of the thread for VIDEO (paginate if needed).
+        Phase 4: AUDIO fallback (SoundCloud, .mp3 etc.) anywhere in thread,
+                 only used to top up to the cap or as last resort.
+
+        Author/script_name are needed for Phase 2 external search and are
+        threaded through from scrape_script_details. The cap is _DEMO_LIMIT
+        (default 3); results are newline-joined.
+
+        URL validation policy:
+        - URLs found inside Discourse posts (Phases 1, 3, 4) are trusted on
+          context: the post is in the script's own thread, so the posting
+          context itself is the validation. We do NOT title-match these URLs
+          and do NOT require the poster to match script_author — any user
+          contributing a demo in-thread is fine.
+        - URLs found via external search (Phase 2) are NOT in-context, so
+          they go through `_video_matches_script` (script_name + norns/monome
+          must appear in title/description) before being accepted.
+        - Both paths share a final HEAD-check in `_finalize_demos`; dead
+          links never reach the xlsx. That is the only validation an
+          in-thread URL gets, and it is sufficient by design.
+        """
+        collected = []
+        seen = set()
+
+        def absorb(urls):
+            for u in urls:
+                if not u or u in seen:
+                    continue
+                seen.add(u)
+                collected.append(u)
+                if len(collected) >= self._DEMO_LIMIT:
+                    return True
+            return False
 
         try:
-            logger.debug(f"Checking discussion URL for demo: {discussion_url}")
-            # Add a small delay to avoid rate limiting
-            import time
+            # ====== PHASE 1A: anchor slice video scan (for /t/.../<post#> URLs) ======
+            anchor_posts = []
+            if topic_id_hint and post_number_hint:
+                anchor_url = f"{base}/t/{topic_id_hint}/{post_number_hint}.json"
+                try:
+                    ra = self._discourse_get_with_retry(anchor_url, timeout=20)
+                    if ra.status_code == 200:
+                        anchor_data = ra.json()
+                        anchor_posts = (
+                            anchor_data.get("post_stream") or {}
+                        ).get("posts") or []
+                        for post in anchor_posts:
+                            if absorb(
+                                self._extract_demo_urls_from_post_html(
+                                    post.get("cooked") or "", media="video"
+                                )
+                            ):
+                                return self._finalize_demos(collected)
+                except Exception as e:
+                    logger.debug(f"Anchor-slice fetch failed for {discussion_url}: {e}")
 
-            time.sleep(self.demo_delay)  # Configurable delay between requests
-            response = self.session.get(
-                discussion_url, timeout=10, allow_redirects=True
-            )
-            response.raise_for_status()
+            # Fetch the canonical topic JSON for the rest of the discovery work.
+            r = self._discourse_get_with_retry(f"{base}/t/{slug}.json", timeout=20)
+            if r.status_code == 404 and topic_id_hint:
+                r2 = self._discourse_get_with_retry(
+                    f"{base}/t/{topic_id_hint}.json", timeout=20
+                )
+                if r2.status_code == 200:
+                    r = r2
+                    logger.debug(
+                        f"Recovered via topic_id {topic_id_hint} after slug 404 "
+                        f"for {discussion_url}"
+                    )
+            if r.status_code == 404:
+                if collected:
+                    return self._finalize_demos(collected)
+                return self._discover_demo_via_discourse_search(
+                    discussion_url, base, slug
+                )
+            if r.status_code != 200:
+                logger.warning(
+                    f"Discourse API returned {r.status_code} for {discussion_url}"
+                )
+                return self._finalize_demos(collected)
 
-            soup = BeautifulSoup(response.text, "html.parser")
+            data = r.json()
+            topic_id = data.get("id")
+            if not topic_id:
+                logger.warning(
+                    f"Discourse API response missing topic id for {discussion_url}"
+                )
+                return ""
 
-            # Look for links in the page content
-            links = soup.find_all("a", href=True)
+            canonical_slug = data.get("slug") or slug
+            canonical_url = f"{base}/t/{canonical_slug}/{topic_id}"
+            if canonical_url != discussion_url:
+                with self._discourse_resolutions_lock:
+                    if discussion_url not in self._discourse_resolutions:
+                        self._discourse_resolutions[discussion_url] = canonical_url
+                        # Skip the report entry for trivial diffs — i.e. when
+                        # the only difference is appending /<topic_id> to a
+                        # bare-slug URL (e.g. /t/bitebeet/ -> /t/bitebeet/61957).
+                        # Both URLs resolve correctly upstream; not PR-worthy.
+                        if not self._is_trivial_resolution(
+                            discussion_url, canonical_url
+                        ):
+                            self._discourse_resolution_log.append(
+                                {"stale": discussion_url, "resolved": canonical_url}
+                            )
 
-            # Also look for iframe embeds (like Vimeo, YouTube embeds)
-            iframes = soup.find_all("iframe")
-
-            # Patterns for video/audio platforms
-            patterns = [
-                r"https?://(?:www\.)?youtube\.com/watch\?v=([^&\s]+)",
-                r"https?://(?:www\.)?youtu\.be/([^&\s]+)",
-                r"https?://(?:www\.)?vimeo\.com/(\d+)",
-                r"https?://(?:www\.)?soundcloud\.com/[^/\s]+/[^/\s]+",
-                r"https?://(?:www\.)?instagram\.com/[^/\s]+/p/[^/\s]+",
+            post_stream = data.get("post_stream") or {}
+            initial_posts = list(post_stream.get("posts") or [])
+            all_ids = post_stream.get("stream") or []
+            loaded_ids = {p.get("id") for p in initial_posts if p.get("id")}
+            anchor_post_ids = {p.get("id") for p in anchor_posts if p.get("id")}
+            remaining_ids = [
+                pid for pid in all_ids
+                if pid not in loaded_ids and pid not in anchor_post_ids
+            ]
+            full_thread_posts = [
+                p for p in initial_posts if p.get("id") not in anchor_post_ids
             ]
 
-            # Check regular links first
-            for link in links:
-                href = link.get("href", "")
-                if not href:
-                    continue
-
-                # HTML-decode href to handle &amp; etc.
-                from html import unescape
-
-                href = unescape(href)
-
-                # Normalize URL for better matching (lowercase, remove www, handle protocols)
-                href_lower = href.lower()
-                href_normalized = (
-                    href_lower.replace("www.", "")
-                    .replace("http://", "")
-                    .replace("https://", "")
-                )
-
-                # Check if it's a YouTube link (handle various formats)
-                if any(
-                    pattern in href_lower
-                    for pattern in [
-                        "youtube.com/watch",
-                        "youtu.be/",
-                        "m.youtube.com/watch",
-                        "music.youtube.com/watch",
-                    ]
-                ):
-                    logger.info(f"Found YouTube demo: {href}")
-                    return href
-
-                # Check if it's a Vimeo link (handle various formats)
-                if any(
-                    pattern in href_lower
-                    for pattern in ["vimeo.com/", "player.vimeo.com/"]
-                ):
-                    logger.info(f"Found Vimeo demo: {href}")
-                    return href
-
-                # Check if it's a SoundCloud link (handle various formats)
-                if any(
-                    pattern in href_lower
-                    for pattern in ["soundcloud.com/", "m.soundcloud.com/"]
-                ):
-                    logger.info(f"Found SoundCloud demo: {href}")
-                    return href
-
-                # Check if it's an Instagram link (handle various formats)
-                if (
-                    any(
-                        pattern in href_lower
-                        for pattern in ["instagram.com/", "www.instagram.com/"]
+            # ====== PHASE 1B: early-thread video scan (OP + first ~5 replies) ======
+            EARLY_N = 5
+            early_posts = full_thread_posts[:EARLY_N]
+            for post in early_posts:
+                if absorb(
+                    self._extract_demo_urls_from_post_html(
+                        post.get("cooked") or "", media="video"
                     )
-                    and "/p/" in href_lower
                 ):
-                    logger.info(f"Found Instagram demo: {href}")
-                    return href
+                    return self._finalize_demos(collected)
 
-            # Check iframe embeds (for embedded videos)
-            for iframe in iframes:
-                src = iframe.get("src", "")
-                data_original = iframe.get("data-original-href", "")
+            # ====== PHASE 2: external video search (only if NOTHING found yet) ======
+            # Most legitimate norns demos are linked in the OP or first few replies;
+            # if we got past Phase 1 with nothing, the author probably didn't link
+            # a video in the thread, so YouTube/Vimeo search is our best shot.
+            if not collected and script_name:
+                ext = self._external_video_search(script_name, author=author)
+                if ext:
+                    absorb([ext])
 
-                # HTML-decode iframe src and data attributes to handle &amp; etc.
-                if src:
-                    from html import unescape
-
-                    src = unescape(src)
-                if data_original:
-                    data_original = unescape(data_original)
-
-                # Normalize iframe src for better matching
-                src_lower = src.lower()
-
-                # Check iframe src for YouTube embeds (handle various formats)
-                if any(
-                    pattern in src_lower
-                    for pattern in [
-                        "youtube.com/embed/",
-                        "youtu.be/",
-                        "m.youtube.com/embed/",
-                        "music.youtube.com/embed/",
-                    ]
-                ):
-                    # Extract video ID and construct watch URL
-                    if "youtube.com/embed/" in src:
-                        video_id = src.split("youtube.com/embed/")[1].split("?")[0]
-                        href = f"https://www.youtube.com/watch?v={video_id}"
-                    else:
-                        href = src.replace(
-                            "youtu.be/", "https://www.youtube.com/watch?v="
-                        )
-                    logger.info(f"Found YouTube embed demo: {href}")
-                    return href
-
-                # Check iframe src for Vimeo embeds (handle various formats)
-                if any(
-                    pattern in src_lower
-                    for pattern in ["vimeo.com/video/", "player.vimeo.com/video/"]
-                ):
-                    video_id = src.split("vimeo.com/video/")[1].split("?")[0]
-                    href = f"https://vimeo.com/{video_id}"
-                    logger.info(f"Found Vimeo embed demo: {href}")
-                    return href
-
-                # Check data-original-href for Vimeo (common pattern)
-                if data_original and "vimeo.com/" in data_original:
-                    logger.info(
-                        f"Found Vimeo embed demo (data-original): {data_original}"
+            # ====== PHASE 3: rest-of-thread video scan (paginated) ======
+            BATCH = 50
+            late_posts = list(full_thread_posts[EARLY_N:])
+            # Scan late posts already in initial chunk first
+            for post in late_posts:
+                if absorb(
+                    self._extract_demo_urls_from_post_html(
+                        post.get("cooked") or "", media="video"
                     )
-                    return data_original
-
-                # Check iframe src for SoundCloud embeds (handle various formats)
-                if any(
-                    pattern in src_lower
-                    for pattern in [
-                        "soundcloud.com/player",
-                        "w.soundcloud.com",
-                        "player.soundcloud.com",
-                    ]
                 ):
-                    # Extract track ID from SoundCloud player URL
-                    import urllib.parse
-
-                    try:
-                        # Parse the URL to get query parameters
-                        parsed_url = urllib.parse.urlparse(src)
-                        query_params = urllib.parse.parse_qs(parsed_url.query)
-
-                        # Look for 'url' parameter which contains the SoundCloud API URL
-                        if "url" in query_params:
-                            api_url = query_params["url"][0]
-                            decoded_url = urllib.parse.unquote(api_url)
-
-                            # Extract track ID from API URL like https://api.soundcloud.com/tracks/970754032
-                            if "api.soundcloud.com/tracks/" in decoded_url:
-                                track_id = decoded_url.split(
-                                    "api.soundcloud.com/tracks/"
-                                )[1]
-                                # Construct public SoundCloud URL (we'll use a generic format)
-                                href = f"https://soundcloud.com/track/{track_id}"
-                                logger.info(f"Found SoundCloud embed demo: {href}")
-                                return href
-                    except Exception as e:
-                        logger.debug(f"Error parsing SoundCloud iframe: {e}")
-                        continue
-
-            # Check for video embedding divs and other containers
-            video_containers = soup.find_all(
-                ["div", "span"],
-                class_=lambda x: x
-                and any(
-                    keyword in x.lower()
-                    for keyword in ["youtube", "vimeo", "video", "embed"]
-                ),
-            )
-
-            for container in video_containers:
-                # Check for data-video-id attributes (common in YouTube embeds)
-                video_id = container.get("data-video-id", "")
-                if video_id:
-                    # HTML-decode data attributes to handle &amp; etc.
-                    from html import unescape
-
-                    video_id = unescape(video_id)
-                    # Check if it's YouTube (most common)
-                    if "youtube" in container.get("class", []) or "youtube" in str(
-                        container.get("class", "")
-                    ):
-                        href = f"https://www.youtube.com/watch?v={video_id}"
-                        logger.info(f"Found YouTube demo (data-video-id): {href}")
-                        return href
-                    # Could be other platforms, but YouTube is most common
-                    elif (
-                        len(video_id) == 11
-                    ):  # YouTube video IDs are typically 11 characters
-                        href = f"https://www.youtube.com/watch?v={video_id}"
-                        logger.info(
-                            f"Found YouTube demo (data-video-id, assumed): {href}"
-                        )
-                        return href
-
-                # Check for data-provider-name attributes
-                provider = container.get("data-provider-name", "").lower()
-                if provider == "youtube" and video_id:
-                    href = f"https://www.youtube.com/watch?v={video_id}"
-                    logger.info(f"Found YouTube demo (data-provider): {href}")
-                    return href
-
-                # Check for Vimeo data attributes
-                if "vimeo" in container.get("class", []) or "vimeo" in str(
-                    container.get("class", "")
-                ):
-                    vimeo_id = container.get("data-video-id", "")
-                    if vimeo_id:
-                        href = f"https://vimeo.com/{vimeo_id}"
-                        logger.info(f"Found Vimeo demo (data-video-id): {href}")
-                        return href
-
-            # Check for JSON-LD structured data (common in modern websites)
-            json_scripts = soup.find_all("script", type="application/ld+json")
-            for script in json_scripts:
+                    return self._finalize_demos(collected)
+            # Then paginate
+            while remaining_ids and len(collected) < self._DEMO_LIMIT:
+                batch, remaining_ids = remaining_ids[:BATCH], remaining_ids[BATCH:]
+                params = [("post_ids[]", str(pid)) for pid in batch]
                 try:
-                    import json
-
-                    data = json.loads(script.string)
-
-                    # Handle single objects or arrays
-                    if isinstance(data, list):
-                        for item in data:
-                            if self._extract_from_json_ld(item):
-                                return self._extract_from_json_ld(item)
-                    elif isinstance(data, dict):
-                        result = self._extract_from_json_ld(data)
-                        if result:
-                            return result
-                except (json.JSONDecodeError, AttributeError):
-                    continue
-
-            logger.debug(f"No demo video found in discussion: {discussion_url}")
-            return ""
-
-        except requests.exceptions.HTTPError as e:
-            status = e.response.status_code if e.response is not None else 0
-            if status in [429, 403]:  # Rate limited or forbidden
-                logger.warning(
-                    f"Access denied (HTTP {status}) when checking discussion URL {discussion_url}"
-                )
-                # Track for retry
-                self.failed_demo_requests.append(discussion_url)
-                return ""
-            if status == 404 and not _no_resolve:
-                # Probable stale Discourse topic ID — try resolving via the
-                # bare-slug redirect / topic JSON / search and retry once.
-                resolved = self._resolve_discourse_url(discussion_url)
-                if resolved and resolved != discussion_url:
-                    logger.info(
-                        f"Resolved stale Discourse URL: {discussion_url} -> {resolved}"
+                    rb = self._discourse_get_with_retry(
+                        f"{base}/t/{topic_id}/posts.json",
+                        params=params,
+                        timeout=20,
                     )
-                    return self.discover_demo_video(resolved, _no_resolve=True)
+                    if rb.status_code != 200:
+                        logger.debug(
+                            f"posts.json returned {rb.status_code} "
+                            f"for topic {topic_id}"
+                        )
+                        continue
+                    bdata = rb.json()
+                    bposts = (bdata.get("post_stream") or {}).get("posts") or []
+                    full_thread_posts.extend(bposts)
+                    for post in bposts:
+                        if absorb(
+                            self._extract_demo_urls_from_post_html(
+                                post.get("cooked") or "", media="video"
+                            )
+                        ):
+                            return self._finalize_demos(collected)
+                except Exception as e:
+                    logger.debug(
+                        f"Failed batch fetch for topic {topic_id}: {e}"
+                    )
+
+            # ====== PHASE 4: AUDIO fallback (anywhere in thread) ======
+            # Only kicks in when video discovery didn't fill the cap. Walks all
+            # posts (anchor slice → full thread) for SoundCloud / .mp3 / etc.
+            for post in anchor_posts + full_thread_posts:
+                if absorb(
+                    self._extract_demo_urls_from_post_html(
+                        post.get("cooked") or "", media="audio"
+                    )
+                ):
+                    return self._finalize_demos(collected)
+
+            return self._finalize_demos(collected)
+        except Exception as e:
             logger.warning(
-                f"HTTP error checking discussion URL {discussion_url}: {e}"
+                f"Error in Discourse API discovery for {discussion_url}: {e}"
             )
             return ""
+
+    def _discover_demo_via_discourse_search(self, discussion_url, base, slug):
+        """Last-resort recovery when bare-slug 404s — search by title."""
+        try:
+            r = self._discourse_get_with_retry(
+                f"{base}/search.json",
+                params={"q": f"{slug} in:title"},
+                timeout=15,
+            )
+            if r.status_code != 200:
+                return ""
+            topics = (r.json() or {}).get("topics") or []
+            if not topics:
+                return ""
+            best = next(
+                (t for t in topics if t.get("slug") == slug),
+                topics[0],
+            )
+            topic_id = best.get("id")
+            if not topic_id:
+                return ""
+            best_slug = best.get("slug") or slug
+            # Recurse into the API path with the resolved slug.
+            return self._discover_demo_via_discourse_api(
+                discussion_url, base, best_slug
+            )
         except Exception as e:
-            logger.warning(f"Error checking discussion URL {discussion_url}: {e}")
+            logger.debug(f"Discourse search fallback failed for {slug}: {e}")
             return ""
 
-    def _extract_from_json_ld(self, data):
-        """Extract video URL from JSON-LD structured data"""
-        if not isinstance(data, dict):
-            return None
+    def _extract_demo_urls_from_post_html(
+        self, html, anchors=True, iframes=True, media="any"
+    ):
+        """Scan a single post's `cooked` HTML and return matching demo URLs.
 
-        # Check for VideoObject type
-        if data.get("@type") == "VideoObject":
-            # Look for contentUrl (direct video URL)
-            content_url = data.get("contentUrl", "")
-            if content_url:
-                # HTML-decode URLs to handle &amp; etc.
-                from html import unescape
+        media: "video" → only YouTube/Vimeo/Instagram; "audio" → only
+        SoundCloud and audio-file uploads; "any" → both. The 4-phase
+        discovery in _discover_demo_via_discourse_api uses media-typed
+        passes: video first (early posts → external → rest of thread),
+        audio only as last resort.
+        """
+        out = []
+        if not html:
+            return out
+        if media == "video":
+            link_pats = self._VIDEO_LINK_PATTERNS
+            iframe_pats = self._VIDEO_IFRAME_PATTERNS
+        elif media == "audio":
+            link_pats = self._AUDIO_LINK_PATTERNS
+            iframe_pats = self._AUDIO_IFRAME_PATTERNS
+        else:
+            link_pats = self._DEMO_LINK_PATTERNS
+            iframe_pats = self._DEMO_IFRAME_PATTERNS
+        try:
+            from html import unescape
 
-                content_url = unescape(content_url)
-                if "youtube.com/watch" in content_url or "youtu.be/" in content_url:
-                    logger.info(
-                        f"Found YouTube demo (JSON-LD contentUrl): {content_url}"
-                    )
-                    return content_url
-                elif "vimeo.com/" in content_url:
-                    logger.info(f"Found Vimeo demo (JSON-LD contentUrl): {content_url}")
-                    return content_url
-                elif "soundcloud.com/" in content_url:
-                    logger.info(
-                        f"Found SoundCloud demo (JSON-LD contentUrl): {content_url}"
-                    )
-                    return content_url
-                elif "instagram.com/" in content_url and "/p/" in content_url:
-                    logger.info(
-                        f"Found Instagram demo (JSON-LD contentUrl): {content_url}"
-                    )
-                    return content_url
+            soup = BeautifulSoup(html, "html.parser")
 
-            # Look for embedUrl (embedded video URL)
-            embed_url = data.get("embedUrl", "")
-            if embed_url:
-                # HTML-decode URLs to handle &amp; etc.
-                from html import unescape
+            if anchors:
+                for link in soup.find_all("a", href=True):
+                    href = unescape(link.get("href", ""))
+                    if not href:
+                        continue
+                    if any(p in href.lower() for p in link_pats):
+                        out.append(href)
 
-                embed_url = unescape(embed_url)
-                if "youtube.com/embed/" in embed_url:
-                    video_id = embed_url.split("youtube.com/embed/")[1].split("?")[0]
-                    href = f"https://www.youtube.com/watch?v={video_id}"
-                    logger.info(f"Found YouTube demo (JSON-LD embedUrl): {href}")
-                    return href
-                elif "vimeo.com/video/" in embed_url:
-                    video_id = embed_url.split("vimeo.com/video/")[1].split("?")[0]
-                    href = f"https://vimeo.com/{video_id}"
-                    logger.info(f"Found Vimeo demo (JSON-LD embedUrl): {href}")
-                    return href
+            if iframes:
+                for iframe in soup.find_all("iframe", src=True):
+                    src = iframe.get("src", "")
+                    if not src:
+                        continue
+                    if any(p in src.lower() for p in iframe_pats):
+                        out.append(src)
 
-        return None
+            return out
+        except Exception as e:
+            logger.debug(f"Error parsing post HTML for demo URLs: {e}")
+            return out
 
     def retry_failed_demo_requests(self):
         """Retry demo discovery for URLs that failed due to rate limiting"""
@@ -769,7 +1374,11 @@ class NornsScraper:
                 and script_data["discussion_url"]
                 and not script_data["demo"]
             ):
-                demo_url = self.discover_demo_video(script_data["discussion_url"])
+                demo_url = self.discover_demo_video(
+                    script_data["discussion_url"],
+                    author=script_data.get("author", "") or "",
+                    script_name=script_data.get("project_name", "") or script_name,
+                )
                 if demo_url:
                     script_data["demo"] = demo_url
                     logger.info(f"Discovered demo for {script_name}: {demo_url}")
@@ -1001,7 +1610,13 @@ class NornsScraper:
     # transparently. Resolutions cache to a sidecar JSON next to the xlsx so
     # repeat runs don't re-resolve.
 
-    _DISCOURSE_TOPIC_RE = re.compile(r"^(https?://[^/]+)/t/([^/?#]+)(?:/(\d+))?")
+    # base, slug, optional topic_id, optional post_number anchor.
+    # Discourse URL convention: /t/<slug>/<topic_id>/<post_number> jumps the user
+    # to a specific post within a long thread. community.json links use this for
+    # scripts announced mid-thread (e.g. nb_* plugins inside the n-b-et-al thread).
+    _DISCOURSE_TOPIC_RE = re.compile(
+        r"^(https?://[^/]+)/t/([^/?#]+)(?:/(\d+))?(?:/(\d+))?"
+    )
 
     def _discourse_resolutions_path(self, excel_path: str) -> str:
         base, _ = os.path.splitext(excel_path)
@@ -1067,11 +1682,40 @@ class NornsScraper:
 
         with self._discourse_resolutions_lock:
             self._discourse_resolutions[stale_url] = resolved
-            if resolved and resolved != stale_url:
+            if (
+                resolved
+                and resolved != stale_url
+                and not self._is_trivial_resolution(stale_url, resolved)
+            ):
                 self._discourse_resolution_log.append(
                     {"stale": stale_url, "resolved": resolved}
                 )
         return resolved
+
+    @staticmethod
+    def _is_trivial_resolution(stale, resolved):
+        """True when stale and resolved differ only in clerical ways.
+
+        Suppresses noise from the deviation report for diffs that aren't
+        worth a PR upstream:
+          - trailing /<topic_id> (Discourse accepts /t/<slug> and
+            /t/<slug>/<id> as the same topic)
+          - http vs https
+          - leading www.
+          - trailing slash / case differences
+        Real slug renames or topic moves are not trivial and still report.
+        """
+        if not stale or not resolved:
+            return False
+
+        def core(u):
+            n = re.sub(r"/\d+/?$", "", u or "").rstrip("/").lower()
+            n = n.replace("https://", "").replace("http://", "")
+            if n.startswith("www."):
+                n = n[4:]
+            return n
+
+        return core(stale) == core(resolved)
 
     def _do_resolve_discourse_url(self, stale_url: str):
         """Run the three-step resolution. Returns URL string or None."""
@@ -1143,63 +1787,19 @@ class NornsScraper:
 
         return None
 
-    def _preflight_playwright(self):
-        """Verify Playwright is installed AND a browser is available, before any work.
-
-        Demo discovery is a core part of the run; if Playwright can't launch we abort
-        rather than scrape 349 entries and then fail. Returns True on success, False
-        on any failure (after logging clear remediation steps).
-        """
-        try:
-            from playwright.sync_api import sync_playwright
-        except ImportError:
-            print()
-            print("=" * 70)
-            print("PREFLIGHT FAILED: Playwright is not installed")
-            print("Demo discovery requires Playwright. Install with:")
-            print("    pip install -r requirements.txt")
-            print("=" * 70)
-            return False
-
-        try:
-            with sync_playwright() as p:
-                browser = p.chromium.launch(
-                    headless=True,
-                    args=["--no-sandbox", "--disable-dev-shm-usage"],
-                )
-                browser.close()
-            return True
-        except Exception as e:
-            msg = str(e)
-            print()
-            print("=" * 70)
-            print("PREFLIGHT FAILED: Playwright cannot launch a browser")
-            print(f"Error: {msg.splitlines()[0] if msg else 'unknown'}")
-            if "Executable doesn't exist" in msg or "playwright install" in msg.lower():
-                print()
-                print("The Playwright Python package is installed but the browser")
-                print("binary is missing. Install it with:")
-                print("    playwright install chromium")
-            print()
-            print("To run paths that don't need Playwright, use:")
-            print("    --sync-check   (re-evaluate Out of Sync from JSON)")
-            print("    --dedupe       (deduplicate the existing xlsx)")
-            print("    --status-log   (apply Playwright statuses from a log file)")
-            print("=" * 70)
-            return False
-
     def scrape_all_scripts(self, test_filter=None):
-        """Scrape all scripts from norns.community using parallel processing"""
-        # Preflight: fail fast if Playwright/browser isn't available, since demo
-        # discovery is a hard dependency of this code path.
-        if not self._preflight_playwright():
-            logger.error("Aborting: Playwright preflight failed (see message above)")
-            return
+        """Scrape all scripts from norns.community using parallel processing.
 
+        Discourse-only variant: no Playwright preflight, no browser dependency.
+        Demo discovery uses the Discourse JSON API (see _discover_demo_via_discourse_api).
+        """
         # Load cached Discourse URL resolutions (sidecar JSON). Pre-existing
         # resolutions are used immediately; new ones discovered this run are
         # added to the same dict and persisted at the end of save_to_excel.
         self._discourse_resolutions = self._load_discourse_resolutions(self.excel_path)
+        # External search cache (YouTube/Vimeo API hits) — persisted across
+        # daily runs so we don't re-search the same scripts every day.
+        self._external_search_cache = self._load_external_searches(self.excel_path)
 
         # Get main page
         main_html = self.get_main_page()
@@ -1435,32 +2035,40 @@ class NornsScraper:
         # Retry failed demo requests if demo discovery was enabled
         if self.failed_demo_requests:
             self.retry_failed_demo_requests()
-
-        # Resolve playwright conflicts if in playwright mode
-        if self.playwright_conflicts:
-            self.resolve_demo_conflicts()
+        # (Playwright conflict resolution removed in the Discourse-only variant —
+        # there is only one discovery method now, so there are no conflicts.)
 
     # ---------------------------
     # GitHub Last Updated helpers
     # ---------------------------
+    @staticmethod
+    def _read_token_file(path):
+        """Read a single-token file, ignoring lines that start with '#' (comments)
+        and blank lines. Returns the first non-comment, non-blank line stripped,
+        or "" if the file has no real content. Lets example files carry
+        instructions without breaking the loader.
+        """
+        try:
+            if not os.path.exists(path):
+                return ""
+            with open(path, "r", encoding="utf-8", errors="ignore") as f:
+                for line in f:
+                    line = line.strip()
+                    if line and not line.startswith("#"):
+                        return line
+        except Exception:
+            pass
+        return ""
+
     def _load_github_token(self):
         """Load GitHub token from env var GITHUB_TOKEN or local gh.api file."""
         token = os.getenv("GITHUB_TOKEN", "").strip()
         if token:
             return token
-        candidates = [
-            "gh.api",
-            os.path.join(os.path.dirname(__file__), "gh.api"),
-        ]
-        for path in candidates:
-            try:
-                if os.path.exists(path):
-                    with open(path, "r", encoding="utf-8", errors="ignore") as f:
-                        token = f.read().strip()
-                        if token:
-                            return token
-            except Exception:
-                continue
+        for path in ("gh.api", os.path.join(os.path.dirname(__file__), "gh.api")):
+            t = self._read_token_file(path)
+            if t:
+                return t
         return ""
 
     def _init_github_session(self):
@@ -1640,6 +2248,56 @@ class NornsScraper:
             json_entry=json_entry,
         )
 
+    def reset_discoverable_demos(self, excel_path: str) -> int:
+        """Clear Demo + Playwright Status for every row that isn't a Manual Override.
+
+        Use this after a wave of bad external-search results has polluted the
+        xlsx. Manual edits (Playwright Status == 'Manual Override') are
+        preserved. Also deletes the external_searches.json sidecar so cached
+        false-positives don't reseed on the next run.
+
+        Returns the number of rows whose Demo cell was cleared.
+        """
+        if not os.path.exists(excel_path):
+            logger.error(f"Excel file not found: {excel_path}")
+            return 0
+        df = pd.read_excel(excel_path)
+        if "Demo" not in df.columns or "Playwright Status" not in df.columns:
+            logger.error("Excel missing Demo or Playwright Status column")
+            return 0
+
+        cleared = 0
+        for idx, row in df.iterrows():
+            status = row.get("Playwright Status", "")
+            status_str = str(status).strip() if pd.notna(status) else ""
+            if status_str == "Manual Override":
+                continue  # preserve user-curated rows
+            demo = row.get("Demo", "")
+            had_demo = pd.notna(demo) and str(demo).strip() and str(demo) != "nan"
+            if had_demo or status_str:
+                df.at[idx, "Demo"] = ""
+                df.at[idx, "Playwright Status"] = ""
+                if had_demo:
+                    cleared += 1
+
+        # Save back via the formatted writer (preserves table style + hyperlinks).
+        try:
+            self._write_formatted_excel_from_df(df, excel_path)
+        except Exception as e:
+            logger.warning(f"Formatted save failed; falling back to plain write: {e}")
+            df.to_excel(excel_path, index=False, engine="openpyxl")
+
+        # Delete external-search cache so cached false-positives don't reseed.
+        sidecar = self._external_search_path(excel_path)
+        if os.path.exists(sidecar):
+            try:
+                os.remove(sidecar)
+                logger.info(f"Removed cached external searches: {sidecar}")
+            except Exception as e:
+                logger.warning(f"Could not remove {sidecar}: {e}")
+
+        return cleared
+
     def sync_check_only(self, excel_path: str) -> int:
         """Compute 'Out of Sync' for all rows without skipping logic; save back to Excel.
 
@@ -1760,16 +2418,43 @@ class NornsScraper:
                 ),
             }
 
-        # Filter scraped scripts to those needing demo discovery
+        # Filter scraped scripts to those needing demo discovery.
+        #
+        # The parallel scrape pass (`scrape_script_details_from_json`, called
+        # earlier from scrape_all_scripts with discover_demo=True) already runs
+        # `discover_demo_video` inline and writes the result into
+        # script_data["demo"]. We treat THAT as the authoritative discovery
+        # pass; this function exists only to fill rows that the inline pass
+        # didn't cover.
+        #
+        # Why this matters: previously, this function re-ran discovery
+        # whenever Playwright Status was blank — which is the state every row
+        # is in immediately after `--reset-discoverable-demos`. During a
+        # Discourse 429 storm the second pass would 429-fail and overwrite
+        # the inline pass's good URL with empty + "Missing Demo". Concrete
+        # case from the May-6 run: awake-passersby was discovered cleanly at
+        # T+25s (BYjTCWS-B7o), then clobbered to "Missing Demo" at T+8m when
+        # the second pass hit awake.json's rate limit. Skipping rows where
+        # the inline pass already produced a URL eliminates the overwrite.
         scripts_needing_demos = []
         for script_data in self.script_data:
             project_name = script_data["project_name"]
 
+            inline_demo = (script_data.get("demo") or "").strip()
+            if inline_demo:
+                # Inline pass found a URL. Stamp a clean (no special-state)
+                # status so the saver writes both fields atomically and the
+                # next run skips this row instead of triggering re-discovery
+                # because of a blank status field.
+                script_data["playwright_status"] = ""
+                continue
+
             if project_name in existing_scripts:
                 existing = existing_scripts[project_name]
                 # Run demo discovery if:
-                # 1. No demo URL exists, OR
-                # 2. Playwright Status is blank (needs to be updated)
+                # 1. No demo URL exists in the loaded xlsx, OR
+                # 2. Playwright Status is blank (post-reset rows, or rows
+                #    that have never been processed by this scraper).
                 needs_demo = (
                     (
                         not existing["has_demo"]
@@ -1793,6 +2478,7 @@ class NornsScraper:
                     {
                         "name": project_name,
                         "discussion_url": script_data["discussion_url"],
+                        "author": script_data.get("author", "") or "",
                     }
                 )
 
@@ -1822,250 +2508,97 @@ class NornsScraper:
                     )
                     continue
 
-                # Always submit regular discovery
-                future_to_script[
-                    executor.submit(self.discover_demo_video, discussion_url)
-                ] = script
-
-                # Also submit playwright discovery
-                # Add delay between playwright requests to avoid rate limiting
-                import random
-                import time
-
-                time.sleep(random.uniform(2.0, 5.0))
-
+                # Discourse-only: single discovery method, no parallel Playwright,
+                # no conflict reconciliation step. Just submit and harvest.
+                # Pass author/script_name through so Phase 2 external search can fire.
                 future_to_script[
                     executor.submit(
-                        self.discover_demo_video_playwright,
+                        self.discover_demo_video,
                         discussion_url,
+                        False,
+                        script.get("author", ""),
+                        script["name"],
                     )
-                ] = {"script": script, "type": "playwright"}
+                ] = script
 
             demos_found = 0
             completed = 0
-
-            # Process completed tasks
-            regular_results = {}  # Store regular discovery results
-            playwright_results = {}  # Store playwright discovery results
+            results = {}
 
             for future in as_completed(future_to_script):
-                task_info = future_to_script[future]
+                script = future_to_script[future]
                 completed += 1
-
                 try:
-                    result_url = future.result()
-
-                    if (
-                        isinstance(task_info, dict)
-                        and task_info.get("type") == "playwright"
-                    ):
-                        # This is a playwright result
-                        script_name = task_info["script"]["name"]
-                        playwright_results[script_name] = result_url
-                    else:
-                        # This is a regular result
-                        script_name = task_info["name"]
-                        regular_results[script_name] = result_url
-
+                    results[script["name"]] = future.result() or ""
                 except Exception as e:
-                    logger.warning(f"Error in demo discovery: {e}")
+                    logger.warning(
+                        f"Error in demo discovery for {script['name']}: {e}"
+                    )
+                    results[script["name"]] = ""
 
-                # Progress update every 10 scripts
                 if completed % 10 == 0 or completed == len(future_to_script):
                     logger.info(
-                        f"Demo discovery progress: {completed}/{len(future_to_script)} tasks completed"
+                        f"Demo discovery progress: {completed}/{len(future_to_script)}"
                     )
 
-            # Now process results and detect conflicts
+            # Apply results. Status field is kept ("Playwright Status" Excel column)
+            # for A/B parity and historical row preservation, but we only ever
+            # emit "Missing Demo" or "Manual Override" in this variant.
             for script in scripts_needing_demos:
                 script_name = script["name"]
-                discussion_url = script["discussion_url"]
-
-                # Skip if discussion URL is invalid
-                if (
-                    not discussion_url
-                    or pd.isna(discussion_url)
-                    or discussion_url == ""
-                ):
-                    logger.debug(
-                        f"Skipping {script_name} - invalid discussion URL: {discussion_url}"
-                    )
-                    continue
-
-                regular_url = regular_results.get(script_name, "")
-                playwright_url = playwright_results.get(script_name, "")
-
-                # Get existing demo URL if this script exists in Excel
+                discovered_url = results.get(script_name, "")
                 existing_demo_url = ""
                 if script_name in existing_scripts:
                     existing_demo_url = existing_scripts[script_name][
                         "existing_demo_url"
                     ]
 
-                if regular_url or playwright_url:
-                    # Check if existing demo URL matches either discovered URL
-                    existing_matches_regular = (
-                        existing_demo_url and existing_demo_url == regular_url
-                    )
-                    existing_matches_playwright = (
-                        existing_demo_url and existing_demo_url == playwright_url
-                    )
-
-                    # If existing demo doesn't match either discovered URL, mark as Manual Override
-                    if (
-                        existing_demo_url
-                        and not existing_matches_regular
-                        and not existing_matches_playwright
-                    ):
-                        logger.info(
-                            f"Existing demo URL for {script_name} doesn't match discovery methods - marking as Manual Override"
-                        )
-                        # Create a script data entry to update the Playwright Status
-                        script_data = {
-                            "project_name": script_name,
-                            "project_url": "",  # We don't have this from the efficient list
-                            "author": "",  # We don't have this from the efficient list
-                            "description": "",  # We don't have this from the efficient list
-                            "discussion_url": script["discussion_url"],
-                            "tags": "",  # We don't have this from the efficient list
-                            "demo": existing_demo_url,  # Keep existing demo URL
-                            "community_url": "",  # We don't have this from the efficient list
-                            "playwright_status": "Manual Override",
-                        }
-                        self.script_data.append(script_data)
-                        continue
-
-                    # Check for conflicts between regular and playwright discovery
-                    if regular_url and playwright_url and regular_url != playwright_url:
-                        logger.info(
-                            f"Demo URL conflict for {script_name}: {regular_url} vs {playwright_url}"
-                        )
-                        self.playwright_conflicts.append(
-                            {
-                                "script_name": script_name,
-                                "original_url": regular_url,
-                                "playwright_url": playwright_url,
-                            }
-                        )
-                        # Use regular URL for now, will be resolved later
-                        final_url = regular_url
-                        status = "Extract Preferred"  # Temporary until user resolves
-                    else:
-                        # Use whichever URL is available
-                        final_url = playwright_url if playwright_url else regular_url
-
-                        # Determine status based on what was found
-                        if (
-                            regular_url
-                            and playwright_url
-                            and regular_url == playwright_url
-                        ):
-                            status = "No Conflict"
-                        elif playwright_url and not regular_url:
-                            status = "Playwright Preferred"
-                        elif regular_url and not playwright_url:
-                            status = "Extract Preferred"
-                        else:
-                            status = "No Conflict"  # Fallback
-
-                    # Check if this script is already in script_data (from scraping)
-                    existing_script_data = None
-                    for i, existing_data in enumerate(self.script_data):
-                        if existing_data["project_name"] == script_name:
-                            existing_script_data = existing_data
-                            break
-
-                    if existing_script_data:
-                        # Update existing entry with demo and status
-                        existing_script_data["demo"] = final_url
-                        existing_script_data["playwright_status"] = status
-                        logger.info(
-                            f"Updated existing script data for {script_name} with demo and status"
-                        )
-                    else:
-                        # Create a script data entry for this existing script
-                        script_data = {
-                            "project_name": script_name,
-                            "project_url": "",  # We don't have this from the efficient list
-                            "author": "",  # We don't have this from the efficient list
-                            "description": "",  # We don't have this from the efficient list
-                            "discussion_url": script["discussion_url"],
-                            "tags": "",  # We don't have this from the efficient list
-                            "demo": final_url,
-                            "community_url": "",  # We don't have this from the efficient list
-                            "playwright_status": status,
-                        }
-                        self.script_data.append(script_data)
+                # Decide final demo + status
+                if discovered_url:
+                    final_url = discovered_url
+                    status = ""  # found cleanly via API; no special status
                     demos_found += 1
                     logger.info(
-                        f"Discovered demo for script {script_name}: {final_url}"
+                        f"Discovered demo for {script_name}: {discovered_url}"
+                    )
+                elif existing_demo_url:
+                    final_url = existing_demo_url
+                    status = "Manual Override"
+                    logger.info(
+                        f"No demo discovered for {script_name}, "
+                        f"preserving existing URL as Manual Override"
                     )
                 else:
-                    # No URLs discovered, but check if there's an existing demo URL
-                    if existing_demo_url:
-                        logger.info(
-                            f"No demo URLs discovered for {script_name}, but existing demo URL found - marking as Manual Override"
-                        )
-                        # Check if this script is already in script_data (from scraping)
-                        existing_script_data = None
-                        for i, existing_data in enumerate(self.script_data):
-                            if existing_data["project_name"] == script_name:
-                                existing_script_data = existing_data
-                                break
+                    final_url = ""
+                    status = "Missing Demo"
+                    logger.info(f"No demo discovered for {script_name} (Missing Demo)")
 
-                        if existing_script_data:
-                            # Update existing entry with status
-                            existing_script_data["playwright_status"] = (
-                                "Manual Override"
-                            )
-                            logger.info(
-                                f"Updated existing script data for {script_name} with Manual Override status"
-                            )
-                        else:
-                            # Create a script data entry to update the Playwright Status
-                            script_data = {
-                                "project_name": script_name,
-                                "project_url": "",  # We don't have this from the efficient list
-                                "author": "",  # We don't have this from the efficient list
-                                "description": "",  # We don't have this from the efficient list
-                                "discussion_url": script["discussion_url"],
-                                "tags": "",  # We don't have this from the efficient list
-                                "demo": existing_demo_url,  # Keep existing demo URL
-                                "community_url": "",  # We don't have this from the efficient list
-                                "playwright_status": "Manual Override",
-                            }
-                            self.script_data.append(script_data)
-                    else:
-                        logger.info(
-                            f"No demo URLs discovered for {script_name} - marking as Missing Demo"
-                        )
-                        # Check if this script is already in script_data (from scraping)
-                        existing_script_data = None
-                        for i, existing_data in enumerate(self.script_data):
-                            if existing_data["project_name"] == script_name:
-                                existing_script_data = existing_data
-                                break
-
-                        if existing_script_data:
-                            # Update existing entry with status
-                            existing_script_data["playwright_status"] = "Missing Demo"
-                            logger.info(
-                                f"Updated existing script data for {script_name} with Missing Demo status"
-                            )
-                        else:
-                            # Create a script data entry to update the Playwright Status
-                            script_data = {
-                                "project_name": script_name,
-                                "project_url": "",  # We don't have this from the efficient list
-                                "author": "",  # We don't have this from the efficient list
-                                "description": "",  # We don't have this from the efficient list
-                                "discussion_url": script["discussion_url"],
-                                "tags": "",  # We don't have this from the efficient list
-                                "demo": "",  # No demo URL found
-                                "community_url": "",  # We don't have this from the efficient list
-                                "playwright_status": "Missing Demo",
-                            }
-                            self.script_data.append(script_data)
+                # Stamp onto self.script_data, updating the existing entry if present.
+                existing_script_data = next(
+                    (
+                        sd
+                        for sd in self.script_data
+                        if sd["project_name"] == script_name
+                    ),
+                    None,
+                )
+                if existing_script_data is not None:
+                    existing_script_data["demo"] = final_url
+                    existing_script_data["playwright_status"] = status
+                else:
+                    self.script_data.append(
+                        {
+                            "project_name": script_name,
+                            "project_url": "",
+                            "author": "",
+                            "description": "",
+                            "discussion_url": script["discussion_url"],
+                            "tags": "",
+                            "demo": final_url,
+                            "community_url": "",
+                            "playwright_status": status,
+                        }
+                    )
 
         logger.info(f"Found {demos_found} demos for scripts needing discovery")
 
@@ -2090,259 +2623,6 @@ class NornsScraper:
         # Use the main scraping flow but filter to only process this one script
         self.scrape_all_scripts(test_filter=script_name)
 
-    def discover_demo_video_playwright(self, discussion_url, _no_resolve=False):
-        """Discover demo video using Playwright to access actual page content.
-
-        Same 404 → resolve → retry-once contract as discover_demo_video, with
-        _no_resolve guarding against recursion if the resolved URL also fails.
-        """
-        if not discussion_url:
-            return ""
-
-        # Pre-check the resolution sidecar before launching a browser. Same
-        # rationale as discover_demo_video — but with even more savings since
-        # Playwright launches are much heavier than a single failed HTTP call.
-        if not _no_resolve:
-            cached = self._discourse_resolutions.get(discussion_url)
-            if cached is not None:
-                if cached == "":
-                    logger.debug(
-                        f"Skipping known-unresolvable Discourse URL (Playwright): "
-                        f"{discussion_url}"
-                    )
-                    return ""
-                if cached != discussion_url:
-                    logger.debug(
-                        f"Using cached Discourse resolution (Playwright): "
-                        f"{discussion_url} -> {cached}"
-                    )
-                    return self.discover_demo_video_playwright(
-                        cached, _no_resolve=True
-                    )
-
-        try:
-            logger.debug(f"Checking discussion URL with Playwright: {discussion_url}")
-
-            with sync_playwright() as p:
-                # Launch browser with more realistic settings
-                browser = p.chromium.launch(
-                    headless=True,
-                    args=[
-                        "--no-sandbox",
-                        "--disable-blink-features=AutomationControlled",
-                        "--disable-dev-shm-usage",
-                        "--disable-web-security",
-                        "--disable-features=VizDisplayCompositor",
-                        "--user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-                    ],
-                )
-
-                # Create context with realistic settings
-                context = browser.new_context(
-                    viewport={"width": 1920, "height": 1080},
-                    user_agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-                    locale="en-US",
-                    timezone_id="America/New_York",
-                    extra_http_headers={
-                        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
-                        "Accept-Language": "en-US,en;q=0.9",
-                        "Accept-Encoding": "gzip, deflate, br",
-                        "DNT": "1",
-                        "Connection": "keep-alive",
-                        "Upgrade-Insecure-Requests": "1",
-                        "Sec-Fetch-Dest": "document",
-                        "Sec-Fetch-Mode": "navigate",
-                        "Sec-Fetch-Site": "none",
-                        "Cache-Control": "max-age=0",
-                    },
-                )
-
-                page = context.new_page()
-
-                # Add realistic browser behavior
-                page.add_init_script(
-                    """
-                    Object.defineProperty(navigator, 'webdriver', {
-                        get: () => undefined,
-                    });
-                    
-                    Object.defineProperty(navigator, 'plugins', {
-                        get: () => [1, 2, 3, 4, 5],
-                    });
-                    
-                    Object.defineProperty(navigator, 'languages', {
-                        get: () => ['en-US', 'en'],
-                    });
-                    
-                    window.chrome = {
-                        runtime: {},
-                    };
-                """
-                )
-
-                # Add random delay to mimic human behavior
-                import random
-
-                delay = random.uniform(1.0, 3.0)
-                page.wait_for_timeout(int(delay * 1000))
-
-                # Navigate with realistic timing
-                try:
-                    response = page.goto(
-                        discussion_url, timeout=30000, wait_until="domcontentloaded"
-                    )
-
-                    if response and response.status >= 400:
-                        if response.status == 404 and not _no_resolve:
-                            # Stale Discourse topic — try to resolve and retry once.
-                            # We have to close the current browser context first
-                            # since this method opens its own.
-                            context.close()
-                            browser.close()
-                            resolved = self._resolve_discourse_url(discussion_url)
-                            if resolved and resolved != discussion_url:
-                                logger.info(
-                                    f"Resolved stale Discourse URL (Playwright): "
-                                    f"{discussion_url} -> {resolved}"
-                                )
-                                return self.discover_demo_video_playwright(
-                                    resolved, _no_resolve=True
-                                )
-                        logger.warning(
-                            f"HTTP {response.status} error for {discussion_url}"
-                        )
-                        return ""
-
-                    # Wait for content to load with realistic timing
-                    page.wait_for_timeout(random.randint(2000, 5000))
-
-                    # Try to wait for network to be idle, but with shorter timeout
-                    try:
-                        page.wait_for_load_state("networkidle", timeout=5000)
-                    except:
-                        # If networkidle times out, continue anyway
-                        pass
-
-                except Exception as e:
-                    logger.warning(f"Navigation error for {discussion_url}: {e}")
-                    return ""
-
-                # Look for video/audio links in the page content
-                demo_urls = []
-
-                # Check for direct links
-                links = page.query_selector_all("a[href]")
-                for link in links:
-                    href = link.get_attribute("href")
-                    if href:
-                        href_lower = href.lower()
-                        if any(
-                            pattern in href_lower
-                            for pattern in [
-                                "youtube.com/watch",
-                                "youtu.be/",
-                                "vimeo.com/",
-                                "soundcloud.com/",
-                                "instagram.com/",
-                            ]
-                        ):
-                            demo_urls.append(href)
-
-                # Check for iframe embeds
-                iframes = page.query_selector_all("iframe[src]")
-                for iframe in iframes:
-                    src = iframe.get_attribute("src")
-                    if src:
-                        src_lower = src.lower()
-                        if any(
-                            pattern in src_lower
-                            for pattern in [
-                                "youtube.com/embed/",
-                                "vimeo.com/video/",
-                                "soundcloud.com/player",
-                                "w.soundcloud.com",
-                            ]
-                        ):
-                            demo_urls.append(src)
-
-                context.close()
-                browser.close()
-
-                # Return the first valid demo URL found
-                if demo_urls:
-                    return demo_urls[0]
-
-                logger.debug(f"No demo video found with Playwright: {discussion_url}")
-                return ""
-
-        except Exception as e:
-            logger.warning(
-                f"Error checking discussion URL with Playwright {discussion_url}: {e}"
-            )
-            return ""
-
-    def resolve_demo_conflicts(self):
-        """Present conflicts to user and resolve them using questionary"""
-        if not self.playwright_conflicts:
-            return
-
-        logger.info(
-            f"Found {len(self.playwright_conflicts)} demo URL conflicts to resolve"
-        )
-
-        for conflict in self.playwright_conflicts:
-            script_name = conflict["script_name"]
-            original_url = conflict["original_url"]
-            playwright_url = conflict["playwright_url"]
-
-            print(f"\n--- Demo URL Conflict for '{script_name}' ---")
-            print(f"Original Discovery: {original_url}")
-            print(f"Playwright Discovery: {playwright_url}")
-
-            choice = questionary.select(
-                f"Which demo URL would you like to use for '{script_name}'?",
-                choices=[
-                    questionary.Choice(
-                        f"Original Discovery: {original_url}", "original"
-                    ),
-                    questionary.Choice(
-                        f"Playwright Discovery: {playwright_url}", "playwright"
-                    ),
-                    questionary.Choice("Enter custom URL", "custom"),
-                    questionary.Choice("Skip this script", "skip"),
-                ],
-            ).ask()
-
-            if choice == "original":
-                conflict["resolved_url"] = original_url
-                conflict["status"] = "Extract Preferred"
-            elif choice == "playwright":
-                conflict["resolved_url"] = playwright_url
-                conflict["status"] = "Playwright Preferred"
-            elif choice == "custom":
-                custom_url = questionary.text("Enter custom demo URL:").ask()
-                if custom_url:
-                    conflict["resolved_url"] = custom_url
-                    conflict["status"] = "Manual Override"
-                else:
-                    conflict["resolved_url"] = original_url
-                    conflict["status"] = "Extract Preferred"
-            else:  # skip
-                conflict["resolved_url"] = original_url
-                conflict["status"] = "Extract Preferred"
-
-        # Apply resolved conflicts to script data
-        for conflict in self.playwright_conflicts:
-            script_name = conflict["script_name"]
-            resolved_url = conflict["resolved_url"]
-            status = conflict["status"]
-
-            # Find and update the script data
-            for script in self.script_data:
-                if script.get("project_name") == script_name:
-                    script["demo"] = resolved_url
-                    script["playwright_status"] = status
-                    break
 
     def load_existing_data(self, filename="norns_scripts.xlsx"):
         """Load existing Excel data if it exists"""
@@ -2841,15 +3121,8 @@ class NornsScraper:
             cell = ws.cell(row=row_idx, column=4, value=row["Description"])
             cell.font = Font(size=14)
 
-            # Demo
-            demo_value = row["Demo"] if pd.notna(row["Demo"]) else ""
-            if demo_value and str(demo_value).strip() and str(demo_value) != "nan":
-                cell = ws.cell(row=row_idx, column=5, value=demo_value)
-                cell.hyperlink = str(demo_value)
-                cell.font = Font(size=14, color="0000FF", underline="single")
-            else:
-                cell = ws.cell(row=row_idx, column=5, value=demo_value)
-                cell.font = Font(size=14)
+            # Demo (multi-URL aware)
+            self._write_demo_cell(ws, row_idx, row.get("Demo"))
 
             # Discussion URL
             discussion_value = (
@@ -3028,15 +3301,8 @@ class NornsScraper:
                 cell = ws.cell(row=row_idx, column=4, value=row["Description"])
                 cell.font = Font(size=14)
 
-                # Demo (as hyperlink if URL found)
-                demo_value = row["Demo"] if pd.notna(row["Demo"]) else ""
-                if demo_value and str(demo_value).strip() and str(demo_value) != "nan":
-                    cell = ws.cell(row=row_idx, column=5, value=demo_value)
-                    cell.hyperlink = str(demo_value)
-                    cell.font = Font(size=14, color="0000FF", underline="single")
-                else:
-                    cell = ws.cell(row=row_idx, column=5, value=demo_value)
-                    cell.font = Font(size=14)
+                # Demo (multi-URL aware: newline-separated cell, first hyperlinked)
+                self._write_demo_cell(ws, row_idx, row.get("Demo"))
 
                 # Discussion URL (as hyperlink)
                 discussion_value = (
@@ -3168,6 +3434,10 @@ class NornsScraper:
         if self._discourse_resolutions:
             self._save_discourse_resolutions(filename, self._discourse_resolutions)
 
+        # Persist external-search cache so next run skips successful lookups.
+        if hasattr(self, "_external_search_cache") and self._external_search_cache:
+            self._save_external_searches(filename, self._external_search_cache)
+
     def print_summary(self):
         """Print a summary of what was accomplished during scraping"""
         print("\n" + "=" * 60)
@@ -3286,8 +3556,10 @@ def main():
     parser.add_argument(
         "--excel",
         type=str,
-        default="norns_scripts.xlsx",
-        help="Target Excel file to read/write (default: norns_scripts.xlsx)",
+        default="norns_scripts_discourse.xlsx",
+        help="Target Excel file to read/write "
+        "(default: norns_scripts_discourse.xlsx — distinct from the original "
+        "scraper's default for A/B comparison)",
     )
     parser.add_argument(
         "--dedupe",
@@ -3298,6 +3570,16 @@ def main():
         "--sync-check",
         action="store_true",
         help="Only compute and update 'Out of Sync' for all rows without skipping logic",
+    )
+    parser.add_argument(
+        "--reset-discoverable-demos",
+        action="store_true",
+        help=(
+            "Clear Demo + Playwright Status for every row that ISN'T marked "
+            "'Manual Override'. Also deletes the external_searches sidecar. "
+            "Use this to start fresh after bad search results have been "
+            "accumulated. Manual edits are preserved."
+        ),
     )
 
     args = parser.parse_args()
@@ -3319,6 +3601,18 @@ def main():
             )
         else:
             logger.info("No rows updated from status log application")
+        return
+
+    # Optional fast-path: clear auto-discovered demos and exit
+    if args.reset_discoverable_demos:
+        try:
+            n = scraper.reset_discoverable_demos(args.excel)
+            logger.info(
+                f"Reset complete. Cleared Demo + Status for {n} row(s) in {args.excel}. "
+                f"Manual Override rows preserved. Run the scraper to re-discover."
+            )
+        except Exception as e:
+            logger.error(f"Reset failed: {e}")
         return
 
     # Optional fast-path: compute Out of Sync only and exit
