@@ -101,11 +101,11 @@ jobs:
           fi
 
       - name: Create daily release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag: ${{ steps.date.outputs.tag }}
+          tag_name: ${{ steps.date.outputs.tag }}
           name: ${{ steps.date.outputs.name }}
           body: |
             Discourse-variant daily scrape (no Playwright; multi-demo support).
