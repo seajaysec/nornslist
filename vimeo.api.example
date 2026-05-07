@@ -1,0 +1,20 @@
+# Vimeo API token (used for external video search Path 3).
+#
+# Quick setup (~5 minutes):
+#
+# 1. Go to https://developer.vimeo.com/apps
+# 2. Click "Create an App" — name it whatever (e.g. "norns-scraper")
+# 3. Once created, scroll to "Personal access tokens"
+# 4. Click "Generate" with at least the "public" scope
+# 5. Copy the token
+# 6. Save this file as "vimeo.api" (drop the .example) and replace the
+#    placeholder line below with just your token (no quotes, no newlines)
+#
+# Free tier: ~25,000 API calls/day, plenty for the daily scrape (~80 calls/run).
+#
+# In GitHub Actions: store as a repo secret named `VIMEO_API_TOKEN` and
+# reference it in the workflow file (similar to YOUTUBE_API_KEY).
+#
+# This file is OPTIONAL. Without it, Vimeo external search is skipped
+# (anonymous Vimeo search returns JS-rendered HTML that we can't parse).
+REPLACE_THIS_WITH_YOUR_VIMEO_TOKEN

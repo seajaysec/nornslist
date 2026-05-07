@@ -1,0 +1,25 @@
+# YouTube Data API v3 key (used by external video search for short-name
+# script disambiguation; falls back to HTML scrape when this isn't set).
+#
+# Quick setup (~3 minutes):
+#
+# 1. Go to https://console.cloud.google.com/
+# 2. Create a project (or pick an existing one) — top-left dropdown
+# 3. APIs & Services → Library → search "YouTube Data API v3" → Enable
+# 4. APIs & Services → Credentials → "+ CREATE CREDENTIALS" → "API key"
+# 5. Copy the generated key
+# 6. Optional but recommended: click the new key → "Edit API key" →
+#    "API restrictions" → restrict to "YouTube Data API v3" only
+# 7. Save this file as "yt.api" (drop the .example) and replace the line
+#    below with just your key (no quotes, no newlines)
+#
+# Free quota: 10,000 units/day. Each search costs 100 units = 100 free
+# searches/day. The daily scrape uses ~80 searches per run, well under quota.
+#
+# In GitHub Actions: store the key as a repo secret named `YOUTUBE_API_KEY`
+# and the workflow will pass it as an env var (see daily-scrape.yml).
+#
+# This file is OPTIONAL. Without it, the scraper still works — it just can't
+# disambiguate short-name scripts (e.g. "ufo") via video descriptions, so
+# ~5–10 of those rows stay in "Missing Demo".
+AIzaREPLACE_THIS_WITH_YOUR_API_KEY

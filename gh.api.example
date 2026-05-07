@@ -1,0 +1,17 @@
+# GitHub Personal Access Token (used for the "Last Updated" column).
+#
+# 1. Visit https://github.com/settings/tokens
+# 2. Click "Generate new token" → "Generate new token (classic)"
+# 3. Note: name it "norns-scraper" or similar
+# 4. Expiration: pick whatever you're comfortable with
+# 5. Scopes: just "public_repo" (or none — only public repos are queried)
+# 6. Click "Generate token" and copy the token
+# 7. Save this file as "gh.api" (drop the .example) and replace the line below
+#    with just the token (no quotes, no newlines)
+#
+# In GitHub Actions: this file is NOT used. The workflow pipes the auto-provided
+# `secrets.GITHUB_TOKEN` to the scraper as the GITHUB_TOKEN env var.
+#
+# Without a token, the scraper falls back to unauthenticated GitHub (60 req/hr),
+# which means "Last Updated" will only populate ~17% of rows per run.
+ghp_REPLACE_THIS_WITH_YOUR_TOKEN

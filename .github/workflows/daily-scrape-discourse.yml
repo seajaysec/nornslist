@@ -1,0 +1,119 @@
+name: Daily Scrape (Discourse variant)
+
+# This is the experimental B-track of the daily scrape. It runs the
+# Discourse-API + multi-demo + external-search variant alongside the original
+# Playwright-based workflow. After the A/B winner is picked, the loser's
+# workflow file should be deleted and this one promoted to the canonical name.
+
+on:
+  schedule:
+    # Stagger 30 min after the original workflow to avoid git-push races.
+    - cron: '30 2 * * *'
+  workflow_dispatch:
+
+jobs:
+  scrape-and-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write  # commit the updated xlsx + sidecars
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          # Need recent history so git push doesn't reject as non-fast-forward
+          # if the original workflow committed something at 2:00 the same morning.
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          # NOTE: this variant does NOT need Playwright. If the original
+          # workflow is retired, `playwright` can be removed from
+          # requirements.txt entirely.
+
+      - name: Run discourse-variant scraper
+        env:
+          # GITHUB_TOKEN is auto-provided by Actions; the scraper reads it
+          # for "Last Updated" GitHub API calls (avoids the 60 req/hr anon limit).
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # YOUTUBE_API_KEY is OPTIONAL. Set it as a repo secret if you want
+          # high-quality external search (resolves the few short-name script
+          # cases like 'ufo' that need video-description disambiguation).
+          # Without it, the scraper falls back to HTML-scraping YouTube,
+          # which works for ~95%+ of cases.
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+          # VIMEO_API_TOKEN is OPTIONAL. Without it, Vimeo external search is
+          # skipped (anonymous Vimeo search returns empty JS-rendered HTML).
+          # Get one at https://developer.vimeo.com/apps (free).
+          VIMEO_API_TOKEN: ${{ secrets.VIMEO_API_TOKEN }}
+        run: |
+          python norns_scraper_discourse.py --excel norns_scripts_discourse.xlsx
+
+      - name: Set date variables
+        id: date
+        run: |
+          {
+            echo "tag=daily-discourse-$(date +'%Y-%m-%d')"
+            echo "name=Discourse Variant - $(date +'%Y-%m-%d')"
+            echo "timestamp=$(date +'%Y-%m-%d %H:%M:%S UTC')"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Commit updated spreadsheet + sidecars
+        env:
+          DATE_TAG: ${{ steps.date.outputs.tag }}
+          BRANCH_REF: ${{ github.ref }}
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action (discourse)"
+          # Commit the xlsx AND its sidecars together — the sidecars are stateful
+          # (drift snapshots, URL resolutions) and need to travel with the xlsx.
+          git add norns_scripts_discourse.xlsx \
+                  norns_scripts_discourse.snapshots.json \
+                  norns_scripts_discourse.discourse_resolutions.json \
+                  norns_scripts_discourse.external_searches.json
+          if ! git diff --staged --quiet; then
+            git commit -m "Auto-update (discourse): Daily scrape $(date +'%Y-%m-%d')"
+          fi
+          # Pull --rebase before push to handle the case where the original
+          # workflow pushed earlier this morning.
+          BRANCH="${BRANCH_REF#refs/heads/}"
+          git pull --rebase origin "$BRANCH" || true
+          git push
+
+      - name: Delete existing release (same date)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DATE_TAG: ${{ steps.date.outputs.tag }}
+        continue-on-error: true
+        run: |
+          if gh release view "$DATE_TAG" >/dev/null 2>&1; then
+            gh release delete "$DATE_TAG" --yes || true
+            git tag -d "$DATE_TAG" || true
+            git push origin ":refs/tags/$DATE_TAG" || true
+          fi
+
+      - name: Create daily release
+        uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag: ${{ steps.date.outputs.tag }}
+          name: ${{ steps.date.outputs.name }}
+          body: |
+            Discourse-variant daily scrape (no Playwright; multi-demo support).
+
+            Generated: ${{ steps.date.outputs.timestamp }}
+            Workflow run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          files: |
+            norns_scripts_discourse.xlsx
+          draft: false
+          prerelease: false
+          generate_release_notes: false

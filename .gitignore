@@ -1,1 +1,32 @@
+# --- OS / editor cruft ---
+.DS_Store
+.venv
+__pycache__/
+*.pyc
+*.pyo
+
+# --- Per-developer Claude Code workspace ---
+.claude/
+
+# --- Secrets / API tokens ---
+# GitHub Personal Access Token (used by _load_github_token for Last Updated lookups)
+gh.api
+# YouTube Data API v3 key (used by _load_youtube_api_key for high-quality
+# external video search; falls back to HTML scrape when absent)
+yt.api
+# Vimeo API token (used by _load_vimeo_api_token for external video search;
+# anonymous Vimeo search isn't viable without this)
+vimeo.api
+
+# --- Setup notes that may contain secrets ---
 GITHUB_ACTIONS_SETUP.md
+
+# --- Production data — DO commit these (listed here as a reminder, not ignored) ---
+# norns_scripts.xlsx                                  <- Playwright-variant output
+# norns_scripts.snapshots.json                        <- drift baseline (sidecar)
+# norns_scripts.discourse_resolutions.json            <- URL fix cache (sidecar)
+# norns_scripts_discourse.xlsx                        <- Discourse-variant A/B output
+# norns_scripts_discourse.snapshots.json              <- (sidecar)
+# norns_scripts_discourse.discourse_resolutions.json  <- (sidecar)
+# Both variants' files are committed during A/B. After picking the winner,
+# delete the loser's three files and the matching workflow.
