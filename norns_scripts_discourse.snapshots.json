@@ -1412,6 +1412,15 @@
     "project_url": "https://github.com/cachilders/lemniscate",
     "tags": "looper"
   },
+  "leslie": {
+    "author": "sym",
+    "description": "doppler, tremolo, and the slow spin-up",
+    "discussion_url": "",
+    "documentation_url": "https://github.com/moapacha/leslie/blob/main/README.md",
+    "project_name": "leslie",
+    "project_url": "https://github.com/moapacha/leslie",
+    "tags": "audio_fx, engine"
+  },
   "less-concepts": {
     "author": "vicimity dan_derks",
     "description": "1d cellular automata sequencer",
