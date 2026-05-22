@@ -62,9 +62,12 @@ border-radius:9px;padding:7px 12px;min-width:96px}
 .row:last-child{border-bottom:0}
 .row .k{color:var(--mut);font-size:12px;text-transform:uppercase;letter-spacing:.4px;padding-top:2px}
 .row .v{font-size:14px} .row .v code{background:#0d1117;padding:1px 5px;border-radius:4px;font-size:12px}
-.mock{margin:0;background:#0a0d12;border-left:1px solid var(--line);padding:14px 16px;color:#9fe0a8;
+.mockwrap{border-left:1px solid var(--line);display:flex;flex-direction:column}
+.mockcap{background:#0a0d12;color:var(--mut);font-size:10px;letter-spacing:.3px;padding:6px 16px 0;
+font-style:italic}
+.mock{margin:0;background:#0a0d12;padding:8px 16px 14px;color:#9fe0a8;
 font:12px/1.35 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;white-space:pre;overflow-x:auto}
-@media(max-width:840px){.cardbody{grid-template-columns:1fr}.mock{border-left:0;border-top:1px solid var(--line)}.legendgrid{grid-template-columns:1fr}}
+@media(max-width:840px){.cardbody{grid-template-columns:1fr}.mockwrap{border-left:0;border-top:1px solid var(--line)}.legendgrid{grid-template-columns:1fr}}
 .controls{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0;align-items:center}
 .controls input,.controls select{background:var(--panel);border:1px solid var(--line);color:var(--ink);
 padding:8px 10px;border-radius:8px;font-size:13px}
@@ -123,6 +126,9 @@ footer{padding:30px 20px;color:var(--mut);font-size:13px;text-align:center}
       <div class="pchips"><a class="pchip b" href="#feat-changes"><span class="pn">changes</span><span class="ps">MIDI FX</span></a><a class="pchip b" href="#feat-nørgård"><span class="pn">nørgård</span><span class="ps">MIDI FX</span></a><a class="pchip b" href="#feat-serialism"><span class="pn">serialism</span><span class="ps">MIDI FX</span></a><a class="pchip b" href="#feat-justharmonicon"><span class="pn">justharmonicon</span><span class="ps">MIDI FX</span></a><a class="pchip b" href="#feat-magpie"><span class="pn">magpie</span><span class="ps">MIDI FX</span></a><a class="pchip b" href="#feat-clockabout"><span class="pn">clockabout</span><span class="ps">MIDI FX</span></a></div>
     </div>
     <div class="glabel" style="margin-top:12px">All four "ready" modules are <b>numerically verified offline</b> (DSP shape, stability, spectral correctness) but <b>not yet heard on hardware</b> — these tests are the listening pass that confirms timbre.</div>
+    <div class="glabel" style="margin-top:10px;border-top:1px solid var(--line);padding-top:10px">
+      <b style="color:var(--yellow)">⚠ UI reality vs. the mockups below:</b> these ported modules ship as <b>chainable DSP only</b> — they have no custom display. On Move they surface through Schwung's standard <b>menu-driven knob editor</b>: a <b>preset selector</b> at the top, then 8 mappable knobs + sub-menus (Waveforms / Morph / Envelope, or Peak Tuning / Ring Times, etc.). The ASCII screens on the cards below are the <b>original norns full-screen concept</b> — a design reference, <i>not</i> what you see on the Move.
+    </div>
   </div>
 </section>
 
@@ -144,7 +150,7 @@ footer{padding:30px 20px;color:var(--mut);font-size:13px;text-align:center}
                   <div class="row"><span class="k">Portability</span><span class="v">Lua-only — Pure logic — reimplement in QuickJS/C. No DSP risk.</span></div>
                   
                 </div>
-                <pre class="mock">┌─ changes · 8 linked LFOs → CC ─────────┐
+                <div class="mockwrap"><div class="mockcap">◇ norns-original concept — Move uses the knob-editor menu</div><pre class="mock">┌─ changes · 8 linked LFOs → CC ─────────┐
 │ 1∿ 2∿ 3∿ 4∿ 5∿ 6∿ 7∿ 8∿   tempo-sync │
 │ ╱╲    ╱╲   ___   ╱╲   .·.   ╱╲   ___  │
 │╱  ╲__╱  ╲ ╱   ╲ ╱  ╲ ·   · ╱  ╲ ╱   ╲ │
@@ -154,7 +160,7 @@ footer{padding:30px 20px;color:var(--mut);font-size:13px;text-align:center}
 ENC 1-8 : LFO 1-8 rate          (1 knob each!)
 PADS r1 : LFO on/off  r2 : uni/bi-polar
 HOLD pad+ENC : pick destination CC
-KEYS    : Shift = link/unlink phases</pre>
+KEYS    : Shift = link/unlink phases</pre></div>
               </div>
               <div class="testing"><div class="testhead">▶ How to put it through its paces</div><div class="testlead">On branch <code>feat/changes-cc-modulation-bank</code> (not in the delivered tarballs). Build + deploy that branch, then pick <b>changes</b> in a chain MIDI FX slot.</div><ol class="teststeps"><li>Place in a chain <b>MIDI-FX</b> slot before a synth, or aim it at Move's own track macros (Pre mode → inject to Move MIDI_IN). It outputs <b>CC, not notes</b>.</li><li>Map one of its 8 LFO outputs to a synth param (e.g. a filter-cutoff CC). With the synth holding a note, that param should move on its own in a smooth evolving pattern — confirm hands-free motion.</li><li>Change an LFO's rate, depth, and phase offset → confirm the speed/amount/relationship of the motion changes; run several LFOs at different rates → confirm independent, phase-linked movement.</li><li><b>Key unknown to confirm:</b> aim a CC at a Move <i>track macro</i> and verify Move actually responds. The CC-to-Move-track path is unverified — this is the test that settles <code>docs/MOVE_CC_MAP.md</code>.</li></ol></div>
             </div>
@@ -173,7 +179,7 @@ KEYS    : Shift = link/unlink phases</pre>
                   <div class="row"><span class="k">Portability</span><span class="v">Lua-only — Pure logic — reimplement in QuickJS/C. No DSP risk.</span></div>
                   
                 </div>
-                <pre class="mock">┌─ clockabout · non-linear MIDI clock ───┐
+                <div class="mockwrap"><div class="mockcap">◇ norns-original concept — Move uses the knob-editor menu</div><pre class="mock">┌─ clockabout · non-linear MIDI clock ───┐
 │ curve: SWING 62%      period: 1 bar    │
 │ ●            ●        ●            ●    │
 │  ·  ·   · ·     ·  ·   · ·    ·  ·  ·   │
@@ -182,7 +188,7 @@ KEYS    : Shift = link/unlink phases</pre>
 └────────────────────────────────────────┘
 ENC 1 curve  2 strength  3 period  4 phase
 PADS 16 = warped step grid (tap to nudge)
-KEYS Play=reset phase  Shift=A/B curve</pre>
+KEYS Play=reset phase  Shift=A/B curve</pre></div>
               </div>
               <div class="testing"><div class="testhead">▶ How to put it through its paces</div><div class="testlead">On branch <code>feat/norns-adaptations-batch</code> (not in the delivered tarballs). Build + deploy that branch, then pick <b>clockabout</b> in a chain MIDI FX slot.</div><ol class="teststeps"><li>Put before a sequenced synth in a chain MIDI-FX slot. Feed a steady stream of notes and raise swing → off-beats should shift late/early audibly vs the straight input.</li><li>Try the different curve shapes (linear / exp / groove) → confirm the timing <i>feel</i> changes between them.</li><li>Confirm scope: it can only <b>delay</b> notes passing through it, not advance Move's own master clock (documented limitation) — so it grooves the note stream, not the transport.</li></ol></div>
             </div>
@@ -201,7 +207,7 @@ KEYS Play=reset phase  Shift=A/B curve</pre>
                   <div class="row"><span class="k">Portability</span><span class="v">Lua-only — Pure logic — reimplement in QuickJS/C. No DSP risk.</span></div>
                   
                 </div>
-                <pre class="mock">┌─ nørgård · infinity series ────────────┐
+                <div class="mockwrap"><div class="mockcap">◇ norns-original concept — Move uses the knob-editor menu</div><pre class="mock">┌─ nørgård · infinity series ────────────┐
 │ root C  scale DORIAN   len 32  ÷ 1/16  │
 │ 0 1 -1 2 1 0 -2 3  ← series degrees    │
 │ ▁▃▁▅▃▁█▂▁▄▆▁▃▇▂▁  read-head ►          │
@@ -209,7 +215,7 @@ KEYS Play=reset phase  Shift=A/B curve</pre>
 └────────────────────────────────────────┘
 ENC 1 root 2 scale 3 length 4 rate 5 oct 6 offset
 PADS = upcoming degrees (tap = move read-head)
-KEYS Play start/stop  Shift = reseed</pre>
+KEYS Play start/stop  Shift = reseed</pre></div>
               </div>
               <div class="testing"><div class="testhead">▶ How to put it through its paces</div><div class="testlead">On branch <code>feat/norns-adaptations-batch</code> (not in the delivered tarballs). Build + deploy that branch, then pick <b>norgaard</b> in a chain MIDI FX slot.</div><ol class="teststeps"><li>MIDI-FX slot before a synth. Trigger it (note/clock) → it should emit a self-similar, non-repeating melodic line (the infinity series).</li><li>Set Scale + Root → confirm output is quantized to that scale. Change sequence length / step rate → confirm the read-head speed and pattern window change.</li><li>Confirm it's deterministic/self-similar: the same start reproduces the same line — a recognizable fractal melody, not randomness.</li></ol></div>
             </div>
@@ -228,7 +234,7 @@ KEYS Play start/stop  Shift = reseed</pre>
                   <div class="row"><span class="k">Portability</span><span class="v">CV-reinterp — Crow/JF logic kept as MIDI/CC; the physical CV jacks are dropped.</span></div>
                   <div class="row"><span class="k">crow/JF</span><span class="v">Original offers crow v/oct out — we keep the row logic and emit MIDI instead.</span></div>
                 </div>
-                <pre class="mock">┌─ serialism · 12-tone row ──────────────┐
+                <div class="mockwrap"><div class="mockcap">◇ norns-original concept — Move uses the knob-editor menu</div><pre class="mock">┌─ serialism · 12-tone row ──────────────┐
 │ row: 0 11 7 8 3 1 2 10 6 5 4 9         │
 │ form: INVERSION   T+3   ÷1/8           │
 │   ·11· 0 ·                              │
@@ -237,7 +243,7 @@ KEYS Play start/stop  Shift = reseed</pre>
 └────────────────────────────────────────┘
 ENC 1 form 2 transpose 3 rate 4 octave
 PADS r1-2 = enter row   r3 = transform pick
-KEYS Shift = lock row / edit row</pre>
+KEYS Shift = lock row / edit row</pre></div>
               </div>
               <div class="testing"><div class="testhead">▶ How to put it through its paces</div><div class="testlead">On branch <code>feat/norns-adaptations-batch</code> (not in the delivered tarballs). Build + deploy that branch, then pick <b>serialism</b> in a chain MIDI FX slot.</div><ol class="teststeps"><li>MIDI-FX slot before a synth. Define a 12-tone row and run it → it should play the row.</li><li>Switch transform Prime / Retrograde / Inversion / Retrograde-Inversion → verify by ear or log: Retrograde = row reversed, Inversion = intervals flipped, RI = both.</li></ol></div>
             </div>
@@ -256,7 +262,7 @@ KEYS Shift = lock row / edit row</pre>
                   <div class="row"><span class="k">Portability</span><span class="v">CV-reinterp — Crow/JF logic kept as MIDI/CC; the physical CV jacks are dropped.</span></div>
                   <div class="row"><span class="k">crow/JF</span><span class="v">crow=8 refs are CV routing — we keep only the MIDI note-echo/transpose engine.</span></div>
                 </div>
-                <pre class="mock">┌─ magpie · modulated note echo ─────────┐
+                <div class="mockwrap"><div class="mockcap">◇ norns-original concept — Move uses the knob-editor menu</div><pre class="mock">┌─ magpie · modulated note echo ─────────┐
 │ in ──► [echo] ──► out   reps 4         │
 │ time 3/16  fb 60%  +st +5  prob 80%    │
 │ C4 · · E4· · G4 · · (echoes fan out)   │
@@ -264,7 +270,7 @@ KEYS Shift = lock row / edit row</pre>
 └────────────────────────────────────────┘
 ENC 1 time 2 reps 3 transpose 4 prob 5 humanize
 PADS routing grid (src row → dest ch)
-KEYS Shift = freeze pattern</pre>
+KEYS Shift = freeze pattern</pre></div>
               </div>
               <div class="testing"><div class="testhead">▶ How to put it through its paces</div><div class="testlead">On branch <code>feat/norns-adaptations-batch</code> (not in the delivered tarballs). Build + deploy that branch, then pick <b>magpie</b> in a chain MIDI FX slot.</div><ol class="teststeps"><li>MIDI-FX slot before a synth. Play notes → magpie should re-emit them with evolving delay/transposition/probability (a melodic echo, not an audio delay).</li><li>Raise delay + transpose → echoed notes should be pitch-shifted and time-spread; raise the probability/variance → some echoes should drop or vary. Distinct evolving repeats, not a fixed tap.</li></ol></div>
             </div>
@@ -283,7 +289,7 @@ KEYS Shift = freeze pattern</pre>
                   <div class="row"><span class="k">Portability</span><span class="v">CV-reinterp — Crow/JF logic kept as MIDI/CC; the physical CV jacks are dropped.</span></div>
                   <div class="row"><span class="k">crow/JF</span><span class="v">JF subharmonic voicing → MIDI chords aimed at a poly slot synth (e.g. OB-Xd, Surge).</span></div>
                 </div>
-                <pre class="mock">┌─ justharmonicon · subharmonics ────────┐
+                <div class="mockwrap"><div class="mockcap">◇ norns-original concept — Move uses the knob-editor menu</div><pre class="mock">┌─ justharmonicon · subharmonics ────────┐
 │ fund A2   ÷2 ÷3 ÷5 ÷7   rate 1/8       │
 │ A1  E1  C#1  ~G0     (undertone chord) │
 │ step ■ □ ■ ■ □ ■ □ ■  divisor-latch    │
@@ -291,7 +297,7 @@ KEYS Shift = freeze pattern</pre>
 └────────────────────────────────────────┘
 ENC 1 fund  2-5 divisors  6 rate
 PADS = step on/off (+ hold = latch divisor)
-KEYS Shift = glide on/off</pre>
+KEYS Shift = glide on/off</pre></div>
               </div>
               <div class="testing"><div class="testhead">▶ How to put it through its paces</div><div class="testlead">On branch <code>feat/norns-adaptations-batch</code> (not in the delivered tarballs). Build + deploy that branch, then pick <b>justharmonicon</b> in a chain MIDI FX slot.</div><ol class="teststeps"><li>MIDI-FX slot before a synth. Trigger it → confirm rich undertone-series (subharmonic) voicings <i>below</i> the played root, not standard overtone chords.</li><li>Change the subharmonic divisors → confirm the chord voicing changes accordingly.</li></ol></div>
             </div>
@@ -311,7 +317,7 @@ KEYS Shift = glide on/off</pre>
                   <div class="row"><span class="k">Portability</span><span class="v">SC engine — Has a SuperCollider engine — port to a native DSP .so (or run scsynth via sc-plugins-arm64).</span></div>
                   
                 </div>
-                <pre class="mock">┌─ benjolis · chaotic / rungler ─────────┐
+                <div class="mockwrap"><div class="mockcap">◇ norns-original concept — Move uses the knob-editor menu</div><pre class="mock">┌─ benjolis · chaotic / rungler ─────────┐
 │ o1▟  o2▙   rungle ▚▞▚  filter SVF      │
 │ freq1 ███▒  freq2 ██▒▒  rate ████▒     │
 │ cut ██████  res ███▒  loop:CHAOS       │
@@ -319,9 +325,9 @@ KEYS Shift = glide on/off</pre>
 └────────────────────────────────────────┘
 ENC 1 f1 2 f2 3 rungle 4 chaos 5 cut 6 res 7 type 8 out
 PADS = chaos snapshots  HOLD = freeze rungler
-PORT  : Engine_Benjolis.sc → native DSP .so</pre>
+PORT  : Engine_Benjolis.sc → native DSP .so</pre></div>
               </div>
-              <div class="testing"><div class="testhead">▶ How to put it through its paces</div><div class="testlead"><b>Sideload:</b> Move Manager (<code>:7700</code>) → Modules → Install Custom → Upload <code>benjolis-module.tar.gz</code>. It installs to the sound generator category, then pick <b>benjolis</b> in a chain sound generator slot.</div><ol class="teststeps"><li>Load into a sound-gen slot and <b>hold a note</b> to open the gate — you should hear an evolving <b>chaotic Benjolin texture</b>, not a clean note. Release: it goes silent but keeps churning internally (the next note picks up a new state).</li><li><b>Cross-mod:</b> knobs 1 & 2 = osc1/osc2 freq. Detune them → you should get sidebands/grit from the cross-modulation, not two independent pitches.</li><li><b>Rungler:</b> raise Rungler 1/2 depth + Rungler Filt → a stepped, looping pseudo-random pattern should drive pitch/filter (the signature 'rungler'): a repeating-but-evolving stepped motion.</li><li><b>Loop/chaos:</b> Loop near 1 = self-feeding chaos; lower it → more periodic/tame. Confirm the chaos amount changes.</li><li><b>Filter:</b> sweep Filter Freq, raise Resonance, switch Type LP/HP/BP → the filter should clearly reshape the tone and the three types should sound distinct.</li><li><b>Output select + safety:</b> step the Output param (Tri1 … Rungler … Filter) — each should sound different (Rungler = raw stepped, Filter = smoothed). Then max Rungler depth + Resonance + Gain → must stay bounded (no NaN dropout, no runaway).</li></ol></div>
+              <div class="testing"><div class="testhead">▶ How to put it through its paces</div><div class="testlead"><b>Sideload:</b> Move Manager (<code>:7700</code>) → Modules → Install Custom → Upload <code>benjolis-module.tar.gz</code>. It installs to the sound generator category, then pick <b>benjolis</b> in a chain sound generator slot. <b>Start with a preset</b> (scroll the selector at the top of the module menu), then tweak. <i>On Move these use the standard knob-editor menu — not the full-screen layout mocked above.</i></div><ol class="teststeps"><li>Load into a sound-gen slot and <b>hold a note</b> to open the gate — you should hear an evolving <b>chaotic Benjolin texture</b>, not a clean note. Release: it goes silent but keeps churning internally (the next note picks up a new state).</li><li><b>Cross-mod:</b> knobs 1 & 2 = osc1/osc2 freq. Detune them → you should get sidebands/grit from the cross-modulation, not two independent pitches.</li><li><b>Rungler:</b> raise Rungler 1/2 depth + Rungler Filt → a stepped, looping pseudo-random pattern should drive pitch/filter (the signature 'rungler'): a repeating-but-evolving stepped motion.</li><li><b>Loop/chaos:</b> Loop near 1 = self-feeding chaos; lower it → more periodic/tame. Confirm the chaos amount changes.</li><li><b>Filter:</b> sweep Filter Freq, raise Resonance, switch Type LP/HP/BP → the filter should clearly reshape the tone and the three types should sound distinct.</li><li><b>Output select + safety:</b> step the Output param (Tri1 … Rungler … Filter) — each should sound different (Rungler = raw stepped, Filter = smoothed). Then max Rungler depth + Resonance + Gain → must stay bounded (no NaN dropout, no runaway).</li></ol></div>
             </div>
 
             <div class="card" id="feat-overtones">
@@ -338,7 +344,7 @@ PORT  : Engine_Benjolis.sc → native DSP .so</pre>
                   <div class="row"><span class="k">Portability</span><span class="v">SC engine — Has a SuperCollider engine — port to a native DSP .so (or run scsynth via sc-plugins-arm64).</span></div>
                   
                 </div>
-                <pre class="mock">┌─ overtones · additive ─────────────────┐
+                <div class="mockwrap"><div class="mockcap">◇ norns-original concept — Move uses the knob-editor menu</div><pre class="mock">┌─ overtones · additive ─────────────────┐
 │ partials 24  tilt -3dB/oct  inharm 0.02│
 │ █▆▅▄▃▃▂▂▂▁▁▁▁▁▁▁  (spectrum)           │
 │ ∿∿∿  resulting wave                     │
@@ -346,9 +352,9 @@ PORT  : Engine_Benjolis.sc → native DSP .so</pre>
 └────────────────────────────────────────┘
 PADS 4×8 = 32 partial amplitudes (draw!)
 ENC 1 #part 2 tilt 3 inharm 4 atk 5 rel 6 spread
-PORT  : Engine_Overtones.sc → native DSP .so</pre>
+PORT  : Engine_Overtones.sc → native DSP .so</pre></div>
               </div>
-              <div class="testing"><div class="testhead">▶ How to put it through its paces</div><div class="testlead"><b>Sideload:</b> Move Manager (<code>:7700</code>) → Modules → Install Custom → Upload <code>overtones-module.tar.gz</code>. It installs to the sound generator category, then pick <b>overtones</b> in a chain sound generator slot.</div><ol class="teststeps"><li>Load into a Signal Chain <b>sound-generator</b> slot and hold a note. The default patch is a <b>pure sine</b> (snapshot 0 = fundamental only): confirm one clean pitch, no buzz, no overtones.</li><li><b>Waveforms → Snapshot 1</b>: knobs 1–8 are the 8 partial amplitudes. Hold a note and raise knob 1 (fundamental), then 2, 3… one at a time — each adds the next-higher harmonic; the tone should brighten predictably (knob 8 = a faint, high partial).</li><li><b>Morph:</b> make Snapshot 1 bright (several partials) and Snapshot 2 dark (knob 1 only). Morph page → Start 0, End 1, Rate ~4 s, Src 0 (LFO). Hold a note: timbre should slowly sweep bright↔dark every few seconds. Switch Src to 2 (Env): each new note starts at Start and settles to End across attack→sustain (onset timbre ≠ held timbre).</li><li><b>Motion (headphones):</b> raise Pan Width + Pan Rate ~8 → partials wander across the stereo field. Raise Pitch Drift to ~10 Hz → a gentle detuned/beating chorus. Both should be clearly audible.</li><li><b>Polyphony + envelope:</b> Envelope page → Attack ~3 s, Release ~4 s. Swell in a chord; then play <b>more than 8 notes</b> — the 9th should steal the oldest voice (no stuck notes/overflow). Lift hands → tails ring out over the Release time.</li><li><b>Abuse / safety:</b> all partials up + 8-note chord + Level high → must stay clean (no digital clipping, crackle, or dropout). Confirms the output limiter holds.</li></ol></div>
+              <div class="testing"><div class="testhead">▶ How to put it through its paces</div><div class="testlead"><b>Sideload:</b> Move Manager (<code>:7700</code>) → Modules → Install Custom → Upload <code>overtones-module.tar.gz</code>. It installs to the sound generator category, then pick <b>overtones</b> in a chain sound generator slot. <b>Start with a preset</b> (scroll the selector at the top of the module menu), then tweak. <i>On Move these use the standard knob-editor menu — not the full-screen layout mocked above.</i></div><ol class="teststeps"><li>Load into a Signal Chain <b>sound-generator</b> slot and hold a note. The default patch is a <b>pure sine</b> (snapshot 0 = fundamental only): confirm one clean pitch, no buzz, no overtones.</li><li><b>Waveforms → Snapshot 1</b>: knobs 1–8 are the 8 partial amplitudes. Hold a note and raise knob 1 (fundamental), then 2, 3… one at a time — each adds the next-higher harmonic; the tone should brighten predictably (knob 8 = a faint, high partial).</li><li><b>Morph:</b> make Snapshot 1 bright (several partials) and Snapshot 2 dark (knob 1 only). Morph page → Start 0, End 1, Rate ~4 s, Src 0 (LFO). Hold a note: timbre should slowly sweep bright↔dark every few seconds. Switch Src to 2 (Env): each new note starts at Start and settles to End across attack→sustain (onset timbre ≠ held timbre).</li><li><b>Motion (headphones):</b> raise Pan Width + Pan Rate ~8 → partials wander across the stereo field. Raise Pitch Drift to ~10 Hz → a gentle detuned/beating chorus. Both should be clearly audible.</li><li><b>Polyphony + envelope:</b> Envelope page → Attack ~3 s, Release ~4 s. Swell in a chord; then play <b>more than 8 notes</b> — the 9th should steal the oldest voice (no stuck notes/overflow). Lift hands → tails ring out over the Release time.</li><li><b>Abuse / safety:</b> all partials up + 8-note chord + Level high → must stay clean (no digital clipping, crackle, or dropout). Confirms the output limiter holds.</li></ol></div>
             </div>
 
             <div class="card" id="feat-mouse">
@@ -365,7 +371,7 @@ PORT  : Engine_Overtones.sc → native DSP .so</pre>
                   <div class="row"><span class="k">Portability</span><span class="v">Softcut — Built on norns softcut buffers — needs a varispeed sample-buffer DSP.</span></div>
                   
                 </div>
-                <pre class="mock">┌─ mouse · Music Mouse ──────────────────┐
+                <div class="mockwrap"><div class="mockcap">◇ norns-original concept — Move uses the knob-editor menu</div><pre class="mock">┌─ mouse · Music Mouse ──────────────────┐
 │ mode CHROMATIC  voices 4  patt ▟▙       │
 │  · · · · ◆ · · ·    ◆ = pointer        │
 │  · · · ·│· · · ·    cross-hair voices  │
@@ -373,7 +379,7 @@ PORT  : Engine_Overtones.sc → native DSP .so</pre>
 └────────────────────────────────────────┘
 PADS 4×8 = X/Y pointer field (pressure=dyn)
 ENC 1 mode 2 voices 3 pattern 4 transpose
-NOTE  : softcut voice → route to slot synth</pre>
+NOTE  : softcut voice → route to slot synth</pre></div>
               </div>
               
             </div>
@@ -392,7 +398,7 @@ NOTE  : softcut voice → route to slot synth</pre>
                   <div class="row"><span class="k">Portability</span><span class="v">SC engine — Has a SuperCollider engine — port to a native DSP .so (or run scsynth via sc-plugins-arm64).</span></div>
                   <div class="row"><span class="k">crow/JF</span><span class="v">crow=9 refs are CV destinations — keep attractor/matrix, emit to the internal voice + MIDI.</span></div>
                 </div>
-                <pre class="mock">┌─ krill · Lorenz seq + PM voice ────────┐
+                <div class="mockwrap"><div class="mockcap">◇ norns-original concept — Move uses the knob-editor menu</div><pre class="mock">┌─ krill · Lorenz seq + PM voice ────────┐
 │  σ 10  ρ 28  β 2.6     ∞-attractor      │
 │    ╭─╮      ·°·                          │
 │   ( ⟁ )    ·   ·   quantized → notes    │
@@ -400,7 +406,7 @@ NOTE  : softcut voice → route to slot synth</pre>
 └────────────────────────────────────────┘
 ENC 1 σ 2 ρ 3 β 4 rate 5 quant 6 bright
 PADS = mod-matrix routing grid
-PORT  : Engine_Krill.sc → DSP; large logic port</pre>
+PORT  : Engine_Krill.sc → DSP; large logic port</pre></div>
               </div>
               
             </div>
@@ -419,7 +425,7 @@ PORT  : Engine_Krill.sc → DSP; large logic port</pre>
                   <div class="row"><span class="k">Portability</span><span class="v">SC engine — Has a SuperCollider engine — port to a native DSP .so (or run scsynth via sc-plugins-arm64).</span></div>
                   
                 </div>
-                <pre class="mock">┌─ molly the poly · + patch creator ─────┐
+                <div class="mockwrap"><div class="mockcap">◇ norns-original concept — Move uses the knob-editor menu</div><pre class="mock">┌─ molly the poly · + patch creator ─────┐
 │   ☉  ·  ●     · °   solar-system gen    │
 │ osc▥ sub▤ shape▒ cut███ res▒  auto      │
 │ env ▕‾‾\__  lfo ∿  drive 2  verb 20%   │
@@ -427,7 +433,7 @@ PORT  : Engine_Krill.sc → DSP; large logic port</pre>
 └────────────────────────────────────────┘
 ENC 1-8 = osc/sub · shape · cut · res · env · lfo · drive · verb
 PADS r1 = randomize-zone   r2-4 = patch slots
-PORT  : Engine_MollyThePoly.sc → DSP .so</pre>
+PORT  : Engine_MollyThePoly.sc → DSP .so</pre></div>
               </div>
               
             </div>
@@ -446,7 +452,7 @@ PORT  : Engine_MollyThePoly.sc → DSP .so</pre>
                   <div class="row"><span class="k">Portability</span><span class="v">SC engine — Has a SuperCollider engine — port to a native DSP .so (or run scsynth via sc-plugins-arm64).</span></div>
                   
                 </div>
-                <pre class="mock">┌─ dronecaster ──────────────────────────┐
+                <div class="mockwrap"><div class="mockcap">◇ norns-original concept — Move uses the knob-editor menu</div><pre class="mock">┌─ dronecaster ──────────────────────────┐
 │ v1▓ v2▒ v3▓ v4░ v5▒ v6 v7 v8           │
 │ detune  -7 +3 0 +12 -5 cents           │
 │ ▟▙▟▙▟▙  layered drone                   │
@@ -454,7 +460,7 @@ PORT  : Engine_MollyThePoly.sc → DSP .so</pre>
 └────────────────────────────────────────┘
 ENC 1-8 = voice detune/level
 PADS r1 voice on/off  CAST / RETURN(capture)
-PORT  : 2 SC engines → one native DSP .so</pre>
+PORT  : 2 SC engines → one native DSP .so</pre></div>
               </div>
               
             </div>
@@ -474,7 +480,7 @@ PORT  : 2 SC engines → one native DSP .so</pre>
                   <div class="row"><span class="k">Portability</span><span class="v">SC engine — Has a SuperCollider engine — port to a native DSP .so (or run scsynth via sc-plugins-arm64).</span></div>
                   
                 </div>
-                <pre class="mock">┌─ phyllis · analog filter ──────────────┐
+                <div class="mockwrap"><div class="mockcap">◇ norns-original concept — Move uses the knob-editor menu</div><pre class="mock">┌─ phyllis · analog filter ──────────────┐
 │ type LP24   cut 1.2kHz  res 0.7        │
 │      ╲                                  │
 │ ─────╲___  drive 1.8  env→ 30%         │
@@ -482,9 +488,9 @@ PORT  : 2 SC engines → one native DSP .so</pre>
 └────────────────────────────────────────┘
 ENC 1 cut 2 res 3 type 4 drive 5 env 6 mix
 PADS = LP/HP/BP/notch + cutoff snap-notes
-PORT  : Engine_Phyllis.sc → native DSP .so</pre>
+PORT  : Engine_Phyllis.sc → native DSP .so</pre></div>
               </div>
-              <div class="testing"><div class="testhead">▶ How to put it through its paces</div><div class="testlead"><b>Sideload:</b> Move Manager (<code>:7700</code>) → Modules → Install Custom → Upload <code>phyllis-module.tar.gz</code>. It installs to the audio FX category, then pick <b>phyllis</b> in a chain audio FX slot.</div><ol class="teststeps"><li>Place after a <b>harmonically rich</b> source (saw synth, drums, noise) in a chain, or as a Master FX. Needs input audio.</li><li><b>Cutoff sweep:</b> sweep Cutoff high→low on a bright input → classic low-pass darkening; highs should roll off as cutoff drops.</li><li><b>Resonance:</b> raise toward 1 → a pronounced peak at the cutoff; near the top it should whistle/ring (approaching self-oscillation).</li><li><b>Type:</b> switch LP↔HP → HP should thin out the lows (the inverse of LP).</li><li><b>Drive:</b> push Drive/gain → the signal should overdrive into the filter (added harmonics/dirt), an analog-style saturation rather than just louder.</li><li><b>Noise + character:</b> small Noise values add a subtle analog hiss. Compared to a clean DSP filter, phyllis should feel slightly nonlinear/'analog,' especially with drive + resonance up.</li></ol></div>
+              <div class="testing"><div class="testhead">▶ How to put it through its paces</div><div class="testlead"><b>Sideload:</b> Move Manager (<code>:7700</code>) → Modules → Install Custom → Upload <code>phyllis-module.tar.gz</code>. It installs to the audio FX category, then pick <b>phyllis</b> in a chain audio FX slot. <b>Start with a preset</b> (scroll the selector at the top of the module menu), then tweak. <i>On Move these use the standard knob-editor menu — not the full-screen layout mocked above.</i></div><ol class="teststeps"><li>Place after a <b>harmonically rich</b> source (saw synth, drums, noise) in a chain, or as a Master FX. Needs input audio.</li><li><b>Cutoff sweep:</b> sweep Cutoff high→low on a bright input → classic low-pass darkening; highs should roll off as cutoff drops.</li><li><b>Resonance:</b> raise toward 1 → a pronounced peak at the cutoff; near the top it should whistle/ring (approaching self-oscillation).</li><li><b>Type:</b> switch LP↔HP → HP should thin out the lows (the inverse of LP).</li><li><b>Drive:</b> push Drive/gain → the signal should overdrive into the filter (added harmonics/dirt), an analog-style saturation rather than just louder.</li><li><b>Noise + character:</b> small Noise values add a subtle analog hiss. Compared to a clean DSP filter, phyllis should feel slightly nonlinear/'analog,' especially with drive + resonance up.</li></ol></div>
             </div>
 
             <div class="card" id="feat-glaciers">
@@ -501,7 +507,7 @@ PORT  : Engine_Phyllis.sc → native DSP .so</pre>
                   <div class="row"><span class="k">Portability</span><span class="v">SC engine — Has a SuperCollider engine — port to a native DSP .so (or run scsynth via sc-plugins-arm64).</span></div>
                   
                 </div>
-                <pre class="mock">┌─ glaciers · stretch + harmonise ───────┐
+                <div class="mockwrap"><div class="mockcap">◇ norns-original concept — Move uses the knob-editor menu</div><pre class="mock">┌─ glaciers · stretch + harmonise ───────┐
 │ freeze ███████▒  smear 8.0s            │
 │ harmony [ -12 -5 0 +7 +12 ]            │
 │ ≈≈≈≈≈≈≈≈≈  glassy pad                  │
@@ -509,7 +515,7 @@ PORT  : Engine_Phyllis.sc → native DSP .so</pre>
 └────────────────────────────────────────┘
 ENC 1 freeze 2 harmony 3 spread 4 tone 5 fb 6 mix
 PADS = harmony interval chord builder
-PORT  : Engine_Glacial.sc + softcut → DSP</pre>
+PORT  : Engine_Glacial.sc + softcut → DSP</pre></div>
               </div>
               
             </div>
@@ -528,7 +534,7 @@ PORT  : Engine_Glacial.sc + softcut → DSP</pre>
                   <div class="row"><span class="k">Portability</span><span class="v">Softcut — Built on norns softcut buffers — needs a varispeed sample-buffer DSP.</span></div>
                   
                 </div>
-                <pre class="mock">┌─ oooooo · 6 tape loops ────────────────┐
+                <div class="mockwrap"><div class="mockcap">◇ norns-original concept — Move uses the knob-editor menu</div><pre class="mock">┌─ oooooo · 6 tape loops ────────────────┐
 │ L1 ▶ L2 ● L3 ◀ L4 · L5 ▶ L6 ·          │
 │ spd 1.0 .5  -1  --  2.0 --             │
 │ ▓▓▓▓░░ ▓▓░░░░ ▓▓▓▓▓░ len               │
@@ -536,7 +542,7 @@ PORT  : Engine_Glacial.sc + softcut → DSP</pre>
 └────────────────────────────────────────┘
 PADS  cols=6 loops  rows= rec/play/rev/clear
 ENC 1-6 = per-loop varispeed
-PORT  : softcut → varispeed buffer DSP (key dep)</pre>
+PORT  : softcut → varispeed buffer DSP (key dep)</pre></div>
               </div>
               
             </div>
@@ -555,16 +561,16 @@ PORT  : softcut → varispeed buffer DSP (key dep)</pre>
                   <div class="row"><span class="k">Portability</span><span class="v">SC engine — Has a SuperCollider engine — port to a native DSP .so (or run scsynth via sc-plugins-arm64).</span></div>
                   
                 </div>
-                <pre class="mock">┌─ massif · 8-band resonator ────────────┐
+                <div class="mockwrap"><div class="mockcap">◇ norns-original concept — Move uses the knob-editor menu</div><pre class="mock">┌─ massif · 8-band resonator ────────────┐
 │ f: C2 G2 C3 E3 G3 B3 D4 G4   (Cmaj9)   │
 │ ║ ║ ║ ║ ║ ║ ║ ║   ringing bands        │
 │ Q 0.8   decay 1.4s   mix 60%           │
 └────────────────────────────────────────┘
 ENC 1-8 = band 1-8 frequency
 PADS = snap bank to chord/scale; Q/decay presets
-PORT  : Engine_ResonatorBank.sc → DSP .so</pre>
+PORT  : Engine_ResonatorBank.sc → DSP .so</pre></div>
               </div>
-              <div class="testing"><div class="testhead">▶ How to put it through its paces</div><div class="testlead"><b>Sideload:</b> Move Manager (<code>:7700</code>) → Modules → Install Custom → Upload <code>massif-module.tar.gz</code>. It installs to the audio FX category, then pick <b>massif</b> in a chain audio FX slot.</div><ol class="teststeps"><li>Place <b>after a sound source</b> in a chain (drum slot, sampler, synth) or as a <b>Master FX</b>. It resonates the <i>input</i> — with no input it is silent by design.</li><li>Feed percussive/broadband audio (drum loop or noise). Default = 8 short-ring resonators: the dry sound should gain a metallic, pitched ring. Confirm the input becomes 'tuned.'</li><li><b>Tuning (Frequencies page, 8 knobs):</b> set the 8 peaks to a chord (root/3rd/5th across two octaves). Run noise or a drum loop through → the output should <i>sing that chord</i>; turning a freq knob audibly re-pitches that peak.</li><li><b>Ring time (Ring Times page):</b> raise all rings toward 2–5 s, feed a single hit → it should ring/sustain like a struck string or bell long after the transient (longer ring = longer T60 tail).</li><li><b>Isolate a peak (Amplitudes page):</b> set 7 amps to 0 and one to max → you should hear exactly one resonant frequency. Confirms each peak is independent and on-pitch.</li><li><b>Don't-blow-up test:</b> long rings + all amps up + loud input + Master high. A raw resonator bank would scream/clip — confirm massif stays clean and bounded (the normalized-gain + limiter design).</li></ol></div>
+              <div class="testing"><div class="testhead">▶ How to put it through its paces</div><div class="testlead"><b>Sideload:</b> Move Manager (<code>:7700</code>) → Modules → Install Custom → Upload <code>massif-module.tar.gz</code>. It installs to the audio FX category, then pick <b>massif</b> in a chain audio FX slot. <b>Start with a preset</b> (scroll the selector at the top of the module menu), then tweak. <i>On Move these use the standard knob-editor menu — not the full-screen layout mocked above.</i></div><ol class="teststeps"><li>Place <b>after a sound source</b> in a chain (drum slot, sampler, synth) or as a <b>Master FX</b>. It resonates the <i>input</i> — with no input it is silent by design.</li><li>Feed percussive/broadband audio (drum loop or noise). Default = 8 short-ring resonators: the dry sound should gain a metallic, pitched ring. Confirm the input becomes 'tuned.'</li><li><b>Tuning (Frequencies page, 8 knobs):</b> set the 8 peaks to a chord (root/3rd/5th across two octaves). Run noise or a drum loop through → the output should <i>sing that chord</i>; turning a freq knob audibly re-pitches that peak.</li><li><b>Ring time (Ring Times page):</b> raise all rings toward 2–5 s, feed a single hit → it should ring/sustain like a struck string or bell long after the transient (longer ring = longer T60 tail).</li><li><b>Isolate a peak (Amplitudes page):</b> set 7 amps to 0 and one to max → you should hear exactly one resonant frequency. Confirms each peak is independent and on-pitch.</li><li><b>Don't-blow-up test:</b> long rings + all amps up + loud input + Master high. A raw resonator bank would scream/clip — confirm massif stays clean and bounded (the normalized-gain + limiter design).</li></ol></div>
             </div>
 
             <div class="card" id="feat-raft">
@@ -581,7 +587,7 @@ PORT  : Engine_ResonatorBank.sc → DSP .so</pre>
                   <div class="row"><span class="k">Portability</span><span class="v">Softcut — Built on norns softcut buffers — needs a varispeed sample-buffer DSP.</span></div>
                   
                 </div>
-                <pre class="mock">┌─ raft · modulated delay + ocean ───────┐
+                <div class="mockwrap"><div class="mockcap">◇ norns-original concept — Move uses the knob-editor menu</div><pre class="mock">┌─ raft · modulated delay + ocean ───────┐
 │ ≈≈≈ ocean ≈≈≈   lvl ▒▒██               │
 │ delay 3/8  fb 65%  mod ∿ 30%           │
 │ echoes ░▒▓ drifting                     │
@@ -589,7 +595,7 @@ PORT  : Engine_ResonatorBank.sc → DSP .so</pre>
 └────────────────────────────────────────┘
 ENC 1 time 2 fb 3 mod 4 ocean 5 tone 6 mix
 PADS = scene snapshots / morph
-PORT  : softcut + Engine_Ocean.sc → DSP</pre>
+PORT  : softcut + Engine_Ocean.sc → DSP</pre></div>
               </div>
               
             </div>
@@ -608,7 +614,7 @@ PORT  : softcut + Engine_Ocean.sc → DSP</pre>
                   <div class="row"><span class="k">Portability</span><span class="v">SC engine — Has a SuperCollider engine — port to a native DSP .so (or run scsynth via sc-plugins-arm64).</span></div>
                   
                 </div>
-                <pre class="mock">┌─ sway · analysis-driven FX ────────────┐
+                <div class="mockwrap"><div class="mockcap">◇ norns-original concept — Move uses the knob-editor menu</div><pre class="mock">┌─ sway · analysis-driven FX ────────────┐
 │ in ▂▅█▃▁  amp→cutoff ✓  onset→fx ✓     │
 │ pitch trk ♪A3   sens 0.6               │
 │ links: [amp▸cut][onset▸grain][pit▸dly]│
@@ -616,7 +622,7 @@ PORT  : softcut + Engine_Ocean.sc → DSP</pre>
 └────────────────────────────────────────┘
 ENC 1 sens 2-4 routings 5 depth 6 mix
 PADS = toggle analysis→effect links
-PORT  : 3 SC engines → native DSP .so</pre>
+PORT  : 3 SC engines → native DSP .so</pre></div>
               </div>
               
             </div>
@@ -636,7 +642,7 @@ PORT  : 3 SC engines → native DSP .so</pre>
                   <div class="row"><span class="k">Portability</span><span class="v">Softcut — Built on norns softcut buffers — needs a varispeed sample-buffer DSP.</span></div>
                   <div class="row"><span class="k">crow/JF</span><span class="v">crow refs = extra outs; MIDI out is the primary target on Move.</span></div>
                 </div>
-                <pre class="mock">┌─ orca ─────────────────────────────────┐
+                <div class="mockwrap"><div class="mockcap">◇ norns-original concept — Move uses the knob-editor menu</div><pre class="mock">┌─ orca ─────────────────────────────────┐
 │ . . D8 . . . . . . . . . . . . . . . . │
 │ . . : 3C. . . aE5. . . . . . . . . . . │
 │ . . . . . . . :48 . . . . . . . . . .  │
@@ -645,7 +651,7 @@ PORT  : 3 SC engines → native DSP .so</pre>
 └────────────────────────────────────────┘
 JOG = move cursor   ENC 1 operator  2 value
 PADS = operator palette / nav   Play = run
-PORT  : softcut→sample outs optional; MIDI core</pre>
+PORT  : softcut→sample outs optional; MIDI core</pre></div>
               </div>
               
             </div>
@@ -664,7 +670,7 @@ PORT  : softcut→sample outs optional; MIDI core</pre>
                   <div class="row"><span class="k">Portability</span><span class="v">Lua-only — Pure logic — reimplement in QuickJS/C. No DSP risk.</span></div>
                   
                 </div>
-                <pre class="mock">┌─ takt · p-lock sequencer ──────────────┐
+                <div class="mockwrap"><div class="mockcap">◇ norns-original concept — Move uses the knob-editor menu</div><pre class="mock">┌─ takt · p-lock sequencer ──────────────┐
 │ T1  ■ □ ■◆■ □ ■ □ ■ □ ■◆□ ■ □ ■ □      │
 │ ◆ = locked step   page 1/1             │
 │ HOLD st7 + ENC3 → cutoff = 0.62 ✎      │
@@ -672,7 +678,7 @@ PORT  : softcut→sample outs optional; MIDI core</pre>
 └────────────────────────────────────────┘
 PADS = 16 steps (× 4 track pages)
 HOLD step + ENC = p-lock that parameter
-ENC 1-8 = the 8 lockable params (live)</pre>
+ENC 1-8 = the 8 lockable params (live)</pre></div>
               </div>
               
             </div>
@@ -691,7 +697,7 @@ ENC 1-8 = the 8 lockable params (live)</pre>
                   <div class="row"><span class="k">Portability</span><span class="v">Lua-only — Pure logic — reimplement in QuickJS/C. No DSP risk.</span></div>
                   <div class="row"><span class="k">crow/JF</span><span class="v">crow=9 refs are extra outs; MIDI to slots is primary.</span></div>
                 </div>
-                <pre class="mock">┌─ yggdrasil · tracker ──────────────────┐
+                <div class="mockwrap"><div class="mockcap">◇ norns-original concept — Move uses the knob-editor menu</div><pre class="mock">┌─ yggdrasil · tracker ──────────────────┐
 │   T1     T2     T3     T4              │
 │ 00 C-4 5│--- -│G-3 2│--- -            │
 │ 01 --- -│E-4 5│--- -│C-2 4  ◄play     │
@@ -700,7 +706,7 @@ ENC 1-8 = the 8 lockable params (live)</pre>
 └────────────────────────────────────────┘
 JOG = scroll rows  PADS = note entry + transport
 ENC 1 track 2 column 3 value 4 octave
-PORT  : drop synth engine → MIDI to slots</pre>
+PORT  : drop synth engine → MIDI to slots</pre></div>
               </div>
               
             </div>
@@ -719,7 +725,7 @@ PORT  : drop synth engine → MIDI to slots</pre>
                   <div class="row"><span class="k">Portability</span><span class="v">Lua-only — Pure logic — reimplement in QuickJS/C. No DSP risk.</span></div>
                   
                 </div>
-                <pre class="mock">┌─ pitfalls · microtonal ────────────────┐
+                <div class="mockwrap"><div class="mockcap">◇ norns-original concept — Move uses the knob-editor menu</div><pre class="mock">┌─ pitfalls · microtonal ────────────────┐
 │ 19-EDO   root C   layout +3/+1          │
 │ cents: 0 63 126 189 ... 1137           │
 │ ▢▢▢▢▢▢▢▢  isomorphic pads              │
@@ -727,7 +733,7 @@ PORT  : drop synth engine → MIDI to slots</pre>
 └────────────────────────────────────────┘
 PADS 4×8 = isomorphic microtonal keyboard
 ENC 1 EDO 2 root 3 layout 4 arp 5 rate
-PORT  : pure Lua; MPE pitch-bend out</pre>
+PORT  : pure Lua; MPE pitch-bend out</pre></div>
               </div>
               
             </div>
@@ -746,7 +752,7 @@ PORT  : pure Lua; MPE pitch-bend out</pre>
                   <div class="row"><span class="k">Portability</span><span class="v">Lua-only — Pure logic — reimplement in QuickJS/C. No DSP risk.</span></div>
                   <div class="row"><span class="k">crow/JF</span><span class="v">crow=6 refs are extra outs; multi-channel MIDI to slots is primary.</span></div>
                 </div>
-                <pre class="mock">┌─ dreamsequence · progression ──────────┐
+                <div class="mockwrap"><div class="mockcap">◇ norns-original concept — Move uses the knob-editor menu</div><pre class="mock">┌─ dreamsequence · progression ──────────┐
 │ key Am   | Am  F   C   G  | ◄ now      │
 │ chord timeline ■ □ □ □                  │
 │ arp: up-down 1/16  harm +3rd            │
@@ -754,7 +760,7 @@ PORT  : pure Lua; MPE pitch-bend out</pre>
 └────────────────────────────────────────┘
 PADS r1-2 = progression  r3-4 = arp editor
 ENC 1 key 2 quality 3 arp 4 rate 5 harm 6 swing
-PORT  : pure Lua; multi-channel MIDI out</pre>
+PORT  : pure Lua; multi-channel MIDI out</pre></div>
               </div>
               
             </div>
@@ -773,7 +779,7 @@ PORT  : pure Lua; multi-channel MIDI out</pre>
                   <div class="row"><span class="k">Portability</span><span class="v">Lua-only — Pure logic — reimplement in QuickJS/C. No DSP risk.</span></div>
                   
                 </div>
-                <pre class="mock">┌─ tmi · text MIDI ──────────────────────┐
+                <div class="mockwrap"><div class="mockcap">◇ norns-original concept — Move uses the knob-editor menu</div><pre class="mock">┌─ tmi · text MIDI ──────────────────────┐
 │ &gt; c4 e4 g4 . c5/8 r r [a3 c4 e4]       │
 │ parsed: ▮▮▮ _ ▮ __ ▮▮▮  loop ⟳         │
 │ cursor ▏  transpose +0  bpm 120         │
@@ -781,7 +787,7 @@ PORT  : pure Lua; multi-channel MIDI out</pre>
 └────────────────────────────────────────┘
 TEXT-ENTRY buffer (text_entry.mjs)
 PADS = token shortcuts (notes/durations/rests)
-ENC 1 cursor 2 transpose 3 tempo</pre>
+ENC 1 cursor 2 transpose 3 tempo</pre></div>
               </div>
               
             </div>
@@ -801,7 +807,7 @@ ENC 1 cursor 2 transpose 3 tempo</pre>
                   <div class="row"><span class="k">Portability</span><span class="v">Softcut — Built on norns softcut buffers — needs a varispeed sample-buffer DSP.</span></div>
                   
                 </div>
-                <pre class="mock">┌─ mlr · live cut + pattern rec ─────────┐
+                <div class="mockwrap"><div class="mockcap">◇ norns-original concept — Move uses the knob-editor menu</div><pre class="mock">┌─ mlr · live cut + pattern rec ─────────┐
 │ row1 ▣□□□□□□□  loop A  spd 1.0          │
 │ row2 □□□▣□□□□  loop B  spd 0.5          │
 │ row3 □□□□□□□□  (rec armed ●)            │
@@ -809,7 +815,7 @@ ENC 1 cursor 2 transpose 3 tempo</pre>
 └────────────────────────────────────────┘
 PADS rows=loops  cols=scrub positions
 PADS r4 = pattern record / overdub / play
-PORT  : softcut buffer DSP (shared w/ oooooo)</pre>
+PORT  : softcut buffer DSP (shared w/ oooooo)</pre></div>
               </div>
               
             </div>
@@ -828,7 +834,7 @@ PORT  : softcut buffer DSP (shared w/ oooooo)</pre>
                   <div class="row"><span class="k">Portability</span><span class="v">Softcut — Built on norns softcut buffers — needs a varispeed sample-buffer DSP.</span></div>
                   <div class="row"><span class="k">crow/JF</span><span class="v">JF/crow voices → MIDI to slot synths; the spatial logic is untouched.</span></div>
                 </div>
-                <pre class="mock">┌─ arcologies ───────────────────────────┐
+                <div class="mockwrap"><div class="mockcap">◇ norns-original concept — Move uses the knob-editor menu</div><pre class="mock">┌─ arcologies ───────────────────────────┐
 │ · ◇ · · → ● · ·   ◇=structure ●=pulse  │
 │ · · · ▣ · · · ·   ▣=cursor             │
 │ · ↑ · · · · ◆ ·   signals propagate    │
@@ -836,7 +842,7 @@ PORT  : softcut buffer DSP (shared w/ oooooo)</pre>
 └────────────────────────────────────────┘
 PADS 4×8 = world map (place/erase)  JOG = cursor
 ENC 1 struct-type 2 strength 3 tempo
-PORT  : JF voices → slot synths; softcut opt</pre>
+PORT  : JF voices → slot synths; softcut opt</pre></div>
               </div>
               
             </div>
@@ -855,7 +861,7 @@ PORT  : JF voices → slot synths; softcut opt</pre>
                   <div class="row"><span class="k">Portability</span><span class="v">Lua-only — Pure logic — reimplement in QuickJS/C. No DSP risk.</span></div>
                   <div class="row"><span class="k">crow/JF</span><span class="v">crow=2 refs are trigger outs → become MIDI notes per row.</span></div>
                 </div>
-                <pre class="mock">┌─ meadowphysics ────────────────────────┐
+                <div class="mockwrap"><div class="mockcap">◇ norns-original concept — Move uses the knob-editor menu</div><pre class="mock">┌─ meadowphysics ────────────────────────┐
 │ r1 ●○○○○○○○ →r3   speed ███▒           │
 │ r2 ○○●○○○○○ →r1                        │
 │ r3 ○○○○●○○○ →r2   cascading counters   │
@@ -863,7 +869,7 @@ PORT  : JF voices → slot synths; softcut opt</pre>
 └────────────────────────────────────────┘
 PADS = 8 counter rows (set reset + links)
 ENC 1 speed 2 row 3 count 4 rule
-PORT  : pure Lua; crow trigs → MIDI</pre>
+PORT  : pure Lua; crow trigs → MIDI</pre></div>
               </div>
               
             </div>
@@ -882,7 +888,7 @@ PORT  : pure Lua; crow trigs → MIDI</pre>
                   <div class="row"><span class="k">Portability</span><span class="v">Lua-only — Pure logic — reimplement in QuickJS/C. No DSP risk.</span></div>
                   
                 </div>
-                <pre class="mock">┌─ n.kria · param-track sequencer ───────┐
+                <div class="mockwrap"><div class="mockcap">◇ norns-original concept — Move uses the knob-editor menu</div><pre class="mock">┌─ n.kria · param-track sequencer ───────┐
 │ page: NOTE   loop-len 11  scale Dorian │
 │ step ▁▃▅▂▆▁▇▃▁▄▆ (×11 then wraps)      │
 │ TRIG■NOTE◆OCT DUR RPT   ptn A          │
@@ -890,7 +896,7 @@ PORT  : pure Lua; crow trigs → MIDI</pre>
 └────────────────────────────────────────┘
 PADS = current param page (16 steps × value)
 KEYS = pick param page + pattern
-ENC 1 loop-length 2 scale 3 tempo 4 pattern</pre>
+ENC 1 loop-length 2 scale 3 tempo 4 pattern</pre></div>
               </div>
               
             </div>
@@ -909,7 +915,7 @@ ENC 1 loop-length 2 scale 3 tempo 4 pattern</pre>
                   <div class="row"><span class="k">Portability</span><span class="v">CV-reinterp — Crow/JF logic kept as MIDI/CC; the physical CV jacks are dropped.</span></div>
                   <div class="row"><span class="k">crow/JF</span><span class="v">crow=6 refs are note/CV outs → MIDI.</span></div>
                 </div>
-                <pre class="mock">┌─ zellen · game of life seq ────────────┐
+                <div class="mockwrap"><div class="mockcap">◇ norns-original concept — Move uses the knob-editor menu</div><pre class="mock">┌─ zellen · game of life seq ────────────┐
 │ ░█░░██░░  gen 0142  speed 1/8          │
 │ █░██░░█░  scan ▼ col-by-col            │
 │ ░░█░█░██  live cell → note (Dorian)    │
@@ -917,7 +923,7 @@ ENC 1 loop-length 2 scale 3 tempo 4 pattern</pre>
 └────────────────────────────────────────┘
 PADS 4×8 = CA board (tap to seed)
 ENC 1 speed 2 scale 3 scan-dir 4 ruleset
-PORT  : pure Lua; crow → MIDI (very low effort)</pre>
+PORT  : pure Lua; crow → MIDI (very low effort)</pre></div>
               </div>
               
             </div>
@@ -936,7 +942,7 @@ PORT  : pure Lua; crow → MIDI (very low effort)</pre>
                   <div class="row"><span class="k">Portability</span><span class="v">CV-reinterp — Crow/JF logic kept as MIDI/CC; the physical CV jacks are dropped.</span></div>
                   <div class="row"><span class="k">crow/JF</span><span class="v">crow/jf/w outs → MIDI; the 1D-CA logic is the keeper.</span></div>
                 </div>
-                <pre class="mock">┌─ less-concepts · 1D CA ────────────────┐
+                <div class="mockwrap"><div class="mockcap">◇ norns-original concept — Move uses the knob-editor menu</div><pre class="mock">┌─ less-concepts · 1D CA ────────────────┐
 │ rule 110   speed 1/16   scale Phryg.   │
 │ ░░░░█░░░░  gen now                      │
 │ ░░░██░░░░                               │
@@ -945,7 +951,7 @@ PORT  : pure Lua; crow → MIDI (very low effort)</pre>
 └────────────────────────────────────────┘
 PADS r1 = current gen  r2-4 = history
 ENC 1 rule# 2 speed 3 scale 4 seed
-PORT  : pure Lua; crow/jf/w → MIDI</pre>
+PORT  : pure Lua; crow/jf/w → MIDI</pre></div>
               </div>
               
             </div>

@@ -801,7 +801,9 @@ def testing_block(name):
     if b["status"] == "ready":
         head = (f'<b>Sideload:</b> Move Manager (<code>:7700</code>) → Modules → Install Custom → '
                 f'Upload <code>{esc(sid)}-module.tar.gz</code>. It installs to the {esc(slot)} category, '
-                f'then pick <b>{esc(sid)}</b> in a chain {esc(slot)} slot.')
+                f'then pick <b>{esc(sid)}</b> in a chain {esc(slot)} slot. <b>Start with a preset</b> '
+                f'(scroll the selector at the top of the module menu), then tweak. '
+                f'<i>On Move these use the standard knob-editor menu — not the full-screen layout mocked above.</i>')
     else:
         head = (f'On branch <code>{esc(branch)}</code> (not in the delivered tarballs). Build + deploy that branch, '
                 f'then pick <b>{esc(sid)}</b> in a chain {esc(slot)} slot.')
@@ -838,6 +840,9 @@ def progress_section():
       <div class="pchips">{built}</div>
     </div>
     <div class="glabel" style="margin-top:12px">All four "ready" modules are <b>numerically verified offline</b> (DSP shape, stability, spectral correctness) but <b>not yet heard on hardware</b> — these tests are the listening pass that confirms timbre.</div>
+    <div class="glabel" style="margin-top:10px;border-top:1px solid var(--line);padding-top:10px">
+      <b style="color:var(--yellow)">⚠ UI reality vs. the mockups below:</b> these ported modules ship as <b>chainable DSP only</b> — they have no custom display. On Move they surface through Schwung's standard <b>menu-driven knob editor</b>: a <b>preset selector</b> at the top, then 8 mappable knobs + sub-menus (Waveforms / Morph / Envelope, or Peak Tuning / Ring Times, etc.). The ASCII screens on the cards below are the <b>original norns full-screen concept</b> — a design reference, <i>not</i> what you see on the Move.
+    </div>
   </div>
 </section>"""
 
@@ -873,7 +878,7 @@ def featured_section():
                   <div class="row"><span class="k">Portability</span><span class="v">{esc(plabel)} — {esc(pdesc)}</span></div>
                   {crow}
                 </div>
-                <pre class="mock">{esc(f['mockup'])}</pre>
+                <div class="mockwrap"><div class="mockcap">◇ norns-original concept — Move uses the knob-editor menu</div><pre class="mock">{esc(f['mockup'])}</pre></div>
               </div>
               {testing_block(f['name'])}
             </div>""")
@@ -974,9 +979,12 @@ border-radius:9px;padding:7px 12px;min-width:96px}}
 .row:last-child{{border-bottom:0}}
 .row .k{{color:var(--mut);font-size:12px;text-transform:uppercase;letter-spacing:.4px;padding-top:2px}}
 .row .v{{font-size:14px}} .row .v code{{background:#0d1117;padding:1px 5px;border-radius:4px;font-size:12px}}
-.mock{{margin:0;background:#0a0d12;border-left:1px solid var(--line);padding:14px 16px;color:#9fe0a8;
+.mockwrap{{border-left:1px solid var(--line);display:flex;flex-direction:column}}
+.mockcap{{background:#0a0d12;color:var(--mut);font-size:10px;letter-spacing:.3px;padding:6px 16px 0;
+font-style:italic}}
+.mock{{margin:0;background:#0a0d12;padding:8px 16px 14px;color:#9fe0a8;
 font:12px/1.35 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;white-space:pre;overflow-x:auto}}
-@media(max-width:840px){{.cardbody{{grid-template-columns:1fr}}.mock{{border-left:0;border-top:1px solid var(--line)}}.legendgrid{{grid-template-columns:1fr}}}}
+@media(max-width:840px){{.cardbody{{grid-template-columns:1fr}}.mockwrap{{border-left:0;border-top:1px solid var(--line)}}.legendgrid{{grid-template-columns:1fr}}}}
 .controls{{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0;align-items:center}}
 .controls input,.controls select{{background:var(--panel);border:1px solid var(--line);color:var(--ink);
 padding:8px 10px;border-radius:8px;font-size:13px}}
