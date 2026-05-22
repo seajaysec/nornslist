@@ -61,10 +61,10 @@ P_SOFT  = ("softcut", "Softcut",      "Built on norns softcut buffers — needs 
 P_CV    = ("cv",      "CV-reinterp",  "Crow/JF logic kept as MIDI/CC; the physical CV jacks are dropped.")
 P_NA    = ("na",      "N/A",          "Norns-internal, hardware-companion, or visual-only — not portable in a meaningful way.")
 
-# build status (work done so far) — keyed into BUILT below
+# build status — keyed into BUILT below. Honest: code-complete + deployed for
+# testing, but NOT verified on hardware. None have passed listening/use tests.
 STATUS_META = {
-    "ready": ("✅ Built — test now", "st-ready"),
-    "built": ("🔨 Built — other branch", "st-built"),
+    "ported": ("⚗ Ported · UNTESTED on hardware", "st-ported"),
 }
 
 FORM_META = {
@@ -729,7 +729,7 @@ def badge(text, cls): return f'<span class="badge {cls}">{esc(text)}</span>'
 # `testing` = real put-it-through-its-paces steps (not "how to load it").
 # ---------------------------------------------------------------------------
 BUILT = {
- "overtones": {"status":"ready","id":"overtones","slot":"sound generator", "testing":[
+ "overtones": {"status":"ported","id":"overtones","slot":"sound generator", "testing":[
    "Load into a Signal Chain <b>sound-generator</b> slot and hold a note. The default patch is a <b>pure sine</b> (snapshot 0 = fundamental only): confirm one clean pitch, no buzz, no overtones.",
    "<b>Waveforms → Snapshot 1</b>: knobs 1–8 are the 8 partial amplitudes. Hold a note and raise knob 1 (fundamental), then 2, 3… one at a time — each adds the next-higher harmonic; the tone should brighten predictably (knob 8 = a faint, high partial).",
    "<b>Morph:</b> make Snapshot 1 bright (several partials) and Snapshot 2 dark (knob 1 only). Morph page → Start 0, End 1, Rate ~4 s, Src 0 (LFO). Hold a note: timbre should slowly sweep bright↔dark every few seconds. Switch Src to 2 (Env): each new note starts at Start and settles to End across attack→sustain (onset timbre ≠ held timbre).",
@@ -737,7 +737,7 @@ BUILT = {
    "<b>Polyphony + envelope:</b> Envelope page → Attack ~3 s, Release ~4 s. Swell in a chord; then play <b>more than 8 notes</b> — the 9th should steal the oldest voice (no stuck notes/overflow). Lift hands → tails ring out over the Release time.",
    "<b>Abuse / safety:</b> all partials up + 8-note chord + Level high → must stay clean (no digital clipping, crackle, or dropout). Confirms the output limiter holds.",
  ]},
- "massif": {"status":"ready","id":"massif","slot":"audio FX", "testing":[
+ "massif": {"status":"ported","id":"massif","slot":"audio FX", "testing":[
    "Place <b>after a sound source</b> in a chain (drum slot, sampler, synth) or as a <b>Master FX</b>. It resonates the <i>input</i> — with no input it is silent by design.",
    "Feed percussive/broadband audio (drum loop or noise). Default = 8 short-ring resonators: the dry sound should gain a metallic, pitched ring. Confirm the input becomes 'tuned.'",
    "<b>Tuning (Frequencies page, 8 knobs):</b> set the 8 peaks to a chord (root/3rd/5th across two octaves). Run noise or a drum loop through → the output should <i>sing that chord</i>; turning a freq knob audibly re-pitches that peak.",
@@ -745,7 +745,7 @@ BUILT = {
    "<b>Isolate a peak (Amplitudes page):</b> set 7 amps to 0 and one to max → you should hear exactly one resonant frequency. Confirms each peak is independent and on-pitch.",
    "<b>Don't-blow-up test:</b> long rings + all amps up + loud input + Master high. A raw resonator bank would scream/clip — confirm massif stays clean and bounded (the normalized-gain + limiter design).",
  ]},
- "benjolis": {"status":"ready","id":"benjolis","slot":"sound generator", "testing":[
+ "benjolis": {"status":"ported","id":"benjolis","slot":"sound generator", "testing":[
    "Load into a sound-gen slot and <b>hold a note</b> to open the gate — you should hear an evolving <b>chaotic Benjolin texture</b>, not a clean note. Release: it goes silent but keeps churning internally (the next note picks up a new state).",
    "<b>Cross-mod:</b> knobs 1 & 2 = osc1/osc2 freq. Detune them → you should get sidebands/grit from the cross-modulation, not two independent pitches.",
    "<b>Rungler:</b> raise Rungler 1/2 depth + Rungler Filt → a stepped, looping pseudo-random pattern should drive pitch/filter (the signature 'rungler'): a repeating-but-evolving stepped motion.",
@@ -753,7 +753,7 @@ BUILT = {
    "<b>Filter:</b> sweep Filter Freq, raise Resonance, switch Type LP/HP/BP → the filter should clearly reshape the tone and the three types should sound distinct.",
    "<b>Output select + safety:</b> step the Output param (Tri1 … Rungler … Filter) — each should sound different (Rungler = raw stepped, Filter = smoothed). Then max Rungler depth + Resonance + Gain → must stay bounded (no NaN dropout, no runaway).",
  ]},
- "phyllis": {"status":"ready","id":"phyllis","slot":"audio FX", "testing":[
+ "phyllis": {"status":"ported","id":"phyllis","slot":"audio FX", "testing":[
    "Place after a <b>harmonically rich</b> source (saw synth, drums, noise) in a chain, or as a Master FX. Needs input audio.",
    "<b>Cutoff sweep:</b> sweep Cutoff high→low on a bright input → classic low-pass darkening; highs should roll off as cutoff drops.",
    "<b>Resonance:</b> raise toward 1 → a pronounced peak at the cutoff; near the top it should whistle/ring (approaching self-oscillation).",
@@ -761,31 +761,31 @@ BUILT = {
    "<b>Drive:</b> push Drive/gain → the signal should overdrive into the filter (added harmonics/dirt), an analog-style saturation rather than just louder.",
    "<b>Noise + character:</b> small Noise values add a subtle analog hiss. Compared to a clean DSP filter, phyllis should feel slightly nonlinear/'analog,' especially with drive + resonance up.",
  ]},
- "changes": {"status":"built","id":"changes","slot":"MIDI FX","branch":"feat/changes-cc-modulation-bank", "testing":[
+ "changes": {"status":"ported","id":"changes","slot":"MIDI FX","branch":"feat/changes-cc-modulation-bank", "testing":[
    "Place in a chain <b>MIDI-FX</b> slot before a synth, or aim it at Move's own track macros (Pre mode → inject to Move MIDI_IN). It outputs <b>CC, not notes</b>.",
    "Map one of its 8 LFO outputs to a synth param (e.g. a filter-cutoff CC). With the synth holding a note, that param should move on its own in a smooth evolving pattern — confirm hands-free motion.",
    "Change an LFO's rate, depth, and phase offset → confirm the speed/amount/relationship of the motion changes; run several LFOs at different rates → confirm independent, phase-linked movement.",
    "<b>Key unknown to confirm:</b> aim a CC at a Move <i>track macro</i> and verify Move actually responds. The CC-to-Move-track path is unverified — this is the test that settles <code>docs/MOVE_CC_MAP.md</code>.",
  ]},
- "clockabout": {"status":"built","id":"clockabout","slot":"MIDI FX","branch":"feat/norns-adaptations-batch", "testing":[
+ "clockabout": {"status":"ported","id":"clockabout","slot":"MIDI FX","branch":"feat/norns-adaptations-batch", "testing":[
    "Put before a sequenced synth in a chain MIDI-FX slot. Feed a steady stream of notes and raise swing → off-beats should shift late/early audibly vs the straight input.",
    "Try the different curve shapes (linear / exp / groove) → confirm the timing <i>feel</i> changes between them.",
    "Confirm scope: it can only <b>delay</b> notes passing through it, not advance Move's own master clock (documented limitation) — so it grooves the note stream, not the transport.",
  ]},
- "nørgård": {"status":"built","id":"norgaard","slot":"MIDI FX","branch":"feat/norns-adaptations-batch", "testing":[
+ "nørgård": {"status":"ported","id":"norgaard","slot":"MIDI FX","branch":"feat/norns-adaptations-batch", "testing":[
    "MIDI-FX slot before a synth. Trigger it (note/clock) → it should emit a self-similar, non-repeating melodic line (the infinity series).",
    "Set Scale + Root → confirm output is quantized to that scale. Change sequence length / step rate → confirm the read-head speed and pattern window change.",
    "Confirm it's deterministic/self-similar: the same start reproduces the same line — a recognizable fractal melody, not randomness.",
  ]},
- "serialism": {"status":"built","id":"serialism","slot":"MIDI FX","branch":"feat/norns-adaptations-batch", "testing":[
+ "serialism": {"status":"ported","id":"serialism","slot":"MIDI FX","branch":"feat/norns-adaptations-batch", "testing":[
    "MIDI-FX slot before a synth. Define a 12-tone row and run it → it should play the row.",
    "Switch transform Prime / Retrograde / Inversion / Retrograde-Inversion → verify by ear or log: Retrograde = row reversed, Inversion = intervals flipped, RI = both.",
  ]},
- "magpie": {"status":"built","id":"magpie","slot":"MIDI FX","branch":"feat/norns-adaptations-batch", "testing":[
+ "magpie": {"status":"ported","id":"magpie","slot":"MIDI FX","branch":"feat/norns-adaptations-batch", "testing":[
    "MIDI-FX slot before a synth. Play notes → magpie should re-emit them with evolving delay/transposition/probability (a melodic echo, not an audio delay).",
    "Raise delay + transpose → echoed notes should be pitch-shifted and time-spread; raise the probability/variance → some echoes should drop or vary. Distinct evolving repeats, not a fixed tap.",
  ]},
- "justharmonicon": {"status":"built","id":"justharmonicon","slot":"MIDI FX","branch":"feat/norns-adaptations-batch", "testing":[
+ "justharmonicon": {"status":"ported","id":"justharmonicon","slot":"MIDI FX","branch":"feat/norns-adaptations-batch", "testing":[
    "MIDI-FX slot before a synth. Trigger it → confirm rich undertone-series (subharmonic) voicings <i>below</i> the played root, not standard overtone chords.",
    "Change the subharmonic divisors → confirm the chord voicing changes accordingly.",
  ]},
@@ -797,16 +797,12 @@ def testing_block(name):
     steps = "".join(f"<li>{s}</li>" for s in b["testing"])
     sid = b.get("id","")
     slot = b.get("slot","")
-    branch = b.get("branch")
-    if b["status"] == "ready":
-        head = (f'<b>Sideload:</b> Move Manager (<code>:7700</code>) → Modules → Install Custom → '
-                f'Upload <code>{esc(sid)}-module.tar.gz</code>. It installs to the {esc(slot)} category, '
-                f'then pick <b>{esc(sid)}</b> in a chain {esc(slot)} slot. <b>Start with a preset</b> '
-                f'(scroll the selector at the top of the module menu), then tweak. '
-                f'<i>On Move these use the standard knob-editor menu — not the full-screen layout mocked above.</i>')
-    else:
-        head = (f'On branch <code>{esc(branch)}</code> (not in the delivered tarballs). Build + deploy that branch, '
-                f'then pick <b>{esc(sid)}</b> in a chain {esc(slot)} slot.')
+    head = (f'<b>Status: ported &amp; deployed for testing — NOT yet verified on hardware.</b> '
+            f'Sideload <code>{esc(sid)}-module.tar.gz</code> via Move Manager (<code>:7700</code>) → '
+            f'Modules → Install Custom → Upload, then pick <b>{esc(sid)}</b> in a chain {esc(slot)} slot '
+            f'(start from a preset at the top of the menu). On Move it is a <b>knob-editor menu</b> only — '
+            f'the ASCII screen above is the original norns concept, not the Move UI. '
+            f'The steps below are <i>what to check</i>, not a claim that it works — report what fails.')
     return (f'<div class="testing"><div class="testhead">▶ How to put it through its paces</div>'
             f'<div class="testlead">{head}</div><ol class="teststeps">{steps}</ol></div>')
 
@@ -816,32 +812,34 @@ def status_badge(name):
     label, cls = STATUS_META[b["status"]]
     return badge(label, cls)
 
-# Build-progress banner: what's been ported so far, linking to each card.
-READY_ORDER = ["overtones","massif","benjolis","phyllis"]
-BUILT_ORDER = ["changes","nørgård","serialism","justharmonicon","magpie","clockabout"]
+# Build-progress banner: ported modules, all deployed for testing, none verified.
+PORTED_SYNTH_FX = ["overtones","benjolis","massif","phyllis"]
+PORTED_MIDI_FX  = ["changes","nørgård","serialism","justharmonicon","magpie","clockabout"]
 def _pchip(name, extra=""):
     b = BUILT[name]
     return (f'<a class="pchip {extra}" href="#feat-{esc(name)}">'
             f'<span class="pn">{esc(name)}</span><span class="ps">{esc(b["slot"])}</span></a>')
 def progress_section():
-    ready = "".join(_pchip(n) for n in READY_ORDER)
-    built = "".join(_pchip(n,"b") for n in BUILT_ORDER)
+    synthfx = "".join(_pchip(n) for n in PORTED_SYNTH_FX)
+    midifx  = "".join(_pchip(n,"b") for n in PORTED_MIDI_FX)
     n_total = len(BUILT)
     return f"""
 <section id="progress">
-  <h2>Build progress <small>{n_total} clean-room ports done so far — every one has a numerical test suite + ARM build</small></h2>
+  <h2>Port status <small>{n_total} modules code-complete &amp; deployed to the Move — <b>none verified on hardware yet</b></small></h2>
   <div class="progress">
-    <div class="pgroup">
-      <div class="glabel"><b style="color:var(--green)">✅ Ready to test now</b> — aarch64 tarballs delivered. Move Manager (<code>:7700</code>) → Modules → Install Custom → Upload, then pick in a chain slot. Each card below has step-by-step "put it through its paces" tests.</div>
-      <div class="pchips">{ready}</div>
+    <div class="glabel" style="background:#2a1d12;border:1px solid var(--yellow);border-radius:8px;padding:10px 12px;color:var(--ink)">
+      <b style="color:var(--yellow)">⚠ Honest status:</b> all {n_total} modules below compile, pass offline numerical tests, and are <b>deployed to the device for testing</b>. <b>None have passed a real listening / play test</b> — treat every one as unverified until confirmed on hardware. The per-card steps are a <i>test plan</i>, not evidence it works.
     </div>
     <div class="pgroup">
-      <div class="glabel"><b style="color:var(--blue)">🔨 Built &amp; unit-tested</b> — on dev branches, not in the delivered tarballs yet (MIDI-FX + the CC modulation bank). Build/deploy the noted branch to try them.</div>
-      <div class="pchips">{built}</div>
+      <div class="glabel">Sound generators &amp; audio FX (chain slots)</div>
+      <div class="pchips">{synthfx}</div>
     </div>
-    <div class="glabel" style="margin-top:12px">All four "ready" modules are <b>numerically verified offline</b> (DSP shape, stability, spectral correctness) but <b>not yet heard on hardware</b> — these tests are the listening pass that confirms timbre.</div>
+    <div class="pgroup">
+      <div class="glabel">MIDI FX (chain slots, before a sound generator)</div>
+      <div class="pchips">{midifx}</div>
+    </div>
     <div class="glabel" style="margin-top:10px;border-top:1px solid var(--line);padding-top:10px">
-      <b style="color:var(--yellow)">⚠ UI reality vs. the mockups below:</b> these ported modules ship as <b>chainable DSP only</b> — they have no custom display. On Move they surface through Schwung's standard <b>menu-driven knob editor</b>: a <b>preset selector</b> at the top, then 8 mappable knobs + sub-menus (Waveforms / Morph / Envelope, or Peak Tuning / Ring Times, etc.). The ASCII screens on the cards below are the <b>original norns full-screen concept</b> — a design reference, <i>not</i> what you see on the Move.
+      <b style="color:var(--yellow)">⚠ UI reality — the mockups are NOT achievable for these modules.</b> A <b>chainable</b> sound-generator / audio-FX / MIDI-FX in Schwung has <b>no custom display</b>. It can only surface through the standard <b>menu-driven knob editor</b> (a preset selector + 8 mappable knobs + sub-menus). A full-screen bespoke UI (spectrum draw, scopes, grids — the ASCII screens on the cards) would require building the module as an <b>overtake module</b> or a <b>MIDI-source with <code>ui_chain.js</code></b> — a different module type, not a chain slot. The mockups below are the <b>original norns concept</b>, kept as design reference only.
     </div>
   </div>
 </section>"""
@@ -878,7 +876,7 @@ def featured_section():
                   <div class="row"><span class="k">Portability</span><span class="v">{esc(plabel)} — {esc(pdesc)}</span></div>
                   {crow}
                 </div>
-                <div class="mockwrap"><div class="mockcap">◇ norns-original concept — Move uses the knob-editor menu</div><pre class="mock">{esc(f['mockup'])}</pre></div>
+                <div class="mockwrap"><div class="mockcap">◇ norns concept — NOT the Move UI (chain modules have no custom screen; knob-menu only)</div><pre class="mock">{esc(f['mockup'])}</pre></div>
               </div>
               {testing_block(f['name'])}
             </div>""")
@@ -949,7 +947,7 @@ h2 small,.sub small{{color:var(--mut);font-weight:400}}
 .p-softcut{{color:var(--soft);border-color:var(--soft)}} .p-cv{{color:var(--cv);border-color:var(--cv)}}
 .p-na{{color:var(--na);border-color:var(--na)}} .eff{{color:var(--mut)}}
 .chain{{font-size:11px;color:var(--soft)}}
-.st-ready{{color:#0e1116;background:var(--green)}} .st-built{{color:#0e1116;background:var(--blue)}}
+.st-ported{{color:#0e1116;background:var(--yellow)}}
 .testing{{border-top:1px solid var(--line);background:#0c1a13;padding:14px 16px}}
 .testhead{{font-weight:700;color:var(--green);font-size:13px;letter-spacing:.3px;margin-bottom:6px}}
 .testlead{{color:var(--mut);font-size:13px;margin-bottom:8px}}
@@ -1006,7 +1004,7 @@ footer{{padding:30px 20px;color:var(--mut);font-size:13px;text-align:center}}
   <h1>norns → Schwung · adaptation targets</h1>
   <div class="sub">Triage of <b>{len(SCRIPTS)} norns scripts</b> against Schwung's <b>80-module</b> catalog, scored for <b>additivity</b>, <b>portability</b>, and <b>Move form-fit</b> — with {len(FEATURED)} source-verified deep-dives and ASCII mockups for the Move's 128×64 display, 4×8 pads, and 8 encoders.</div>
   <div class="toc">
-    <a href="#method">Methodology</a><a href="#progress">Build progress ({len(BUILT)})</a><a href="#featured">Featured ({len(FEATURED)})</a>
+    <a href="#method">Methodology</a><a href="#progress">Port status ({len(BUILT)})</a><a href="#featured">Featured ({len(FEATURED)})</a>
     <a href="#form-midi_fx">MIDI FX</a><a href="#form-sound_generator">Synths</a><a href="#form-audio_fx">Audio FX</a>
     <a href="#form-tool">Tools</a><a href="#form-overtake">Overtake</a><a href="#triage">Full triage ({len(SCRIPTS)})</a>
   </div>
