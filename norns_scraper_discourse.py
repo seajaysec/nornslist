@@ -120,6 +120,9 @@ class NornsScraper:
         # Stored so sidecar files (snapshots, discourse_resolutions) can be
         # found without threading the path through every code path.
         self.excel_path = excel_path
+        # Lazily-probed flag: is Vimeo oembed usable from this environment?
+        # (None = not yet probed.) See _vimeo_oembed_usable.
+        self._vimeo_oembed_ok = None
         self.session = requests.Session()
 
         # Configure connection pool to handle high concurrency
@@ -301,6 +304,89 @@ class NornsScraper:
     # Append a short reason to the version string for greppable history.
     _MATCHER_SIGNATURE = "v1-strict-norns-required"
 
+    # --- Demo URL normalization + oembed liveness (ported from the 2026-06 manual audit) ---
+    # oembed endpoints reliably report whether media still exists, unlike a bare
+    # HEAD/GET which returns a 200 "soft shell" for removed YouTube/Vimeo/SoundCloud
+    # media. This is the root-cause fix for dead demo links accumulating in the xlsx.
+    _OEMBED = {
+        "youtube": "https://www.youtube.com/oembed",
+        "vimeo": "https://vimeo.com/api/oembed.json",
+        "soundcloud": "https://soundcloud.com/oembed",
+    }
+    # Long-lived public Vimeo videos used to probe whether oembed works here
+    # (usable if ANY returns 200). monome's Vimeos are embed-domain-whitelisted,
+    # so some networks/CI runners get 404 from oembed for every video — in that
+    # case oembed can't tell dead from restricted and must NOT be used to drop.
+    _VIMEO_OEMBED_CANARIES = ("22439234", "1084537")  # "The Mountain", "Big Buck Bunny"
+
+    # Extracts a numeric track id from SoundCloud embed-artifact URL forms:
+    #   soundcloud.com/track/<id>            (not a real clickable path)
+    #   api.soundcloud.com/tracks/<id>       (API endpoint, needs auth in browser)
+    #   w.soundcloud.com/player/?url=...tracks/<id>  (iframe embed)
+    # Clean permalinks (soundcloud.com/<user>/<slug>) do NOT match.
+    _SC_TRACK_ID_RE = re.compile(
+        r"(?:api\.soundcloud\.com/tracks/|soundcloud\.com/track/|tracks(?:%2F|/))(\d+)"
+    )
+
+    # Preference order when a single post yields multiple demo candidates. Lower =
+    # preferred: resilient video hosts first, then social/image, then audio, then
+    # fragile/ephemeral hosts (Twitch auto-deletes VODs for non-partners) last.
+    # This is a *within-post* tiebreak only — the 4-phase discovery still decides
+    # official-vs-external-vs-audio ordering across posts.
+    _DEMO_PLATFORM_RANK = (
+        ("youtube.com", 0), ("youtu.be", 0),
+        ("vimeo.com", 1),
+        ("instagram.com", 2),
+        ("soundcloud.com", 3), ("bandcamp.com", 3),
+        (".mp3", 4), (".wav", 4), (".m4a", 4), (".ogg", 4), (".flac", 4),
+        ("twitch.tv", 6),
+    )
+
+    @classmethod
+    def _demo_rank(cls, url):
+        u = (url or "").lower()
+        for token, rank in cls._DEMO_PLATFORM_RANK:
+            if token in u:
+                return rank
+        return 5  # unknown hosts sit just above fragile/ephemeral (twitch)
+
+    # Known-dead demo URLs the scraper must NEVER store again. These are removed
+    # links the discovery path would otherwise keep re-grabbing from stale thread
+    # embeds. Stored as normalized keys (see _denylist_key). This is the belt to
+    # oembed-validation's suspenders — and the ONLY guard in environments where
+    # Vimeo oembed is unavailable (CI whitelist), since a dead Vimeo there passes
+    # both HEAD and the skipped oembed check. Populated by the 2026-06 audit.
+    _DEMO_URL_DENYLIST = frozenset({
+        # Vimeo videos confirmed 404 (removed/private):
+        "vimeo.com/312196152",   # ash
+        "vimeo.com/327848801",   # awake
+        "vimeo.com/913013027",   # cc-canvas
+        "vimeo.com/480411843",   # cheat_codes_2 (old)
+        "vimeo.com/146731772",   # meadowphysics (old)
+        "vimeo.com/266741634",   # mlr (old)
+        "vimeo.com/416730766",   # nc02-rs
+        "vimeo.com/484176216",   # norns.online
+        # SoundCloud confirmed gone / malformed embed-artifact paths:
+        "soundcloud.com/track/675154727",                  # compass (not a real path)
+        "soundcloud.com/yobink/021920003-modular-animator",  # animator (404)
+        "soundcloud.com/sound-and-process/scarlet",          # nc03-ds (old, 404)
+    })
+
+    @staticmethod
+    def _denylist_key(url):
+        """Normalize a URL for denylist comparison: drop scheme, www., query,
+        fragment, and trailing slash; lowercase."""
+        u = (url or "").strip().lower()
+        u = re.sub(r"^https?://", "", u)
+        u = u.split("?", 1)[0].split("#", 1)[0]
+        if u.startswith("www."):
+            u = u[4:]
+        return u.rstrip("/")
+
+    @classmethod
+    def _is_denylisted_demo(cls, url):
+        return cls._denylist_key(url) in cls._DEMO_URL_DENYLIST
+
     @staticmethod
     def _write_demo_cell(ws, row_idx, value):
         """Write the Demo cell at column 5, handling both single and multi-URL
@@ -469,14 +555,154 @@ class NornsScraper:
                 return True
         return False
 
-    def _validate_demo_url(self, url, timeout=8):
-        """HEAD-check (with GET fallback on 405) that a URL is reachable.
+    # ---------------------------
+    # Demo URL normalization (SoundCloud track-IDs -> clean permalinks)
+    # ---------------------------
+    def _sc_track_id(self, url):
+        m = self._SC_TRACK_ID_RE.search(url or "")
+        return m.group(1) if m else None
 
-        Returns True for 2xx-3xx. Used as a final pass before saving demo
-        URLs so dead links don't accumulate in the xlsx. Failure is a
-        soft-drop: we keep going if individual URLs error out.
+    def _normalize_soundcloud_url(self, url, timeout=8):
+        """Resolve an embed-artifact SoundCloud URL to a clean, clickable permalink.
+
+        `soundcloud.com/track/<id>` is not a real path; `api.soundcloud.com/tracks/<id>`
+        and the `w.soundcloud.com/player/?url=...tracks/<id>` iframe form aren't
+        click-through links either. The public oembed endpoint accepts the API track
+        URL and returns author_url + title, from which we rebuild the permalink
+        (SoundCloud truncates long slugs, so we trim trailing words until it 200s).
+        Returns the original URL unchanged on any failure.
+        """
+        tid = self._sc_track_id(url)
+        if not tid:
+            return url
+        try:
+            r = self.session.get(
+                self._OEMBED["soundcloud"],
+                params={"url": f"https://api.soundcloud.com/tracks/{tid}", "format": "json"},
+                timeout=timeout,
+            )
+            if r.status_code != 200:
+                return url
+            j = r.json()
+            author_url = (j.get("author_url") or "").rstrip("/")
+            title = j.get("title") or ""
+            if not author_url or not title:
+                return url
+            slug = re.sub(r"[^a-z0-9]+", "-", title.split(" by ")[0].lower()).strip("-")
+            words = [w for w in slug.split("-") if w]
+            # Try the full slug first, then progressively shorter (SoundCloud
+            # truncates long permalink slugs). Bounded by word count.
+            for n in range(len(words), 0, -1):
+                cand = f"{author_url}/{'-'.join(words[:n])}"
+                vr = self.session.get(
+                    self._OEMBED["soundcloud"],
+                    params={"url": cand, "format": "json"},
+                    timeout=timeout,
+                )
+                if vr.status_code == 200:
+                    logger.debug(f"Normalized SoundCloud {url[:50]} -> {cand}")
+                    return cand
+        except Exception as e:
+            logger.debug(f"SoundCloud normalize failed for {url[:60]}: {e}")
+        return url
+
+    def _normalize_demo_url(self, url):
+        """Dispatch demo-URL normalization. Currently only SoundCloud needs it;
+        no-op (and no network call) for everything else."""
+        if not url:
+            return url
+        if self._sc_track_id(url):
+            return self._normalize_soundcloud_url(url)
+        return url
+
+    # ---------------------------
+    # oembed liveness (catches removed media that HEAD passes as a 200 soft-shell)
+    # ---------------------------
+    @staticmethod
+    def _oembed_host(url):
+        u = (url or "").lower()
+        if "youtube.com" in u or "youtu.be" in u:
+            return "youtube"
+        if "vimeo.com" in u:
+            return "vimeo"
+        if "soundcloud.com" in u:
+            return "soundcloud"
+        return None
+
+    def _vimeo_oembed_usable(self, timeout=8):
+        """Probe once whether Vimeo oembed is meaningful from this environment.
+
+        If every Vimeo oembed request 404s here (embed-domain whitelist on some
+        networks/CI), oembed can't distinguish a dead video from a restricted one,
+        so we must not use it to drop Vimeo links. Fails safe to False (= don't use
+        oembed for Vimeo, fall through to lenient HEAD/keep).
+        """
+        if self._vimeo_oembed_ok is None:
+            ok = False
+            for vid in self._VIMEO_OEMBED_CANARIES:
+                try:
+                    r = self.session.get(
+                        self._OEMBED["vimeo"],
+                        params={"url": f"https://vimeo.com/{vid}"},
+                        timeout=timeout,
+                    )
+                    if r.status_code == 200:
+                        ok = True
+                        break
+                except Exception:
+                    continue
+            self._vimeo_oembed_ok = ok
+            if not ok:
+                logger.info(
+                    "Vimeo oembed unavailable in this environment; "
+                    "skipping oembed liveness for Vimeo (HEAD fallback)."
+                )
+        return self._vimeo_oembed_ok
+
+    def _oembed_alive(self, url, timeout=8):
+        """Return True (alive) / False (dead) / None (inconclusive) via oembed.
+
+        Catches removed/private YouTube/Vimeo/SoundCloud media that a bare HEAD
+        would wrongly pass (those hosts serve a 200 'soft shell' for dead media).
+        None means "can't tell from oembed" — caller should fall back to HEAD.
+        """
+        host = self._oembed_host(url)
+        if not host:
+            return None
+        if host == "vimeo" and not self._vimeo_oembed_usable():
+            return None
+        try:
+            params = {"url": url}
+            if host != "vimeo":
+                params["format"] = "json"
+            r = self.session.get(self._OEMBED[host], params=params, timeout=timeout)
+            if r.status_code == 200:
+                return True
+            if r.status_code in (401, 403, 404):
+                return False
+            return None
+        except Exception:
+            return None
+
+    def _validate_demo_url(self, url, timeout=8):
+        """Check that a demo URL still points at live media.
+
+        For video/audio platforms (YouTube/Vimeo/SoundCloud) a bare HEAD/GET
+        returns a 200 "soft shell" even for removed videos, so HEAD alone lets
+        dead links through — the cause of the dead-link backlog cleaned up in the
+        2026-06 audit. We oembed-check those hosts first (definitive True/False),
+        and fall back to HEAD (with GET-on-405) for everything else or when oembed
+        is inconclusive. Failure is a soft-drop: callers keep going on error.
         """
         if not url:
+            return False
+        if self._is_denylisted_demo(url):
+            logger.info(f"Demo URL on denylist, refusing to store: {url[:80]}")
+            return False
+        verdict = self._oembed_alive(url, timeout=timeout)
+        if verdict is True:
+            return True
+        if verdict is False:
             return False
         try:
             r = self.session.head(url, timeout=timeout, allow_redirects=True)
@@ -1398,6 +1624,12 @@ class NornsScraper:
                     if any(p in src.lower() for p in iframe_pats):
                         out.append(src)
 
+            # Normalize embed-artifact URLs (SoundCloud track-IDs/player iframes)
+            # to clean permalinks, then stable-sort by platform preference so the
+            # most resilient candidate from this post is first (becomes the cell's
+            # click target). Stable sort preserves in-post discovery order per rank.
+            out = [self._normalize_demo_url(u) for u in out]
+            out.sort(key=self._demo_rank)
             return out
         except Exception as e:
             logger.debug(f"Error parsing post HTML for demo URLs: {e}")
