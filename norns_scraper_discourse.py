@@ -2798,7 +2798,7 @@ class NornsScraper:
     # Bump when engine/nb/readme/image *processing* logic changes. Cached entries
     # store processed output, so a stamped version mismatch invalidates them and
     # forces a one-time rebuild — same idea as the external-search _MATCHER_SIGNATURE.
-    FEED_LOGIC_VERSION = 1
+    FEED_LOGIC_VERSION = 2  # v2: structural facets (script/mod/library/engine) + key-file nb
 
     @staticmethod
     def _today_iso() -> str:
@@ -2889,6 +2889,78 @@ class NornsScraper:
             if m:
                 names.append(m.group(1))
         return sorted(set(names))[0] if names else ""
+
+    @staticmethod
+    def _facets_from_paths(paths) -> list:
+        """What a repo *is*, structurally — the same facet model ingenue applies to
+        live GitHub results, computed here once so cataloged entries carry it too.
+        Non-exclusive: a repo can be both a script and a mod (e.g. cyrene).
+          - script  : a top-level .lua (norns runs only top-level scripts)
+          - mod      : lib/mod.lua (the mod convention — our own signal, not a hand tag)
+          - library  : only lib/*.lua, no top-level script and no mod (require'd by others)
+          - engine   : ships a SuperCollider engine (.sc / engine/ dir)"""
+        ps = [str(p) for p in paths]
+        top_lua = [p for p in ps if "/" not in p and p.lower().endswith(".lua")]
+        has_mod = "lib/mod.lua" in ps
+        lib_lua = [p for p in ps if p.lower().endswith(".lua") and re.search(r"(?:^|/)lib/", p)]
+        has_engine = any(p.lower().endswith(".sc") for p in ps) or any(
+            re.search(r"(?:^|/)engine/", p) for p in ps
+        )
+        facets = []
+        if top_lua:
+            facets.append("script")
+        if has_mod:
+            facets.append("mod")
+        if not top_lua and not has_mod and lib_lua:
+            facets.append("library")
+        if has_engine:
+            facets.append("engine")
+        return facets
+
+    @staticmethod
+    def _nb_key_file(repo: str, paths) -> str:
+        """The one file most likely to reference nb — mirrors ingenue's classifyRepo
+        key-file pick: top-level <repo>.lua, else any top-level .lua, else lib/mod.lua,
+        else the first lib/*.lua. One fetch of this catches nb integration even when the
+        nb:add_param call lives in lib/parameters.lua (which README/filename heuristics miss)."""
+        ps = [str(p) for p in paths]
+        top_lua = [p for p in ps if "/" not in p and p.lower().endswith(".lua")]
+        return (
+            next((p for p in top_lua if p.lower() == f"{repo.lower()}.lua"), None)
+            or (top_lua[0] if top_lua else None)
+            or ("lib/mod.lua" if "lib/mod.lua" in ps else None)
+            or next(
+                (p for p in ps if p.lower().endswith(".lua") and re.search(r"(?:^|/)lib/", p)),
+                None,
+            )
+        )
+
+    def _nb_from_keyfile(self, owner: str, repo: str, branch: str, paths) -> tuple:
+        """Read the key file and detect nb accurately: add_player => provides a voice
+        (a voice pack), add_param / require nb/lib => uses voices (assignable in-script).
+        Returns (nb: bool, role: str). Best-effort; one authenticated contents fetch."""
+        key = self._nb_key_file(repo, paths)
+        if not key:
+            return (False, "")
+        try:
+            from urllib.parse import quote
+
+            seg = "/".join(quote(s) for s in key.split("/"))
+            rr = self.github_session.get(
+                f"https://api.github.com/repos/{owner}/{repo}/contents/{seg}",
+                headers={"Accept": "application/vnd.github.raw"},
+                params={"ref": branch},
+                timeout=15,
+            )
+            if rr.status_code == 200:
+                blob = rr.text
+                if re.search(r"nb:add_player", blob):
+                    return (True, "provides")
+                if re.search(r"nb:add_param|require[\s(]*['\"][^'\"]*nb/lib", blob):
+                    return (True, "uses")
+        except Exception:
+            pass
+        return (False, "")
 
     @staticmethod
     def _detect_nb(readme_md: str, paths) -> bool:
@@ -3037,7 +3109,7 @@ class NornsScraper:
         term. Three GitHub calls max: repo meta, README, recursive tree."""
         import base64
 
-        result = {"engine": "", "nb": False, "readme": "", "images": []}
+        result = {"engine": "", "nb": False, "nb_role": "", "facets": [], "readme": "", "images": []}
         if not owner or not repo:
             return result
         base = f"https://api.github.com/repos/{owner}/{repo}"
@@ -3086,7 +3158,14 @@ class NornsScraper:
                         if t.get("type") == "blob"
                     ]
                     result["engine"] = self._engine_from_paths(paths)
-                    result["nb"] = self._detect_nb(readme_md, paths)
+                    result["facets"] = self._facets_from_paths(paths)
+                    # accurate nb: read the key file (catches add_param buried in lib/),
+                    # falling back to the filename/README heuristic for providers whose
+                    # registration lives in a lib file we don't read.
+                    nb_kf, nb_role = self._nb_from_keyfile(owner, repo, branch, paths)
+                    heuristic_nb = self._detect_nb(readme_md, paths)
+                    result["nb"] = bool(nb_kf or heuristic_nb)
+                    result["nb_role"] = nb_role or ("provides" if heuristic_nb else "")
                     if not result["images"]:
                         result["images"] = self._screenshots_from_paths(
                             paths, owner, repo, branch
@@ -3162,8 +3241,12 @@ class NornsScraper:
             if enr:
                 if enr.get("engine"):
                     entry["engine"] = enr["engine"]
+                if enr.get("facets"):
+                    entry["facets"] = list(enr["facets"])
                 if enr.get("nb"):
                     entry["nb"] = True
+                if enr.get("nb_role"):
+                    entry["nb_role"] = enr["nb_role"]
                 if enr.get("readme"):
                     entry["readme"] = enr["readme"]
                 if enr.get("images"):
