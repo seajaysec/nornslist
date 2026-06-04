@@ -108,6 +108,13 @@ class NornsScraper:
         ("Documentation URL", "documentation_url", "_norm_url"),
     )
 
+    # Locally-curated tags we inject into the xlsx Tags column that do NOT exist
+    # in community.json (e.g. "norns only"). _norm_tags drops these before drift
+    # comparison so their presence can never trigger a false "Out of Sync" — on
+    # either side of the diff. They still display in the Tags column verbatim and
+    # are preserved by the merge's non-empty-cell rule.
+    LOCAL_CURATION_TAGS = frozenset({"norns only"})
+
     def __init__(
         self,
         base_url="https://norns.community",
@@ -1945,7 +1952,12 @@ class NornsScraper:
 
     @staticmethod
     def _norm_tags(v):
-        """Normalize tags from either a list/tuple/set or a comma-string into a sorted unique tuple."""
+        """Normalize tags (list/tuple/set or comma-string) into a sorted unique tuple.
+
+        Locally-curated tags in LOCAL_CURATION_TAGS (e.g. "norns only") are
+        dropped here so they're invisible to drift detection — their presence in
+        the xlsx never causes (or masks) an "Out of Sync" flag.
+        """
         try:
             if isinstance(v, (list, tuple, set)):
                 items = list(v)
@@ -1958,7 +1970,7 @@ class NornsScraper:
             tokens = []
             for item in items:
                 t = ("" if item is None else str(item)).strip().strip("'\"").lower()
-                if t:
+                if t and t not in NornsScraper.LOCAL_CURATION_TAGS:
                     tokens.append(t)
             return tuple(sorted(set(tokens)))
         except Exception:
