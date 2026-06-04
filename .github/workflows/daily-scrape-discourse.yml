@@ -75,10 +75,16 @@ jobs:
           git config --local user.name "GitHub Action (discourse)"
           # Commit the xlsx AND its sidecars together — the sidecars are stateful
           # (drift snapshots, URL resolutions) and need to travel with the xlsx.
+          # feed.json is the ingenue data product; feed_cache.json is its
+          # per-repo enrichment cache — committing the cache lets each nightly
+          # CI run start warm and only re-fetch repos that changed (same reason
+          # the snapshots sidecar is committed).
           git add norns_scripts_discourse.xlsx \
                   norns_scripts_discourse.snapshots.json \
                   norns_scripts_discourse.discourse_resolutions.json \
-                  norns_scripts_discourse.external_searches.json
+                  norns_scripts_discourse.external_searches.json \
+                  feed.json \
+                  norns_scripts_discourse.feed_cache.json
           if ! git diff --staged --quiet; then
             git commit -m "Auto-update (discourse): Daily scrape $(date +'%Y-%m-%d')"
           fi
@@ -114,6 +120,7 @@ jobs:
             Workflow run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           files: |
             norns_scripts_discourse.xlsx
+            feed.json
           draft: false
           prerelease: false
           generate_release_notes: false

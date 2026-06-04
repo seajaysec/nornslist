@@ -186,6 +186,12 @@ class NornsScraper:
         self.github_token = self._load_github_token()
         self.github_session = self._init_github_session()
 
+        # feed.json generation (ingenue B7). Defaults so save_to_excel emits the
+        # feed on a full run even when driven outside main() (e.g. tests); main()
+        # overrides these from --no-feed / --feed-output.
+        self.feed_enabled = True
+        self.feed_output = None
+
     def discover_demo_video(
         self, discussion_url, _no_resolve=False, author="", script_name=""
     ):
@@ -2774,6 +2780,452 @@ class NornsScraper:
                 rows[idx]["Last Updated"] = value
         return rows
 
+    # ---------------------------
+    # feed.json generation (ingenue B7 integration)
+    #
+    # The norns on-device app `ingenue` consumes a nightly static `feed.json`
+    # so it doesn't have to compute README text, image galleries, engine names,
+    # nb-voice detection, or last-updated dates live on the (slow, offline-ish)
+    # device. We precompute all of that here. The consumer contract lives in
+    # ingenue/web/index.html: a JSON object whose `scripts` map is keyed by
+    # project_name.toLowerCase(), each value carrying independently-optional
+    # {engine, nb, readme, images, tags, upd}. Every field is best-effort —
+    # ingenue degrades gracefully if the feed is missing, partial, or malformed.
+    # ---------------------------
+    FEED_CACHE_TTL_DAYS = 30  # re-fetch unchanged repos at most this stale (heals transient misses)
+    FEED_README_MAXLEN = 1200  # plaintext README prefix length shipped to the device
+    FEED_MAX_IMAGES = 6  # carousel cap per script
+    # Bump when engine/nb/readme/image *processing* logic changes. Cached entries
+    # store processed output, so a stamped version mismatch invalidates them and
+    # forces a one-time rebuild — same idea as the external-search _MATCHER_SIGNATURE.
+    FEED_LOGIC_VERSION = 1
+
+    @staticmethod
+    def _today_iso() -> str:
+        from datetime import datetime
+
+        return datetime.now().strftime("%Y-%m-%d")
+
+    def _feed_cache_path(self, excel_path: str) -> str:
+        """Sidecar cache of per-repo enrichment, alongside the xlsx."""
+        base, _ = os.path.splitext(excel_path)
+        return f"{base}.feed_cache.json"
+
+    def _default_feed_output(self, excel_path: str) -> str:
+        """Default feed.json location: a plain `feed.json` next to the xlsx.
+
+        Named exactly `feed.json` (the consumer contract name) so a deploy step
+        can copy it verbatim into ingenue/web/. Override with --feed-output.
+        """
+        return os.path.join(os.path.dirname(os.path.abspath(excel_path)), "feed.json")
+
+    def _load_feed_cache(self, excel_path: str) -> dict:
+        import json
+
+        path = self._feed_cache_path(excel_path)
+        if not os.path.exists(path):
+            return {}
+        try:
+            with open(path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            if isinstance(data, dict):
+                logger.info(f"Loaded {len(data)} feed-enrichment cache entries from {path}")
+                return data
+        except Exception as e:
+            logger.warning(f"Failed to load feed cache from {path}: {e}")
+        return {}
+
+    def _save_feed_cache(self, excel_path: str, cache: dict) -> None:
+        import json
+
+        path = self._feed_cache_path(excel_path)
+        try:
+            with open(path, "w", encoding="utf-8") as f:
+                json.dump(cache, f, indent=2, sort_keys=True, ensure_ascii=False)
+            logger.info(f"Saved {len(cache)} feed-enrichment cache entries to {path}")
+        except Exception as e:
+            logger.warning(f"Failed to save feed cache to {path}: {e}")
+
+    def _feed_cache_fresh(self, entry: dict, current_upd: str) -> bool:
+        """A cache entry is reusable only if the repo hasn't changed since we
+        fetched it (same Last Updated), it wasn't a transient failure, and it
+        isn't older than the TTL. This is the efficiency core: unchanged repos
+        are never re-fetched from GitHub on subsequent nightly runs."""
+        if not isinstance(entry, dict) or entry.get("error"):
+            return False
+        if entry.get("logic_version") != self.FEED_LOGIC_VERSION:
+            return False
+        if (entry.get("source_upd") or "") != (current_upd or ""):
+            return False
+        fetched_at = str(entry.get("fetched_at") or "")[:10]
+        try:
+            from datetime import datetime
+
+            age_days = (datetime.now() - datetime.strptime(fetched_at, "%Y-%m-%d")).days
+            return age_days <= self.FEED_CACHE_TTL_DAYS
+        except Exception:
+            return False
+
+    @staticmethod
+    def _raw_github_url(owner: str, repo: str, branch: str, path: str) -> str:
+        from urllib.parse import quote
+
+        return (
+            f"https://raw.githubusercontent.com/{owner}/{repo}/{branch}/"
+            + quote(path.lstrip("/"))
+        )
+
+    @staticmethod
+    def _engine_from_paths(paths) -> str:
+        """SuperCollider engine class name the repo *ships*, from `Engine_<Name>.sc`.
+
+        This is the definitive signal for the consumer's engine-deconfliction
+        modal ("registers a SuperCollider engine named X") — a shipped engine,
+        not one a script merely uses via a shared lib. Repos that ship more than
+        one engine report the first alphabetically (deterministic)."""
+        names = []
+        for p in paths:
+            m = re.search(r"(?:^|/)Engine_([A-Za-z0-9]+)\.sc$", str(p))
+            if m:
+                names.append(m.group(1))
+        return sorted(set(names))[0] if names else ""
+
+    @staticmethod
+    def _detect_nb(readme_md: str, paths) -> bool:
+        """Best-effort detection that a script *provides* an nb (note-bridge)
+        voice. Without fetching file contents (too many API calls across 350+
+        repos) this is a heuristic — ingenue's live `/api/deps` remains
+        authoritative. Conservative on purpose so false positives don't pollute
+        the synthetic "additional voice" tag facet."""
+        for p in paths:
+            b = os.path.basename(str(p)).lower()
+            if re.match(r"nb[_-].+\.lua$", b) or re.search(r"[_-]nb\.lua$", b):
+                return True
+        text = (readme_md or "").lower()
+        if "note bridge" in text or "note-bridge" in text:
+            return True
+        if re.search(r"\bnb\b[^.\n]{0,40}(voice|player)", text) or re.search(
+            r"(voice|player)[^.\n]{0,40}\bnb\b", text
+        ):
+            return True
+        return False
+
+    @staticmethod
+    def _is_badge_url(url: str) -> bool:
+        low = url.lower()
+        markers = (
+            "shields.io",
+            "/badge",
+            "badgen.net",
+            "travis-ci",
+            "circleci.com",
+            "codecov.io",
+            "coveralls.io",
+            "app.netlify.com",
+            "ko-fi.com",
+            "buymeacoffee",
+            "paypal.",
+            "/workflows/",  # github actions status badges
+            ".svg",  # badges are overwhelmingly svg; screenshots are raster
+        )
+        return any(m in low for m in markers)
+
+    @staticmethod
+    def _looks_like_image(url: str) -> bool:
+        low = url.split("?", 1)[0].lower()
+        if low.rsplit(".", 1)[-1] in ("png", "jpg", "jpeg", "gif", "webp"):
+            return True
+        # GitHub-hosted uploaded/proxied images often carry no file extension.
+        host_ok = (
+            "user-images.githubusercontent.com",
+            "raw.githubusercontent.com",
+            "camo.githubusercontent.com",
+            "github.com/user-attachments",
+        )
+        return any(h in low for h in host_ok)
+
+    def _resolve_readme_url(self, url: str, owner: str, repo: str, branch: str) -> str:
+        url = url.strip().strip("<>")
+        if url.startswith(("http://", "https://")):
+            return url
+        if url.startswith("//"):
+            return "https:" + url
+        if url.startswith(("#", "data:", "mailto:")):
+            return ""
+        # Relative repo path -> raw URL on the default branch.
+        return self._raw_github_url(owner, repo, branch, url)
+
+    def _extract_readme_images(self, md: str, owner: str, repo: str, branch: str) -> list:
+        """Curated gallery from README markdown/HTML images, badges filtered,
+        relative paths resolved to absolute raw.githubusercontent URLs."""
+        raw = []
+        for m in re.finditer(r"!\[[^\]]*\]\(\s*([^)\s]+)", md):
+            raw.append(m.group(1))
+        for m in re.finditer(r"<img[^>]+src=[\"']([^\"']+)[\"']", md, re.I):
+            raw.append(m.group(1))
+        out, seen = [], set()
+        for u in raw:
+            if not u or self._is_badge_url(u):
+                continue
+            full = self._resolve_readme_url(u, owner, repo, branch)
+            if not full or full in seen or not self._looks_like_image(full):
+                continue
+            seen.add(full)
+            out.append(full)
+            if len(out) >= self.FEED_MAX_IMAGES:
+                break
+        return out
+
+    def _screenshots_from_paths(self, paths, owner: str, repo: str, branch: str) -> list:
+        """Fallback gallery: raster image files committed to the repo (excluding
+        .github/ assets). Used only when the README carried no images."""
+        out = []
+        for p in paths:
+            low = str(p).lower()
+            if low.startswith(".github/") or "/.github/" in low:
+                continue
+            if low.rsplit(".", 1)[-1] in ("png", "jpg", "jpeg", "gif", "webp"):
+                out.append(self._raw_github_url(owner, repo, branch, str(p)))
+            if len(out) >= self.FEED_MAX_IMAGES:
+                break
+        return out
+
+    @classmethod
+    def _readme_to_plaintext(cls, md: str) -> str:
+        """Strip markdown/HTML to a plain-text prose prefix for the device.
+        ingenue HTML-escapes this on display, so emit plain text only."""
+        t = md
+        t = re.sub(r"```.*?```", " ", t, flags=re.S)  # fenced code
+        t = re.sub(r"`([^`]*)`", r"\1", t)  # inline code
+        t = re.sub(r"<!--.*?-->", " ", t, flags=re.S)  # html comments
+        t = re.sub(r"!\[[^\]]*\]\([^)]*\)", " ", t)  # images
+        t = re.sub(r"\[([^\]]*)\]\([^)]*\)", r"\1", t)  # links -> text
+        t = re.sub(r"<[^>]+>", " ", t)  # html tags
+        t = re.sub(r"^\s{0,3}#{1,6}\s*", "", t, flags=re.M)  # atx headings
+        t = re.sub(r"^\s{0,3}>\s?", "", t, flags=re.M)  # blockquotes
+        t = re.sub(r"^\s{0,3}[-*+]\s+", "", t, flags=re.M)  # bullets
+        t = re.sub(r"^\s*[-=]{3,}\s*$", "", t, flags=re.M)  # hr / setext underlines
+        t = re.sub(r"[*_]{1,3}", "", t)  # emphasis markers
+        t = re.sub(r"\|", " ", t)  # table pipes
+        t = re.sub(r"[ \t]+", " ", t)
+        t = re.sub(r"[ \t]+\n", "\n", t)  # trailing space (from stripped imgs/badges)
+        t = re.sub(r"\n[ \t]+", "\n", t)  # leading space -> exposes empty lines
+        t = re.sub(r"\n{2,}", "\n\n", t).strip()
+        if len(t) > cls.FEED_README_MAXLEN:
+            cut = t[: cls.FEED_README_MAXLEN]
+            boundary = max(cut.rfind(". "), cut.rfind("\n"))
+            if boundary > cls.FEED_README_MAXLEN * 0.5:
+                cut = cut[: boundary + 1]
+            t = cut.rstrip() + " …"
+        return t
+
+    @staticmethod
+    def _tags_list(raw) -> list:
+        items = raw if isinstance(raw, list) else str(raw or "").split(",")
+        out, seen = [], set()
+        for tag in items:
+            tag = str(tag).strip()
+            if tag and tag.lower() not in seen:
+                seen.add(tag.lower())
+                out.append(tag)
+        return out
+
+    def _github_fetch_feed_enrichment(self, owner: str, repo: str) -> dict:
+        """Fetch {engine, nb, readme, images} for one repo. Best-effort: returns
+        partial/empty data on any failure, and sets 'error' True on transient
+        failures (rate limit / network) so the caller won't cache the miss long
+        term. Three GitHub calls max: repo meta, README, recursive tree."""
+        import base64
+
+        result = {"engine": "", "nb": False, "readme": "", "images": []}
+        if not owner or not repo:
+            return result
+        base = f"https://api.github.com/repos/{owner}/{repo}"
+        timeout = 15
+        try:
+            r = self.github_session.get(base, timeout=timeout)
+            if r.status_code == 403:
+                result["error"] = True
+                return result
+            if r.status_code == 404:
+                return result
+            r.raise_for_status()
+            branch = r.json().get("default_branch") or "main"
+
+            # README: content -> plaintext + curated images + nb hint
+            readme_md = ""
+            try:
+                rr = self.github_session.get(f"{base}/readme", timeout=timeout)
+                if rr.status_code == 403:
+                    result["error"] = True
+                elif rr.status_code == 200:
+                    content = rr.json().get("content") or ""
+                    if content:
+                        readme_md = base64.b64decode(content).decode("utf-8", "replace")
+            except Exception:
+                pass
+            if readme_md:
+                result["readme"] = self._readme_to_plaintext(readme_md)
+                result["images"] = self._extract_readme_images(
+                    readme_md, owner, repo, branch
+                )
+
+            # Recursive tree: engine name, nb file hint, screenshot fallback
+            try:
+                tr = self.github_session.get(
+                    f"{base}/git/trees/{branch}",
+                    params={"recursive": "1"},
+                    timeout=timeout,
+                )
+                if tr.status_code == 403:
+                    result["error"] = True
+                elif tr.status_code == 200:
+                    paths = [
+                        str(t.get("path", ""))
+                        for t in (tr.json().get("tree") or [])
+                        if t.get("type") == "blob"
+                    ]
+                    result["engine"] = self._engine_from_paths(paths)
+                    result["nb"] = self._detect_nb(readme_md, paths)
+                    if not result["images"]:
+                        result["images"] = self._screenshots_from_paths(
+                            paths, owner, repo, branch
+                        )
+            except Exception:
+                pass
+        except Exception as e:
+            logger.debug(f"Feed enrichment error for {owner}/{repo}: {e}")
+            result["error"] = True
+        return result
+
+    def _gather_feed_enrichment(self, repos: dict, cache: dict) -> dict:
+        """repos: {(owner, repo): current_upd}. Returns {(owner, repo): enrichment}.
+        Serves unchanged repos from cache; fetches only stale/new ones in
+        parallel. Mutates `cache` in place so the caller can persist it."""
+        results, stale = {}, []
+        for key, upd in repos.items():
+            entry = cache.get(f"{key[0]}/{key[1]}")
+            if entry and self._feed_cache_fresh(entry, upd):
+                results[key] = entry
+            else:
+                stale.append((key, upd))
+
+        if not stale:
+            logger.info(
+                f"Feed: all {len(results)} GitHub repo(s) served from cache "
+                f"(no enrichment fetch needed)"
+            )
+            return results
+
+        logger.info(
+            f"Feed: fetching enrichment for {len(stale)} changed/new repo(s); "
+            f"{len(results)} served from cache"
+        )
+
+        def _task(item):
+            (owner, repo), upd = item
+            enr = self._github_fetch_feed_enrichment(owner, repo)
+            enr["source_upd"] = upd or ""
+            enr["fetched_at"] = self._today_iso()
+            enr["logic_version"] = self.FEED_LOGIC_VERSION
+            return (owner, repo), enr
+
+        with ThreadPoolExecutor(max_workers=self.max_workers) as executor:
+            future_to_item = {executor.submit(_task, it): it for it in stale}
+            for future in as_completed(future_to_item):
+                try:
+                    key, enr = future.result()
+                    results[key] = enr
+                    cache[f"{key[0]}/{key[1]}"] = enr
+                except Exception:
+                    pass
+        return results
+
+    def _build_feed_scripts(self, rows, enrichment: dict) -> dict:
+        """Assemble the consumer-keyed `scripts` map from merged rows + enrichment.
+        Keys are project_name.toLowerCase(); every field is emitted only when
+        truthy/valid so the consumer's per-field guards stay meaningful."""
+        scripts = {}
+        for row in rows:
+            name = str(row.get("Name") or "").strip()
+            if not name:
+                continue
+            entry = {}
+            tags = self._tags_list(row.get("Tags"))
+            if tags:
+                entry["tags"] = tags
+            upd = str(row.get("Last Updated") or "").strip()
+            if re.match(r"^\d{4}-\d{2}-\d{2}$", upd):
+                entry["upd"] = upd
+            owner, repo = self._parse_github_repo(row.get("Project URL", ""))
+            enr = enrichment.get((owner, repo)) if owner and repo else None
+            if enr:
+                if enr.get("engine"):
+                    entry["engine"] = enr["engine"]
+                if enr.get("nb"):
+                    entry["nb"] = True
+                if enr.get("readme"):
+                    entry["readme"] = enr["readme"]
+                if enr.get("images"):
+                    entry["images"] = list(enr["images"])[: self.FEED_MAX_IMAGES]
+            if entry:
+                scripts[name.lower()] = entry
+        return scripts
+
+    def write_feed_json(self, rows, excel_path: str, output_path: str = None) -> None:
+        """Build and write feed.json from merged rows. Best-effort: logs and
+        returns on any failure so it can never abort a run whose xlsx already
+        saved. `tags` and `upd` come for free from existing columns; engine/nb/
+        readme/images come from cached GitHub enrichment."""
+        import json
+
+        try:
+            repos = {}
+            for row in rows:
+                owner, repo = self._parse_github_repo(row.get("Project URL", ""))
+                if owner and repo:
+                    repos[(owner, repo)] = str(row.get("Last Updated") or "").strip()
+
+            cache = self._load_feed_cache(excel_path)
+            enrichment = self._gather_feed_enrichment(repos, cache) if repos else {}
+            self._save_feed_cache(excel_path, cache)
+
+            scripts = self._build_feed_scripts(rows, enrichment)
+            payload = {
+                "file_info": {"version": 1, "kind": "script_feed"},
+                "date": self._today_iso(),
+                "scripts": scripts,
+            }
+            out = output_path or self._default_feed_output(excel_path)
+            with open(out, "w", encoding="utf-8") as f:
+                json.dump(payload, f, indent=2, sort_keys=True, ensure_ascii=False)
+
+            n_eng = sum(1 for v in scripts.values() if v.get("engine"))
+            n_nb = sum(1 for v in scripts.values() if v.get("nb"))
+            n_rd = sum(1 for v in scripts.values() if v.get("readme"))
+            n_img = sum(1 for v in scripts.values() if v.get("images"))
+            logger.info(
+                f"Wrote feed.json: {len(scripts)} scripts "
+                f"({n_eng} engine, {n_nb} nb, {n_rd} readme, {n_img} images) -> {out}"
+            )
+        except Exception as e:
+            logger.warning(f"Failed to write feed.json: {e}")
+
+    def regenerate_feed_only(self, excel_path: str, output_path: str = None) -> None:
+        """Rebuild feed.json from an existing xlsx + cache, with no re-scrape.
+        Cheap iteration path: only repos that changed since the cache was built
+        hit GitHub."""
+        if not os.path.exists(excel_path):
+            logger.error(f"Excel file not found: {excel_path}")
+            return
+        try:
+            df = pd.read_excel(excel_path)
+        except Exception as e:
+            logger.error(f"Failed to load Excel for feed regeneration: {e}")
+            return
+        rows = df.fillna("").to_dict("records")
+        self.write_feed_json(rows, excel_path, output_path)
+
     def _scrape_by_community_url(self, community_url: str):
         """Build script details for sync-check by looking up the community.json entry."""
         # Derive slug from URL path
@@ -3980,6 +4432,12 @@ class NornsScraper:
         if hasattr(self, "_external_search_cache") and self._external_search_cache:
             self._save_external_searches(filename, self._external_search_cache)
 
+        # Emit feed.json for ingenue (B7). Best-effort; runs after the xlsx is
+        # safely written. GitHub enrichment is cached per-repo so this is cheap
+        # on nights where few repos changed. Disable with --no-feed.
+        if getattr(self, "feed_enabled", True):
+            self.write_feed_json(merged_data, filename, getattr(self, "feed_output", None))
+
     def print_summary(self):
         """Print a summary of what was accomplished during scraping"""
         print("\n" + "=" * 60)
@@ -4123,6 +4581,29 @@ def main():
             "accumulated. Manual edits are preserved."
         ),
     )
+    parser.add_argument(
+        "--no-feed",
+        action="store_true",
+        help="Skip emitting feed.json (the ingenue static data feed) on a full run",
+    )
+    parser.add_argument(
+        "--feed-only",
+        action="store_true",
+        help=(
+            "Rebuild feed.json from the existing Excel file + enrichment cache "
+            "without re-scraping. Only repos changed since the cache was built "
+            "re-hit GitHub. Useful for fast iteration on the feed."
+        ),
+    )
+    parser.add_argument(
+        "--feed-output",
+        type=str,
+        default=None,
+        help=(
+            "Path to write feed.json (default: 'feed.json' next to the Excel "
+            "file). Point this at ../ingenue/web/feed.json to write in place."
+        ),
+    )
 
     args = parser.parse_args()
 
@@ -4133,6 +4614,13 @@ def main():
         demo_delay=args.demo_delay,
         excel_path=args.excel,
     )
+    scraper.feed_enabled = not args.no_feed
+    scraper.feed_output = args.feed_output
+
+    # Optional fast-path: rebuild feed.json from existing xlsx + cache and exit
+    if args.feed_only:
+        scraper.regenerate_feed_only(args.excel, args.feed_output)
+        return
 
     # Optional fast-path: apply statuses from a log and exit
     if args.status_log:

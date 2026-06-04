@@ -46,6 +46,26 @@ This tool aggregates and enriches script metadata from multiple sources to creat
 - **API Integration**: Uses GitHub API with optional authentication for higher rate limits
 - **Automatic URL Detection**: Identifies GitHub repositories from Project URLs
 
+### feed.json (ingenue data feed)
+
+Precomputes a static `feed.json` for the on-device [`ingenue`](../ingenue) norns
+web app, so it doesn't have to derive this enrichment live on the device:
+
+- **Per-script enrichment**: `engine` (SuperCollider engine class the repo ships,
+  via `Engine_<Name>.sc`), `nb` (best-effort note-bridge voice detection),
+  `readme` (plain-text README prefix), `images` (curated screenshot gallery),
+  plus `tags` and `upd` carried over from the catalog.
+- **Consumer-keyed**: a `scripts` map keyed by `project_name.toLowerCase()` —
+  every field optional, so ingenue degrades gracefully if the feed is missing or
+  partial.
+- **Per-repo caching**: GitHub enrichment is cached in a `*.feed_cache.json`
+  sidecar keyed by repo + last-updated, so nightly runs only re-fetch repos that
+  actually changed (an unchanged catalog re-emits the feed with **zero** GitHub
+  calls). A stamped `FEED_LOGIC_VERSION` auto-rebuilds the cache when extraction
+  logic changes.
+- **Emitted automatically** at the end of a full run (disable with `--no-feed`);
+  rebuild standalone with `--feed-only`; choose the path with `--feed-output`.
+
 ### Sync Tracking
 
 - **Out of Sync Detection**: Automatically compares scraped data with existing Excel data
@@ -136,6 +156,15 @@ python norns_scraper.py --dedupe
 
 # Apply Playwright Status updates from a log file
 python norns_scraper.py --status-log scraper.log
+
+# Skip emitting feed.json on a full run
+python norns_scraper_discourse.py --no-feed
+
+# Rebuild feed.json from the existing xlsx + cache, no re-scrape
+python norns_scraper_discourse.py --feed-only
+
+# Write feed.json straight into the ingenue web app
+python norns_scraper_discourse.py --feed-only --feed-output ../ingenue/web/feed.json
 ```
 
 ### Demo Discovery
