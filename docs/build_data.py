@@ -328,6 +328,66 @@ def generate_seo(scripts: list[dict], out_dir: str) -> None:
     print(f"[build_data] wrote {len(scripts)} SEO pages + sitemap.xml + robots.txt")
 
 
+_RFC822_MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
+
+
+def _rfc822(iso: str) -> str:
+    """YYYY-MM-DD -> RFC-822 date for RSS. Falls back to empty on bad input."""
+    try:
+        d = _dt.date.fromisoformat(iso)
+        return f"{['Mon','Tue','Wed','Thu','Fri','Sat','Sun'][d.weekday()]}, " \
+               f"{d.day:02d} {_RFC822_MONTHS[d.month-1]} {d.year} 00:00:00 GMT"
+    except Exception:  # noqa: BLE001
+        return ""
+
+
+def generate_updates_feed(scripts: list[dict], out_dir: str, limit: int = 60) -> None:
+    """Emit updates.xml (RSS 2.0) + updates.json (JSON Feed 1.1) of the most
+    recently-updated scripts — a subscribable freshness surface."""
+    recent = sorted([s for s in scripts if s.get("upd")],
+                    key=lambda s: s["upd"], reverse=True)[:limit]
+    e = html.escape
+
+    items = []
+    for s in recent:
+        link = SITE_URL + "s/" + s["slug"] + ".html"
+        desc = s.get("desc") or f"{s['name']} — a norns community script."
+        pub = _rfc822(s["upd"])
+        items.append(
+            f"<item><title>{e(s['name'])}</title><link>{e(link)}</link>"
+            f"<guid isPermaLink=\"true\">{e(link)}</guid>"
+            + (f"<pubDate>{pub}</pubDate>" if pub else "")
+            + f"<description>{e(desc)}</description></item>"
+        )
+    rss = ('<?xml version="1.0" encoding="UTF-8"?>\n'
+           '<rss version="2.0"><channel>'
+           '<title>nornslist — recently updated norns scripts</title>'
+           f'<link>{SITE_URL}</link>'
+           '<description>The most recently updated norns community scripts.</description>'
+           + "".join(items) + '</channel></rss>')
+    with open(os.path.join(out_dir, "updates.xml"), "w", encoding="utf-8") as fh:
+        fh.write(rss)
+
+    jf = {
+        "version": "https://jsonfeed.org/version/1.1",
+        "title": "nornslist — recently updated norns scripts",
+        "home_page_url": SITE_URL,
+        "feed_url": SITE_URL + "updates.json",
+        "items": [{
+            "id": SITE_URL + "s/" + s["slug"] + ".html",
+            "url": SITE_URL + "s/" + s["slug"] + ".html",
+            "title": s["name"],
+            "content_text": s.get("desc") or "",
+            "date_modified": s["upd"] + "T00:00:00Z",
+            "authors": [{"name": s["author"]}] if s.get("author") else [],
+            "tags": s.get("tags", []),
+        } for s in recent],
+    }
+    with open(os.path.join(out_dir, "updates.json"), "w", encoding="utf-8") as fh:
+        json.dump(jf, fh, ensure_ascii=False)
+    print(f"[build_data] wrote updates.xml + updates.json ({len(recent)} recent)")
+
+
 def load_catalog(json_path: str, xlsx_path: str) -> tuple[list[dict], str]:
     """Resolve the catalog source, most-canonical first, degrading gracefully.
     Returns (rows, source_label). Never raises for data reasons — an empty list
@@ -393,10 +453,12 @@ def build(xlsx_path: str, feed_path: str, out_path: str, json_path: str = "") ->
         f"(generated {generated}; {withdemo} demos, {withimg} images, "
         f"{enriched} readmes)"
     )
+    out_dir = os.path.dirname(out_path) or "."
     try:
-        generate_seo(scripts, os.path.dirname(out_path) or ".")
-    except Exception as e:  # noqa: BLE001 — SEO pages are non-critical; never fail the build
-        print(f"[build_data] WARN: SEO page generation failed: {e}", file=sys.stderr)
+        generate_seo(scripts, out_dir)
+        generate_updates_feed(scripts, out_dir)
+    except Exception as e:  # noqa: BLE001 — these are non-critical; never fail the build
+        print(f"[build_data] WARN: SEO/feed generation failed: {e}", file=sys.stderr)
     return 0
 
 
