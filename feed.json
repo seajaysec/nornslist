@@ -1,11 +1,14 @@
 {
-  "date": "2026-06-04",
+  "date": "2026-06-05",
   "file_info": {
     "kind": "script_feed",
     "version": 1
   },
   "scripts": {
     "3d": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://www.eigenbahn.com/assets/gif/norns_3d_teapot.gif",
         "https://www.eigenbahn.com/assets/gif/norns_3d_glitch.gif",
@@ -18,6 +21,9 @@
       "upd": "2021-05-27"
     },
     "4-big-knobs": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://raw.githubusercontent.com/21echoes/4-big-knobs/main/screenshots/4-big-knobs.png"
       ],
@@ -31,6 +37,9 @@
       "upd": "2022-12-26"
     },
     "4ccfader": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://raw.githubusercontent.com/hanjo-synth/4CCFader/main/./4CCFader.png"
       ],
@@ -44,6 +53,9 @@
       "upd": "2025-05-06"
     },
     "abacus": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://user-images.githubusercontent.com/6550035/97828526-2956aa00-1c7c-11eb-9845-9a6b8000cf4c.gif",
         "https://user-images.githubusercontent.com/6550035/97829923-468d7780-1c80-11eb-9b89-89e7a003b4ac.png",
@@ -57,6 +69,10 @@
     },
     "acid-test": {
       "engine": "AcidTest",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://github.com/schollz/acid-test/raw/main/img/acid-test2.png",
         "https://github.com/schollz/acid-test/raw/main/img/accent.png",
@@ -75,11 +91,19 @@
     },
     "ack": {
       "engine": "Ack",
+      "facets": [
+        "library",
+        "engine"
+      ],
       "readme": "Ack\n\nSimple sample player\nFeatures\n8 voice sample playback of mono or stereo samples.\nSample start / end and loop positions.\nResonant multimode filter.\nAR envelopes for volume and filter cutoff.\nMaster delay and reverb.\nCommands\n\nNote: channels are indexed 0-7 in commands.\nTriggering\ntrig i - triggers single channel.\nmultiTrig iiiiiiii - triggers multiple channels. one 1/0 argument for each channel. 1 means trigger.\nkill i - mute single channel.\nkillTrig iiiiiiii - mutes multiple channels. one 1/0 argument for each channel. 1 means mute.\nChannel Settings\n\nFirst argument is always channel.\nloadSample is - load sample given an absolute path.\nsampleStart if - set position at which sample starts to play, expressed in 0-1. position is fixed after a sample has been triggered.\nsampleEnd if - set position at which sample ends playing or starts to loop, expressed in 0-1. position is fixed after a sample has been triggered. if sample end is lower than sample start sample will playback reversed.\nloopPoint if - set position within sample start - end at which loop will start, expressed in 0-1.\nenableLoop i - enables loop.\ndisableLoop i - disables loop, sample is played as a oneshot. …",
       "upd": "2022-01-10"
     },
     "acrostic": {
       "engine": "Acrostic",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://user-images.githubusercontent.com/6550035/148664651-35ae313d-be73-445a-9c39-1e193d3bd3ba.png",
         "https://videoapi-muybridge.vimeocdn.com/animated-thumbnails/image/ab58d241-c235-4e2e-a21f-1f65f5cbaa8d.gif?ClientID=vimeo-core-prod&Date=1645549699&Signature=d179c0384b14904c248fe797efe09eb67ceae1db",
@@ -99,6 +123,10 @@
     },
     "amen": {
       "engine": "Amen",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://user-images.githubusercontent.com/6550035/113587034-1c4f3580-95e3-11eb-9a6b-0274ccd91480.png",
         "https://user-images.githubusercontent.com/6550035/113587036-1c4f3580-95e3-11eb-8772-ab1ab995ed5e.png",
@@ -114,6 +142,10 @@
     },
     "amenbreak": {
       "engine": "AmenBreak1",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://user-images.githubusercontent.com/6550035/208136642-1081aa03-8e32-487a-b282-fd7130da05fc.png",
         "https://user-images.githubusercontent.com/6550035/208138151-5d2cc8a9-bc64-4e12-b92e-87a12f1e9c35.png",
@@ -127,6 +159,9 @@
       "upd": "2024-09-28"
     },
     "animator": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://raw.githubusercontent.com/crimclark/animator/master/assets/main.png",
         "https://raw.githubusercontent.com/crimclark/animator/master/assets/options.png"
@@ -141,6 +176,9 @@
       "upd": "2021-07-23"
     },
     "arcify": {
+      "facets": [
+        "script"
+      ],
       "readme": "Arcify\n\nA Monome Norns library for easily adding Arc support to existing sketches.\nRequirements\nNorns OS v2.0 or greater.\nA Monome Arc (or the desire to support one in your Norns sketch)\nWe/ TestSine Engine (If you want to test this script)\nUsage\n\nRoadmap\n1. If there isn’t an Arc plugged in, don’t build the Arcify params.\n2. Set more elegant and appropriate defaults for the scale (encoder rate) value.\n3. Build shift mode params only if user enables shift mode.\n4. Remove the need to register() params, and introspect them from the global params.params table directly.\nLuaDoc\nSee the docs",
       "tags": [
         "lib"
@@ -148,6 +186,9 @@
       "upd": "2019-05-02"
     },
     "arcologies": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://northern-information.github.io/arcologies-docs/assets/images/the-rewilding.jpg",
         "https://northern-information.github.io/arcologies-docs/assets/images/arctangents-and-archangels.jpg",
@@ -155,6 +196,7 @@
         "https://northern-information.github.io/arcologies-docs/assets/images/arcologies-landscape.jpg"
       ],
       "nb": true,
+      "nb_role": "provides",
       "readme": "arcologies\n\nan interactive environment for designing 2d sound arcologies with norns and grid\n\nIf you are an artist, musician, or arcologist here to use this tool, everything you need to know is in the docs. Join the discussion on lines.\n\nThis README is for developers looking to contribute in building arcologies.\nChangelog\n\nThe changelog is located here.\nTechnical\nThe developer manual video is the fastest way to learn arcologies. It includes a walkthrough of the architecture and deep dives into the most complex parts of the software.\nTo learn the codebase, read arcologies.lua and lib/includes.lua.\nNext, skim through keeper.lua, Cell.lua, Signal.lua, and counters.lua.\nCell and Signal are the only classes. Signals are primitive. Cells are complex.\nconfig.lua is where signal, cellular, and global behavior is composed.\nCell traits/mixins are inside lib/mixins. Even though there are many different types of cell structures, they're all just instances of the same Cell class. Changing their structure toggles behaviors and traits on and off (e.g. …",
       "tags": [
         "generative",
@@ -169,6 +211,9 @@
       "upd": "2024-12-06"
     },
     "arp_index": {
+      "facets": [
+        "script"
+      ],
       "readme": "arpindex\nCheck stocks on norns (and make music).\n\nNOTE: This script is currently not functioning due to API changes at IEX Cloud which previously provided the stock data.",
       "tags": [
         "sequencer",
@@ -177,6 +222,9 @@
       "upd": "2020-01-12"
     },
     "ash": {
+      "facets": [
+        "script"
+      ],
       "readme": "ash: a collection of norns scripts\nangl: arc grains\nearthsea: grid-based pattern instrument\norbit: dual looper\nplayfair: euclidean drummer",
       "tags": [
         "arc",
@@ -187,8 +235,30 @@
       ],
       "upd": "2023-07-24"
     },
+    "ashsynth": {
+      "engine": "Ash",
+      "facets": [
+        "script",
+        "engine"
+      ],
+      "images": [
+        "https://raw.githubusercontent.com/nunosmash/AshSynth/main/demo.png"
+      ],
+      "readme": "AshSynth\n\nDemos: Demo 1 · Demo 2 (Shorts)\n\nAshSynth is a monophonic synthesizer script for norns. It starts from a familiar dual-oscillator → LP filter → dual-ADSR layout, then adds norns-friendly UI and a few sound-design choices of its own. The screen stays live; parameters show as bar graphs so you can read the patch at a glance.\n\nWhat it sounds like\n\nAshSynth is designed to be a genuine standalone synth, capable of serving as a complete instrument in its own right.\nMono voice — one note at a time, clear and direct; good for bass, leads, and short pads or sequences.\nDual oscillators — wave, pitch, octave, level, and detune live on separate OSC1 / OSC2 pages so each source is easy to shape on its own.\nFM layer — a high-ratio FM voice in MIX; depth can be swept with the LFO.\nSplit filter & amp envelopes — filter moves on its own, or LINK ties it to the amp envelope.\nWide LFO — routes to pitch, filter, amp, pulse width, detune, noise, FM, glide, drive, delay mix, and reverb mix; LFO Master scales all depths at once.\nDelay & reverb — clock-synced delay (triplets, dotted notes, bars, and more) plus FreeVerb2 reverb, with light makeup gain so wet mixes do not collapse in level. …",
+      "tags": [
+        "synth",
+        "engine",
+        "midi",
+        "grid"
+      ],
+      "upd": "2026-06-04"
+    },
     "asterion": {
       "engine": "Asterion",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://raw.githubusercontent.com/cachilders/asterion/main/assets/images/doors/final1.png",
         "https://raw.githubusercontent.com/cachilders/asterion/main/assets/images/doors/final2.png",
@@ -208,6 +278,9 @@
       "upd": "2024-03-30"
     },
     "automs70": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://raw.githubusercontent.com/pangrus/automs70/main/automs70.png"
       ],
@@ -220,6 +293,10 @@
     },
     "avonlea": {
       "engine": "Avonlea",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://raw.githubusercontent.com/kurogedelic/avonlea/main/cover.png"
       ],
@@ -234,6 +311,9 @@
       "upd": "2025-05-30"
     },
     "awake": {
+      "facets": [
+        "script"
+      ],
       "tags": [
         "sequencer",
         "grid"
@@ -241,6 +321,9 @@
       "upd": "2026-04-30"
     },
     "awake-passersby": {
+      "facets": [
+        "script"
+      ],
       "readme": "awake-passersby\n\nA copy of the Awake script for Norns, this time using the Passersby engine. Requires that the \"Passersby\" engine is installed, found here",
       "tags": [
         "sequencer",
@@ -250,6 +333,10 @@
     },
     "awake-rings": {
       "engine": "KarplusRings",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "readme": "awake-rings\n\nA simple copy of the Awake script for Norns, pointed at the Karplus-Rings\nengine. This requires that the \"we\" project, containing the engine,\nhas been installed.",
       "tags": [
         "sequencer",
@@ -258,6 +345,9 @@
       "upd": "2022-03-24"
     },
     "b-b-b-b-beat": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://raw.githubusercontent.com/frederickk/b-b-b-b-beat/primary/.assets/b-b-b-b-beat.gif"
       ],
@@ -268,6 +358,10 @@
       "upd": "2020-08-24"
     },
     "bakeneko": {
+      "facets": [
+        "script",
+        "engine"
+      ],
       "tags": [
         "drum",
         "sequencer",
@@ -276,6 +370,9 @@
       "upd": "2022-06-25"
     },
     "barcode": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://user-images.githubusercontent.com/6550035/89963709-3031cb80-dbfd-11ea-8aa2-486e7f2e10bf.gif",
         "https://user-images.githubusercontent.com/6550035/89964863-1f368980-dc00-11ea-87f4-ea58cf29d40d.png"
@@ -287,6 +384,9 @@
       "upd": "2021-10-16"
     },
     "barycenter": {
+      "facets": [
+        "script"
+      ],
       "readme": "barycenter\n\nbarycenter: fluctuating relationships\nv0.2.0 @echophon\n\nENC 1 - offset horizon\n\nENC 2 - adjust space\n\nKEY 2 - cycle space focus\n\nENC 3 - adjust speed\n\nKEY 3 - cycle speed focus\n\na script for Norns loosely based on the motion of celestial bodies https://en.wikipedia.org/wiki/Barycenter\n\ntwo bodies rotate around a central point, two rotate around those, & two more rotate around those to create 8 visible bodies. as the visible bodies cross the horizon notes are struck and sound is made. symmetry is maintained at a horizon of zero, offsetting the horizon allows for asymmetry",
       "tags": [
         "sequencer",
@@ -295,6 +395,9 @@
       "upd": "2020-10-26"
     },
     "beacon": {
+      "facets": [
+        "script"
+      ],
       "readme": "beacon\n\nbeacon is a norns script for sample mangling by entering commands using a computer keyboard.\nRequirements\n[x] norns\n[x] a USB computer keyboard\n[x] some samples\nQuick Start\n(AKA just tell me how to make some noise)\n\nMake sure your keyboard is connected to your norns and start the script\n\nEnter the following pressing enter at the end of each line\n\nThese comands will load a sample into the first of two buffers, set the first voice of six to use that first buffer and then play the first voice.\n\nYou can use the up and down arrows to move through the history of commands you have entered. Press the up arrow once and press enter to hear the sample again.\n\nThe help command will list all available commands.\nA command followed by help will give help about that command e.g.\n\nCommands that require a voice parameter will generally give the current settings by entering the command with just the voice number e.g.\n\nCommands that don't require a voice parameter will generally give the current setting by just entering the command with no parameters e.g.\nCommands\nParameters in \\ are required, those in ( ) are optional.\n\nbpm \\ (s)\n\nload \\ (b#) (s)\n\nrec \\\n\nvoice \\ \\\n\nlevel \\ \\\n\npan \\ \\ …",
       "tags": [
         "sampler",
@@ -303,6 +406,9 @@
       "upd": "2021-09-23"
     },
     "beets": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://raw.githubusercontent.com/mattb/beets/master/grid-ui.png"
       ],
@@ -316,6 +422,10 @@
     },
     "benjolis": {
       "engine": "Benjolis",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "readme": "a norns version of Alejandro Olarte's Benjolis SC patch\nBenjolis\nInstrument inspired from Rob Hordijk's Benjolin, it requires sc3-plugins (PulseDPW, SVF and DFM1)\n\noutSignal:\n1-triangle osc1,\n2-square osc1,\n3-triangle osc2,\n4-pulse osc2,\n5-XOR output,\n6-Filter output\n\nEnjoy! Alejandro Olarte\nhttps://scsynth.org/t/benjolin-inspired-instrument/1074\nNorns\nUI:\nuse K2 and K3 to\ncycle through pairs of dials.\n\nuse E2 and E3 to\nadjust the left and right\ndials of the selected\npair.\n\nuse E1 to\ncontrol volume.\n\nif you hold K1 (shift)\nand use K2, you will\nhave a momentary mute.\n\nif you hold K1 (shift)\nand use K3, you will\nhave a mute that toggles.\nCONTROLS:\nat the bottom of the params\nmenu there are four MIDI\nmappings that you can enable.\n\nfirst choose the external device.\n\nthen there are three options for\neach mapping:\nenable mapping\nMIDI channel\nnote mapping\n\nenable mapping is, itself,\nMIDI mappable and simply\nenables this mapping or not.\n\nMIDI channel sets the incoming\nMIDI channel for this mapping\nto listen to\n\nnote mapping sets which param\nthis will be mapped to.\n\nthanks to Alejandro Olarte\nfor the SynthDef",
       "tags": [
         "synth",
@@ -324,6 +434,9 @@
       "upd": "2020-01-16"
     },
     "bistro": {
+      "facets": [
+        "script"
+      ],
       "readme": "bistro\n\n\"press cafe\" remake for Monome Norns.",
       "tags": [
         "sequencer",
@@ -333,6 +446,10 @@
     },
     "bitebeet": {
       "engine": "ByteBeat",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "tags": [
         "synth",
         "keyboard"
@@ -341,6 +458,10 @@
     },
     "bitters": {
       "engine": "Bitters",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "readme": "A somewhat lo-fi mono/poly for Monome Norns.\n\nPolyphony SuperCollider code is from InfiniteDigits's Mx.Synths @schollz\n\nHalfsecond softcut delay is from Tehn's Awake @tehn",
       "tags": [
         "synth",
@@ -349,6 +470,10 @@
       "upd": "2022-11-01"
     },
     "bline": {
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://github.com/toneburst/bline/blob/main/screenshots/bLINE_Logo_GIF_02.gif"
       ],
@@ -363,6 +488,10 @@
       "upd": "2025-04-12"
     },
     "blippoo": {
+      "facets": [
+        "script",
+        "engine"
+      ],
       "readme": "blippoo\n\nBlippoo Box clone for Norns.\n\nOriginal SuperCollider code by olaf.",
       "tags": [
         "synth",
@@ -371,6 +500,9 @@
       "upd": "2021-02-11"
     },
     "blndr": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://user-images.githubusercontent.com/6550035/89736309-58fb6a80-da1d-11ea-8cf7-e8072b76ba2a.png",
         "https://user-images.githubusercontent.com/6550035/89736311-5d278800-da1d-11ea-8638-53a8013f36b7.png",
@@ -384,6 +516,10 @@
     },
     "bloom": {
       "engine": "Bloom",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://raw.githubusercontent.com/schollz/bloom/main/bloom.png"
       ],
@@ -397,6 +533,9 @@
       "upd": "2025-11-16"
     },
     "blue": {
+      "facets": [
+        "script"
+      ],
       "readme": "blue",
       "tags": [
         "art",
@@ -405,6 +544,9 @@
       "upd": "2023-09-23"
     },
     "boingg": {
+      "facets": [
+        "script"
+      ],
       "tags": [
         "sequencer",
         "midi",
@@ -414,6 +556,9 @@
       "upd": "2022-10-17"
     },
     "bounds": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://raw.githubusercontent.com/justmat/bounds/master/assets/bounds.png"
       ],
@@ -425,6 +570,9 @@
       "upd": "2022-02-02"
     },
     "bowering": {
+      "facets": [
+        "script"
+      ],
       "readme": "bowering\n\na crow script loader for norns\n\ndemonstrates usage of the new crow public library\nRequirements\nnorns (version in this PR)\ncrow (version 3.0.0+)\nDocumentation\nTODO add links",
       "tags": [
         "utility",
@@ -433,6 +581,9 @@
       "upd": "2021-07-08"
     },
     "breakthrough": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://github.com/user-attachments/assets/2fa2c9df-36b9-422f-9e51-5cc167cd41f7"
       ],
@@ -446,6 +597,9 @@
       "upd": "2021-01-04"
     },
     "buoys": {
+      "facets": [
+        "script"
+      ],
       "readme": "buoys\n\nbuoys is an app for norns.\n\nREAD THIS FIRST: If you're just trying to get started with buoys, make sure to look below for the instructions on reaching \"meta mode\". You'll need to know how to do that so you can load samples into the app. Otherwise, if docs aren't your thing, most things should be possible to figure out on your own with a little imagination :-)\n\nDiscussion at https://llllllll.co/t/buoys/37639.\n\nVideo walkthroughts at https://vimeo.com/showcase/7782830.\nConcept\n\nA tide of light moves across the grid, activating sounds and modulations as the tide interacts with any number of \"buoys\" that have been placed anywhere in its path. The core physical metaphor is that of a wave/tide of water moving through space and having interactions with objects in the water along the way. Besides buoys, pilings are the other type of object that can be placed in the water. Unlike buoys, pilings do not yield to the tide, the tide yields to them. The tide will be disrupted by pilings it runs into as it moves along. On the grid, brighter lights correspond to deeper \"waters\".\n\nThe app requires only an varibright monome grid (8x16 or 16x16) and the norns to run. …",
       "tags": [
         "generative",
@@ -461,6 +615,10 @@
     },
     "caliper": {
       "engine": "Caliper",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://synthetiv.github.io/misc/caliper-out.png",
         "https://synthetiv.github.io/misc/caliper-in.png"
@@ -474,6 +632,10 @@
     },
     "carter's delay": {
       "engine": "CartersDelay",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://github.com/user-attachments/assets/cd444d00-ca82-4753-aedc-f606ef0f2f76"
       ],
@@ -485,6 +647,9 @@
       "upd": "2024-09-12"
     },
     "cc-canvas": {
+      "facets": [
+        "script"
+      ],
       "readme": "cc-canvas\n\nFifteen grid-controllable MIDI CC messages with slewing and snapshot recall.\nThis project runs on both norns and seamstress.\nRequires monome zero / 256, though script can be edited to accommodate any dimensions.\n\nEach column is a fader, which can be assigned a target MIDI device, channel, CC number and CC value -- see the system parameters menu for these settings.\n\nEach key in each fader column (1-15) sets CC value directly -- 127 at top, 7 at bottom, reselect current value to zero-out.\n\nPARAMETERS > morph will increment the CC value of every slider by a random value between -10 and 10.\n\nsnapshots @ (16, 1-14)\nhold to capture current values as snapshot\npress stored snapshot to recall stored values\n\nALT key @ (16, 16)\nhold to show slew times\nwhile holding, hold stored snapshot to delete snapshot\n\nALL key @ (16, 15)\nhold and press a value to set all channels to that value\nthis works on the CC values and slew times pages\nwhile holding, press stored snapshot to jump all values to that snapshot without slewing\nwhile holding, PARAMETERS > morph will jump to new morphed value without slewing",
       "tags": [
         "midi",
@@ -494,6 +659,9 @@
       "upd": "2024-02-13"
     },
     "cccccccc": {
+      "facets": [
+        "script"
+      ],
       "readme": "cccccccc\n\nEach dial of the arc can send either a constant value or an LFO. The last touched dial is highlighted on the display and its parameters can be refined on the norns in the following ways:\n\n– encoder 1: lfo type\n\n– encoder 2: set cc amp (range maybe better term?)\n\n– encoder 3: set cc offset\n\n– key 2: toggle lfo/dial mode\n\n– key 3: change focus to next dial",
       "tags": [
         "utility",
@@ -502,6 +670,9 @@
       "upd": "2019-05-09"
     },
     "changes": {
+      "facets": [
+        "script"
+      ],
       "tags": [
         "sequencer",
         "utility",
@@ -510,7 +681,11 @@
       "upd": "2020-08-21"
     },
     "cheat_codes_2": {
+      "facets": [
+        "script"
+      ],
       "nb": true,
+      "nb_role": "provides",
       "readme": "cheat codes 2\n\na sample playground for norns\nhard requirements:\nnorns (250406 or later)\nencouraged (any or all):\ngrid (64 or 128, all editions -- 256 works as well, just half)\narc 4 (works with 2, but only two banks of control)\nLaunchpad (X, Pro or Mini MK3) for midigrid compatibility\nMIDI keyboard, MIDI button box, OP-Z (see below)\nTouchOSC (mk1)\nMidi Fighter Twister (template)\nMax for Live (device)\ncrow for pad-to-trigger or Just Friends + w/ note output\nany of the nb library mods\ndocumentation\ndiscussion\n\nOP-Z setup notes\n\nyou’ll need to make some adjustments to OP-Z’s MIDI settings, so grab a screen and navigate to the OP-Z’s MIDI SETUP menus!\n\nfor globals, make only the following active:\n\nMIDI IN ENABLE\nMIDI OUT ENABLE\nCLOCK IN ENABLE\nCLOCK OUT ENABLE\n\nthen, you’ll want to choose three tracks to control the three banks of cheat codes. how you set that up will depend on your end-goals, but make sure you take note of the midi channels for each track. if you’ve never edited the MIDI channel assignments for the tracks on your OP-Z, they’re likely set up as 1-16 – double check in the app, though! …",
       "tags": [
         "sampler",
@@ -525,12 +700,18 @@
       "upd": "2025-09-29"
     },
     "choukanzu": {
+      "facets": [
+        "mod"
+      ],
       "tags": [
         "mod"
       ],
       "upd": "2023-08-03"
     },
     "circles": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://raw.githubusercontent.com/JakeCarter/circles/main/circles.png"
       ],
@@ -542,6 +723,9 @@
       "upd": "2025-06-07"
     },
     "clarck": {
+      "facets": [
+        "script"
+      ],
       "readme": "clARCk\na clock for arc4 on norns\n\nbased on a maxpat by JP\nhttps://github.com/monome-community/collected/tree/master/clarck",
       "tags": [
         "utility",
@@ -551,6 +735,9 @@
       "upd": "2019-03-07"
     },
     "clcks": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://user-images.githubusercontent.com/6550035/91256096-4a020100-e71b-11ea-82a6-3b2ef258fbec.gif",
         "https://user-images.githubusercontent.com/6550035/91318286-e950e380-e76f-11ea-9394-178c7dfe8306.png"
@@ -562,6 +749,9 @@
       "upd": "2020-08-26"
     },
     "clipper": {
+      "facets": [
+        "script"
+      ],
       "readme": "clipper\nslice and save samples for monome norns\ninstructions\nkey/encoder controls\naccess instructions for key/encoder controls within the script by pressing k1 + k3\nAll screens\ne2: next/prev control\nScreen 1: select/play sample\nk2: select sample to slice up\ne3: incr/decr playhead\nk3: start/stop playhead\nScreen 2: play mode\nk2/k3: delete/add cutter\ne3: change play mode\nScreen 3: adjust cut ends\nk2/k3: delete/add cutter\nk1 + e2: select cutter\nk1 + e3: adjust cutter\nk1 + e1: fine adjust cutter\ne3: select cutter end\nScreen 4: move cutter\nk2/k3: delete/add cutter\nk1 + e2: select cutter\nk1 + e3: adjust cutter\nk1 + e1: fine adjust cutter\nScreen 5: adjust rate\nk2/k3: delete/add cutter\nk1 + e2: select rate\ne3: adjust all cutter rates\nk1 + e1: fine adjust rate\nk1 + e3: adjust selected cutter rate\nScreen 6: adjust level\nk2/k3: delete/add cutter\ne3: adjust level\nScreen 7: autogenerate cutters\ne3: autogenerate clips by level (up to 20)\nk1 + e3: autogenerate clips with even spacing (up to 20)\nrecording clips\nclips may be recorded from the PARAMETERS>EDIT menu. what gets recorded depends on the play mode setting:\nstop: record the entire sample\nfull loop: record the entire sample …",
       "tags": [
         "sampler"
@@ -569,6 +759,10 @@
       "upd": "2021-08-24"
     },
     "clockabout": {
+      "facets": [
+        "script",
+        "mod"
+      ],
       "images": [
         "https://raw.githubusercontent.com/niksilver/clockabout/main/screenshot.png"
       ],
@@ -582,6 +776,9 @@
       "upd": "2025-02-22"
     },
     "colorwheel": {
+      "facets": [
+        "script"
+      ],
       "tags": [
         "sequencer",
         "grid",
@@ -590,6 +787,9 @@
       "upd": "2022-10-31"
     },
     "combiner": {
+      "facets": [
+        "mod"
+      ],
       "readme": "Combiner\nCombine 2-127 Grids into a virtual grid available to all scripts\nWhat you can do with it\nCombine smaller Grids into a standard 128 or 256 size.\nMake non-standard layouts like 32x8 or a Grid with gaps.\nMirror Grids so two can play at once.\nSet rotation (including 16x8 vertical) and LED 'intensity'.\nRequirements\nNorns 231114\nHow to use it\n1. Install from the Maiden project manager (or ;install https://github.com/dstroud/combiner)\n2. Enable the mod in SYSTEM>>MODS>>E3 (+ symbol) and restart.\n3. Edit your layout in SYSTEM>>MODS>>COMBINER>>K3.\nFirst, arrange your physical Grids however you want.\nPress column 1, row 1 to place the first Grid. It will detect orientation.\nAdd new Grids by holding the corner of any placed Grid and tapping an adjacent corner of the new Grid.\nTo change additional settings, tap the center of a Grid to select it and use E2 (navigation) and E3 (change).\n4. The virtual Grid will appear in appear to scripts on port 1 (default for most scripts).\nNotes\nGrids do not have to be added in SYSTEM>>DEVICES>>GRID. Only add them there if you want them to be available in addition to the virtual grid on port 1. …",
       "tags": [
         "mod",
@@ -599,11 +799,18 @@
       "upd": "2026-04-08"
     },
     "combos": {
+      "facets": [
+        "script"
+      ],
       "readme": "norns combo scripts\noats = otis + boingg\nearthbound = earthsea + bounds\njoin the conversation at https://llllllll.co/t/combos/27020",
       "upd": "2022-10-28"
     },
     "compass": {
       "engine": "Decimatec",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "readme": "Compass is an asynchronous looper for monome norns built around the concept of a command sequencer. Commands modulate sequence, recording, playback and looping behaviors.\n\nFull manual: https://compass-manual.glitch.me/",
       "tags": [
         "sequencer",
@@ -614,6 +821,9 @@
       "upd": "2020-07-29"
     },
     "concrete": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://raw.githubusercontent.com/sonocircuit/concrete/main/doc/cover.png"
       ],
@@ -628,6 +838,9 @@
       "upd": "2025-11-22"
     },
     "constellations": {
+      "facets": [
+        "script"
+      ],
       "readme": "constellations\n\nversion 1.0.0\n\nfor monome norns\n\nscan the stars; make music! an interactive sequencer.",
       "tags": [
         "generative",
@@ -638,6 +851,9 @@
       "upd": "2025-07-24"
     },
     "corners": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://norns.community/community/quixotic7/corners.png"
       ],
@@ -651,10 +867,14 @@
       "upd": "2021-06-23"
     },
     "cranes": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://llllllll.co/uploads/default/original/3X/e/b/eb0fb77835e0a1fafc7afcaa85569408a03fcebf.jpeg"
       ],
       "nb": true,
+      "nb_role": "provides",
       "readme": "cranes\nstereo varispeed looper / delay / timeline-smoosher\n\nquick start:\nplug a stereo signal or two mono signals into the inputs on norns.\nhead over to the params page.\nnb: when the buffer is completely cleared (at startup and after KEY 3 + KEY 1 are held), cranes will record incoming audio at 1x speed into both buffers and will immediately play back at the rates specified in the params page.\nnb: left input will write to voice 1, right input will write to voice 2.\nfor the most immediate fun, I suggest setting speed voice 1 to 0.5 and speed voice 2 to -1.\nhead back to the performance interface.\ntap KEY 2 to record into the buffers. also, make some sounds!\nto loop, tap KEY 2 again. this sets the loop points (s1/e1 and s2/e2) to the length of the recording. you should hear your material played at half-speed on the left and reversed on the right. you should see the one / two counters counting in the same direction and at the same speed as your audio.\nhold KEY 1 until you see s1 and e1 change to s2 and e2. this switches which buffer you want to control with the buttons and encoders. …",
       "tags": [
         "delay",
@@ -664,6 +884,9 @@
       "upd": "2024-11-12"
     },
     "crow_talk": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://raw.githubusercontent.com/justmat/crow_talk/main/assets/crow_talk-m.png"
       ],
@@ -676,6 +899,9 @@
       "upd": "2021-02-13"
     },
     "cryptkeeper": {
+      "facets": [
+        "script"
+      ],
       "readme": "cryptkeeper\n\nCreate and edit crypts for arcologies by tyleretters without leaving norns.\nusage\ne1 = select slot\nhold k1 = load sample\nk2 = alt\nk3 = play\nalt + k3 = toggle loop\ne2 = start point (coarse)\nalt + e2 = start point (fine)\ne3 = end point (coarse)\nalt + e3 = end point (fine)\n\nsave/load on last tab. save will overwrite if the name matches an existing crypt directory.",
       "tags": [
         "utility"
@@ -683,6 +909,9 @@
       "upd": "2021-01-14"
     },
     "cybermidi": {
+      "facets": [
+        "mod"
+      ],
       "readme": "C Y B E R M I D I\nListen up, kid. I don’t need to know how you ended up acquiring not one but two Norns-class cyberdecks. But slingin’ two ‘decks without a proper setup is like waltzing into corpo HQ without a plan.\nYou've got the hardware, sure. It’s gonna take more than just showin' off your chrome to be a legit Netrunner. Do the math: ya got two decks and one interface plug, yeah? That's like tryin' to ride a bike with one wheel. We need to link those bad boys up, turn 'em into a seamless unit with bidirectional comms. Welcome to the sordid world of M.I.D.I.\nNow, I get it. Not everyone's got the eddies for a next-gen 2host setup. Lucky for you, my fixer's got a line on a 'less-than-legitimate' option. It's a black-market mod, and yeah, might induce a touch of brain-burn here and there, but in this biz, risk is the name of the game. It’ll get the job done, it’s nanomachine-proof, and here’s the kicker—it’s free.\nI'm talkin' CyberMIDI: wireless transmission of M.I.D.I. between ‘decks. Give me a minute to jack in and upload the mod, and I’ll have your hardware singing in harmony. All I need in return is a little job from you. …",
       "tags": [
         "mod",
@@ -692,6 +921,10 @@
       "upd": "2024-02-01"
     },
     "cyrene": {
+      "facets": [
+        "script",
+        "mod"
+      ],
       "images": [
         "https://raw.githubusercontent.com/21echoes/cyrene/master/screenshots/landing.png",
         "https://raw.githubusercontent.com/21echoes/cyrene/master/screenshots/swing.png",
@@ -710,6 +943,10 @@
     },
     "d": {
       "engine": "D",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://raw.githubusercontent.com/justmat/d/main/assets/d-a.png",
         "https://raw.githubusercontent.com/justmat/d/main/assets/matrix-m.png",
@@ -724,6 +961,10 @@
     },
     "delar": {
       "engine": "DelarSequencer",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://img.youtube.com/vi/f790xR9Q2Q8/hqdefault.jpg"
       ],
@@ -736,6 +977,10 @@
       "upd": "2024-03-10"
     },
     "delayyyyyyyy": {
+      "facets": [
+        "script",
+        "engine"
+      ],
       "readme": "delayyyyyyyy\n\nWarm delay with modulation and stereo separation for Monome Norns.",
       "tags": [
         "delay"
@@ -744,6 +989,10 @@
     },
     "delinquencer": {
       "engine": "PolySaw",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://github.com/kevinlindley/delinquencer-support/blob/main/DelinquencerTitle.png",
         "https://github.com/kevinlindley/delinquencer-support/blob/main/DelinqunecerRunningOnNorns450.png",
@@ -758,6 +1007,10 @@
     },
     "demoncore": {
       "engine": "DemonCore",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://github.com/kevinlindley/DemonCore/blob/55c5bdccfdd51665a203fefc01973fa4af2d7787/DemonCoreSmall.png"
       ],
@@ -770,6 +1023,9 @@
       "upd": "2021-03-30"
     },
     "descartes": {
+      "facets": [
+        "script"
+      ],
       "readme": "descartes\nCartesian sequencer for norns, grid and crow.\nRequirements\nnorns\ngrid\nDocumentation\nNorns' screen indicates which parts of the grid correspond to which parameters of the sequencer.\nFor access, gate, and glide, press keys on the grid to enable / disable behavior for a particular step.\nHold a grid key in the step section and turn E2 to change the current note on that step.\nGo to params to map the various layers' cv and gate outputs to crows four outputs\nChangelog\nv1.2.0\nadjusted midi note values so that output midi note numbers match note name displayed\nadded midi offset param in each layer\nv1.1.1\nfixed a bug in which norns would freeze if a user set turned off all access cells\nfixed a bug that prevented the y layer from working entirely\nfixed assignable inputs\nv1.1.0\ncrow is no longer required!\nadded midi output for all 3 channels, velocity and midi channel configurable in params\nadded internal clocking, users can opt to use an internal clock for any layer rather than crow, users can set division of global clock\nadded param groups\nfixed a bug in which x clocks weren't cycling correctly in the c layer …",
       "tags": [
         "sequencer",
@@ -779,6 +1035,10 @@
     },
     "dimension-expander": {
       "engine": "DimExp",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "readme": "dimension-expander\nstereo spreader fx for monome norns based on xfer's vst plugin\nhttps://llllllll.co/t/dimension-expander/",
       "tags": [
         "audio_fx"
@@ -787,6 +1047,10 @@
     },
     "downtown": {
       "engine": "Downtown",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://user-images.githubusercontent.com/6550035/103465225-7859a380-4cee-11eb-981d-bc571d9b152d.png"
       ],
@@ -797,10 +1061,14 @@
       "upd": "2021-01-05"
     },
     "dreamsequence": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://raw.githubusercontent.com/dstroud/dreamsequence/main/doc/yt_thumb.png"
       ],
       "nb": true,
+      "nb_role": "provides",
       "readme": "Dreamsequence\n\nChord-based sequencer, arpeggiator, and harmonizer for Monome Norns + Grid\n\nRequired: Monome Norns (231114 or later) and Grid (16x8 or 16x16)\n\nOptional: Supports MIDI and Crow by default. Installation of additional NB voices is highly recommended!\n\nDreamsequence vids on YouTube\n\nIntro\n\nDreamsequence is a script for theory-informed musical composition and performance with Norns + Grid.\n\nKey features include:\nDegree-based chord sequencer with performance controls for voicing and strumming\nQuick selection of scale-appropriate chords, plus custom chord editor\nThree sequencers configurable for mono, poly, kit, arp, and hybrid modes\nMIDI/CV Harmonizers to transform incoming notes/voltages into new sequences\nEight custom scale masks for each song scale\nSupport for up to six Nota Bene (NB) voices, or merging of sequences to a single voice\nSong Arranger to build fixed-length or looping compositions from chord patterns\nEvents to change any script or voice parameter, plus control over CV gear via Crow\nIndependent division and swing settings for sequences and Crow clock output\nAlgorithmic chord and sequence pattern generation …",
       "tags": [
         "sequencer",
@@ -812,6 +1080,9 @@
       "upd": "2025-06-26"
     },
     "drift": {
+      "facets": [
+        "script"
+      ],
       "readme": "drift\nmotes of dust float through space\n\na script for monome norns\n\nKEY1 shift\n\nKEY2 cycles param focus\n\nKEY3 cycles focus\n\nENC1 transpose all\n\nENC2 param 1\n\nENC3 param 2\n\nshift + KEY2 randomize all\n\nshift + KEY3 randomize focus",
       "tags": [
         "sequencer"
@@ -820,6 +1091,10 @@
     },
     "dronecaster": {
       "engine": "Dronecaster",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://raw.githubusercontent.com/northern-information/dronecaster/main/doc/instructions.png"
       ],
@@ -833,6 +1108,9 @@
       "upd": "2026-02-03"
     },
     "drum_room": {
+      "facets": [
+        "script"
+      ],
       "tags": [
         "drum",
         "midi"
@@ -840,6 +1118,9 @@
       "upd": "2022-02-25"
     },
     "dunes": {
+      "facets": [
+        "script"
+      ],
       "readme": "Dunes (v2.0.2)\nDunes is a function sequencer for Monome Norns by @olivier. Extended version by @sonocircuit\nllllllll.co/t/dunes/24790\n\nInspired by spacetime, Dunes is a sequencer for the creation of emergent patterns, timbres and textures.\nDocumentation:\n\nFULL DOCS AS PDF\nQuickstart:\nNorns\n\nenc1: navigate pages\n\nPAGE 1: SEQUENCE\nenc2: navigate to step\nenc3: select command\nkey1 [hold]: ignore command (# and ? are not ignored)\nkey1 [hold] + enc2: change note\nkey2: stop/start\nkey1 [hold] + key2: reset position\nkey3: randomize commands\nkey1 [hold] + key3: reset commands\nkey3 [longpress]: reset all\n\nPAGE 2 & 3: DELAY and SYNTH PARAMETERS\nenc2: change left parameter\nenc3: change right parameter\nkey2: toggle row\n\nPAGE 4: COMMAND LIST\nenc2: navigate command list\n\nCommand List\n\nSequence:\n: Octave up\nO : Random octave\n- : Half tempo\n+ : Double tempo\n= : Reset tempo\nM : Add rest (at step)\nN : New note (at step)\nP : New pattern\n# : Reset position\n? : Jump to random step\n} : Forward direction\n{ : Reverse direction\n\nPassersby synth:\nG : Random glide at step\nd : Decay -\nD : Decay +\ns : Wave shape -\nS : Wave shape +\nf : Wave folds -\nF : Wave folds +\nv : Reverb mix -\nV : Reverb mix +\n\nCrow: …",
       "tags": [
         "sequencer",
@@ -850,6 +1131,10 @@
     },
     "eastwind": {
       "engine": "eastwind",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "readme": "eastwind\na norns instrument\nInstallation\n\n1. Install via maiden or clone/download the repo to dust/code.\n2. Restart norns to pickup the SuperCollider Dronecaster engine.\n3. Drone!",
       "tags": [
         "grid",
@@ -859,6 +1144,10 @@
     },
     "easygrain": {
       "engine": "EasyGlut",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "readme": "easygrain\neasygrain script for monome norns\n\nnow with a wider parameter range and arc support\n\nglut engine by artfwo",
       "tags": [
         "granulator",
@@ -868,6 +1157,10 @@
     },
     "eels": {
       "engine": "Eels",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://raw.githubusercontent.com/andr-ew/eels/main/lib/doc/img/eels_cover.gif",
         "https://raw.githubusercontent.com/andr-ew/eels/main/lib/doc/img/eels-02.png",
@@ -884,6 +1177,9 @@
       "upd": "2023-02-12"
     },
     "ekombi": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://i.imgflip.com/4aae6o.gif",
         "https://llllllll.co/uploads/default/original/3X/4/0/408b3650f2f4b1e8361d4819d21fd4de60adf1a8.png",
@@ -899,6 +1195,10 @@
     },
     "endless-stairs": {
       "engine": "Shepard",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "readme": "endless-stairs\ngenerate shepard tones with just friends",
       "tags": [
         "synth",
@@ -910,6 +1210,9 @@
       "upd": "2020-08-07"
     },
     "esper": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://raw.githubusercontent.com/cachilders/esper/main/assets/stock/wildcat.png",
         "https://raw.githubusercontent.com/cachilders/esper/main/assets/docs/power1.png",
@@ -923,6 +1226,10 @@
       "upd": "2024-07-07"
     },
     "eterna": {
+      "facets": [
+        "script",
+        "engine"
+      ],
       "readme": "Eterna\n\nEterna is a 6-voice sampler and sequencer for creating rhythmic textures and patterns from a single audio file.\n\nRequirements\nmonome norns\nA WAV/AIFF sample (48kHz), which may be mono, stereo or up to 6 channels.\n\nEterna is designed to have a fast and enjoyable workflow for users with just a norns. Additionally, the following hardware is supported:\nmonome grid\nmidi controller\nDocumentation\n\nDocumentation is available here:\n\nhttps://docs.etsuko.fm/eterna/\n\nCommunity support:\nhttps://llllllll.co/t/eterna/73584",
       "tags": [
         "sequencer",
@@ -932,6 +1239,10 @@
     },
     "euclidigons": {
       "engine": "PrimitiveString",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://synthetiv.github.io/euclidigons/screenshot.png"
       ],
@@ -945,6 +1256,10 @@
     },
     "faeng": {
       "engine": "Turns",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "readme": "faeng\nfaeng is a sequencer\n\ninspired by kria\n\npowered by timber\n\nconnect a grid to norns\n\nand take wing\n\nsee lines for documentation\n\nrequires: norns, timber, grid",
       "tags": [
         "sequencer",
@@ -955,6 +1270,10 @@
     },
     "fall": {
       "engine": "Autumn",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://raw.githubusercontent.com/ambalek/fall/main/fall1.png",
         "https://raw.githubusercontent.com/ambalek/fall/main/fall-grid.png",
@@ -972,6 +1291,10 @@
     },
     "fiahod": {
       "engine": "Fiahod",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "readme": "fiahod\ni will show you fear in a handful of dust\n\na generative musical script for norns. sit back and watch the weather change.",
       "tags": [
         "art",
@@ -980,6 +1303,9 @@
       "upd": "2021-01-02"
     },
     "fibonacci": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://raw.githubusercontent.com/bryceadams/fibonacci/main/screenshots/fib1.png",
         "https://raw.githubusercontent.com/bryceadams/fibonacci/main/screenshots/fib2.png",
@@ -997,6 +1323,11 @@
     },
     "fixed-filter-banking-crisis": {
       "engine": "FixedFilterBank",
+      "facets": [
+        "script",
+        "mod",
+        "engine"
+      ],
       "images": [
         "https://raw.githubusercontent.com/xmacex/fixed-filter-banking-crisis/main/fixed-filter-banking-crisis.gif",
         "https://raw.githubusercontent.com/xmacex/fixed-filter-banking-crisis/main/fixed-filter-banking-crisis-touchosc.gif"
@@ -1009,6 +1340,10 @@
     },
     "flora": {
       "engine": "BandSaw",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://raw.githubusercontent.com/jaseknighter/flora/main/images/three_plants_inv.png",
         "https://raw.githubusercontent.com/jaseknighter/flora/main/images/three_more_plants_inv.png",
@@ -1031,6 +1366,10 @@
     },
     "fm7": {
       "engine": "FM7",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://raw.githubusercontent.com/lazzarello/fm7/master/docs/grid-UI.png"
       ],
@@ -1043,6 +1382,9 @@
       "upd": "2019-06-15"
     },
     "folio": {
+      "facets": [
+        "script"
+      ],
       "readme": "folio\n\nBrowse what scripts are available in the maiden script library from the comfort of your norns.\n\nIt uses the JSON files in /home/we/dust/data/catalogs that are downloaded whenever you refresh the catalog(s) in maiden.\nIt does not currently have any knowledge of which scripts are and are not installed on your norns.",
       "tags": [
         "utility"
@@ -1050,6 +1392,9 @@
       "upd": "2021-09-05"
     },
     "footfoot": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://img.youtube.com/vi/ubLWJrVj3LI/0.jpg",
         "https://raw.githubusercontent.com/melocoi/footfoot/refs/heads/main/footfoot.png",
@@ -1063,10 +1408,14 @@
       "upd": "2025-10-25"
     },
     "forge": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://raw.githubusercontent.com/cachilders/forge/main/./assets/images/forge.gif"
       ],
       "nb": true,
+      "nb_role": "uses",
       "readme": "Forge\nA playable oscilloscope for norns and crow that works just as well without crow if you prefer.\n\nWhat it does\nIn a nutshell it's a note making machine, drawing the low frequency cycles it receives from an attached crow's inputs or a pair of internal LFOs or a combination of the two, and spawning notes at a regular (configurable) cadence where the lines intersect.\n\nFrom there the newly formed notes are conveyed through optional step and scale quantization and eventually played into a dealer's choice of outputs of the engine, i2c, and/or MIDI varieties.\n\nTransport is controlled by K3, and K1 + K3 lets you stop and flush the player roll. Speaking of K1 combos, there are some immediate controls for fine-tuning the oscilloscope. K1 + ENC1 adjusts the sample frequency. K1 + ENC2/3 trims the legroom and headroom respectively. Most everything else can be controlled by parameters.\n\nA note on the crow outputs: they're disabled initially, but should you use them, 2 and 4 are gates. 1 is a frequency derived from the MIDI note created by the generator (quantized or unquantized per param). 3 is the raw frequency of the graph intersection, optionally offset to be unipolar.\n\nThat's it. …",
       "tags": [
         "sequencer",
@@ -1077,6 +1426,9 @@
       "upd": "2024-01-27"
     },
     "form!matter": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://raw.githubusercontent.com/imminentgloom/form_without_matter/main/screenshot.png",
         "https://raw.githubusercontent.com/imminentgloom/form_without_matter/main/form_without_matter_grid.jpg"
@@ -1092,6 +1444,9 @@
       "upd": "2026-02-26"
     },
     "foulplay": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://raw.githubusercontent.com/justmat/foulplay/master/assets/FP_grid.png"
       ],
@@ -1105,6 +1460,9 @@
       "upd": "2024-01-13"
     },
     "foundry": {
+      "facets": [
+        "script"
+      ],
       "readme": "foundry - font viewer for monome norns\n\nFoundry lets you browse the glyphs for all the different fonts\ninstalled on norns so you can see\nwhat's available and determine the right font face / character codes\nto use. You can view glyphs at different sizes and brightness levels,\ngenerate Lua code for drawing a particular glyph in your own script,\nand attach a keyboard to type in example text.\n\nFoundry does not know anything about the contents of the fonts, it is\njust using screen.text to draw everything. Some fonts have many more\nglyphs than others so many fonts will have large blank regions, there\nare some button / encoder combos to help with skipping over large\nnumbers of glyphs.\n\nSee the comments at the start of foundry.lua for usage instructions.",
       "tags": [
         "utility"
@@ -1112,6 +1470,9 @@
       "upd": "2020-10-09"
     },
     "fugarc": {
+      "facets": [
+        "script"
+      ],
       "readme": "Fugarc\n\n\"awake meets fugu\" - a for the Norns (@popgoblin)\n\nCurrent release v1.0.2\n\nFugarc is inspired by the fugu-script by @itsyourbedtime and \"Fugue-machine\" for the iPad, but based on the Awake script by @tehn. Optimised for use with Crow, Arc, Grid with Ansible thru Crow and i2c.\n\nEvery function can be used without Grids, Arc or the Ansible. It will not make sense without the Crow connected to CV-responding gear though.\n\nA pattern (between 1 and 16 steps wide) can be played as 4 different tracks.\nThink of a track as a \"playhead\" you can direct to move through the steps with different speeds, different directions — or even randomly. You can also set each track to transpose the steps of patterns.\n\nPitch and trigger information for each track can be directed to crow and/or ansible outputs in the parameter section. You can also direct track outputs to (seperate) midi channels\n\nAlso available are options to direct clock-signals, extra LFO's and random voltages to crow outputs - available in the parameter-sections.\nRequirements:\nCrow\n\nOptional: Ansible, Arc, Grid, MIDI, TXo\nControls:\nGrids controls pattern\nArc controls track 1 through 4 playback-modes. K1+Arc controls speed. …",
       "tags": [
         "sequencer",
@@ -1121,6 +1482,9 @@
       "upd": "2020-08-18"
     },
     "fugu": {
+      "facets": [
+        "script"
+      ],
       "readme": "fugu\n4-track fugue sequencer for monome norns",
       "tags": [
         "sequencer",
@@ -1129,6 +1493,9 @@
       "upd": "2019-12-09"
     },
     "gematria": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://raw.githubusercontent.com/northern-information/gematria/main/cover.png"
       ],
@@ -1140,6 +1507,10 @@
     },
     "gemini": {
       "engine": "Gemini",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "readme": "gemini\ndual granulator for norns\n\narc optional",
       "tags": [
         "granulator",
@@ -1148,12 +1519,18 @@
       "upd": "2019-05-27"
     },
     "get in the sea!": {
+      "facets": [
+        "script"
+      ],
       "tags": [
         "midi"
       ],
       "upd": "2021-06-11"
     },
     "giro": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://raw.githubusercontent.com/juhavaaraniemi/giro/main/giro.png"
       ],
@@ -1166,6 +1543,10 @@
     },
     "glaciers": {
       "engine": "Glacial",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://raw.githubusercontent.com/dwtong/glaciers/main/assets/buffer1.png",
         "https://raw.githubusercontent.com/dwtong/glaciers/main/assets/buffer2.png",
@@ -1182,6 +1563,10 @@
     },
     "glitchlets": {
       "engine": "Warb",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://user-images.githubusercontent.com/6550035/95544203-52eb2100-09af-11eb-8cce-6699f4ccd043.gif",
         "https://user-images.githubusercontent.com/6550035/95760321-b9966600-0c5f-11eb-82a3-e3d95ec3c2d1.png",
@@ -1195,6 +1580,10 @@
     },
     "glitchlooper": {
       "engine": "GlitchLooper",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "readme": "glitchlooper\nglitch looper for monome norns\nTODO\nadd selection for audio input (input 1 or 2) \\\nadd rate control \\\nadd panning, rate, volume, changes to automode \\\nadd probability controls for panning, rate, and volume \\\n~~add panning~~ \\\n~~rewrite auto mode functions~~ \\\n~~complete parameter selection~~",
       "tags": [
         "looper",
@@ -1204,6 +1593,10 @@
     },
     "glut": {
       "engine": "Glut",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "readme": "glut\ngranular synth for norns",
       "tags": [
         "granulator",
@@ -1213,6 +1606,10 @@
     },
     "goldeneye": {
       "engine": "Goldeneye",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://raw.githubusercontent.com/northern-information/goldeneye/main/cover.png"
       ],
@@ -1224,6 +1621,10 @@
     },
     "graintopia": {
       "engine": "Graintopia",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://raw.githubusercontent.com/schollz/graintopia/main/screenshot.png"
       ],
@@ -1235,6 +1636,10 @@
     },
     "granchild": {
       "engine": "ZGlut",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://user-images.githubusercontent.com/6550035/109594838-4daa8200-7ac8-11eb-8571-51291b08195b.jpg",
         "https://user-images.githubusercontent.com/6550035/109594890-63b84280-7ac8-11eb-8d8c-17651c2fe985.png"
@@ -1248,6 +1653,10 @@
       "upd": "2022-08-03"
     },
     "grd": {
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://raw.githubusercontent.com/yotamorimoto/grd/main/grd.png"
       ],
@@ -1261,6 +1670,10 @@
       "upd": "2024-02-05"
     },
     "grendy": {
+      "facets": [
+        "script",
+        "engine"
+      ],
       "readme": "grendy\n\na simple drone synth, grendel drone commander inspired",
       "tags": [
         "synth",
@@ -1271,6 +1684,10 @@
     },
     "greyhole": {
       "engine": "Greyhole",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "readme": "greyhole\nthe greyhole sc ugen wrapped in a norns engine\ncontrols\nkey1 = alt\nenc1 = time\nenc2 = size\nenc3 = damp\nalt + enc2 = diff\nalt + enc3 = feedback\ncheck the params menu for lfo settings",
       "tags": [
         "delay"
@@ -1278,6 +1695,9 @@
       "upd": "2020-01-08"
     },
     "grid-test": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://raw.githubusercontent.com/okyeron/grid-test/main/grid-test.png"
       ],
@@ -1290,6 +1710,10 @@
     },
     "gridofpoints": {
       "engine": "GridofPoints",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "http://img.youtube.com/vi/oZ8iEdrWWwE/0.jpg"
       ],
@@ -1307,6 +1731,10 @@
       "upd": "2026-03-21"
     },
     "gridofrings": {
+      "facets": [
+        "script",
+        "engine"
+      ],
       "readme": "gridofrings\n\nI really wanted a Tocante Karper by Ciat Lonbarde, but was never able to find one, and at the same time was slightly put off by the scales available. It occurred to me that Duncan Geere's gridofpoints may be the perfect thing to adapt to create a version of the Karper that suited my needs. Thank you again to Duncan for his support and permission to adapt this.\n\nPlay Mutable Instruments' Rings via a quantised keyboard on your grid.\ne2: change root note\ne3: change scale\nk2: up a fifth\nk3: down a fifth\ngrid (required)\npress a key to make beautiful sounds\nleft/right position controls pitch\nup/down position controls timbre / midi CC\ntop row lets you save and load root/scale combinations\nlong press to save, short press to load\ncrow (optional)\nout1: v/oct\nout2: gate\nout3: -5V to 5V on up/down axis\nout4: 0 to 10V on up/down axis\ninstall\n\nFind it in the Maiden project manager\ntroubleshooting\n\nIf you get an 'error: init' on load, then make sure you have a Grid plugged in. The script doesn't function without one. If you have a Grid plugged in and you're still seeing this error then post below with details of what Grid you're using and how it's connected to your Norns. …",
       "tags": [
         "grid",
@@ -1315,6 +1743,10 @@
       "upd": "2023-12-07"
     },
     "gridstep": {
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://raw.githubusercontent.com/Quixotic7/gridstep/master/doc/img/page_trig.png",
         "https://raw.githubusercontent.com/Quixotic7/gridstep/master/doc/img/grid_step_edit.png"
@@ -1328,6 +1760,9 @@
       "upd": "2022-08-07"
     },
     "groovecats": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://norns.community/community/quixotic7/groovecats.png"
       ],
@@ -1341,6 +1776,9 @@
       "upd": "2021-06-26"
     },
     "grurder": {
+      "facets": [
+        "script"
+      ],
       "readme": "grurder\n\nA generative MIDI sequencer for monome norns. Takes input from an 8mu and outputs two evolving melodic voices to eurorack via mmMidi (or any MIDI-capable module).\nHardware\nnorns (or norns shield)\n8mu — 8-fader MIDI controller with accelerometer (optional but recommended)\nmmMidi or any MIDI-to-CV module\nInstall\n\nWhat it does\n\nTwo independent voices, each with their own rhythm and melody generation. Rhythms come from Euclidean patterns[^1] — distribute some pulses across some steps and you get patterns that show up all over world music. Pitch comes from a shift register inspired by the Turing Machine[^2] — a 16-bit loop that drifts based on a probability knob:\nProb 0: locked repeating melody\nProb 1: fully random\nIn between: gradual drift\n\nBoth voices share scale, root, and octave range but have independent registers and patterns.\n8mu mapping\nFaders (CC 34–41)\n\nFader Sequence Parameter Range\n------- ---------- ----------- -------\n1 Seq 1 Step count 4–16\n2 Seq 1 Pulse count 1–steps\n3 Seq 1 Rotation 0–steps-1\n4 Seq 1 Flip probability 0–1\n5 Seq 2 Step count 4–16\n6 Seq 2 Pulse count 1–steps\n7 Seq 2 Rotation 0–steps-1\n8 Seq 2 Flip probability 0–1\nTilt (accelerometer) …",
       "tags": [
         "sequencer",
@@ -1351,6 +1789,10 @@
       "upd": "2026-04-17"
     },
     "hachi": {
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://raw.githubusercontent.com/pangrus/hachi/master/hachi.png"
       ],
@@ -1363,6 +1805,10 @@
     },
     "haven": {
       "engine": "Haven",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://raw.githubusercontent.com/tai-studio/haven/master/media/haven.jpg"
       ],
@@ -1378,6 +1824,10 @@
     },
     "haze": {
       "engine": "Haze",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://raw.githubusercontent.com/szymonkaliski/haze/main/./assets/haze.jpg",
         "https://raw.githubusercontent.com/szymonkaliski/haze/main/./assets/mft-config.png"
@@ -1391,6 +1841,10 @@
     },
     "here-there": {
       "engine": "HereThere",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "readme": "HERE/THERE\nnorns listens to sound input for the first ~30 seconds and then plays back the following:\n(a) up to 32 sine waves with random parameters, randomly spaced in the stereo field, in [currently] two modes: \"chords\" and \"drones\"\n(b) two separate softcut buffers (l/r, based on inputs), at random positions [currently] in time with the sine actions\n(c) granular buffer with random parameters\n\nControls\nk2: change sine mode\nk1(hold) + k2: reset softcut buffer\nk3: clear/freeze sines and begin polling again\nk1(hold) + k3: randomize granular parameters\ne1: sines volume\ne2: softcut volume\ne3: granular volume/speed\n\nTODO:\nGrid controls (sines)\nUI/screen integration\nselectable polling time/frequency\nmore control over durations",
       "tags": [
         "granulator",
@@ -1400,12 +1854,18 @@
       "upd": "2020-10-01"
     },
     "hid_demo": {
+      "facets": [
+        "script"
+      ],
       "tags": [
         "eduscript"
       ],
       "upd": "2020-02-16"
     },
     "hiswing": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://raw.githubusercontent.com/hanjo-synth/Hiswing/main/./Hiswing.png",
         "https://raw.githubusercontent.com/hanjo-synth/Hiswing/main/./Hiswing_note.png",
@@ -1420,6 +1880,9 @@
       "upd": "2025-10-20"
     },
     "hpns": {
+      "facets": [
+        "script"
+      ],
       "readme": "hpns\nhpns - selected randomness step sequencer\n(heavily based on parc: https://github.com/monome-community/parc)\n\nrequires - norns, grid, crow\n\n200520\n\nhpnsansible - selected randomness step sequencer\n\n200530\n\nrequires grid, norns, crow and ansible (in teletype expander mode)\n\ncontrols\nnorns\nenc 1 - scrolls top bar (notes, divs', octaves, play\nfor notes, divs', octaves:\nenc 2 - scroll to parameter\nenc 3 - set selected parameter\nfor play:\nenc 2 - set global bpm\nenc 3 - clockwise to play, anti to stop\nkey 2 or 3 (any page) - switch grid view from tracks to global\n\ngrid\ntop row:\n1 to 4 - track selection (each track has the below options)\n9 to 12 - notes, divs', octaves, mutes\n\nnotes, divs', octaves pages\npress any non top-row to toggle selection\nmutes\n1 option, per column. percentage chance of a mute,\nfrom top to bottom; per division trigger\n0%, 25%, 50%, 75%, 100%\n\nnorns screen columns represent tracks 1 to 4, from the left.\neach column parameter matches the corresponding grid row (+1).\nfor example top left note (on norns) is track 1, row 2 toggle option (on grid).\nbottom right is track 4, row 8 toggle. and so on).\n\nglobal grid page\nrows 1 to 4\nplay head and loop brackets, per track …",
       "tags": [
         "sequencer",
@@ -1430,6 +1893,11 @@
       "upd": "2020-05-30"
     },
     "hs010": {
+      "facets": [
+        "script",
+        "mod",
+        "engine"
+      ],
       "images": [
         "https://github.com/user-attachments/assets/77ffef3a-81ff-47b8-8409-9ce20e1c53fa",
         "https://github.com/user-attachments/assets/f86843ce-4e0f-4a18-9bc8-adbacda64cc8",
@@ -1437,6 +1905,7 @@
         "https://github.com/user-attachments/assets/f7d791d9-b8c1-483f-9e45-6fa8bbee5656"
       ],
       "nb": true,
+      "nb_role": "provides",
       "readme": "HS010\r\n\r\nHappy Synthesis 010 - lead and bass synth with a multi-head sequencer.\r\n\r\nThis script started out as a 101-esque engine for use with other Norns sequencer scrips, \r\nbut over time grew out into a full fledged, nb and fx mod enabled poly/mono voice and multi-headed step sequencer\r\nheavily inspired by Fors.fm Roullete.\r\n\r\nThe synth is a pretty standard 101 affair with all of the parameters you'd expect and a few additions.\r\nIt has been expanded with:\r\na morphing LFO: \r\nFrom 0 to 0.8 morphping between Sine, Tri, Square and Saw, \r\nFrom 0.8 to 0.9 functioning as a Sample and Hold, \r\nFrom 0.9 till 1 as pure white noise \r\npolyphony: \r\nThe voice mode parameter has three options: \r\n1 - mono \r\n2 - unison (6 voices with unison detune) \r\n3 - 6 voice poly \r\nWhile in mono or unison mode the mono mode option changes mono behaviour from legato, always retrigger or always glide.\r\npresets:\r\nYou can load and save presets independently from norns .psets\r\n\r\nAlong these two there's also a param refresh button that resends the currently on screen params to the engine and a midi panic button. …",
       "tags": [
         "synth",
@@ -1448,6 +1917,10 @@
     },
     "høst": {
       "engine": "Harvest",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://raw.githubusercontent.com/imminentgloom/h-st/main/doc/1.png",
         "https://raw.githubusercontent.com/imminentgloom/h-st/main/doc/2.png",
@@ -1463,6 +1936,10 @@
     },
     "icarus": {
       "engine": "Icarus",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://user-images.githubusercontent.com/6550035/112495248-f7380880-8d40-11eb-84c4-09f8224ed591.png"
       ],
@@ -1474,6 +1951,10 @@
       "upd": "2023-11-18"
     },
     "iiitoii": {
+      "facets": [
+        "script",
+        "mod"
+      ],
       "readme": "iiitoii\n\na collection of iii community scripts ported to norns + crow. available as a standalone script and as a mod.\n\ncurrently in beta\nhardware\n\nrequired\nnorns\ncrow\ngrid (128 or 256) or arc (any 4 rings supported, 2025 edition recommended)\n\nalso supported\nii devices\ninstall\n\ninstall from the maiden catalog\ndocs\nE1: select script\nK2: same as built-in arc button\nas a mod\n\nfirst, enable the mod. then, load a script. be sure that the script does not use the monome device you are planning to use (arc/grid). there should be an \"iiitoii\" section in the params list - here you can select the desired script & access the arc button if needed\n\niii script settings are saved & recalled across norns scripts & psets\nscripts\ncycles [original]\n\nposition values sent to crow outputs 1-4, fixed to 0-7 volts. min, max, cc, and channel pages are removed\nsnows [original]\n\nvolt/octave for each ring at crow outputs 1-4\njust-snow\n\nbased on the suggestion by tehn — snows, but note changes are sent to a sustaining just friends (identity - 4n). led position is at crow outputs 1-4, same as cycles. I recommend patching these to VCAs modulating the levels of first four outs of jf. …",
       "tags": [
         "jf",
@@ -1485,6 +1966,10 @@
       "upd": "2025-04-07"
     },
     "impact": {
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://raw.githubusercontent.com/Mendrzec/impact/main/./docs/docs.png"
       ],
@@ -1497,6 +1982,9 @@
       "upd": "2022-07-26"
     },
     "initenere": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://miro.medium.com/v2/resize:fit:4800/format:webp/1*xDNv04fh-gBmoowj1xdq3g.jpeg"
       ],
@@ -1511,6 +1999,10 @@
     },
     "internorns": {
       "engine": "MxInternorns",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://user-images.githubusercontent.com/6550035/124368779-70d17380-dc19-11eb-9590-3fa4101337c9.jpg"
       ],
@@ -1521,6 +2013,10 @@
       "upd": "2022-01-06"
     },
     "interpret": {
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://raw.githubusercontent.com/yotamorimoto/interpret/main/interpret.png"
       ],
@@ -1532,6 +2028,9 @@
       "upd": "2023-07-29"
     },
     "intervaltrainer": {
+      "facets": [
+        "script"
+      ],
       "tags": [
         "utility",
         "midi"
@@ -1540,6 +2039,10 @@
     },
     "islands": {
       "engine": "MT7",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "readme": "Islands\n\nMulti-timbral FM7, Earthsea, Kria , Softcut platform\n\nhttps://youtu.be/PApL2LFjBPQ\n\nI conceived of Islands before I bought my Norns. It has been increasingly apparent to me that my music practice is one of improvisation and the goal is to be able to sit down and play my electronics from scratch, without excessive programming and preparation, just as a guitarist or saxophone player might. To do that I need a flexible instrument that I an learn thoroughly and encompasses the various techniques I use. Islands is a step on the way to that.\n\nThe video above provides a guide to it. There are 4 separate layers of sound with an Earthsea style grid keyboard, there are two softcut loopers and Kria is integrated with each channel currently routed to a different layer.\n\nI've called this version 0.1 because there are a number of things I want to change/add.\n\nRough roadmap: improved FM engine - adding LFOs, Proper Noise, a Filter, Multistage looping envelopes. Need to move the loopers into supercollider (unfortunately since softcut is ace) because I want to be able to loop while the sequencer is playing and for its notes not to be routed into the looper. …",
       "tags": [
         "sequencer",
@@ -1550,6 +2053,9 @@
       "upd": "2020-04-13"
     },
     "isoseq": {
+      "facets": [
+        "script"
+      ],
       "readme": "ISOSEQ 16\nIsomorphic Sequencer for monome norns and grid. For norns v2.\nInstall\nDownload and unpack\nCopy 'isoseq' folder into your norns 'code' folder\nWhat it is\n\nISOSEQ is 16 step, 16 page/measure sequencer laid out in an isomorphic pattern. All pages have the same set of scales. Each row follows the Chromatic scale (12-note, half-tone Western). Each row is a Perfect 4th apart, starting at the bottom. The grid row closest to the player has the lowest pitches and the row furthest from the player has the highest pitches.\n\nISOSEQ has 3 modes: pause, seq on, and edit. In edit mode, the player can either edit a sequence on the displayed page, or s/he can play the notes in real time.\n\nISOSEQ display is divided into 3 pages:\n\n1) set root note (6 octave range) and set tempo (BPM)\n2) set song length from 1 thru 16 pages (measures), set pattern length from 2 to 16 steps, set currently playing page/measure, choose whether to auto-advance thru all available pages/measures (will advance thru the number of pages chosen in \"# pages\"\n3) load, save, or delete patterns including key, BPM, pattern length, number of pages, and auto-advance\nHow things work\n\nAll encoders work the same on each page: …",
       "tags": [
         "sequencer",
@@ -1558,6 +2064,9 @@
       "upd": "2019-04-06"
     },
     "jala": {
+      "facets": [
+        "script"
+      ],
       "tags": [
         "sequencer",
         "midi",
@@ -1566,6 +2075,9 @@
       "upd": "2021-04-07"
     },
     "jiffy": {
+      "facets": [
+        "script"
+      ],
       "readme": "jiffy\n16 Second looper for Norns\n\nQuick and fun to use, the loop is limited to 16 seconds at regular playback speed, loosly inspired by old loopers like the EHX 16 sec delay.\n\nPlaying with speed and slew while recording gives some nice zippy results. The playhead goes a bit wonky after serious tweakage, but maybe that's part of the charm, remember to record your jams to tape ;)\n\nButtons:\n\n-- K2 : Record // Loop\n\n-- K3 : Play // Stop\n\n-- K1 + K3 : Delete\n\nKnobs:\n\n-- E1 : Slew\n\n-- E2 : Speed\n\n-- E3 : Dub Level",
       "tags": [
         "looper"
@@ -1573,6 +2085,9 @@
       "upd": "2024-01-04"
     },
     "just-play": {
+      "facets": [
+        "script"
+      ],
       "readme": "just-play\n\nPlay Just Friends in synth mode with MIDI (6-voice polyphony)\nrequirements\nnorns\ncrow\njust friends connected to crow via i2c\na MIDI controller\ngrid (optional)\ndocumentation\n\nJust Friends\nswitch to sound/transient or sound/sustain\nsynth mode can be disabled in the params menu\n\nCrow\noutput 1 is a 10V trigger pulse (5ms) on each note\noutput 2 is v/oct CV of the most recent note (0-10V or +/-5V)\noutput 3 is the velocity of the most recent note (0-10V or +/-5V)\noutput 4 is a MIDI CC value (0-10V or +/-5V, defaults to CC1)\n\nvoltage range, midi CC and pitch bend range are configurable in the params menu\nroadmap\nAdvanced crow output configuration\nUI improvements\nDo something with the crow inputs?\nknown bugs\nCrow trigger output cycles on latest RC firmware",
       "tags": [
         "utility",
@@ -1584,6 +2099,9 @@
       "upd": "2025-01-14"
     },
     "justharmonicon": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://raw.githubusercontent.com/sonocircuit/justharmonicon/main/doc/cover.png"
       ],
@@ -1596,6 +2114,9 @@
       "upd": "2023-07-05"
     },
     "koiboi2": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://raw.githubusercontent.com/Dillbo/KoiBoi2/main/koi_logo.png"
       ],
@@ -1610,6 +2131,10 @@
     },
     "kolor": {
       "engine": "Kolor",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://user-images.githubusercontent.com/6550035/104591857-284ddb80-5622-11eb-8c7a-cb1aaff0894b.png"
       ],
@@ -1622,6 +2147,9 @@
       "upd": "2021-02-16"
     },
     "kreislauf": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://raw.githubusercontent.com/frederickk/kreislauf/primary/./.assets/kreislauf.gif",
         "https://raw.githubusercontent.com/frederickk/kreislauf/primary/./.assets/kreislauf-1.png",
@@ -1638,6 +2166,9 @@
       "upd": "2022-01-15"
     },
     "kria_midi": {
+      "facets": [
+        "script"
+      ],
       "tags": [
         "sequencer",
         "grid",
@@ -1647,6 +2178,10 @@
     },
     "krill": {
       "engine": "Krill",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://raw.githubusercontent.com/jaseknighter/krill/main/images/1-1-0-start.png",
         "https://raw.githubusercontent.com/jaseknighter/krill/main/images/1-2-0-start_w_grid.png",
@@ -1666,6 +2201,10 @@
     },
     "l_ll__l_": {
       "engine": "EmissionSpectrum",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://raw.githubusercontent.com/schollz/l_ll__l_/main/screenshot.png"
       ],
@@ -1678,6 +2217,9 @@
       "upd": "2023-05-16"
     },
     "lamellae": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://raw.githubusercontent.com/Not-A-Creative/lamellae/main/./doc/cover.png"
       ],
@@ -1692,6 +2234,10 @@
     },
     "lamination": {
       "engine": "FormantPerc",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "tags": [
         "synth",
         "sequencer",
@@ -1700,6 +2246,9 @@
       "upd": "2025-01-12"
     },
     "larc": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://raw.githubusercontent.com/justmat/larc/main/assets/Untitled-1123.png",
         "https://raw.githubusercontent.com/justmat/larc/main/assets/larc-start.png",
@@ -1718,6 +2267,10 @@
     },
     "lemniscate": {
       "engine": "Lemnisc8",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://raw.githubusercontent.com/cachilders/lemniscate/main/./assets/lemniscate.png"
       ],
@@ -1729,6 +2282,10 @@
     },
     "leslie": {
       "engine": "Leslie",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://raw.githubusercontent.com/moapacha/leslie/main/docs/screen.gif"
       ],
@@ -1740,6 +2297,9 @@
       "upd": "2026-05-10"
     },
     "less-concepts": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://raw.githubusercontent.com/vicimity-dndrks/less_concepts/main/doc/cover.png"
       ],
@@ -1757,6 +2317,10 @@
     },
     "lissadron": {
       "engine": "Lissadron",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://raw.githubusercontent.com/tai-studio/lissadron/master/media/lissadron-cover2.jpg"
       ],
@@ -1770,6 +2334,9 @@
       "upd": "2020-05-18"
     },
     "loom": {
+      "facets": [
+        "script"
+      ],
       "tags": [
         "sequencer",
         "generative",
@@ -1781,6 +2348,9 @@
       "upd": "2021-01-09"
     },
     "lorenz": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://raw.githubusercontent.com/Ericxgao/lorenz/main/doc/cover.png",
         "https://raw.githubusercontent.com/Ericxgao/lorenz/main/filename.png"
@@ -1797,6 +2367,10 @@
     },
     "lorenzos-drums": {
       "engine": "LorenzosDrums",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://raw.githubusercontent.com/schollz/lorenzos-drums/main/img/150214610-62e945ed-bae6-44cf-b62a-e2ec63daad93.png",
         "https://raw.githubusercontent.com/schollz/lorenzos-drums/main/img/150213784-14164b1e-f48f-47fe-903a-351484ec0def.png",
@@ -1810,6 +2384,9 @@
       "upd": "2022-02-07"
     },
     "loudnumbers_norns": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://raw.githubusercontent.com/loudnumbers/loudnumbers_norns/main/loudnumbers_norns.png"
       ],
@@ -1826,6 +2403,9 @@
       "upd": "2024-01-06"
     },
     "luck": {
+      "facets": [
+        "script"
+      ],
       "readme": "luck\n\nSeven nodes to grant you good fortune",
       "tags": [
         "sequencer",
@@ -1835,6 +2415,9 @@
       "upd": "2022-03-27"
     },
     "m18s": {
+      "facets": [
+        "script"
+      ],
       "readme": "m18s\na sequencer for norns based on the RYK M-185\n\nm18s is a two voice sequencer. each voice is 8 steps, and each step is made up of 1-8 stages.\n\nstages trigger notes based on the particular stage gate mode. these can be:\n“off”: don’t trigger any gates during the step\n“single”: only trigger a gate for the first stage of the step\n“all”: trigger a gate for every stage of the step\n“every2”: trigger a gate every other stage\n“every3”: trigger a gate every 3rd stage\n“every4”: trigger a gate every 4th stage\n“random”: 50% chance you trigger a gate for each stage\n“long”: gate should go high on stage 1 and low on the last stage. If the step is 1 stage long, just do a standard gate pulse\n\nin the current version of m18s, you can change the sequence by randomizing the stages, stage gate modes, and note (specified by the scale in the params menu). in the future these will be able to be set within the norns interface.\n\nyou can download and run m18s from the maiden package manager or by cloning/downloading this repo and moving to dust/code. it currently uses the PolySub engine to generate sound found in the we standard community library that norns is packaged with.\ncrow standalone version: …",
       "tags": [
         "generative",
@@ -1847,6 +2430,9 @@
       "upd": "2020-07-26"
     },
     "magpie": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://raw.githubusercontent.com/cachilders/magpie/main/./assets/docs/main.png",
         "https://raw.githubusercontent.com/cachilders/magpie/main/./assets/docs/params-1.png",
@@ -1864,6 +2450,10 @@
     },
     "makebreakbeat": {
       "engine": "Makebreakbeat",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://user-images.githubusercontent.com/6550035/156637615-a0363244-2186-4604-b75f-4c1936982e24.png"
       ],
@@ -1876,6 +2466,10 @@
     },
     "mangl": {
       "engine": "MGlut",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://raw.githubusercontent.com/notjustmat/mangl/master/assets/mangl.png"
       ],
@@ -1889,6 +2483,10 @@
     },
     "manifold": {
       "engine": "Manifold",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://norns.community/community/carltesta/manifold.png"
       ],
@@ -1899,6 +2497,9 @@
       "upd": "2022-07-10"
     },
     "marcovaldo": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://raw.githubusercontent.com/cachilders/marcovaldo/main/./assets/images/documentation/animation.png",
         "https://raw.githubusercontent.com/cachilders/marcovaldo/main/./assets/images/documentation/globals.png",
@@ -1917,6 +2518,10 @@
     },
     "massif": {
       "engine": "ResonatorBank",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://raw.githubusercontent.com/justmat/massif/master/assets/m.png"
       ],
@@ -1927,6 +2532,9 @@
       "upd": "2026-02-19"
     },
     "mdpatch": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://raw.githubusercontent.com/hanjo-synth/MDPatch/main/./MDPatch.png",
         "https://img.youtube.com/vi/tShiKs0ePec/maxresdefault.jpg"
@@ -1941,6 +2549,9 @@
       "upd": "2025-05-21"
     },
     "mdscaler": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://raw.githubusercontent.com/hanjo-synth/MDScaler/main/./MDScaler.png",
         "https://img.youtube.com/vi/c_i3obivn7A/maxresdefault.jpg"
@@ -1955,6 +2566,9 @@
       "upd": "2025-10-11"
     },
     "meadowphysics": {
+      "facets": [
+        "script"
+      ],
       "readme": "meadowphysics(norns)\nhttps://monome.org/docs/modular/meadowphysics/\n\nhttps://monome.org/docs/modular/ansible/\n\n--\n-- m e a d o w p h y s i c s\n--\n-- a grid-enabled\n-- rhizomatic\n-- cascading counter\n--\n--\n-- ----\n-- -----\n-- ---\n-- -----\n--\n--",
       "tags": [
         "sequencer",
@@ -1967,6 +2581,9 @@
       "upd": "2022-06-04"
     },
     "metrix": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://memecreator.org/static/images/memes/5113079.jpg",
         "https://raw.githubusercontent.com/kasperbauer/metrix/main/docs/screen.png",
@@ -1985,6 +2602,11 @@
       "upd": "2022-01-04"
     },
     "metronome": {
+      "facets": [
+        "script"
+      ],
+      "nb": true,
+      "nb_role": "provides",
       "readme": "metronome v0.0.2\n(bing, buk, buk, buk)\nA screen flash and sound mimic a metronome\nK2 or K3: Start, stop\nE1: adjust norns tempo\nE2: Count\nE3: Subdivision\nHold K1, turn E1: subcount\n\nSee params menu for many options",
       "tags": [
         "norns",
@@ -1995,6 +2617,9 @@
       "upd": "2025-09-21"
     },
     "midi-monitor": {
+      "facets": [
+        "script"
+      ],
       "readme": "midi-monitor\n\nA MIDI Monitor script for norns\n\nv0.6.2 @okyeron\n\nRequirements:\nnorns version 200424 (for global clock)\nmidi devices\nPolyPerc engine (included w/ awake)\n\nControls:\n\nE1 - select MIDI device\nE3 - scrollback through MIDI messages\n\nK2 - toggle unmute/mute internal synth playback\nK3 - clear screen / buffer",
       "tags": [
         "utility",
@@ -2003,6 +2628,9 @@
       "upd": "2020-08-06"
     },
     "midi-review": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://raw.githubusercontent.com/niksilver/midi-review/main/screenshot.png"
       ],
@@ -2014,6 +2642,10 @@
       "upd": "2023-01-13"
     },
     "midididi": {
+      "facets": [
+        "script",
+        "mod"
+      ],
       "images": [
         "https://img.youtube.com/vi/_Mm79ezd1Oc/0.jpg"
       ],
@@ -2026,6 +2658,9 @@
       "upd": "2024-05-03"
     },
     "midigrid": {
+      "facets": [
+        "mod"
+      ],
       "readme": "norns midigrid library\n\nPlease see the lines forum for details\n\n(https://llllllll.co/t/midigrid-use-launchpads-and-other-midi-grid-controllers-with-norns/42336)\nand\n(https://llllllll.co/t/norns-alternative-grids/26909)",
       "tags": [
         "utility",
@@ -2035,7 +2670,11 @@
       "upd": "2026-05-22"
     },
     "midiplayer": {
+      "facets": [
+        "script"
+      ],
       "nb": true,
+      "nb_role": "provides",
       "readme": "midiplayer\nmidi file playback for norns\n\nthis simple script allows you to load your midi files into norns and play them back via nb.\n\nthis script is a proof-of-concept and a placeholder for a fully featured version that is in the works.\nthanks to possseidons midi-lua library, midiplayer converts the midi data into pattern data which the reflection library useds to play back the notes.\n\nrequirements:\nnorns\nnb pre-installed\nnb voices pre-installed e.g polyperc, doubledecker, emplaitress\nmidi files\n\ndocumentation:\nNavigate to the parameters and select an nb voice.\nPress K3 to load a midi file. midi files are located under code/midiplayer/midifiles/\nPress K2 to toggle playback. Looping is currently disabled as I need to find a method to extract the exact midi file length.",
       "tags": [
         "midi"
@@ -2043,6 +2682,9 @@
       "upd": "2024-10-01"
     },
     "mlr": {
+      "facets": [
+        "script"
+      ],
       "tags": [
         "sequencer",
         "sampler",
@@ -2053,6 +2695,9 @@
       "upd": "2022-07-05"
     },
     "mlre": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://raw.githubusercontent.com/sonocircuit/mlre/main/doc/cover.png"
       ],
@@ -2069,6 +2714,9 @@
       "upd": "2025-04-24"
     },
     "mnmpatch": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://raw.githubusercontent.com/hanjo-synth/Mnmpatch/main/./Mnmpatch.png",
         "https://img.youtube.com/vi/yFiYw2ncZfU/maxresdefault.jpg"
@@ -2085,6 +2733,10 @@
     },
     "molly_the_poly": {
       "engine": "MollyThePoly",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "tags": [
         "synth",
         "grid",
@@ -2093,6 +2745,9 @@
       "upd": "2023-02-09"
     },
     "moln": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://raw.githubusercontent.com/antonhornquist/moln/master/screen.png"
       ],
@@ -2103,6 +2758,9 @@
       "upd": "2022-03-07"
     },
     "monitor": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://raw.githubusercontent.com/neauoire/monitor/master/PREVIEW.png?raw=true"
       ],
@@ -2114,6 +2772,9 @@
       "upd": "2019-06-23"
     },
     "monomaniac": {
+      "facets": [
+        "mod"
+      ],
       "images": [
         "https://raw.githubusercontent.com/xmacex/monomaniac/main/monothering.gif"
       ],
@@ -2126,6 +2787,10 @@
     },
     "moonraker": {
       "engine": "Moonraker",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://user-images.githubusercontent.com/6550035/149183571-4a89882f-17ba-4d0a-8b20-dfed75a740d1.png",
         "https://user-images.githubusercontent.com/6550035/150999017-de8bddfd-02ad-4f1d-9738-e3d75aac856f.png",
@@ -2139,10 +2804,14 @@
       "upd": "2024-10-25"
     },
     "mosaic": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://raw.githubusercontent.com/subvertnormality/mosaic/main/images/Sinfonion/inverter.png"
       ],
       "nb": true,
+      "nb_role": "provides",
       "readme": "Welcome to Mosaic, a powerful rhythm- and harmony-focused sequencer designed to unify control over your entire studio. It combines the advanced features of Elektron sequencers with generative and modular techniques, enabling you to craft complex rhythms and harmonies effortlessly. Whether you're sketching ideas or composing full tracks, Mosaic offers a deep and unique musical experience. This manual will help you quickly navigate Mosaic and start creating tunes in no time.\nGetting Started\nInstall\nSetup\n+ Hardware\n+ MIDI Device Configuration\n- Stock Devices\n- Adding Custom Devices\n- Mods and Software Devices\n- MIDI Keyboard Input\n- MIDI Controller Mapping\nGetting Around Mosaic\n+ Sequencer Start and Stop\n+ Live Record\n+ Grid Menu Navigation\n+ Norns Menu Navigation\n+ Tooltips\n+ MIDI Panic\n+ Cheat Sheet\nTypical Workflow\n+ Sound Design\n+ Rhythm Section Design\n+ Harmony Design\n+ Sequence Composition\n- Using Merge Modes\n- Melody Composition\n+ Modulation, Movement, and Interest\n+ Song Composition\nDig Deeper\nPattern Editor\n- Adding Trigs\n- Adding Notes\n- Adding Velocity\nChannel Editor\n+ Devices\n- MIDI Sound Sources\n- Norns Sound Sources with n.b.\n- Device Parameters …",
       "tags": [
         "sequencer",
@@ -2156,6 +2825,9 @@
       "upd": "2025-05-30"
     },
     "mouse": {
+      "facets": [
+        "script"
+      ],
       "readme": "mouse\n\nAn instrument and sequencer inspired by Music Mouse, for Monome Norns.",
       "tags": [
         "sequencer",
@@ -2167,6 +2839,10 @@
     },
     "mx.samples": {
       "engine": "MxSamples",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "readme": "mx.samples\n\nmx.samples: like mr.coffee or mr.radar, but for instrument samples.\n\nhttps://vimeo.com/509450523\n\nus as a keyboard instrument or in another script. mx.samples provides an accessible way to utilize the vast trove of free instrument sample libraries. for instance, you can load in a piano that has been sampled on multiple dynamics and variations and key releases.\n\nthe core of the script + supercollider engine handles the voices and the instruments. you can have unlimited samples on disk because samples are loaded dynamically - only loading into memory when needed (max 200 samples can be loaded though). no latency on loading because it will load in the background (and use the closest pitched sample in the meantime).\n\nmy motivation for this script was to have a really nice sounding piano on the norns. also i wanted to be able to have a library of samples that works well with tmi (see studies/study1.lua and demo above) but can also be used for future projects in the idea galaxy.\n\na massive thank you to @zebra for helping me post-process the UofI piano samples - there is a great script available to \"de-pop\" samples that had glitches in recording, thanks to that work. …",
       "tags": [
         "synth",
@@ -2176,6 +2852,10 @@
     },
     "mx.synths": {
       "engine": "MxSynths",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://user-images.githubusercontent.com/6550035/137188153-420d65bd-c950-4098-abb1-558795be86fa.png",
         "https://user-images.githubusercontent.com/6550035/137188151-2bb3c65b-3885-422a-857c-859e9c0a146e.png",
@@ -2192,6 +2872,9 @@
       "upd": "2024-01-03"
     },
     "n.kria": {
+      "facets": [
+        "script"
+      ],
       "readme": "n.Kria\nextensible native norns port of monome's Kria\nchangelog\nnum description\n- -\n0.24\n- reverted extended mode scale page changes\n- fixed play modes not working\n- fixed classic/extended switch behavior; menu no longer jumps when switching\n0.23\n- sync groups\n- temp looping\n- intense memory optimization\n- greatly tightened timing accuracy\n- some fixes to meta sequencer\n0.19\n- note, along with overall pitch, as a mod source\n- retooled stretch and push to be more musical\n0.18\n- lots of internal rewrites\n- fixed problems introduced in 1.17\n0.17\n- added cut functionality\n- enabled trigger clocking\n- fixed triangle mode\n0.16 fixed neotrellis highlight support, added init message, changed docs slightly\n0.15 fixed odds mod key not working at all.\nfixed crash on accessing mod keys from scale page",
       "tags": [
         "sequencer",
@@ -2202,6 +2885,9 @@
       "upd": "2023-11-12"
     },
     "n16o": {
+      "facets": [
+        "script"
+      ],
       "readme": "n16o\n\nnorns script, i2c-based ER-301 control via KORG nanoKONTROL2\nRequirements\nnorns (191230 or later)\ncrow (1.0.2 or later)\nER-301 (tested with v0.4.27-stable, may work with v0.3-stable, but not tested)\nnanoKONTROL2\nDocumentation\n\nSee full documentation and discussion on lines.",
       "tags": [
         "utility"
@@ -2209,6 +2895,10 @@
       "upd": "2020-01-04"
     },
     "nameless-nightmare": {
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://raw.githubusercontent.com/xO-xN/nameless-nightmare/main/doc/nn_head.jpg",
         "https://raw.githubusercontent.com/xO-xN/nameless-nightmare/main/doc/nameless-nightmare_v1.0.0manual1m.jpg",
@@ -2224,6 +2914,9 @@
       "upd": "2024-09-22"
     },
     "nb_drumcrow": {
+      "facets": [
+        "mod"
+      ],
       "images": [
         "https://github.com/entzmingerc/nb_drumcrow/blob/main/pics/tutorial_small.png?raw=true",
         "https://github.com/entzmingerc/nb_drumcrow/blob/main/pics/teletype_tutorial_small.png?raw=true",
@@ -2233,6 +2926,7 @@
         "https://github.com/entzmingerc/nb_drumcrow/blob/main/pics/mutate.png?raw=true"
       ],
       "nb": true,
+      "nb_role": "provides",
       "readme": "nbdrumcrow \r\nThis is a mod for monome norns that turns a monome crow into a synthesizer using nb. \r\nFeatures:\r\n4 synthesizers, one for each output of crow. \r\nEach output can be set to synthesize audio, gate/trigger, envelope, v/oct CV signal quantized to a scale, or convert the midi note from nb to a v/oct CV value. \r\nTrigger each output individually, round robin (4 voice polysynth), or all simultaneously. \r\nUse 2 crows connected via i2c to create an 8 voice version. \r\nTrigger 1 or more additional voices for paired operation (v/oct & gate pairs). \r\nCan be sequenced with teletype, with druid, with another crow, or with any norns script that supports nb. \r\nEach output has 3 cycling envelope modulation sources which map to 7 destinations. \r\nBitcrusher waveshaper, saturation, PWM, global detune, vibrato, FM, and other fun experimental crow synthesis. \r\nRequirements: \r\nmonome crow \r\nmonome norns (if using as an nb voice) \r\ninstall nb on your norns \r\nfind a norns script that supports nb (nkria, pit orchisstra, arcologies, flora, cheat codes 2, washi, rudiments, dreamsequence, seeker, tetra, mosaic ...) \r\nteletype: upload the updateloop.lua file to crow for standalone use …",
       "tags": [
         "mod",
@@ -2244,7 +2938,12 @@
       "upd": "2024-10-17"
     },
     "nb_mxsynths": {
+      "facets": [
+        "mod",
+        "engine"
+      ],
       "nb": true,
+      "nb_role": "provides",
       "readme": "nbmxsynths\nmx synths as an nb player\n\nthis is more or less port of infinitedigits' mx.synths (thanks zack!) with the following changes:\n\nadded:\nsave and load presets\ndynamic parameter menu (synth specific parameters are displayed)\nmodulation via nb:modulate(val) -> pairs well with sidvagn. I surfaced the mod amt parameter, so it's midi mappable, which means modulation can be used with scripts that don't use nb:modulate. The main use case is to temporarily morph between different parameter settings.\nfx via fx mod\n6 voice limit\n\nremoved:\npolyperc (already exists as separate nb voice)\ninternal fx bus",
       "tags": [
         "mod",
@@ -2254,7 +2953,12 @@
       "upd": "2026-03-04"
     },
     "nb_plyprc": {
+      "facets": [
+        "mod",
+        "engine"
+      ],
       "nb": true,
+      "nb_role": "provides",
       "readme": "nbplyprc\na norns classic as nb player\n\npolyperc as you know it.\n\nbut this time limited to 6 voices to keep your precious CPU for other things and the addition of a mod section to make use of the mod-parameter of nb players. Not many scripts have it implemented (yet) but sidvagn does. The mod-depth can also be controlled via param, so perfect for midi-mapping too. If you have fx mod installed and activated you can send (and modulate) to fx of your choice.\n\nInstall and activate like all nb players.\n\nhappy percin'",
       "tags": [
         "mod",
@@ -2264,7 +2968,12 @@
       "upd": "2026-03-04"
     },
     "nb_smpkit": {
+      "facets": [
+        "mod",
+        "engine"
+      ],
       "nb": true,
+      "nb_role": "provides",
       "readme": "smpKit\n\nAn nb player to trigger and loop samples with the following features:\n12 slots / samples / voices\nmax 5 min each\nmono / stereo\ncompensates for different sample rates\nclickless looping\ntwo smpKit modes (classic, instrument)\nthree sample playback modes (oneshot, hold, toggle)\nglobal editing of all 12 voices\nsupports nb:modulate and nb:pitchbend\nresonant LPF / HPF and EQ\nsave and load presets / kits\nfx sends for fx mod (hidden when fx mod is not active)\ninstructions:\nInstall and activate smpKit like other mods. Load a script that supports nb players and select smpKit.\nsmpKit initializes in an empty state. Complete states can be recalled under presets. When smpKit is active and a pset of the active script is saved, all parameters are saved as well. Total recall can be achieved either with a scripts' psets or via save/load from the parameter menu.\nUnder settings, the global parameters for main level, root note, pitchbend, and type are accessed. Use type to switch between classic and instrument mode.\nUnder voice, levels, playback, and filters, all parameters of the currently selected voice are accessed. …",
       "tags": [
         "mod",
@@ -2274,6 +2983,9 @@
       "upd": "2026-03-17"
     },
     "nc01-drone": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://github.com/monome-community/nc01-drone/raw/master/lib/nc.jpg"
       ],
@@ -2285,6 +2997,9 @@
       "upd": "2020-04-22"
     },
     "nc02-rs": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://github.com/monome-community/nc02-rs/raw/master/lib/nc02.jpg"
       ],
@@ -2296,6 +3011,9 @@
       "upd": "2020-06-09"
     },
     "nc03-ds": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://raw.githubusercontent.com/monome-community/nc03-ds/main/images/sr_car.png",
         "https://raw.githubusercontent.com/monome-community/nc03-ds/main/images/sr_traffic.png",
@@ -2309,6 +3027,9 @@
       "upd": "2023-02-06"
     },
     "ndls": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://raw.githubusercontent.com/andr-ew/ndls/main/lib/doc/ndls_overview.png",
         "https://raw.githubusercontent.com/andr-ew/ndls/main/lib/doc/ndls_128.png",
@@ -2328,6 +3049,9 @@
       "upd": "2025-05-21"
     },
     "nice-tapes": {
+      "facets": [
+        "mod"
+      ],
       "images": [
         "https://user-images.githubusercontent.com/85847646/164801933-05495de2-029d-48ea-a0bf-877de06e149a.png"
       ],
@@ -2338,6 +3062,9 @@
       "upd": "2022-08-11"
     },
     "nisp": {
+      "facets": [
+        "script"
+      ],
       "readme": "NISP\n\nScheme dialect livecoding tracker for norns\n\nWork in progress. Everything is subject to change\nControls\n\n~ open / close repl\n\nshift + ctrl start / stop playback\n\ncapslock toggle follow mode\n\nshift + 1 - 4 mute track\n\nenter open text editor (third column of track must be selected)\n\nesc close text editor\n\nshift + enter save expression in cell (while in text edit mode)\n\nctrl + c / v copy / paste\n\nshift + esc open / close norns menu\n\nctrl + left / right switch menu tabs\n\nshift + up / down fast nav between samples in params menu\nCommands\n\nfunction arguments description\n:------------- :------------------------ :-----------------------------------------------------------\n(def) symbol, value define a symbol\n(lambda) args, function anonymous function\n(quote) ' expr returns unevaluated expression\n(if) cond, expr 1, expr 2 evaluate expr 1 if cond is true, else evaluates expr 2\n(when) cond, expr evaluate expr if cond is true\n(@) track optional returns current position\n(bpm) value set global bpm\n(length) value set pattern length\n(div) value set track speed divider\n(jmp) pos jump to position\n(skip) pos skip current step\n(ever) N, expr evaluate expression every N cycle …",
       "tags": [
         "sequencer",
@@ -2346,6 +3073,9 @@
       "upd": "2022-07-11"
     },
     "nmmelodymagic": {
+      "facets": [
+        "script"
+      ],
       "readme": "A Monome Norns port of Ken Stone’s Infinite Melody, Diatonic Converter and Modulo Magic 4U CGS Serge modules.\n\nhttps://llllllll.co/t/nmmelodymagic/",
       "tags": [
         "sequencer",
@@ -2354,6 +3084,9 @@
       "upd": "2021-07-02"
     },
     "nmquadrodubber": {
+      "facets": [
+        "script"
+      ],
       "readme": "nmQuadroDubber\n1.1.2 @NightMachines\nhttps://llllllll.co/t/nmquadrodubber/\n\nThere are four 20-second “tape loops”, represented by four vertical columns, stereo-panned from left to right.\n\nA record head, represented by a white line, constantly moves over one of the loops. Make it jump to another loop with E3 (t). Press K2 (rec) to start and stop recording external audio at the position of the record head. Insert silence by pressing K3 (del).\n\nAdjust the speed of the selected tape loop by turning E1.\n\nTurn E2 (lvl) to adjust the overdub level. 10 means the external audio will overwrite the tape completely. Turning E2 (lvl) down will record the external audio quieter, letting the already present audio on the tape loop still sound trough, mixing both signals.\n\nHold K1 to display alternative control functions.\n\nHolding K1 and pressing K2 (rOFF/rREC/rDEL/rALL) will switch random modes:\nrOFF: random mode off\nrREC: randomly toggle recording, switch tape loop and change level\nrDEL: randomly toggle deletion and switch tape loop\nrALL: both of the above\n\nHolding K1 and pressing K3 (clear) will erase the entire tape loop under the record head. …",
       "tags": [
         "delay",
@@ -2362,6 +3095,9 @@
       "upd": "2021-05-01"
     },
     "nmrain": {
+      "facets": [
+        "script"
+      ],
       "readme": "nmRain\nA weird Monome Norns delay effect for drone music I suppose.",
       "tags": [
         "delay"
@@ -2369,6 +3105,9 @@
       "upd": "2021-05-01"
     },
     "nmsmartypants": {
+      "facets": [
+        "script"
+      ],
       "readme": "nmSmartyPants\nIf you regularly fail at elementary school math, then this Monome Norns script is for you.",
       "tags": [
         "delay",
@@ -2379,6 +3118,10 @@
     },
     "noize": {
       "engine": "Noize",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "readme": "NOIZE! v1.0\n\nNOIZE! v1.0\nNoise Synth\nby deeg\n\n@deegdeegdeeg\n\nhttps://github.com/deeg-deeg-deeg\n\nbe aware!: may produce very\nloud noises!!!\n\nENC 2: choose parameter\n\nENC 3: change selected parameter\n\nENC 1: change the amount parameters will be changed\n\nKEY 2&3: select which synth will receive incoming midi notes\n\nplease be aware! at the moment \"noizeop\" only works if both reverb and compressor on the norns are turned off!",
       "tags": [
         "synth",
@@ -2388,6 +3131,10 @@
     },
     "noizeop": {
       "engine": "NoizeOp",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "readme": "noizeop\nNoizeOP is a little noise synth for monome norns\n\nNOIZEOP! v1.0\nNoise Synth\nby deeg\n\n@deegdeegdeeg\n\nhttps://github.com/deeg-deeg-deeg\n\nbe aware!: may produce very\nloud noises!!!\n\nENC 2: choose parameter\n\nENC 3: change selected parameter\n\nENC 1: change the amount parameters will be changed\n\nKEY 2&3: select which synth will receive incoming midi notes\n\nplease be aware! at the moment \"noizeop\" only works if both reverb and compressor on the norns are turned off!\n\nif you feel adventurous you can edit the supercollider engine of this project. just edit one of the six algorithms in there to fit your needs! edit this part of lib/EngineNoizeOP.sc\n\nalgo01 = ((osc01osc02)/(osc03osc04))/amod01;\nalgo02 = ((osc02osc04)/(osc03-osc01))/amod02;\nalgo03 = ((osc01+osc02)-(osc03+osc04)).trunc(amod03);\nalgo04 = (algo01algo02algo03).sqrt/amod04;\nalgo05 = (hypot(osc01,osc02) + hypot(osc03,osc04))amod05;\nalgo06 = (osc012+osc022+osc032+osc042)amod06;\n\nbut don't touch the amodXX variables. Try experimenting!\n\nCheers!",
       "tags": [
         "synth",
@@ -2397,12 +3144,18 @@
       "upd": "2022-08-04"
     },
     "norman": {
+      "facets": [
+        "script"
+      ],
       "tags": [
         "utility"
       ],
       "upd": "2019-05-19"
     },
     "norns.online": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://raw.githubusercontent.com/schollz/norns.online/main/static/img/online2.PNG"
       ],
@@ -2413,6 +3166,9 @@
       "upd": "2021-12-30"
     },
     "nornsfetch": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://raw.githubusercontent.com/tapecanvas/nornsfetch/main/doc/nornsfetch.png",
         "https://raw.githubusercontent.com/tapecanvas/nornsfetch/main/doc/shield.png",
@@ -2427,6 +3183,10 @@
     },
     "nydl": {
       "engine": "NotYourDreamLooper",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://raw.githubusercontent.com/sixolet/nydl/main/img/nydl-hello.gif",
         "https://raw.githubusercontent.com/sixolet/nydl/main/img/manticores.png",
@@ -2446,6 +3206,9 @@
       "upd": "2022-01-23"
     },
     "nørgård": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://raw.githubusercontent.com/frederickk/noergaard/primary/./.assets/noergaard-simple.png",
         "https://raw.githubusercontent.com/frederickk/noergaard/primary/./.assets/noergaard-sequencer.png",
@@ -2461,6 +3224,10 @@
     },
     "o-o-o": {
       "engine": "Odashodasho",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://user-images.githubusercontent.com/6550035/134816974-100cdd1e-31bb-42b8-a931-e6fd6934cc0f.gif",
         "https://user-images.githubusercontent.com/6550035/135916882-38887714-d413-4f28-96ee-92a9e42253e4.png"
@@ -2474,6 +3241,10 @@
       "upd": "2022-01-26"
     },
     "oblique": {
+      "facets": [
+        "script",
+        "mod"
+      ],
       "readme": "Oblique\n\nThis is a Norns mod that adds a card from the Oblique Strategies set near the top of the params menu.\n\nThe card reloads whenever the script is changed, but otherwise cannot be redrawn.",
       "tags": [
         "mod"
@@ -2481,6 +3252,10 @@
       "upd": "2021-11-30"
     },
     "oilcan": {
+      "facets": [
+        "mod",
+        "engine"
+      ],
       "images": [
         "https://user-images.githubusercontent.com/86270534/213924876-23b20e74-ae0d-41d5-b84b-3062ad64f710.png",
         "https://user-images.githubusercontent.com/86270534/213921482-eb357414-9e54-44e7-be2f-e7e3c8bfe434.png"
@@ -2495,6 +3270,9 @@
       "upd": "2024-10-11"
     },
     "onehanded": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://raw.githubusercontent.com/mimetaur/onehanded/master/onehanded.png"
       ],
@@ -2507,6 +3285,10 @@
     },
     "ong": {
       "engine": "Ong",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://raw.githubusercontent.com/dst78/ong/main/ong-screen.png"
       ],
@@ -2519,6 +3301,10 @@
     },
     "oooooo": {
       "engine": "SimpleDelay",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://user-images.githubusercontent.com/6550035/91628872-c47b8c80-e978-11ea-9d07-df79ef337a0f.gif",
         "https://user-images.githubusercontent.com/6550035/132006771-4fdd4e9e-3a02-48e9-b94a-7f6454d60399.png",
@@ -2534,6 +3320,9 @@
       "upd": "2023-03-21"
     },
     "orbital": {
+      "facets": [
+        "script"
+      ],
       "readme": "orbital\n\nhello\n\nwelcome to orbital, version 1 (alpha) by 1505\n\norbital is an experiment in simple sequences and interface design\nit was created to learn lua scripting for norns\nit is very much a work in progress\n\nthe code is messy, the capability small\norbital has a roadmap, the things still to do are...\nmove trig calculations into external class\nadd ability to change sequence length\nadd up to 4 sequences\ntest out different engines / using samples\npossibly change the name\nget saving and loading of sequence data into an external file\n\nonly then will orbital be considered release 1\n\nplease comment, suggest, tell me where the code is a mess\n\nenjoy\nhow do you use this?\n\ncopy the \"1505\" folder to code using SFTP (excellent guide here: https://monome.org/docs/norns/sftp/) or if you prefer use maiden to copy and paste the code over to a new folder/file of your choosing\n\norbital has no dependencies, it should load and run without you doing anything else\nwhat are the controls?\n\nencoder 2 changes the pitch/frequency of the notes being played\nencoder 3 changes the beats per minute - you may notice a slight delay/pause when changing, this is on the fix list although... …",
       "tags": [
         "sequencer",
@@ -2542,6 +3331,9 @@
       "upd": "2019-04-15"
     },
     "orca": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://llllllll.co/uploads/default/original/3X/e/e/ee7a2a1460ac4c0a54c8a0b067b7e7d9c35f23fd.png",
         "https://raw.githubusercontent.com/itsyourbedtime/orca/main/.assets/orca-screen-01.png",
@@ -2564,6 +3356,10 @@
     },
     "orgn": {
       "engine": "Orgn",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://raw.githubusercontent.com/andr-ew/orgn/master/lib/doc/logo-01.png",
         "https://raw.githubusercontent.com/andr-ew/orgn/master/lib/doc/orgn.png",
@@ -2580,6 +3376,9 @@
       "upd": "2022-12-04"
     },
     "orgnwrms": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://raw.githubusercontent.com/andr-ew/orgnwrms/main/lib/doc/orgnwrms.png"
       ],
@@ -2594,6 +3393,9 @@
       "upd": "2022-12-03"
     },
     "ortf": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://raw.githubusercontent.com/felart/ORTF/master/ortf.png"
       ],
@@ -2607,6 +3409,10 @@
     },
     "otis": {
       "engine": "Decimator",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://raw.githubusercontent.com/justmat/otis/master/assets/pixelotis.png",
         "https://raw.githubusercontent.com/justmat/otis/master/assets/otis21.png",
@@ -2624,6 +3430,10 @@
     },
     "overtones": {
       "engine": "Overtones",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://raw.githubusercontent.com/TheTrackdriver/overtones/main/doc/cover.png",
         "https://raw.githubusercontent.com/TheTrackdriver/overtones/main/doc/overtones_section2.png",
@@ -2643,12 +3453,19 @@
     },
     "overwintering": {
       "engine": "Oystercatcher",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "tags": [
         "generative"
       ],
       "upd": "2022-09-21"
     },
     "p8": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://www.eigenbahn.com/assets/gif/norns_p8_ghosts.gif",
         "https://www.eigenbahn.com/assets/gif/norns_p8_confetti.gif",
@@ -2664,6 +3481,9 @@
       "upd": "2022-01-12"
     },
     "paracosms": {
+      "facets": [
+        "script"
+      ],
       "readme": "paracosms\n\nparacosms is a sampler that can playback or record synchronized audio.\n\nthis branch is for installation. see paracosms branch for everything else.",
       "tags": [
         "sequencer",
@@ -2676,6 +3496,9 @@
       "upd": "2022-08-16"
     },
     "paranibbles": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://raw.githubusercontent.com/xmacex/paranibbles/main/paranibbles.gif"
       ],
@@ -2688,6 +3511,9 @@
       "upd": "2025-09-21"
     },
     "parrot": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://raw.githubusercontent.com/jaseknighter/parrot/main/images/birdies.png"
       ],
@@ -2699,6 +3525,10 @@
     },
     "passersby": {
       "engine": "Passersby",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "tags": [
         "synth",
         "midi",
@@ -2707,6 +3537,10 @@
       "upd": "2022-11-21"
     },
     "passthrough": {
+      "facets": [
+        "script",
+        "mod"
+      ],
       "images": [
         "https://raw.githubusercontent.com/nattog/passthrough/main/img/mod_menu.gif"
       ],
@@ -2719,6 +3553,9 @@
       "upd": "2022-06-12"
     },
     "patchwork": {
+      "facets": [
+        "script"
+      ],
       "readme": "Patchwork\n\nPatchwork is a dual function sequencer for monome norns, crow and grid. Each sequence has both a note pattern and a command pattern. A command fires when the sequence reaches its position. Commands manipulate the sequences. Think octave and position jumping, direction changes, new notes, sequence syncing, etc.\n\nThe grid has two modes: NOTES and COMMANDS (you'll see an indication of what mode you're in the bottom right-hand corner of norns' screen). Use the former to edit your note pattern, the latter to edit your command pattern.\nClocking\n\nBoth sequences are driven by norns' global clock, but each one has its own set of additional options (in the params menu):\nBPM - defaults to 120bpm\nDIV/MULT - turn encoder to the right for multiplications of global tempo, left for divisions\nPROBABILITY - sets probability of whether the sequence advances\n\nWhen adjusting BPM(A) in params, BPM(B) will be set to the same value, and the global clock will be adjusted accordingly too. This is primarily intended for ease of use. Once BPM(A) is set, though, BPM(B) can be shifted independently for phasing effects. …",
       "tags": [
         "sequencer",
@@ -2728,6 +3565,9 @@
       "upd": "2021-07-05"
     },
     "path-trace": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://github.com/brokyo/path-trace/blob/main/cover.png?raw=true"
       ],
@@ -2740,6 +3580,10 @@
     },
     "pedalboard": {
       "engine": "Pedalboard",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://raw.githubusercontent.com/21echoes/pedalboard/master/screenshots/board.png",
         "https://raw.githubusercontent.com/21echoes/pedalboard/master/screenshots/modmatrix.png",
@@ -2755,6 +3599,10 @@
     },
     "phonotype": {
       "engine": "Phonotype",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "readme": "PHONOTYPE\n\nIt is like Teletype but for sound.\n\nUseful for:\nCustom midi synths\nEffects chains of your dreams\nFluid live-coding, changing the control flow as you go\nAn entire dang modular in this box yo\n\nTo use PHONOTYPE:\nInstall it onto Norns\nRestart the Norns\nUnplug keyboard from Teletype\nPlug keyboard into Norns\nSelect PHONOTYPE\nCode a sound\nGeneral idea\n\nLike Teletype, PHONOTYPE is a prefix programming language. For example:\n\nIs a statement that yields the sum of 1 and the product of 2 and 2.5: 6.\n\nEvery operation in PHONOTYPE is declarative. Instead of executing, like a line\nof Teletype code, it tells the audio engine (SuperCollider) what to connect to\nwhat. You can think of this much like patching a modular synth. The last line of\nyour main (M) script is output to the output jack.\n\nThe IT op is special: it means \"the result of the above line\".\n\nHere is a program that outputs a FM drone:\n\nNavigation\n\nF1..F8 on the keyboard navigates to script 1 through 8.\n\nF9 on the keyboard navigates to the M (main) script. This is the script that\noutputs sound.\n\nESC nagivates to the scene description.\n\nArrow keys choose a line to edit; enter key actually changes the line. …",
       "tags": [
         "generative",
@@ -2765,6 +3613,10 @@
     },
     "phyllis": {
       "engine": "Phyllis",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "readme": "phyllis\ndigitally modeled analog filter for norns.\n\nbuilt on the DFM1 supercollider ugen.\n\njoin the conversation on lines.\nhttps://llllllll.co/t/phyllis/27988",
       "tags": [
         "audio_fx"
@@ -2773,6 +3625,10 @@
     },
     "pirate-radio": {
       "engine": "PirateRadio",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://user-images.githubusercontent.com/6550035/146977370-3edbabcc-19d9-4bdc-8f60-975a195ed582.png",
         "https://user-images.githubusercontent.com/6550035/146977129-67f6be4a-2723-4859-baac-4028fd221a62.png",
@@ -2790,10 +3646,15 @@
       "upd": "2024-05-01"
     },
     "pit-orchisstra": {
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://github.com/entzmingerc/pit-orchisstra/blob/main/pittutorial.png"
       ],
       "nb": true,
+      "nb_role": "provides",
       "readme": "pit orchisstra\nthe game of snake\na group of snakes is a pit\nlive loooong and prosper\n\nClick the image above for a tutorial. For more discussion, see the thread on lines.\n\nThis is a sequencer script inspired by the game of snake. Each snake can turn left or right and only steps one square forward. Poke the grid or press K2 to use Food View to place food onto the grid. If the snake eats a food, a note will be played depending on the location on the grid the food was in and the length of the snake will increase. If a snake runs into itself or any other snake, the snake will die and respawn at the minimum length. However, each of these rules can be changed. The maximum length, whether or not a snake can die, whether or not a food spawns, how many snakes, and so on can all be changed to get different behaviors. There are 4 behaviors the snakes can take on as well, none, random, wander, and sequence. Depending on the behavior, snakes can automatically seek out food, or keep wandering forward indefinitely. Combining different snake behaviors and game rules generates a variety of musical sequences. See this playlist for a tutorial and many examples of how this script can be used. …",
       "tags": [
         "generative",
@@ -2806,6 +3667,9 @@
       "upd": "2024-10-02"
     },
     "pitfalls": {
+      "facets": [
+        "script"
+      ],
       "readme": "Pitfalls\nitem: There are pitfalls in using equal division within which\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\nto calculate 2-interval-patterns which the unwary traveler\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\nwill most certainly fall into.\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n- Erv Wilson [0]\nChangelog\nv0.4.2\nSet engine selection list with engines that are installed\nWait until engine is loaded before trying to load next engine\nDo not offer mx.samples engine when there are no audio/mx.samples\nFor midiout.pitchbendvalue() reuse, pass pitchbend semitones as 2nd argument\nv0.4.1\nFix to work when midigrid lib is not installed\nv0.4 ostinato odington\nAdd MIDI in keyboard support on virtual port 1 …",
       "tags": [
         "synth",
@@ -2817,6 +3681,10 @@
     },
     "pitter-patter": {
       "engine": "MxSamplez",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://raw.githubusercontent.com/schollz/pitter-patter/main/pitter-patter.png"
       ],
@@ -2831,6 +3699,9 @@
       "upd": "2026-04-30"
     },
     "piwip": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://raw.githubusercontent.com/schollz/piwip/master/.github/piwip.gif",
         "https://user-images.githubusercontent.com/6550035/94328978-fed24c80-ff6b-11ea-8a8f-3b2c6f5c9e91.png"
@@ -2844,6 +3715,10 @@
     },
     "pixels": {
       "engine": "Pixelbangs",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "tags": [
         "sequencer",
         "generative",
@@ -2855,6 +3730,9 @@
       "upd": "2022-04-08"
     },
     "plasma": {
+      "facets": [
+        "script"
+      ],
       "readme": "plasma",
       "tags": [
         "art",
@@ -2863,6 +3741,9 @@
       "upd": "2024-09-11"
     },
     "plonky": {
+      "facets": [
+        "script"
+      ],
       "readme": "plonky\nplonk (/plɒŋk/) - to play a musical instrument, usually not very well but often loudly\nCambride Dictionary\n\nhttps://vimeo.com/520650445\n\nplonky is a keyboard and sequencer. i made it to be able to play mx.samples directly from the grid. the grid layout (and name) is inspired by the plinky synth, i.e. it is a 8x8 layout with notes spaced out between columns by a specified interval (default is C-major scale spaced out by fifths).\nRequirements\nnorns\ngrid\nDocumentation\n\nuse the grid to play an engine. by default the engine is \"PolyPerc\", but if you install mx.samples you can also play that by switching \"PLONKY > engine\" via parameters.\n\nvoices: use E1 to change voices. each 8x8 section of the grid is a voice. you can play notes in that voice by pressing pads. the notes correspond to a C-major scale, where each column is a fifth apart. use the menu PLONKY to change parameters. while in a menu you can press a note to change to that voice.\n\narps: you can do arps by turning E2 or E3 to the right. in \"arp\" mode you can press multiple keys and have them play. in \"arp+latch\" mode the last keys you pressed will play. …",
       "tags": [
         "sequencer",
@@ -2873,6 +3754,10 @@
     },
     "pools": {
       "engine": "Pools",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://raw.githubusercontent.com/justmat/pools/master/assets/pools.png",
         "https://raw.githubusercontent.com/justmat/pools/master/assets/poolfilter-m.png",
@@ -2886,6 +3771,11 @@
       "upd": "2020-01-09"
     },
     "postskript": {
+      "facets": [
+        "script"
+      ],
+      "nb": true,
+      "nb_role": "provides",
       "readme": "postskript\n\npostskript is a sampler for arc and norns.\npostskript is fast, momentary and volatile.\nno files can be loaded, nothing is saved.\n\nyou hold to record, then turn the dials. that's it.\n\narc recomended. complemented by a grid, sidvagn or gridkeys, and ii via nb.",
       "tags": [
         "sampler",
@@ -2894,6 +3784,9 @@
       "upd": "2025-11-05"
     },
     "ppm_norns": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://raw.githubusercontent.com/loudnumbers/ppm_norns/main/ppm_norns.png"
       ],
@@ -2906,6 +3799,9 @@
       "upd": "2023-05-21"
     },
     "punchcard": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://raw.githubusercontent.com/neauoire/punchcard/master/PREVIEW.jpg"
       ],
@@ -2917,6 +3813,9 @@
       "upd": "2019-07-01"
     },
     "qfwfq": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://raw.githubusercontent.com/cachilders/qfwfq/main/./assets/images/demo.gif"
       ],
@@ -2930,6 +3829,9 @@
       "upd": "2020-11-20"
     },
     "quence": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://raw.githubusercontent.com/millxing/QUENCE/master/assets/settings_page.jpg",
         "https://raw.githubusercontent.com/millxing/QUENCE/master/assets/track_page.png"
@@ -2946,6 +3848,10 @@
     },
     "r": {
       "engine": "R",
+      "facets": [
+        "library",
+        "engine"
+      ],
       "readme": "R\n\nGeneral purpose audio patching engine\nFeatures\nArbitrarily create and connect audio generators and processors (modules).\nControl module parameters from Lua scripting layer.\nDisclaimer\nTake care of your ears and speakers while patching! 🎧🎛️\nCommands\nnew ss - creates a uniquely named module of given type (refer to section \"Modules\" for available types).\nExamples: new Osc MultiOsc, new Out SoundOut\nconnect ss - connects a module output to a module input.\nExamples: connect Osc/Pulse OutLeft, connect Osc/Pulse OutRight\ndisconnect ss - disconnects a module output from a module input.\nExample: disconnect Osc/Out OutLeft\nset sf - sets a module parameter to the given value.\nExamples: set Osc.Tune -13, set Osc.PulseWidth 0.5\ndelete s - removes a module.\nExample: delete Osc\n\n\\ In an earlier version inputs were referred to with the same delimiter as outputs . This still works but is deprecated. For clarity, it is advised to use the new delimiter .\nBulk Commands\nbulkset s - sets multiple module parameters to values given a bundle of modulename.parameter value pairs serialized as a string. …",
       "tags": [
         "lib"
@@ -2954,6 +3860,10 @@
     },
     "rachim": {
       "engine": "Rachim",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "readme": "rachim\n\nraw reflections in the rifts.\n\nrachim lets you conduct a 5-piece orchestra, where each piece can play different notes at different times at different volumes. how they play is up to you.\nrequirements\nnorns (version 240221+)\ncrow (optional)\ndocumentation\nE1: select pattern\nE2: select parameter\nE3: change parameter\nK3: toggle play\nK1+K3: toggle play all\n\nnotes are from a scale (change scale in PARAMS -> scale), with 1-7 denoting the note and 0 denoting a rest.\n\nthe sustain/release is a global control that can be changed (PARAMS -> fill).\n\nfor crow, the first four pieces are output as v/oct.\ninstall\n\ninstall with\n\nafter installing and you run, you may be prompted to install additional SuperCollider libraries.\nthis has been tested and seems to work on most devices, but let me know if you run into trouble.",
       "tags": [
         "generative",
@@ -2964,6 +3874,10 @@
     },
     "raft": {
       "engine": "Ocean",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "readme": "raft\n\nversion 0.9\n\nfor norns\n\na scene-setting, softcut-based delay & looper: three delay lines & noise generator & \"froth\" !",
       "tags": [
         "delay",
@@ -2973,6 +3887,10 @@
     },
     "raindrops": {
       "engine": "Snowflake",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://raw.githubusercontent.com/ambalek/raindrops/main/raindrops.png"
       ],
@@ -2987,12 +3905,18 @@
       "upd": "2021-08-18"
     },
     "randomizer_typhon": {
+      "facets": [
+        "script"
+      ],
       "tags": [
         "utility"
       ],
       "upd": "2022-04-14"
     },
     "rangl": {
+      "facets": [
+        "script"
+      ],
       "readme": "rangl\n\nhttps://vimeo.com/545457820\n\nrangl is based on angl but adds\ninstant recording functionality heavily inspired by\ngranchild, and\nthe concept of friction.\nRequirements\nnorns\narc\nthe Glut engine (comes with ash)\nDocumentation\n\nPress K3 to switch modes. The modes are\n\nspeed: adjust the speed on the four tracks. Hold K2 and touch arc\nto set speed to zero.\n\npitch: adjust pitch on the four tracks. Hold K2 for fine control.\n\nrecord: touch arc to select track. Hold K2 and press K3 to start\nrecording. Touch another track to end recording or hold K2 and press\nK3.\n\nlevel: adjust level of the individual tracks.\n\nfriction: adjust friction for the individual tracks.\nInstall\n\nhttps://github.com/tgk/rangl\n\nfrom maiden:",
       "tags": [
         "sampler",
@@ -3002,6 +3926,9 @@
       "upd": "2021-05-05"
     },
     "rebound": {
+      "facets": [
+        "script"
+      ],
       "readme": "rebound: a kinetic sequencer\nabout\n\nrebound is a kinetic sequencer for norns 2.0.\n\nSpawn orbs that bounce endlessly from left to right, top to bottom, and back\nagain. Each orb has its own velocity, direction, and note value. These values\nmay be adjusted individually or as a group. When an orb hits the top or bottom\nits note plays. When an orb hits the left or right its note plays an octave\ndown or up, respectively.\n\nNotes are quantised to the current scale and tempo, both of which may be set\nthrough the parameters menu. rebound will send midi notes, should a midi output\ndevice be attached, and may also slave to an external clock, should one be\npresent.\ninstall\n\nThis version of rebound is for norns 2.0. To install it, ssh into your norns,\nand clone this repository into the dust directory:\n\n$ cd dust\n$ git clone https://github.com/nf/rebound.git",
       "tags": [
         "sequencer"
@@ -3009,6 +3936,9 @@
       "upd": "2020-06-21"
     },
     "reels": {
+      "facets": [
+        "script"
+      ],
       "readme": "reels\nreel to reel tape player for monome norns",
       "tags": [
         "looper",
@@ -3018,6 +3948,10 @@
     },
     "repeater": {
       "engine": "Repeater",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "readme": "Repeater Orchestra for Norns\n\nRepeater Orchestra is a textural delay instrument that creates dense clouds of repeating audio. It consists of multiple tempo-synced delay lines (up to 50) with randomized timing, gain, and panning.\n\nThis project is a port of the original Repeater Orchestra web application by Bryant Smith.\nOrigins & Credits\nOriginal Concept & JavaScript Implementation: Bryant Smith\nOriginal Web Version: Repeater Orchestra on CodePen\nOriginal Software Demo: Video Demonstration by Sylvain Poitras\nNorns Port: Ported with assistance from Gemini CLI.\nNorns Implementation\n\nThe Norns script adapts the original concept for hardware control and adds new functionality:\nFreeze: Instantly lock the current audio buffer into an infinite loop, allowing you to build a texture and play over it.\nDry/Wet Mix: Blend between the direct input signal and the delay cloud (E1).\nIndependent Monitoring: The dry signal is monitored independently of the delay \"Gate\", allowing you to play over the loop even when not feeding new audio into the delays.\nHardware Mapping: Intuitive control over gains, tempo, and freeze states.\nControls\nK1: Shift modifier …",
       "tags": [
         "delay",
@@ -3029,6 +3963,10 @@
     },
     "repl-looper": {
       "engine": "ReplLooper",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://raw.githubusercontent.com/awwaiid/repl-looper/main/docs/repl-looper-grid.png",
         "https://github.com/awwaiid/repl-looper/raw/main/docs/logo.png",
@@ -3044,6 +3982,9 @@
       "upd": "2025-05-19"
     },
     "ribbons": {
+      "facets": [
+        "script"
+      ],
       "readme": "ribbons\nribbons for norns/arc",
       "tags": [
         "sequencer",
@@ -3052,6 +3993,9 @@
       "upd": "2025-07-20"
     },
     "rpls": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://raw.githubusercontent.com/andr-ew/rpls/main/lib/doc/img/rpls_cover.gif",
         "https://raw.githubusercontent.com/andr-ew/rpls/main/lib/doc/img/rpls-02.png",
@@ -3069,6 +4013,10 @@
     },
     "rpmate": {
       "engine": "TimberEq",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://www.eigenbahn.com/assets/gif/norns_rpmate.gif"
       ],
@@ -3080,6 +4028,10 @@
       "upd": "2022-08-09"
     },
     "rudiments": {
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://raw.githubusercontent.com/cfdrake/rudiments/master/grid-rudiments.PNG"
       ],
@@ -3092,6 +4044,9 @@
       "upd": "2020-08-10"
     },
     "sam": {
+      "facets": [
+        "script"
+      ],
       "readme": "sam v1.2\n\nrecord a sound, adjust the start and end points, save selection to tape.\nkey1 = alt\nkey2 = start/stop record (starting a new recording clears the buffer)\nkey3 = start/stop playback\nenc2 = adjust start point\nenc3 = adjust end point\n\nalt + key3 = save selection to /home/we/dust/audio/tape\nalt + enc2/3 = coarse adjust start/end points",
       "tags": [
         "sampler",
@@ -3101,6 +4056,10 @@
     },
     "sampswap": {
       "engine": "Sampswap",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://user-images.githubusercontent.com/6550035/157546058-96e5c62b-410a-4426-80b6-90976b9d70c4.jpg",
         "https://user-images.githubusercontent.com/6550035/157556885-5b99578c-b68e-4253-8dfb-6e95278e2b58.jpg"
@@ -3112,6 +4071,9 @@
       "upd": "2022-03-18"
     },
     "samsara": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://raw.githubusercontent.com/21echoes/samsara/master/screenshots/samsara.png"
       ],
@@ -3123,6 +4085,9 @@
       "upd": "2023-07-01"
     },
     "samthree": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://raw.githubusercontent.com/laderast/samthree/main/screenshots/samsara_plus.png"
       ],
@@ -3136,6 +4101,10 @@
     },
     "schicksalslied": {
       "engine": "LiedMotor",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "readme": "schicksalslied\nNote: This is schicksalslied 1.0. For the current version, see schicksalslied 2.\n\na poetry sequencer for monome norns\n\nnote: you will need to restart norns after installing this script, in order for the LiedMotor synth engine to install\n\n“What is a poet? A poet is an unhappy being whose heart is torn by secret sufferings, but whose lips are so strangely formed that when the sighs and the cries escape them, they sound like beautiful music.”\n-Søren Kierkegaard, Either/Or\n\nEntering Text\n\nSchicksalslied begins with a text field. You can input text into the field in two ways:\n1) by attaching a keyboard to one of norns's usb ports and typing (20 characters max)\n2) loading a .txt file into norns and importing it into schicksalslied using the \"text file\" feature in the params menu\n\nFor method 1, you can hit enter on your keyboard to send your line to schicksalslied. Each line you enter will be added to history. History items can be accessed by hitting the \"up\" arrow on your keyboard. The currently-selected history item will appear in the text field. Then you can hit enter again to make that line the active line.\n\nHistory items can also be accessed with a grid. …",
       "tags": [
         "generative",
@@ -3151,7 +4120,11 @@
       "upd": "2023-06-05"
     },
     "scholastic": {
+      "facets": [
+        "script"
+      ],
       "nb": true,
+      "nb_role": "provides",
       "readme": "scholastic\nA norns script that borrows ideas from Modalics's Beat Scholar:\nhttps://www.modalics.com/beatscholar\n\nSplit the measure into many tuplets. Polyrhythms, trap beats, bolero, and bouncing balls.\n\nSend them to the Polyperc engine, an NB voice, or MIDI output.\n\nEncoders:\n\nE1 - Select track\n\nScroll to track 0 to change number of tracks with E3\nE2 - Select position\n\nScroll to beat 0 to change number of beats with E3\nE3 - Adjust tracks/beat/division\n\nKeys:\n\nK1 (long) - Shift\n\nK2 - Play/Stop\n\nK3 - Insert / remove a note\n\nK1 + K3 - Edit velocities mode\n\nEncoders and keys:\n\nK1+E1 - Transpose\n\nScroll to track 0 to transpose all tracks\nK1+E2 - Engine release\n\nK1+E3 - Engine pulse width",
       "tags": [
         "norns",
@@ -3163,6 +4136,10 @@
     },
     "scryingstone": {
       "engine": "scryingstone",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://github.com/user-attachments/assets/949d440c-0653-4888-9696-18a94bf43760"
       ],
@@ -3177,6 +4154,9 @@
       "upd": "2025-02-05"
     },
     "seaflex": {
+      "facets": [
+        "script"
+      ],
       "readme": "seaflex\ncompanion app for earthsea\n\nhttps://llllllll.co/t/seaflex\n\nThis project started with me wanting to get better at playing chords on the grid layout of earthsea for norns, and struggling to figure them out on the fly. So I built a tool to practice, and thought other folks might find it useful too.\n\nIn particular I wanted to build up my muscle memory for common chord shapes in various voicings, which seaflex helps with. Options for scale, scale guides, voicing complexity, as well as two-handed vs one-handed play are available in the params page.\n\nInstructions for navigating the app structure are on the norns display.\n\nJust tapping out chords all day can get a little dull, so there is a game mode where you can go for a high score, which is based on speed and accuracy. Separate high scores are saved based on your combination of initial settings (number of hands, voicing complexity, scale type, light/dark mode).\n\nAt any time you can toggle between light and dark modes. Chord shapes are displayed in light mode only. In light mode, to advance chords or finish a round (in game mode), all the lit keys must be pressed (and no other keys). …",
       "tags": [
         "utility",
@@ -3185,6 +4165,9 @@
       "upd": "2023-12-29"
     },
     "seeker_ii": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://github.com/user-attachments/assets/7b5fe37a-5ed3-4332-be59-d5967a2e190b",
         "https://raw.githubusercontent.com/brokyo/seeker_ii/main/lib/etc/readme_layout_images/Tape%2520Layout.png",
@@ -3210,6 +4193,9 @@
       ]
     },
     "sempra": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://user-images.githubusercontent.com/86270534/163468550-ff110ad5-9edb-42d2-a742-12d328363ed5.png",
         "https://user-images.githubusercontent.com/86270534/163574156-d6be6215-b607-48e5-a887-7e23f5bdd8f9.png",
@@ -3226,6 +4212,9 @@
       "upd": "2022-04-29"
     },
     "serialism": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://raw.githubusercontent.com/xmacex/serialism/main/a-serialism.gif",
         "https://raw.githubusercontent.com/xmacex/serialism/main/a-serialism.mp3"
@@ -3237,12 +4226,18 @@
       "upd": "2025-08-24"
     },
     "shapes": {
+      "facets": [
+        "script"
+      ],
       "tags": [
         "utility"
       ],
       "upd": "2022-03-12"
     },
     "shfts": {
+      "facets": [
+        "script"
+      ],
       "readme": "shfts\n2-voice shift registers for norns &amp; grid\ndetails\n~~~\n-- shfts\n-- 2 voice double binary shift register\n-- + midi + dual quantizers\n--\n-- enc1: bpm\n-- enc2: voice 1 pitch offset\n-- enc3: voice 2 pitch offset\n-- key2: start/stop voice 1\n-- key3: start/stop voice 2\n--\n-- Midi device/channel output can be set per voice in params\n-- Crow support - clock in on input 2\n-- gate/pitch out on cv pairs 1/2, 3/4\n--\n-- GRID UI\n-- 2 identical voices, 8 columns each\n-- row 1 - pitch register bit display\n-- row 2 - trigger register bit display\n-- row 3 - clock division\n-- row 4 - trigger bias (more triggers to the right)\n-- row 5 - pitch rate of change (more change to the right)\n-- row 6 - trigger rate of change (more change to the right)\n-- row 7 - quantizer presets - hold a button and press keys from row 1-6;\n-- layout is perfect fourths vertical, chromatic scale horizontal\n-- a nice pentatonic scale:\n-- 0 X 0 0 0 0 0 0\n-- 0 X 0 X 0 0 0 0\n-- 0 X 0 0 X 0 0 0\n-- 0 0 0 0 0 0 0 0\n-- row 8 :\n-- -- col 1: 1 start/stop clock\n-- -- col 2: single-step register\n-- -- col 3: reduce loop length\n-- -- col 4: increase loop length\n-- -- col 5-8: pitch range (1-4 octaves) …",
       "tags": [
         "sequencer",
@@ -3252,6 +4247,9 @@
       "upd": "2019-12-05"
     },
     "shnthsalslied": {
+      "facets": [
+        "script"
+      ],
       "readme": "shnthsalslied\nfork of schicksalslied for use with shbobo shnth\n\nnote: requires schicksalslied as well as the shnth library for norns; the latter can be found at https://github.com/cfdrake/shnth\n\n“What is a poet? A poet is an unhappy being whose heart is torn by secret sufferings, but whose lips are so strangely formed that when the sighs and the cries escape them, they sound like beautiful music.”\n-Søren Kierkegaard, Either/Or\n\nshnthsalslied works in essentially the same way as schicksalslied (for which documentation is available at https://github.com/williamthazard/schicksalslied/blob/main/README.md), with one notable exception: rather than being sequenced according to the entered lines of text, 3 of the LiedMotor engine's voices (trisin, karplu, and resonz) are allocated to the shbobo shnth (bars, major buttons, and minor buttons, respectively). The frequencies at which these voices will play is determined by the entered lines of text.\nThe first four characters entered will determine the frequencies triggered by the four bars. The next four characters will determine the frequencies triggered by the major buttons. …",
       "tags": [
         "generative",
@@ -3268,6 +4266,10 @@
     },
     "showers": {
       "engine": "Showers",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://github.com/justmat/showers/blob/master/assets/showers.gif"
       ],
@@ -3279,9 +4281,15 @@
       "upd": "2020-11-17"
     },
     "sidvagn": {
+      "facets": [
+        "mod",
+        "engine"
+      ],
       "images": [
         "https://github.com/sonocircuit/sidvagn/blob/main/doc/sidvagn_grid_layout.png"
       ],
+      "nb": true,
+      "nb_role": "provides",
       "readme": "sidvagn\n\nsidvagn is a slimmed down version of nisho as a mod. connect a sidecar grid to port 2 and use it beside any other script.\n\nthis norns mod contains:\nan isometric keyboard,\nan interval keystrip,\na sequencer and key repeat mode with trig patterns,\nan 8 voice fm drum, and\n8 pattern recorders with patterns up to 256 beats of length\n\nthe output is powered by nb. install any nb mods for more than midi. e.g. nb polyform is found here.\ndocumentation\nimportant: connect sidecar grid to port 2 under SYSTEM > DEVICES > GRID\nvideo tutorial: sidvagn - overview\ngrid layout and shortcuts:",
       "tags": [
         "keyboard",
@@ -3294,6 +4302,10 @@
     },
     "silos": {
       "engine": "Thresher",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://raw.githubusercontent.com/justmat/silos/main/assets/silos-color.png",
         "https://raw.githubusercontent.com/justmat/silos/main/assets/silos-min-m.png",
@@ -3313,6 +4325,10 @@
       "upd": "2023-11-09"
     },
     "sines": {
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://raw.githubusercontent.com/aidanreilly/sines/main/sines.png"
       ],
@@ -3326,6 +4342,9 @@
       "upd": "2024-12-09"
     },
     "skylines": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://github.com/unit-cell/skylines/blob/main/docs/sequence_screen.png",
         "https://github.com/unit-cell/skylines/blob/main/docs/sequencer_grid.png",
@@ -3340,6 +4359,10 @@
     },
     "smash": {
       "engine": "StereoLpg",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://raw.githubusercontent.com/ryanlaws/SMASH/main/smash.gif"
       ],
@@ -3352,6 +4375,10 @@
     },
     "sonde": {
       "engine": "Sonde",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://raw.githubusercontent.com/moapacha/sonde/main/docs/screen.gif"
       ],
@@ -3365,6 +4392,9 @@
       "upd": "2026-05-05"
     },
     "spirals": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://github.com/user-attachments/assets/8b146764-113e-49c6-a13b-545855d16984",
         "https://github.com/user-attachments/assets/8bc86ca6-5a88-4671-97ed-a351c1f291af"
@@ -3379,6 +4409,9 @@
       "upd": "2023-02-04"
     },
     "splicer": {
+      "facets": [
+        "script"
+      ],
       "readme": "🧬",
       "tags": [
         "eduscript"
@@ -3387,6 +4420,10 @@
     },
     "splnkr": {
       "engine": "Splnkr",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://raw.githubusercontent.com/jaseknighter/splnkr/main/images/pages/page1/page1_s1_start.png",
         "https://raw.githubusercontent.com/jaseknighter/splnkr/main/images/pages/page1/page1_s1_sample.png",
@@ -3408,6 +4445,10 @@
     },
     "stack": {
       "engine": "Stack",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "readme": "Stack\n\nA stack of 8 fixed-frequency resonant bandpass filters, for Monome Norns. Each filter is one octave apart.\nUse ENC1 to choose which filter is active\n\nFilter selection can be recorded and played back as a pattern.\nPress KEY2 to begin recording\nPlay with ENC1 to select active filter\nPress KEY3 to finish recording and play back pattern\nPlay around with your input audio!\nPress KEY2 then KEY3 to clear pattern (record empty pattern)\n\nStack operates on a stereo input signal.\nInstallation\n\nDownload latest release and copy files into ~/dust/code/stack.\n\nOr use Git:\n\nNote that after installing you must SYSTEM => RESET your Norns before running this script, as it includes a new SuperCollider engine.\nSuperCollider Engine\n\nThis script makes a new SuperCollider engine available, Stack. Please see lib/EngineStack.sc for the latest parameter definitions.",
       "tags": [
         "audio_fx"
@@ -3415,6 +4456,9 @@
       "upd": "2021-02-19"
     },
     "step": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://raw.githubusercontent.com/antonhornquist/step/master/screen.png"
       ],
@@ -3427,6 +4471,10 @@
     },
     "stjörnuíþrótt": {
       "engine": "SCgazer",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://raw.githubusercontent.com/frederickk/stjoernuithrott/primary/.assets/stjoernuithrott.gif",
         "https://raw.githubusercontent.com/frederickk/stjoernuithrott/primary/.assets/stjoernuithrott_midi-map.gif"
@@ -3441,6 +4489,9 @@
       "upd": "2020-06-28"
     },
     "streams": {
+      "facets": [
+        "script"
+      ],
       "readme": "streams\n\nstreams is a 4 track multi playhead sequencer inspired by fugue machine, awake and dunes.\n\nfour independent playheads share a common set of notes. track length, transposition, playbackmode and output destination define the emerging polymetric melodies.\ndocumentation: streams user guide",
       "tags": [
         "sequencer",
@@ -3451,6 +4502,9 @@
       "upd": "2026-02-24"
     },
     "strides": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://raw.githubusercontent.com/notjustmat/strides/master/assets/strides-grid1.png",
         "https://raw.githubusercontent.com/notjustmat/strides/master/assets/strides-grid2.png"
@@ -3465,6 +4519,9 @@
       "upd": "2020-11-17"
     },
     "strum": {
+      "facets": [
+        "script"
+      ],
       "readme": "Strum\na plucky little pattern sequencer\nFor monome norns v2 and grid 128.\n\nTwo versions. One uses the KarplusRings engine for string-like ring and pluck. The other uses PolyPerc for a ringing delay tone.\nInstall\nDownload and unpack\nCopy 'strum' folder to your norns in the 'code' folder.\ngrid Controls\nTap grid pads to set/change pitch.\nDouble tap to add a rest.\nnorns Controls\n\nDividied into pages\nENC 1: chooses page\nPage 1 (sound)\nENC 2: sets scale\nENC 3: sets tonic\nPage 2 (pattern)\nENC 2: adjusts direction\nALT (KEY 1) + ENC 2: sets pattern length\nENC 3: adjusts tempo\nPage 3 (storage)\nENC 2: scroll thru list\nENC 3: scroll to Load/Save/Delete\nKEY 3: select option from ENC 3\nKEY 2: back out of a selection\nNote: Saves patterns and settings, plus synth params.\nKeys\nKEY 1: param and system menus (hold for ALT)\nALT + KEY 2: randomizes pattern\nKEY 3: pauses/restarts\nMIDI\nMIDI IN: clock sync\nMIDI OUT: to external synths\nParam Settings\nGrid display: scatter or bar\nSet grid and MIDI device\nSet grid rotation\nSet MIDI channel\nVarious clock settings\nSynth params can be changed (beware the high ends!!!)\nNote:\n\nFeedback welcome. Contact @carvingcode at https://llllllll.co",
       "tags": [
         "sequencer",
@@ -3473,6 +4530,9 @@
       "upd": "2019-04-06"
     },
     "stwnsh": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://raw.githubusercontent.com/sonocircuit/stwnsh/main/doc/cover.png"
       ],
@@ -3486,6 +4546,10 @@
       "upd": "2024-10-23"
     },
     "støv": {
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://raw.githubusercontent.com/imminentgloom/st-v/main/st%C3%B8v.png"
       ],
@@ -3497,6 +4561,10 @@
       "upd": "2025-11-20"
     },
     "støy": {
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://raw.githubusercontent.com/imminentgloom/st-y/main/screenshot.png"
       ],
@@ -3509,6 +4577,9 @@
       "upd": "2025-08-12"
     },
     "superbrain": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://user-images.githubusercontent.com/39985617/116898861-322e3580-ac37-11eb-8cbc-58efb38c1664.png"
       ],
@@ -3522,6 +4593,10 @@
     },
     "supertonic": {
       "engine": "Supertonic",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://user-images.githubusercontent.com/6550035/120124212-22d3d680-c168-11eb-9b83-6d9b29303972.png"
       ],
@@ -3535,6 +4610,10 @@
     },
     "sway": {
       "engine": "Sway",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "readme": "Norns-Sway\nSway for monome norns (live processing environment for one channel)\n\nhttp://sway.carltesta.net\n\nDemo/walkthrough video here: https://youtu.be/w9RZHmo4JAs\nInstall\n\nTo install on norns running 2.0 or above\n\nssh into norns via command line or terminal (see https://monome.org/docs/norns/ under \"other access\")\n\nthen type:\n\nAfter installation reset the audio system by navigating to\n\nTo update, first ssh in and type:\nUsage\n1) Plug an instrument or microphone into input 1 (L) on monome norns\n2) Plug in headphones or connect output 1, 2 or both to external speaker(s)\n3) Start Sway script\n\nTODO CALIBRATION\n\nTODO SETTINGS\n\nTODO ADDING PROCESSING TYPES",
       "tags": [
         "generative",
@@ -3543,6 +4622,9 @@
       "upd": "2024-10-11"
     },
     "sweet bees": {
+      "facets": [
+        "script"
+      ],
       "readme": "Sweet Bees is a two-track asynchronous tape looper and reverb for Monome Norns.",
       "tags": [
         "looper"
@@ -3551,6 +4633,10 @@
     },
     "synthy": {
       "engine": "Synthy",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://user-images.githubusercontent.com/6550035/131072123-00275007-b08a-470a-85d5-a0cee8179c21.gif"
       ],
@@ -3563,12 +4649,19 @@
       "upd": "2021-10-20"
     },
     "takt": {
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://raw.githubusercontent.com/itsyourbedtime/takt/master/lib/doc.png"
       ],
       "upd": "2022-02-28"
     },
     "tambla": {
+      "facets": [
+        "script"
+      ],
       "readme": "tambla\n\nbending rhythmic arpeggio\n\ndocumentation lives here",
       "tags": [
         "sequencer",
@@ -3580,6 +4673,10 @@
     },
     "tapedeck": {
       "engine": "Tapedeck",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://user-images.githubusercontent.com/6550035/149668537-202958bc-c680-4880-a8a2-d104cc9e15dd.png"
       ],
@@ -3590,6 +4687,9 @@
       "upd": "2023-05-14"
     },
     "taweeet": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://github.com/skibu/taweeet/blob/main/images/splash.png",
         "https://github.com/skibu/taweeet/blob/main/images/intro_with_puffin.png",
@@ -3605,9 +4705,14 @@
       "upd": "2024-10-13"
     },
     "tetra": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://raw.githubusercontent.com/nvillar/tetra/main/doc/tetra.png"
       ],
+      "nb": true,
+      "nb_role": "provides",
       "readme": "tetra\ntetra is a script for monome norns and grid.\n\nUse the grid to create and interact with sound objects called tetras.\nEach tetra makes a sound that can be played manually or sequentially.\nSequences are created from groups of adjacent tetras.\nTetras\n\nTetras are formed on the grid by four adjacent keys, excluding diagonals.\nThere are 7 possible shapes (think tetris): I, O, T, L, J, S, Z.\nSome shapes have two or four possible orientations.\nPlaying tetras\nWhen a tetra is completed, it starts to act as a single button on the grid: pressing any one of its keys\nwill activate it and trigger a sound. The sound is determined by the shape of the tetra.\nThis script uses the n.b. voice library, and each shape can\nbe associated with any installed n.b. voice.\nThe initial note played by the tetra is chosen randomly from the scale specified in the PARAMETERS>>EDIT menu.\nAdjusting tetras\nThere are several possible adjustments to the sound of a tetra: note, length, volume, ratchet and iteration,\nwhich can be changed by selecting a tetra and turning the encoders or pressing the buttons on the norns. …",
       "tags": [
         "synth",
@@ -3618,6 +4723,10 @@
     },
     "tetrabobo": {
       "engine": "Tetrabobo",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "readme": "TetraBobo\n\ntriangle wave organ with variable slope for norns & shbobo shnth\n\nnote: you'll have to restart norns after installing this script in order for the engine to install\n\nE1: master chaos (circular FM)\nE2: master rise time\nE3: master fall time\n\nK1: hold for fine tuning\nK2: alt behavior for E2 & E3\nK3: alt behavior for E2 & E3\n\nK2 + E2: bar 0 time (pitch)\nK2 + E3: bar 1 time (pitch)\nK3 + E2: bar 2 time (pitch)\nK3 + E3: bar 3 time (pitch)\n\nmaster rise + master fall + bar time = pitch\n\nshnth minors halve the time of their corresponding bars\n\nshnth majors double the time of their corresponding bars\n\nchaos, master rise, master fall, and each bar's time can be modulated with LFOs in the parameters menu",
       "tags": [
         "synth"
@@ -3626,6 +4735,10 @@
     },
     "tetrabotis": {
       "engine": "Tetrabotis",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "readme": "tetrabotis v1.0\n\ntetrabobo + otis = tetrabotis",
       "tags": [
         "synth"
@@ -3634,6 +4747,10 @@
     },
     "thebangs": {
       "engine": "Thebangs",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "readme": "thebangs\n\none-shot polysynth engine for supercollider / norns.\n\nhttps://llllllll.co/t/engine-thebangs/38865",
       "tags": [
         "engine"
@@ -3642,6 +4759,10 @@
     },
     "thirtythree": {
       "engine": "Thirtythree",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://user-images.githubusercontent.com/6550035/116799473-85c14780-aaae-11eb-8430-1987c69ce517.jpg",
         "https://user-images.githubusercontent.com/6550035/116799476-8ce85580-aaae-11eb-9b38-2d9c2ea6f179.jpg"
@@ -3654,7 +4775,11 @@
       "upd": "2021-09-30"
     },
     "thorns": {
+      "facets": [
+        "script"
+      ],
       "nb": true,
+      "nb_role": "provides",
       "readme": "Thorns\n\nFractal MIDI sequencer for norns + grid\nRequirements\nnorns (any version)\nGrid (16x8 minimum)\nnb (nota bene) library\nAt least one nb voice installed (recommended: emplaitress or polyperc)\nOptional: MIDI output device\nFeatures\nMonophonic step sequencer (2-16 steps)\nBinary transformation tree with 7 levels of depth\nFive transformation types:\nPitch modification (nonlinear power function)\nVelocity modification (nonlinear power function)\nMutate (±1 semitone shifts)\nGate chaos (mute/unmute/create notes)\nTime shift (rotate pattern forward/backward)\nReal-time path navigation through transformation space\nScale quantization\nGrid-based editing with octave windows\nSeparate gate/pitch and velocity editing screens\nAudio output via nb voice or MIDI output\nControls\nEncoders\nE1: Branches (tree depth: 0-7) - changeable anytime\nE2: Path (navigate variations: 0.0-0.99) - changeable anytime\nE3: Tempo (20-300 BPM) - changeable anytime\nKeys\nK2: Play/Stop\nK3: Toggle gate/pitch ↔ velocity screen (edit mode only)\nKey Combinations\nK1+E1: Shift octave window (move visible pitch range up/down) - changeable anytime\nK1+E2: Change pattern length (2-16 steps) - edit mode only\nGrid\n\nEdit Mode (Stopped): …",
       "tags": [
         "norns",
@@ -3666,6 +4791,9 @@
       "upd": "2026-01-31"
     },
     "tidbit": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://raw.githubusercontent.com/markijzerman/tidbit/main/doc/tidbit.png"
       ],
@@ -3682,6 +4810,10 @@
     },
     "timber": {
       "engine": "Timber",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "tags": [
         "sampler",
         "midi"
@@ -3690,6 +4822,10 @@
     },
     "time-rhythm": {
       "engine": "TimeRhythm",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "readme": "time-rhythm\nduophonic synthesizer for monome norns\nhttps://llllllll.co/t/time-rhythm/",
       "tags": [
         "drum",
@@ -3699,6 +4835,9 @@
       "upd": "2022-09-21"
     },
     "timeparty": {
+      "facets": [
+        "script"
+      ],
       "readme": "TimeParty\n\nDelay/FX sequencer for monome norns/grid (crow optional)\n\nTimeParty is a delay effect with 7 step sequencers that each modulate a different parameter of the feedback path.\n\nEach sequencer has an independent loop length, clock division, and direction (\"forward\", \"reverse\", \"random\", or \"drunk\"),\nas well as a \"shift\" parameter which can be used to update the range of modulation values associated with the grid y positions.\nFor example, shift can be used to speed up the overall delay time, or fine tune the feedback amount.\nEncoder 2 - change sequence/page\nEncoder 3 - change sequencer parameter value\nKey 3 - select new parameter value\nKey 2 - freeze buffer\nSequencers\n\n1. Time - delay time\n2. Rate - also delay time, but with pitch shifting effects. Rate modulation values are set to \"perfect\" musical intervals\n(1, 4 and 5) by default, which correspond with both more \"musical\" delay times and more consonant pitch shifting,\nbut can also be changed to \"major\" or \"minor\" scale modes via the parameters menu.\n3. Feedback\n4. Autopan - autopan rate. Available thanks to the hnds Lua LFO library from @justmat. Change LFO waveform and depth via the parameters menu.\n5. …",
       "tags": [
         "audio_fx",
@@ -3709,6 +4848,9 @@
       "upd": "2020-05-04"
     },
     "tmi": {
+      "facets": [
+        "script"
+      ],
       "readme": "tmi\n\ntextual music instructions / tiny midi interface / too much information\n\nhttps://vimeo.com/503866942\n\ntmi is a norns library for composing and sequencing devices with text, ported to norns from a version i previously wrote. its basically a norns tracker, but unlike other norns trackers with wonderful visuals and features (e.g. yggdrasil, orca), tmi has few features and basically no visual interface. however, the one feature that tmi does have is that tmi can be used within any other norns script so with a few lines of code+text you can sequence multiple external devices (notes and ccs) from your favorite norns script.\n\ntmi music tracks are written in text files (more on that below). when tmi is added to a script, these files can be loaded via the PARAMETERS > TMI screen in the parameters menu. once loaded, any changes to files are hot-loaded so you could do live-coding (if you have a computer handy).\n\nthis script finalizes a trilogy of norns scripts i've been writing that can be imported into other norns scripts. my goals was to take a existing sample-based script be able to also...\n...have command-mapping to single buttons (via middy) …",
       "tags": [
         "utility",
@@ -3717,6 +4859,9 @@
       "upd": "2021-01-29"
     },
     "torii": {
+      "facets": [
+        "script"
+      ],
       "readme": "torii\n\ntorii - a traditional Japanese gate which symbolically marks the transition from the mundane to the sacred\n\nGated audio sequencer for norns\n\nv0.5.6 @okyeron\n\nSend audio in, each step gates the audio.\n\nRequirements:\nnorns version 200424 (for global clock)\naudio in\nR library - https://github.com/antonhornquist/r\n\nOptional:\nGrid\n\nControls:\n\nK2 : randomize sequence\nK3 : bypass gates\n\nE1 : change BPM\nK1 HOLD + E1 : change seq length\nE2 : change edit step\nE3 : change filter amt per step\n\nSee Params menu for clock divider, envelope values, filter envelopes, delays, etc. (and Mapping those to MIDI)\n\nMIDI Start/Stop/Continue are supported\n\nSequence length is 1 to 32.\n\nGrid controls:\n\nRow 8 buttons are the sequence steps\n\nRows 1-7 are a level amount for filter per step\nRow 7 will clear the env amount if hit while selected\n\nFor sequences longer than 16, scroll the grid side to side with E2",
       "tags": [
         "sequencer",
@@ -3726,6 +4871,9 @@
       "upd": "2020-06-03"
     },
     "traffic": {
+      "facets": [
+        "script"
+      ],
       "readme": "traffic\n\nedit of @markeats' loom for quickly decoupling motifs from their harmonic framework\n\nenc 1/arc 1: circle of 5ths\n\nenc 2/arc 2: jump notes\n\nenc 3: add/remove\n\nkey 2 (tap): major/minor\n\nkey 2 (hold) + enc 2:\n\nselect jump amount\n\nkey 3 (tap):\n\nrecord pattern,\n\nplay pattern,\n\n(hold) clear pattern",
       "tags": [
         "sequencer",
@@ -3736,6 +4884,10 @@
     },
     "triangles": {
       "engine": "Triangles",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://raw.githubusercontent.com/chrislo/triangles/main/img/triangles.png"
       ],
@@ -3747,6 +4899,9 @@
       "upd": "2022-03-06"
     },
     "tulpamancer": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://raw.githubusercontent.com/northern-information/tulpamancer/main/cover.png",
         "https://raw.githubusercontent.com/northern-information/tulpamancer/main/scan.png"
@@ -3760,12 +4915,18 @@
       "upd": "2025-03-04"
     },
     "tuner": {
+      "facets": [
+        "script"
+      ],
       "tags": [
         "utility"
       ],
       "upd": "2024-01-19"
     },
     "tunnels": {
+      "facets": [
+        "script"
+      ],
       "readme": "tunnels\na collection of uncertain delays using norns softcut.\nBase script (no engine)\nplug an audio source into norns\npage 2: tunnel mode\npage 3: control mode\npage 4: input mode (left or left/right)\nK1 (hold): clear buffers\nK2 & K3: randomize voices/panning (manual mode)\npassersby-tnl\none buffer, manual control only version of tunnels added to Passersby (https://llllllll.co/t/21089)\npage 5: tunnel modes\nK2 & K3 on tunnel page: randomize params\nK1 (hold) on tunnel page: clear buffer\nAdding tunnels to existing scripts (COMING SOON)",
       "tags": [
         "delay",
@@ -3774,6 +4935,10 @@
       "upd": "2019-11-15"
     },
     "turntable": {
+      "facets": [
+        "script",
+        "engine"
+      ],
       "readme": "turntable, V3 - Supercollider engine, and crow\nA turntable for norns\n\nDemo video:\nhttps://youtu.be/kpuc4MYNU9A?feature=shared\n\nAfter many years as a musician, I decided last year I wanted to DJ for the first time. I don’t have turntables, but I do have a norns or two. So I made this.\n\nThe intention was to squeeze most of the functionality of a single turntable onto norns. And the intention was also to resist making a full DJ app.\n\nAll gratitude and props to monome, the documentation writers, and the lines community for teaching me how to do this.\nRequirements\n\nRequires: norns, some wavs to play\nDocumentation\n\nK1+K3: Load a wav file\nK3: play / stop\nK2: pause (put your hand on the record)\n\nE1: pitch\nE2: nudge\nE3: small nudge\nK1+E2: big nudge\nK2+K3: backspin\n\nK1+K2: toggle loop\nK1+E3: waveform zoom\n\nSee the params menu for lots of fun stuff\n\nTo mix:\nBring another audio source (say, another norns running turntable, your phone, or an sl1200), into the norns stereo input.\nMap a MIDI controller to the ‘Fader Position’ parameter, and use it to crossfade between turntable and the audio inout\n\nCrow:\nPlay / Speed mode:\nInput 1: Play, 5V gate\nInput 2: Speed, ±5V\n\nPosition / Duration mode: …",
       "tags": [
         "norns",
@@ -3783,6 +4948,9 @@
       "upd": "2025-03-04"
     },
     "tviburar": {
+      "facets": [
+        "script"
+      ],
       "readme": "Tviburar\n\nA dual lane four step polyrythmic sequencer where each step contains a free running LFO that will generate notes. The LFO modes are, square, random, ramp up, ramp down and sine. Each step can also be muted. The two sequencers can influence each others LFO values creating a complex environment where the rate of repetition is stretched out over a long, near infinite, timespace.\n\nhttps://llllllll.co/t/tviburar/\n\nWritten by Filip Forsström (@ljudvagg) and Linus Schrab (@vicimity).\nThe script is based on an original concept built by Filip for the Nord Modular G2.",
       "tags": [
         "sequencer",
@@ -3791,6 +4959,9 @@
       "upd": "2022-04-12"
     },
     "twine": {
+      "facets": [
+        "script"
+      ],
       "readme": "twine\n\n\"to form by twisting, intertwining, or interlacing...\"\n\nA random granulator for Monome Norns.",
       "tags": [
         "granulator"
@@ -3798,6 +4969,10 @@
       "upd": "2021-03-12"
     },
     "twins": {
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://llllllll.co/uploads/default/original/3X/d/4/d4f2077ef24aeceebba416defd2e1cce5140f37a.png",
         "https://github.com/user-attachments/assets/e2308c34-df38-47f8-b595-72deed76e240"
@@ -3810,6 +4985,9 @@
       "upd": "2026-05-31"
     },
     "u": {
+      "facets": [
+        "script"
+      ],
       "readme": "u\n\nnorns utility scripts\nu/DCE - \"DICE\"\nRoll some dice.\nu/KEY - \"KEYBOARD\"\nTest your language keyboard.\nu/REF - \"REFERENCE\"\nRead some files.\nAdd your own at /home/we/dust/data/u/REF/.\nFactory files are automatically added when the data directory is empty.",
       "tags": [
         "utility"
@@ -3818,6 +4996,10 @@
     },
     "ufo": {
       "engine": "SupSawEV",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://raw.githubusercontent.com/loudnumbers/ufo/main/iss.png",
         "https://raw.githubusercontent.com/loudnumbers/ufo/main/ufo.png",
@@ -3834,6 +5016,9 @@
       "upd": "2023-05-26"
     },
     "uhf": {
+      "facets": [
+        "script"
+      ],
       "readme": "uhf\n\nchange the channel to begin.\n\n-- KEY3: change channel.\n-- KEY1 hold: tv guide.\n-- ENC1: volume.\n-- ENC2: speed + ??\n-- ENC3: pitch + ??",
       "tags": [
         "granulator"
@@ -3841,6 +5026,9 @@
       "upd": "2020-10-06"
     },
     "vcr": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://raw.githubusercontent.com/justmat/vcr/main/assets/vcr-1.png",
         "https://raw.githubusercontent.com/justmat/vcr/main/assets/vcr-2.png",
@@ -3854,6 +5042,9 @@
       "upd": "2023-08-04"
     },
     "vials": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://raw.githubusercontent.com/nattog/vials/main/assets/grid_interface.jpg"
       ],
@@ -3866,6 +5057,9 @@
       "upd": "2020-05-03"
     },
     "warmreload": {
+      "facets": [
+        "mod"
+      ],
       "readme": "warmreload\n\na norns mod to automatically reload scripts during development.\n\nwhen enabled, this mod will reload a script anytime there is a change in the code directory. this is useful for fast prototyping and development.\ninstallation\n\nto activate, go to SYSTEM > MODS then select warmreload and turn E2 until you see a + sign. then restart your norns. now anytime you save a script it will reload it.\n\nnote: the first time you run a script after enabling, the script will need an internet connection to download a 4.5 MB binary that enables the watch service.\n\nalso note: if you are running this on not-a-norns (e.g. norns desktop) then you can still use this script, but it needs to be compiled for your system which is likely not arm. assuming you have Golang installed:\n\n(any norns user doesn't need to do this, since the binary is already compiled for those norns shields and boxes).\nacknowledgements\n\nI'd like to acknowledge all the mighty inspiring participants of the habitus workshops - the topic of live reload came up often. …",
       "tags": [
         "mod"
@@ -3873,6 +5067,9 @@
       "upd": "2023-08-09"
     },
     "waver": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://llllllll.co/uploads/default/original/3X/f/b/fbc45d2505ce6bc49e2d4157842d6ca20b1a0ce4.gif"
       ],
@@ -3883,6 +5080,9 @@
       "upd": "2021-10-10"
     },
     "window-crowparator": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://raw.githubusercontent.com/xmacex/window-crowparator/main/window-crowparator.gif"
       ],
@@ -3894,6 +5094,10 @@
     },
     "wobblewobble": {
       "engine": "Wobble",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://user-images.githubusercontent.com/6550035/118997986-ee794280-b93d-11eb-85a4-33cbdbe4b0b6.gif",
         "https://user-images.githubusercontent.com/6550035/118861929-eb287d00-b891-11eb-9efd-2a09f0142d5f.PNG",
@@ -3911,6 +5115,9 @@
       "upd": "2021-10-22"
     },
     "wrms": {
+      "facets": [
+        "script"
+      ],
       "images": [
         "https://raw.githubusercontent.com/AndrewShike/wrms/master/lib/img/wrm.gif",
         "https://raw.githubusercontent.com/AndrewShike/wrms/master/lib/img/main.png",
@@ -3926,6 +5133,10 @@
     },
     "xd1": {
       "engine": "xD1",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://raw.githubusercontent.com/ryleelyman/xD1/main/img/0.png",
         "https://raw.githubusercontent.com/ryleelyman/xD1/main/img/1.png",
@@ -3942,6 +5153,10 @@
     },
     "yggdrasil": {
       "engine": "YggdrasilSynth",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://northern-information.github.io/yggdrasil-docs/assets/images/yggdrasil.png"
       ],
@@ -3955,6 +5170,9 @@
       "upd": "2022-06-26"
     },
     "zellen": {
+      "facets": [
+        "script"
+      ],
       "readme": "Zellen is currently not in active development, since I do not own a Norns anymore. If anyone wants to take over, feel free to fork the repository and create a new thread for it in the lines library. If you do so, send me a message on lines and I will happily link your new repository here and in the old lines thread.\nzellen\n\nA sequencer for Monome norns based on Conway's Game of Life.\nUsage\nGrid: enter/modify cell pattern\nKEY2: play/pause current generation (semi-manual mode), advance sequence (manual mode), play/pause sequence (automatic mode)\nKEY3: advance generation\nhold KEY1 and press KEY3: erase the board\nENC1: set speed (bpm)\nENC2: set play mode (see below)\nENC3: set play direction (see below)\nhold KEY3 + ENC3: time jog\nPlay Modes\n\nSet the play mode with ENC2.\nreborn (default): Play a note for every cell that was born or reborn (= has exactly three neighbors), regardless of the previous state of the cell\nborn: Play a note for every cell that was born (has exactly three neighbors and was not alive in the previous generation)\nghost: Play a note for every cell that is dying(has less than two or more than three neighbors). …",
       "tags": [
         "sequencer",
@@ -3964,6 +5182,10 @@
     },
     "zxcvbn": {
       "engine": "Zxcvbn",
+      "facets": [
+        "script",
+        "engine"
+      ],
       "images": [
         "https://raw.githubusercontent.com/schollz/zxcvbn/main/docs/build/static/audioin.png",
         "https://raw.githubusercontent.com/schollz/zxcvbn/main/docs/build/static/audioout.png",

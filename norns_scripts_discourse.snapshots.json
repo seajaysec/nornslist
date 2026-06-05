@@ -26,6 +26,15 @@
     "project_url": "https://github.com/hanjo-synth/4CCFader",
     "tags": "midi, controller, utility, performance"
   },
+  "AshSynth": {
+    "author": "nunosmash",
+    "description": "Norns monophonic synthesizer: dual oscillators, FM, split envelopes, clock-synced delay & reverb",
+    "discussion_url": "",
+    "documentation_url": "https://github.com/nunosmash/AshSynth/blob/main/README.md",
+    "project_name": "AshSynth",
+    "project_url": "https://github.com/nunosmash/AshSynth",
+    "tags": "synth, engine, midi, grid"
+  },
   "Eastwind": {
     "author": "junklight",
     "description": "A Norns instrument of non standard tuning & limitations",
