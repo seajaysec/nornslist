@@ -131,7 +131,7 @@
   .card{
     background:var(--panel); border:1px solid var(--trim); border-radius:var(--radius);
     padding:14px 15px; display:flex; flex-direction:column; gap:9px;
-    transition:border-color .15s, transform .15s, box-shadow .15s; content-visibility:auto; contain-intrinsic-size:auto 200px;
+    transition:border-color .15s, transform .15s, box-shadow .15s; scroll-margin-top:96px;
   }
   .card:hover{border-color:var(--accent2); box-shadow:0 4px 18px rgba(0,0,0,.18)}
   .card .head{display:flex; gap:10px; align-items:flex-start}
@@ -214,6 +214,8 @@
   .readme-toggle{font-size:11.5px; color:var(--accent2); background:none; border:0; cursor:pointer; align-self:flex-start; padding:0}
   .metarow{font-size:11.5px; color:var(--faint); display:flex; gap:14px; flex-wrap:wrap}
   .metarow b{color:var(--muted); font-weight:600}
+  .metarow .correct{color:var(--faint)}
+  .metarow .correct:hover{color:var(--accent2)}
 
   /* ---- states ---- */
   .empty,.loading{text-align:center; padding:80px 20px; color:var(--muted)}
@@ -324,7 +326,7 @@
   "use strict";
   const $ = (s, r=document) => r.querySelector(s);
   const esc = (s) => (s||"").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  const state = { all:[], tags:new Set(), facets:new Set(), q:"", sort:"updated", tagsExpanded:false };
+  const state = { all:[], tags:new Set(), facets:new Set(), q:"", sort:"updated", tagsExpanded:false, only:"" };
 
   /* ---------- demo embed detection ---------- */
   function demoEmbed(url){
@@ -373,7 +375,7 @@
                 + linkIcon(s.comm,'comm','norns.community page')
                 + linkIcon(s.demo,'demo','demo');
     const expandable = !!(s.readme || (s.images&&s.images.length) || s.demo);
-    return `<article class="card" data-name="${esc(s.name.toLowerCase())}">
+    return `<article class="card" data-name="${esc(s.name.toLowerCase())}" data-slug="${esc(s.slug||'')}">
       <div class="head"><div class="id">
         <div class="nm">${esc(s.name)}${badges}</div>
         <div class="by">by <a href="${esc(s.proj||'#')}" target="_blank" rel="noopener">${esc(s.author||'unknown')}</a></div>
@@ -421,6 +423,10 @@
     if(s.author) meta.push(`<span><b>author</b> ${esc(s.author)}</span>`);
     if(s.upd) meta.push(`<span><b>updated</b> ${esc(s.upd)}</span>`);
     if(s.engine) meta.push(`<span><b>engine</b> ${esc(s.engine)}</span>`);
+    const issue = "https://github.com/seajaysec/nornslist/issues/new?title="
+      + encodeURIComponent("correction: " + s.name)
+      + "&body=" + encodeURIComponent("Script: " + s.name + "\nPage: " + location.origin + location.pathname + "#s=" + (s.slug||"") + "\n\nWhat's wrong / what should it be:\n");
+    meta.push(`<a href="${issue}" target="_blank" rel="noopener" class="correct">report a correction ↗</a>`);
     html += `<div class="metarow">${meta.join("")}</div>`;
     more.innerHTML = html;
   }
@@ -488,6 +494,7 @@
 
   /* ---------- filtering ---------- */
   function passes(s){
+    if(state.only) return s.slug === state.only;  // single-script permalink view
     if(state.q){
       const hay = (s.name+" "+(s.author||"")+" "+(s.desc||"")+" "+(s.tags||[]).join(" ")).toLowerCase();
       if(!hay.includes(state.q)) return false;
@@ -533,19 +540,36 @@
     renderActive();
     syncChips();
     writeHash();
+    if(state.only){
+      // single-script permalink: it's the only card — open it, pin to top
+      const s = state.all.find(x => x.slug === state.only);
+      const card = grid.firstElementChild;
+      if(card && s){
+        card.classList.add("open");
+        const exp = card.querySelector(".expander"); if(exp) exp.setAttribute("aria-expanded","true");
+        fillMore(card, s);
+        document.title = s.name + " · " + TITLE;
+        window.scrollTo(0, 0);
+      }
+    }
   }
 
   /* ---------- shareable URL state ---------- */
   const TITLE = "nornslist · norns community scripts";
   function writeHash(){
     const p = new URLSearchParams();
-    if(state.q) p.set("q", state.q);
-    if(state.tags.size) p.set("tag", [...state.tags].join(","));
-    if(state.facets.size) p.set("facet", [...state.facets].join(","));
+    if(state.only){
+      p.set("s", state.only);  // keep the permalink shareable on refresh
+    } else {
+      if(state.q) p.set("q", state.q);
+      if(state.tags.size) p.set("tag", [...state.tags].join(","));
+      if(state.facets.size) p.set("facet", [...state.facets].join(","));
+    }
     if(state.sort && state.sort !== "updated") p.set("sort", state.sort);
     const h = p.toString();
     // replaceState (not location.hash=) so we don't spam history or fire hashchange
     history.replaceState(null, "", location.pathname + location.search + (h ? "#"+h : location.hash && "#"));
+    if(state.only){ return; }  // title set by render() for the single-script view
     const bits = [];
     if(state.q) bits.push("“"+state.q+"”");
     state.tags.forEach(t => bits.push(t));
@@ -555,6 +579,14 @@
   function applyHash(){
     const h = location.hash.replace(/^#/, "");
     const p = new URLSearchParams(h);
+    const s = p.get("s") || "";
+    if(s){
+      // deep-link to one script: show just it (clean permalink view)
+      state.only = s; state.q = ""; state.tags = new Set(); state.facets = new Set();
+      state.sort = p.get("sort") || "updated";
+      return;
+    }
+    state.only = "";
     state.q = (p.get("q") || "").toLowerCase();
     state.tags = new Set((p.get("tag") || "").split(",").filter(Boolean).map(x => x.toLowerCase()));
     state.facets = new Set((p.get("facet") || "").split(",").filter(Boolean));
@@ -567,6 +599,12 @@
 
   function renderActive(){
     const box = $("#active");
+    if(state.only){
+      const s = state.all.find(x => x.slug === state.only);
+      box.innerHTML = `<span class="ftag">◈ ${esc(s ? s.name : state.only)}<button data-clear-only aria-label="show all">×</button></span>`
+        + `<button class="clearall" id="clearAll">show all scripts</button>`;
+      return;
+    }
     const chips = [];
     state.tags.forEach(t => chips.push(`<span class="ftag">${esc(t)}<button data-rm-tag="${esc(t)}" aria-label="remove">×</button></span>`));
     state.facets.forEach(f => chips.push(`<span class="ftag">${esc(f)}<button data-rm-facet="${esc(f)}" aria-label="remove">×</button></span>`));
@@ -577,8 +615,8 @@
     document.querySelectorAll("#tagrail .tag").forEach(c => c.classList.toggle("on", state.tags.has(c.dataset.tag)));
   }
 
-  function toggleTag(t){ t=t.toLowerCase(); state.tags.has(t)?state.tags.delete(t):state.tags.add(t); render(); }
-  function toggleFacet(f){ state.facets.has(f)?state.facets.delete(f):state.facets.add(f); render(); }
+  function toggleTag(t){ state.only=""; t=t.toLowerCase(); state.tags.has(t)?state.tags.delete(t):state.tags.add(t); render(); }
+  function toggleFacet(f){ state.only=""; state.facets.has(f)?state.facets.delete(f):state.facets.add(f); render(); }
 
   /* ---------- tag rail ---------- */
   function buildTagRail(){
@@ -609,7 +647,8 @@
   /* ---------- events ---------- */
   $("#facetbar").addEventListener("click", e => { const c=e.target.closest(".chip"); if(c) toggleFacet(c.dataset.facet); });
   $("#active").addEventListener("click", e => {
-    if(e.target.id==="clearAll"){ state.tags.clear(); state.facets.clear(); render(); return; }
+    if(e.target.id==="clearAll"){ state.only=""; state.tags.clear(); state.facets.clear(); render(); return; }
+    if(e.target.dataset.clearOnly!==undefined){ state.only=""; render(); return; }
     const rt=e.target.dataset.rmTag, rf=e.target.dataset.rmFacet;
     if(rt){ state.tags.delete(rt); render(); }
     if(rf){ state.facets.delete(rf); render(); }
@@ -618,7 +657,7 @@
   let deb;
   qi.addEventListener("input", () => {
     sw.classList.toggle("has", qi.value.length>0);
-    clearTimeout(deb); deb=setTimeout(()=>{ state.q=qi.value.trim().toLowerCase(); render(); }, 120);
+    clearTimeout(deb); deb=setTimeout(()=>{ state.only=""; state.q=qi.value.trim().toLowerCase(); render(); }, 120);
   });
   $("#clrSearch").addEventListener("click", () => { qi.value=""; sw.classList.remove("has"); state.q=""; render(); qi.focus(); });
   $("#sort").addEventListener("change", e => { state.sort=e.target.value; render(); });
