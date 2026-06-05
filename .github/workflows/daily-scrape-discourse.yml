@@ -78,13 +78,16 @@ jobs:
           # feed.json is the ingenue data product; feed_cache.json is its
           # per-repo enrichment cache — committing the cache lets each nightly
           # CI run start warm and only re-fetch repos that changed (same reason
-          # the snapshots sidecar is committed).
+          # the snapshots sidecar is committed). lastupd_cache.json is the
+          # equivalent warm cache for the Last-Updated pass: committing it means
+          # nightly runs only re-page commits for repos pushed since last night.
           git add norns_scripts_discourse.xlsx \
                   norns_scripts_discourse.snapshots.json \
                   norns_scripts_discourse.discourse_resolutions.json \
                   norns_scripts_discourse.external_searches.json \
                   feed.json \
-                  norns_scripts_discourse.feed_cache.json
+                  norns_scripts_discourse.feed_cache.json \
+                  norns_scripts_discourse.lastupd_cache.json
           if ! git diff --staged --quiet; then
             git commit -m "Auto-update (discourse): Daily scrape $(date +'%Y-%m-%d')"
           fi

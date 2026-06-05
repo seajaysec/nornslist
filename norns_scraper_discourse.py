@@ -192,6 +192,16 @@ class NornsScraper:
         self.feed_enabled = True
         self.feed_output = None
 
+        # --- Efficiency: per-run memoization (avoids redundant GitHub/index calls) ---
+        # Cached HTML of the norns.community index page. It was fetched twice per
+        # run (fetch_slug_map + scrape_all_scripts); it is static within a run.
+        self._main_page_html = None
+        # One `GET /repos/{owner}/{repo}` per repo per run, shared between the
+        # Last-Updated pass and feed enrichment (both need default_branch; the
+        # Last-Updated cache also needs pushed_at). Keyed by (owner, repo).
+        self._repo_meta_cache = {}
+        self._repo_meta_lock = threading.Lock()
+
     def discover_demo_video(
         self, discussion_url, _no_resolve=False, author="", script_name=""
     ):
@@ -1692,12 +1702,19 @@ class NornsScraper:
         )
 
     def get_main_page(self):
-        """Fetch the main norns.community page to get list of scripts"""
+        """Fetch the main norns.community page to get list of scripts.
+
+        Memoized for the run: the index page is requested by both fetch_slug_map
+        and scrape_all_scripts, but it's static within a single run, so we fetch
+        it once. Failures are not cached (so a later call can retry)."""
+        if self._main_page_html is not None:
+            return self._main_page_html
         try:
             logger.info("Fetching main page...")
             response = self.session.get(self.base_url)
             response.raise_for_status()
-            return response.text
+            self._main_page_html = response.text
+            return self._main_page_html
         except requests.RequestException as e:
             logger.error(f"Error fetching main page: {e}")
             return None
@@ -2674,6 +2691,44 @@ class NornsScraper:
         except Exception:
             return False
 
+    def _repo_meta(self, owner: str, repo: str) -> dict:
+        """Fetch `GET /repos/{owner}/{repo}` at most once per repo per run.
+
+        Both the Last-Updated pass and feed enrichment need `default_branch`,
+        and the Last-Updated cache gates on `pushed_at` — so this single call is
+        shared between them (was previously fetched 2x/repo). Returns the parsed
+        repo JSON, or a sentinel dict on failure: `{"_status": 404}` for a
+        missing repo, `{"_status": 403}` for a rate-limited/transient failure.
+        The sentinels let callers distinguish "gone" (cache the empty result)
+        from "try again later" (don't cache the miss), exactly as the inline
+        calls did before."""
+        if not owner or not repo:
+            return {"_status": 404}
+        key = (owner, repo)
+        with self._repo_meta_lock:
+            cached = self._repo_meta_cache.get(key)
+        if cached is not None:
+            return cached
+        meta = {"_status": 403}  # default to transient so a miss isn't cached as "gone"
+        try:
+            r = self.github_session.get(
+                f"https://api.github.com/repos/{owner}/{repo}", timeout=15
+            )
+            if r.status_code == 403:
+                meta = {"_status": 403}
+            elif r.status_code == 404:
+                meta = {"_status": 404}
+            else:
+                r.raise_for_status()
+                body = r.json()
+                meta = body if isinstance(body, dict) else {"_status": 404}
+        except Exception as e:
+            logger.debug(f"GitHub repo-meta error for {owner}/{repo}: {e}")
+            meta = {"_status": 403}
+        with self._repo_meta_lock:
+            self._repo_meta_cache[key] = meta
+        return meta
+
     def _github_latest_non_readme_date(self, owner: str, repo: str) -> str:
         """Return YYYY-MM-DD of latest commit that isn't README.md-only; empty on failure."""
         if not owner or not repo:
@@ -2681,12 +2736,10 @@ class NornsScraper:
         base = f"https://api.github.com/repos/{owner}/{repo}"
         timeout = 15
         try:
-            # Get default branch
-            r = self.github_session.get(base, timeout=timeout)
-            if r.status_code == 404:
+            # Get default branch (shared per-run repo-meta call)
+            repo_info = self._repo_meta(owner, repo)
+            if repo_info.get("_status") in (403, 404):
                 return ""
-            r.raise_for_status()
-            repo_info = r.json()
             default_branch = repo_info.get("default_branch") or "main"
 
             # Iterate commits by pages
@@ -2738,29 +2791,116 @@ class NornsScraper:
             return ""
         return ""
 
-    def _apply_last_updated(self, rows):
-        """Enrich merged row dicts with 'Last Updated' using GitHub API, based on 'Project URL'."""
+    # Recompute an unchanged repo's Last-Updated at most this stale even when
+    # pushed_at is unchanged — heals any transient state and bounds drift.
+    LASTUPD_CACHE_TTL_DAYS = 30
+
+    def _lastupd_cache_path(self, excel_path: str) -> str:
+        """Sidecar cache of per-repo Last-Updated, alongside the xlsx. Committed
+        by CI (like the feed cache) so nightly runs stay warm."""
+        base, _ = os.path.splitext(excel_path)
+        return f"{base}.lastupd_cache.json"
+
+    def _load_lastupd_cache(self, excel_path: str) -> dict:
+        import json
+
+        path = self._lastupd_cache_path(excel_path)
+        if not os.path.exists(path):
+            return {}
+        try:
+            with open(path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            if isinstance(data, dict):
+                logger.info(f"Loaded {len(data)} Last-Updated cache entries from {path}")
+                return data
+        except Exception as e:
+            logger.warning(f"Failed to load Last-Updated cache from {path}: {e}")
+        return {}
+
+    def _save_lastupd_cache(self, excel_path: str, cache: dict) -> None:
+        import json
+
+        path = self._lastupd_cache_path(excel_path)
+        try:
+            with open(path, "w", encoding="utf-8") as f:
+                json.dump(cache, f, indent=2, sort_keys=True, ensure_ascii=False)
+            logger.info(f"Saved {len(cache)} Last-Updated cache entries to {path}")
+        except Exception as e:
+            logger.warning(f"Failed to save Last-Updated cache to {path}: {e}")
+
+    def _lastupd_cache_fresh(self, entry: dict, current_pushed_at: str) -> bool:
+        """Reusable only if the repo hasn't been pushed since we computed the
+        date (same `pushed_at`), the entry actually holds a date, and it's within
+        TTL. `pushed_at` is the precise change signal — it advances exactly when
+        commits land — so an unchanged repo costs ZERO commit-paging calls on
+        later nightly runs (just the one shared repo-meta call). A README-only
+        push bumps pushed_at and triggers a recompute, which correctly returns
+        the same (older) non-README date; never the reverse, so a stale date can
+        never mask a real change."""
+        if not isinstance(entry, dict) or not entry.get("last_updated"):
+            return False
+        cached_pa = str(entry.get("pushed_at") or "")
+        if not cached_pa or cached_pa != str(current_pushed_at or ""):
+            return False
+        computed_at = str(entry.get("computed_at") or "")[:10]
+        try:
+            from datetime import datetime
+
+            age_days = (datetime.now() - datetime.strptime(computed_at, "%Y-%m-%d")).days
+            return age_days <= self.LASTUPD_CACHE_TTL_DAYS
+        except Exception:
+            return False
+
+    def _apply_last_updated(self, rows, excel_path: str = None):
+        """Enrich merged rows with 'Last Updated' (latest non-README commit date)
+        from GitHub, keyed by 'Project URL'.
+
+        Efficiency core: the costly part is paging a repo's commits and pulling
+        per-commit details to skip README-only changes — previously done for
+        EVERY repo EVERY night (~900+ uncached calls). We now cache the result
+        per repo and reuse it whenever the repo's `pushed_at` is unchanged: an
+        unchanged repo costs one shared `GET /repos` call and zero commit calls.
+        Only repos pushed since the last run pay full price. `excel_path` enables
+        the committed sidecar cache; without it (ad-hoc/test callers) we still
+        share repo-meta within the run but recompute dates."""
         if not rows:
             return rows
-        # Build mapping repo -> row indices
         repo_to_indices = {}
         for idx, row in enumerate(rows):
-            project_url = row.get("Project URL", "")
-            owner, repo = self._parse_github_repo(project_url)
+            owner, repo = self._parse_github_repo(row.get("Project URL", ""))
             if owner and repo:
-                key = (owner, repo)
-                repo_to_indices.setdefault(key, []).append(idx)
-
+                repo_to_indices.setdefault((owner, repo), []).append(idx)
         if not repo_to_indices:
             return rows
 
-        # Fetch in parallel
+        cache = self._load_lastupd_cache(excel_path) if excel_path else {}
+        cache_lock = threading.Lock()
         results = {}
 
         def _task(owner_repo):
             owner, repo = owner_repo
-            return self._github_latest_non_readme_date(owner, repo)
+            meta = self._repo_meta(owner, repo)  # shared per-run call
+            pushed_at = (
+                "" if meta.get("_status") in (403, 404) else (meta.get("pushed_at") or "")
+            )
+            ck = f"{owner}/{repo}"
+            entry = cache.get(ck)
+            if entry and self._lastupd_cache_fresh(entry, pushed_at):
+                return owner_repo, entry["last_updated"], True
+            value = self._github_latest_non_readme_date(owner, repo) or ""
+            # Only persist a real date paired with a known change signal, so
+            # transient failures / missing repos self-heal on the next run
+            # instead of caching an empty value behind a matching pushed_at.
+            if value and pushed_at:
+                with cache_lock:
+                    cache[ck] = {
+                        "last_updated": value,
+                        "pushed_at": pushed_at,
+                        "computed_at": self._today_iso(),
+                    }
+            return owner_repo, value, False
 
+        served_from_cache = 0
         with ThreadPoolExecutor(max_workers=self.max_workers) as executor:
             future_to_key = {
                 executor.submit(_task, key): key for key in repo_to_indices.keys()
@@ -2768,16 +2908,25 @@ class NornsScraper:
             for future in as_completed(future_to_key):
                 key = future_to_key[future]
                 try:
-                    results[key] = future.result() or ""
+                    _, value, hit = future.result()
+                    results[key] = value
+                    if hit:
+                        served_from_cache += 1
                 except Exception:
                     results[key] = ""
 
-        # Apply back to rows
         for key, indices in repo_to_indices.items():
             value = results.get(key, "")
             for idx in indices:
-                # Always set/overwrite with the computed value (if any)
                 rows[idx]["Last Updated"] = value
+
+        total = len(repo_to_indices)
+        logger.info(
+            f"Last-Updated: {served_from_cache}/{total} repo(s) served from cache "
+            f"(pushed_at unchanged); {total - served_from_cache} recomputed"
+        )
+        if excel_path:
+            self._save_lastupd_cache(excel_path, cache)
         return rows
 
     # ---------------------------
@@ -3115,14 +3264,15 @@ class NornsScraper:
         base = f"https://api.github.com/repos/{owner}/{repo}"
         timeout = 15
         try:
-            r = self.github_session.get(base, timeout=timeout)
-            if r.status_code == 403:
+            # default branch via the shared per-run repo-meta call (also used by
+            # the Last-Updated pass, so GET /repos is fetched once per repo/run).
+            meta = self._repo_meta(owner, repo)
+            if meta.get("_status") == 403:
                 result["error"] = True
                 return result
-            if r.status_code == 404:
+            if meta.get("_status") == 404:
                 return result
-            r.raise_for_status()
-            branch = r.json().get("default_branch") or "main"
+            branch = meta.get("default_branch") or "main"
 
             # README: content -> plaintext + curated images + nb hint
             readme_md = ""
@@ -4325,9 +4475,11 @@ class NornsScraper:
         snapshots = self._load_snapshots(filename)
         merged_data = self.merge_data(self.script_data, existing_df, snapshots)
 
-        # Compute GitHub-based Last Updated for all rows (based on Project URL)
+        # Compute GitHub-based Last Updated for all rows (based on Project URL).
+        # `filename` enables the committed per-repo Last-Updated cache so nightly
+        # runs only re-page commits for repos that were actually pushed.
         try:
-            merged_data = self._apply_last_updated(merged_data)
+            merged_data = self._apply_last_updated(merged_data, filename)
         except Exception as e:
             logger.warning(f"Failed applying Last Updated enrichment: {e}")
 
