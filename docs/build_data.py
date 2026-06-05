@@ -107,7 +107,11 @@ def _normalize_row(d: dict) -> dict:
         "name": pick("name", "Name"),
         "author": pick("author", "Author"),
         "desc": pick("desc", "description", "Description"),
-        "tags": _split_tags(pick("tags", "Tags")) if not isinstance(d.get("tags"), list) else d["tags"],
+        # tags may arrive as a ready list (catalog.json, under "tags" or "Tags")
+        # or a comma string (xlsx / short-key sources) — handle all three.
+        "tags": (d["tags"] if isinstance(d.get("tags"), list)
+                 else d["Tags"] if isinstance(d.get("Tags"), list)
+                 else _split_tags(pick("tags", "Tags"))),
         "demo": pick("demo", "Demo"),
         "disc": pick("disc", "discussion url", "Discussion URL"),
         "proj": pick("proj", "project url", "Project URL"),

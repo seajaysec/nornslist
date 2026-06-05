@@ -15,6 +15,7 @@ on:
     paths:
       - 'docs/**'
       - 'feed.json'
+      - 'catalog.json'
       - 'norns_scripts_discourse.xlsx'
       - '.github/workflows/pages.yml'
   workflow_dispatch:

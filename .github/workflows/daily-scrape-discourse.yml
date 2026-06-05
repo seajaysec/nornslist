@@ -86,6 +86,7 @@ jobs:
                   norns_scripts_discourse.discourse_resolutions.json \
                   norns_scripts_discourse.external_searches.json \
                   feed.json \
+                  catalog.json \
                   norns_scripts_discourse.feed_cache.json \
                   norns_scripts_discourse.lastupd_cache.json
           if ! git diff --staged --quiet; then

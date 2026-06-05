@@ -191,6 +191,9 @@ class NornsScraper:
         # overrides these from --no-feed / --feed-output.
         self.feed_enabled = True
         self.feed_output = None
+        # catalog.json (canonical full-rows catalog; build_data.py prefers it).
+        self.catalog_enabled = True
+        self.catalog_output = None
 
         # --- Efficiency: per-run memoization (avoids redundant GitHub/index calls) ---
         # Cached HTML of the norns.community index page. It was fetched twice per
@@ -3459,6 +3462,81 @@ class NornsScraper:
         rows = df.fillna("").to_dict("records")
         self.write_feed_json(rows, excel_path, output_path)
 
+    # ---------------------------
+    # catalog.json — canonical, diffable, PR-able full-rows catalog.
+    #
+    # docs/build_data.py PREFERS catalog.json over the xlsx, so this is the
+    # forward-looking source of truth for the public site; the xlsx becomes a
+    # derived export (kept for the user's manual curation workflow). It carries
+    # every FIELD_MAP column so the xlsx is reconstructable from it. Emitted as
+    # a list under `scripts`, sorted by Name with sorted keys, so nightly diffs
+    # are minimal and reviewable.
+    # ---------------------------
+    def _default_catalog_output(self, excel_path: str) -> str:
+        """Default catalog.json location: the repo root (next to the xlsx),
+        named exactly `catalog.json` — the path build_data.py defaults to."""
+        return os.path.join(os.path.dirname(os.path.abspath(excel_path)), "catalog.json")
+
+    @staticmethod
+    def _catalog_clean(value):
+        """Coerce a merged-row value to a clean JSON scalar: NaN/None -> '',
+        everything else stripped to a string. (Lists are returned as-is for Tags.)"""
+        if isinstance(value, list):
+            return value
+        try:
+            if pd.isna(value):
+                return ""
+        except (TypeError, ValueError):
+            pass
+        return str(value).strip() if value is not None else ""
+
+    def write_catalog_json(self, rows, excel_path: str, output_path: str = None) -> None:
+        """Write catalog.json from merged rows. Best-effort: logs and returns on
+        any failure so it can never abort a run whose xlsx already saved."""
+        import json
+
+        try:
+            cols = list(self.FIELD_MAP.keys())
+            scripts = []
+            for row in rows:
+                name = self._catalog_clean(row.get("Name"))
+                if not name:
+                    continue
+                entry = {}
+                for c in cols:
+                    if c == "Tags":
+                        entry[c] = self._tags_list(row.get("Tags"))
+                    else:
+                        entry[c] = self._catalog_clean(row.get(c, ""))
+                entry["Name"] = name
+                scripts.append(entry)
+            scripts.sort(key=lambda r: r["Name"].lower())
+            payload = {
+                "file_info": {"version": 1, "kind": "script_catalog"},
+                "date": self._today_iso(),
+                "scripts": scripts,
+            }
+            out = output_path or self._default_catalog_output(excel_path)
+            with open(out, "w", encoding="utf-8") as f:
+                json.dump(payload, f, indent=2, sort_keys=True, ensure_ascii=False)
+            logger.info(f"Wrote catalog.json: {len(scripts)} scripts -> {out}")
+        except Exception as e:
+            logger.warning(f"Failed to write catalog.json: {e}")
+
+    def regenerate_catalog_only(self, excel_path: str, output_path: str = None) -> None:
+        """Rebuild catalog.json from an existing xlsx, with no re-scrape. Use this
+        to seed/refresh the canonical catalog from the current spreadsheet."""
+        if not os.path.exists(excel_path):
+            logger.error(f"Excel file not found: {excel_path}")
+            return
+        try:
+            df = pd.read_excel(excel_path)
+        except Exception as e:
+            logger.error(f"Failed to load Excel for catalog regeneration: {e}")
+            return
+        rows = df.fillna("").to_dict("records")
+        self.write_catalog_json(rows, excel_path, output_path)
+
     def _scrape_by_community_url(self, community_url: str):
         """Build script details for sync-check by looking up the community.json entry."""
         # Derive slug from URL path
@@ -4673,6 +4751,13 @@ class NornsScraper:
         if getattr(self, "feed_enabled", True):
             self.write_feed_json(merged_data, filename, getattr(self, "feed_output", None))
 
+        # Emit catalog.json — the canonical full-rows catalog that build_data.py
+        # prefers over the xlsx. Best-effort; the xlsx is already safely written.
+        if getattr(self, "catalog_enabled", True):
+            self.write_catalog_json(
+                merged_data, filename, getattr(self, "catalog_output", None)
+            )
+
     def print_summary(self):
         """Print a summary of what was accomplished during scraping"""
         print("\n" + "=" * 60)
@@ -4839,6 +4924,25 @@ def main():
             "file). Point this at ../ingenue/web/feed.json to write in place."
         ),
     )
+    parser.add_argument(
+        "--no-catalog",
+        action="store_true",
+        help="Skip emitting catalog.json (the canonical full-rows catalog) on a full run",
+    )
+    parser.add_argument(
+        "--catalog-only",
+        action="store_true",
+        help=(
+            "Rebuild catalog.json from the existing Excel file without re-scraping. "
+            "Use this to seed/refresh the canonical catalog from the spreadsheet."
+        ),
+    )
+    parser.add_argument(
+        "--catalog-output",
+        type=str,
+        default=None,
+        help="Path to write catalog.json (default: 'catalog.json' next to the Excel file).",
+    )
 
     args = parser.parse_args()
 
@@ -4851,10 +4955,17 @@ def main():
     )
     scraper.feed_enabled = not args.no_feed
     scraper.feed_output = args.feed_output
+    scraper.catalog_enabled = not args.no_catalog
+    scraper.catalog_output = args.catalog_output
 
     # Optional fast-path: rebuild feed.json from existing xlsx + cache and exit
     if args.feed_only:
         scraper.regenerate_feed_only(args.excel, args.feed_output)
+        return
+
+    # Optional fast-path: rebuild catalog.json from existing xlsx and exit
+    if args.catalog_only:
+        scraper.regenerate_catalog_only(args.excel, args.catalog_output)
         return
 
     # Optional fast-path: apply statuses from a log and exit
