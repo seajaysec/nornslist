@@ -1,0 +1,554 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>nornslist · norns community scripts</title>
+<meta name="description" content="A browsable, searchable catalog of every norns community script — tags, demos, READMEs, screenshots, authors and last-updated, refreshed nightly." />
+<meta name="theme-color" content="#1D1F21" />
+<meta property="og:title" content="nornslist · norns community scripts" />
+<meta property="og:description" content="Browse every norns community script — searchable, filterable, with demos, READMEs and screenshots." />
+<meta property="og:type" content="website" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%231D1F21'/%3E%3Ctext x='16' y='23' font-size='20' text-anchor='middle' fill='%23DEB887' font-family='monospace'%3E%E2%97%88%3C/text%3E%3C/svg%3E" />
+<style>
+  :root{
+    --bg:#1D1F21; --panel:#25282C; --panel2:#1F2123; --trim:#333;
+    --fg:#C5C8C6; --muted:#969896; --faint:#5a5f63;
+    --accent:#DEB887; --accent2:#CC9999; --ok:#8aa872; --err:#c06a45;
+    --radius:13px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0; background:var(--bg); color:var(--fg);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    -webkit-font-smoothing:antialiased; line-height:1.45;
+  }
+  a{color:var(--accent2); text-decoration:none}
+  a:hover{text-decoration:underline}
+  ::selection{background:color-mix(in srgb,var(--accent) 40%,transparent)}
+
+  /* ---- top bar ---- */
+  header.top{
+    position:sticky; top:0; z-index:30;
+    background:color-mix(in srgb,var(--bg) 86%,transparent);
+    backdrop-filter:saturate(140%) blur(12px);
+    -webkit-backdrop-filter:saturate(140%) blur(12px);
+    border-bottom:1px solid var(--trim);
+  }
+  .top-inner{max-width:1280px; margin:0 auto; padding:14px 18px 12px}
+  .brand{display:flex; align-items:baseline; gap:12px; flex-wrap:wrap}
+  .brand h1{
+    margin:0; font-size:23px; font-weight:800; letter-spacing:-.4px;
+    font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    background:linear-gradient(95deg,var(--accent),var(--accent2));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .brand .sub{color:var(--muted); font-size:13px}
+  .brand .sub b{color:var(--fg); font-weight:600}
+  .brand .spacer{flex:1}
+  .ghlink{font-size:12.5px; color:var(--muted); display:inline-flex; align-items:center; gap:6px}
+  .ghlink:hover{color:var(--accent); text-decoration:none}
+
+  /* ---- controls ---- */
+  .controls{display:flex; gap:10px; align-items:center; margin-top:12px; flex-wrap:wrap}
+  .search{
+    flex:1; min-width:220px; position:relative; display:flex; align-items:center;
+  }
+  .search svg{position:absolute; left:11px; width:15px; height:15px; color:var(--faint); pointer-events:none}
+  .search input{
+    width:100%; background:var(--panel2); border:1px solid var(--trim);
+    color:var(--fg); border-radius:10px; padding:9px 32px 9px 33px; font-size:14px;
+    outline:none; transition:border-color .15s;
+  }
+  .search input:focus{border-color:var(--accent2)}
+  .search .clr{
+    position:absolute; right:8px; width:20px; height:20px; border:0; background:transparent;
+    color:var(--faint); cursor:pointer; font-size:16px; line-height:1; display:none;
+  }
+  .search.has .clr{display:block}
+  select.sort{
+    background:var(--panel2); color:var(--fg); border:1px solid var(--trim);
+    border-radius:10px; padding:9px 10px; font-size:13px; cursor:pointer; outline:none;
+  }
+  select.sort:focus{border-color:var(--accent2)}
+
+  .facetbar{display:flex; gap:7px; margin-top:11px; flex-wrap:wrap; align-items:center}
+  .facetbar .lbl{font-size:11px; text-transform:uppercase; letter-spacing:.6px; color:var(--faint); margin-right:2px}
+  .chip{
+    appearance:none; border:1px solid var(--trim); background:var(--panel2);
+    color:var(--muted); border-radius:20px; padding:5px 11px; font-size:12px;
+    cursor:pointer; transition:all .14s; display:inline-flex; align-items:center; gap:5px; white-space:nowrap;
+  }
+  .chip:hover{border-color:var(--accent2); color:var(--fg)}
+  .chip.on{background:color-mix(in srgb,var(--accent) 20%,transparent); border-color:var(--accent); color:var(--accent)}
+  .chip .ct{font-size:10.5px; color:var(--faint)}
+  .chip.on .ct{color:color-mix(in srgb,var(--accent) 75%,var(--fg))}
+
+  /* ---- tag rail ---- */
+  .tagrail{
+    max-width:1280px; margin:14px auto 0; padding:0 18px;
+    display:flex; gap:7px; flex-wrap:wrap; align-items:center;
+  }
+  .tagrail .lbl{font-size:11px; text-transform:uppercase; letter-spacing:.6px; color:var(--faint)}
+  .tag{
+    appearance:none; border:1px solid var(--trim); background:transparent;
+    color:var(--muted); border-radius:20px; padding:3px 10px; font-size:12px; cursor:pointer;
+    transition:all .14s; display:inline-flex; align-items:center; gap:5px;
+  }
+  .tag:hover{border-color:var(--accent2); color:var(--fg)}
+  .tag.on{background:color-mix(in srgb,var(--accent2) 22%,transparent); border-color:var(--accent2); color:var(--accent2); font-weight:600}
+  .tag .ct{font-size:10px; color:var(--faint)}
+  .tagrail .more{color:var(--accent2); font-size:12px; background:none; border:0; cursor:pointer; padding:3px 6px}
+
+  /* ---- active filters ---- */
+  .active{max-width:1280px; margin:11px auto 0; padding:0 18px; display:flex; gap:8px; flex-wrap:wrap; align-items:center; min-height:0}
+  .active:empty{display:none}
+  .active .ftag{
+    display:inline-flex; align-items:center; gap:6px; font-size:12px;
+    background:color-mix(in srgb,var(--accent2) 18%,transparent); color:var(--accent2);
+    border:1px solid color-mix(in srgb,var(--accent2) 40%,transparent); border-radius:20px; padding:3px 6px 3px 11px;
+  }
+  .active .ftag button{border:0; background:transparent; color:inherit; cursor:pointer; font-size:14px; line-height:1; padding:0 2px}
+  .active .clearall{font-size:12px; color:var(--muted); background:none; border:0; cursor:pointer; text-decoration:underline}
+
+  /* ---- result meta ---- */
+  .resmeta{max-width:1280px; margin:14px auto 2px; padding:0 18px; color:var(--muted); font-size:12.5px}
+  .resmeta b{color:var(--fg)}
+
+  /* ---- grid ---- */
+  main{max-width:1280px; margin:0 auto; padding:8px 18px 60px}
+  .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); gap:13px}
+  .card{
+    background:var(--panel); border:1px solid var(--trim); border-radius:var(--radius);
+    padding:14px 15px; display:flex; flex-direction:column; gap:9px;
+    transition:border-color .15s, transform .15s, box-shadow .15s; content-visibility:auto; contain-intrinsic-size:auto 200px;
+  }
+  .card:hover{border-color:var(--accent2); box-shadow:0 4px 18px rgba(0,0,0,.18)}
+  .card .head{display:flex; gap:10px; align-items:flex-start}
+  .card .id{flex:1; min-width:0}
+  .card .nm{
+    font-size:15.5px; font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    font-weight:700; color:var(--fg); word-break:break-word; display:flex; align-items:center; gap:7px; flex-wrap:wrap;
+  }
+  .badge{
+    font-size:10px; font-weight:700; letter-spacing:.3px; text-transform:uppercase;
+    border-radius:5px; padding:1.5px 6px; line-height:1.5;
+  }
+  .badge.eng{color:#241a0d; background:var(--accent)}
+  .badge.nb{color:var(--bg); background:var(--accent2)}
+  .card .by{font-size:12.5px; color:var(--muted); margin-top:2px}
+  .card .by a{color:var(--muted)}
+  .card .by a:hover{color:var(--accent2)}
+  .card .desc{
+    font-size:13.5px; color:var(--fg); line-height:1.45; margin:0;
+    display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
+  }
+  .card.open .desc{-webkit-line-clamp:unset}
+  .pills{display:flex; gap:6px; flex-wrap:wrap}
+  .pill{
+    font-size:11.5px; background:color-mix(in srgb,var(--accent) 16%,transparent);
+    color:var(--accent); border-radius:20px; padding:2px 9px; cursor:pointer; border:1px solid transparent; transition:all .12s;
+  }
+  .pill:hover{border-color:var(--accent)}
+  .pill.on{background:color-mix(in srgb,var(--accent2) 26%,transparent); color:var(--accent2)}
+  .card .foot{display:flex; align-items:center; gap:8px; margin-top:1px; flex-wrap:wrap}
+  .card .foot .upd{font-size:11.5px; color:var(--faint); margin-right:auto}
+  .lnk{
+    display:inline-flex; align-items:center; justify-content:center; width:28px; height:28px;
+    border-radius:7px; color:var(--muted); border:1px solid var(--trim); transition:all .14s;
+  }
+  .lnk:hover{color:var(--accent); border-color:var(--accent2); text-decoration:none}
+  .lnk svg{width:15px; height:15px}
+  .lnk.demo{color:var(--accent2)}
+  .expander{
+    border:0; background:transparent; color:var(--faint); cursor:pointer; font-size:12px;
+    padding:2px 4px; display:inline-flex; align-items:center; gap:4px;
+  }
+  .expander:hover{color:var(--accent)}
+  .expander .car{transition:transform .18s; display:inline-block}
+  .card.open .expander .car{transform:rotate(180deg)}
+
+  /* ---- expanded body ---- */
+  .more{display:none; margin-top:4px; padding-top:11px; border-top:1px solid var(--trim); flex-direction:column; gap:11px}
+  .card.open .more{display:flex}
+  .carousel{position:relative; border-radius:9px; overflow:hidden; background:var(--panel2); border:1px solid var(--trim)}
+  .carousel .frame{aspect-ratio:16/10; display:flex; align-items:center; justify-content:center; overflow:hidden}
+  .carousel img{width:100%; height:100%; object-fit:contain; background:#111}
+  .carousel .nav{
+    position:absolute; top:50%; transform:translateY(-50%); width:30px; height:30px; border-radius:50%;
+    border:0; background:rgba(0,0,0,.55); color:#fff; cursor:pointer; font-size:16px; display:flex; align-items:center; justify-content:center;
+  }
+  .carousel .nav:hover{background:rgba(0,0,0,.8)}
+  .carousel .prev{left:8px} .carousel .next{right:8px}
+  .carousel .dots{position:absolute; bottom:7px; left:0; right:0; display:flex; gap:5px; justify-content:center}
+  .carousel .dots i{width:6px; height:6px; border-radius:50%; background:rgba(255,255,255,.35)}
+  .carousel .dots i.on{background:var(--accent)}
+  .carousel .count{position:absolute; top:7px; right:9px; font-size:11px; color:#ddd; background:rgba(0,0,0,.5); padding:1px 7px; border-radius:10px}
+  .demoembed{border-radius:9px; overflow:hidden; border:1px solid var(--trim); background:#000}
+  .demoembed iframe{display:block; width:100%; border:0}
+  .demobtn{
+    align-self:flex-start; appearance:none; border:1px solid var(--accent2); background:transparent;
+    color:var(--accent2); border-radius:8px; padding:7px 13px; font-size:12.5px; font-weight:600; cursor:pointer;
+    display:inline-flex; align-items:center; gap:7px;
+  }
+  .demobtn:hover{background:color-mix(in srgb,var(--accent2) 16%,transparent)}
+  .readme{
+    font-size:12.5px; color:var(--muted); line-height:1.55; white-space:pre-wrap; word-break:break-word;
+    max-height:280px; overflow:auto; background:var(--panel2); border:1px solid var(--trim); border-radius:9px; padding:11px 12px;
+    font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  }
+  .readme.full{max-height:none}
+  .readme-toggle{font-size:11.5px; color:var(--accent2); background:none; border:0; cursor:pointer; align-self:flex-start; padding:0}
+  .metarow{font-size:11.5px; color:var(--faint); display:flex; gap:14px; flex-wrap:wrap}
+  .metarow b{color:var(--muted); font-weight:600}
+
+  /* ---- states ---- */
+  .empty,.loading{text-align:center; padding:80px 20px; color:var(--muted)}
+  .empty h3{color:var(--fg); margin:0 0 6px; font-weight:600}
+  .spinner{width:30px; height:30px; border:3px solid var(--trim); border-top-color:var(--accent); border-radius:50%; margin:0 auto 16px; animation:spin .8s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .skel{display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); gap:13px}
+  .skel .c{height:148px; border-radius:var(--radius); background:linear-gradient(100deg,var(--panel) 30%,var(--panel2) 50%,var(--panel) 70%); background-size:200% 100%; animation:sh 1.3s infinite}
+  @keyframes sh{to{background-position:-200% 0}}
+
+  footer{max-width:1280px; margin:0 auto; padding:24px 18px 50px; color:var(--faint); font-size:12px; border-top:1px solid var(--trim); display:flex; gap:8px; flex-wrap:wrap; align-items:center}
+  footer .spacer{flex:1}
+
+  @media (max-width:640px){
+    .grid,.skel{grid-template-columns:1fr}
+    .brand h1{font-size:20px}
+    .top-inner{padding:12px 14px}
+    .tagrail,.active,.resmeta,main,footer{padding-left:14px; padding-right:14px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{animation-duration:.001ms !important; transition-duration:.001ms !important; scroll-behavior:auto}
+  }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="top-inner">
+    <div class="brand">
+      <h1>◈ nornslist</h1>
+      <span class="sub">every <b>norns</b> community script · <span id="genmeta">loading…</span></span>
+      <span class="spacer"></span>
+      <a class="ghlink" href="https://github.com/seajaysec/nornslist" target="_blank" rel="noopener">
+        <svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+        source
+      </a>
+    </div>
+
+    <div class="controls">
+      <label class="search" id="searchWrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        <input id="q" type="search" placeholder="search name, author, description, tag…" autocomplete="off" spellcheck="false" />
+        <button class="clr" id="clrSearch" title="clear" aria-label="clear search">×</button>
+      </label>
+      <select class="sort" id="sort" aria-label="sort">
+        <option value="updated">recently updated</option>
+        <option value="name">name a–z</option>
+        <option value="author">author a–z</option>
+        <option value="demo">has demo first</option>
+      </select>
+    </div>
+
+    <div class="facetbar" id="facetbar">
+      <span class="lbl">show only</span>
+      <button class="chip" data-facet="demo">▶ demo <span class="ct" id="ct-demo"></span></button>
+      <button class="chip" data-facet="images">▣ screenshots <span class="ct" id="ct-images"></span></button>
+      <button class="chip" data-facet="readme">≣ readme <span class="ct" id="ct-readme"></span></button>
+      <button class="chip" data-facet="engine">⚙ engine <span class="ct" id="ct-engine"></span></button>
+      <button class="chip" data-facet="nb" title="registers an nb (note-bridge) voice">♪ nb voice <span class="ct" id="ct-nb"></span></button>
+      <button class="chip" data-facet="doc">📖 docs <span class="ct" id="ct-doc"></span></button>
+    </div>
+  </div>
+</header>
+
+<div class="tagrail" id="tagrail"></div>
+<div class="active" id="active"></div>
+<div class="resmeta" id="resmeta"></div>
+
+<main>
+  <div class="loading" id="loading">
+    <div class="skel" aria-hidden="true">
+      <div class="c"></div><div class="c"></div><div class="c"></div>
+      <div class="c"></div><div class="c"></div><div class="c"></div>
+    </div>
+  </div>
+  <div class="grid" id="grid" hidden></div>
+  <div class="empty" id="empty" hidden>
+    <h3>no scripts match</h3>
+    <p>try clearing a filter or two.</p>
+  </div>
+</main>
+
+<footer>
+  <span>data scraped nightly from <a href="https://norns.community" target="_blank" rel="noopener">norns.community</a> + the <a href="https://llllllll.co" target="_blank" rel="noopener">lines</a> forum.</span>
+  <span class="spacer"></span>
+  <span>enrichment &amp; engine/nb detection by <a href="https://github.com/seajaysec/ingenue" target="_blank" rel="noopener">ingenue</a>.</span>
+</footer>
+
+<script>
+(() => {
+  "use strict";
+  const $ = (s, r=document) => r.querySelector(s);
+  const esc = (s) => (s||"").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const state = { all:[], tags:new Set(), facets:new Set(), q:"", sort:"updated", tagsExpanded:false };
+
+  /* ---------- demo embed detection ---------- */
+  function demoEmbed(url){
+    if(!url) return null;
+    let m;
+    if((m = url.match(/(?:youtube\.com\/(?:watch\?(?:.*&)?v=|embed\/|shorts\/)|youtu\.be\/)([\w-]{6,})/)))
+      return {type:"youtube", src:`https://www.youtube-nocookie.com/embed/${m[1]}`, ratio:"16/9"};
+    if((m = url.match(/vimeo\.com\/(?:video\/)?(\d+)/)))
+      return {type:"vimeo", src:`https://player.vimeo.com/video/${m[1]}`, ratio:"16/9"};
+    if(/soundcloud\.com\//.test(url) && !/\/sets\//.test(url) || /soundcloud\.com\/.+\/sets\//.test(url))
+      return {type:"soundcloud", src:`https://w.soundcloud.com/player/?url=${encodeURIComponent(url)}&color=%23DEB887&visual=false`, ratio:"audio"};
+    if(/bandcamp\.com\//.test(url)) return {type:"bandcamp", ext:true};
+    if(/instagram\.com\//.test(url)) return {type:"instagram", ext:true};
+    return {type:"link", ext:true};
+  }
+
+  /* ---------- icons ---------- */
+  const ICON = {
+    proj:'<svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.7-.01-1.37-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>',
+    disc:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>',
+    doc:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>',
+    comm:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>',
+    demo:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>'
+  };
+
+  /* ---------- card render ---------- */
+  function linkIcon(href, kind, title){
+    if(!href) return "";
+    return `<a class="lnk ${kind==='demo'?'demo':''}" href="${esc(href)}" target="_blank" rel="noopener" title="${esc(title)}">${ICON[kind]}</a>`;
+  }
+
+  function cardHTML(s){
+    const tags = (s.tags||[]).map(t =>
+      `<span class="pill${state.tags.has(t.toLowerCase())?' on':''}" data-tag="${esc(t.toLowerCase())}">${esc(t)}</span>`).join("");
+    const badges = (s.engine?`<span class="badge eng" title="ships SuperCollider engine ${esc(s.engine)}">${esc(s.engine)}</span>`:"")
+                 + (s.facets&&s.facets.nb?'<span class="badge nb" title="registers an nb voice">nb</span>':"");
+    const links = linkIcon(s.proj,'proj','project / source')
+                + linkIcon(s.disc,'disc','discussion thread')
+                + linkIcon(s.doc,'doc','documentation')
+                + linkIcon(s.comm,'comm','norns.community page')
+                + linkIcon(s.demo,'demo','demo');
+    const expandable = !!(s.readme || (s.images&&s.images.length) || s.demo);
+    return `<article class="card" data-name="${esc(s.name.toLowerCase())}">
+      <div class="head"><div class="id">
+        <div class="nm">${esc(s.name)}${badges}</div>
+        <div class="by">by <a href="${esc(s.proj||'#')}" target="_blank" rel="noopener">${esc(s.author||'unknown')}</a></div>
+      </div></div>
+      ${s.desc?`<p class="desc">${esc(s.desc)}</p>`:""}
+      ${tags?`<div class="pills">${tags}</div>`:""}
+      <div class="foot">
+        <span class="upd">${s.upd?'updated '+esc(s.upd):''}</span>
+        ${links}
+        ${expandable?`<button class="expander" aria-expanded="false">details <span class="car">▾</span></button>`:""}
+      </div>
+      ${expandable?`<div class="more" data-lazy="1"></div>`:""}
+    </article>`;
+  }
+
+  /* ---------- lazy expanded body ---------- */
+  function fillMore(card, s){
+    const more = $(".more", card);
+    if(!more || more.dataset.lazy!=="1") return;
+    more.dataset.lazy="0";
+    let html = "";
+    if(s.images && s.images.length){
+      html += `<div class="carousel" data-i="0">
+        <div class="frame"><img src="${esc(s.images[0])}" alt="${esc(s.name)} screenshot" loading="lazy" onerror="this.closest('.carousel').dataset.broken=(+(this.closest('.carousel').dataset.broken||0)+1)"></div>
+        ${s.images.length>1?`<button class="nav prev" aria-label="previous">‹</button><button class="nav next" aria-label="next">›</button>
+          <span class="count">1 / ${s.images.length}</span>
+          <div class="dots">${s.images.map((_,i)=>`<i class="${i===0?'on':''}"></i>`).join("")}</div>`:""}
+      </div>`;
+    }
+    if(s.demo){
+      const e = demoEmbed(s.demo);
+      if(e && !e.ext){
+        const h = e.ratio==="audio" ? 'height:120px' : 'aspect-ratio:'+e.ratio;
+        html += `<button class="demobtn" data-embed="${esc(e.src)}" data-style="${h}">${ICON.demo} play ${e.type} demo</button>`;
+      } else {
+        html += `<a class="demobtn" href="${esc(s.demo)}" target="_blank" rel="noopener">${ICON.demo} watch demo ↗</a>`;
+      }
+    }
+    if(s.readme){
+      const long = s.readme.length>600;
+      html += `<div class="readme">${esc(s.readme)}</div>`;
+      if(long) html += `<button class="readme-toggle">show full readme ▾</button>`;
+    }
+    const meta = [];
+    if(s.author) meta.push(`<span><b>author</b> ${esc(s.author)}</span>`);
+    if(s.upd) meta.push(`<span><b>updated</b> ${esc(s.upd)}</span>`);
+    if(s.engine) meta.push(`<span><b>engine</b> ${esc(s.engine)}</span>`);
+    html += `<div class="metarow">${meta.join("")}</div>`;
+    more.innerHTML = html;
+  }
+
+  /* ---------- carousel + interactions (event-delegated) ---------- */
+  function wireCard(card, s){
+    card.addEventListener("click", (ev) => {
+      const t = ev.target;
+      if(t.closest("a")) return; // let links work
+      const pill = t.closest(".pill");
+      if(pill){ toggleTag(pill.dataset.tag); return; }
+      const exp = t.closest(".expander");
+      if(exp){
+        const open = card.classList.toggle("open");
+        exp.setAttribute("aria-expanded", open);
+        if(open) fillMore(card, s);
+        return;
+      }
+      const nav = t.closest(".nav");
+      if(nav){ moveCarousel(nav.closest(".carousel"), s, nav.classList.contains("next")?1:-1); return; }
+      const demo = t.closest(".demobtn");
+      if(demo && demo.dataset.embed){
+        const wrap = document.createElement("div");
+        wrap.className = "demoembed";
+        wrap.innerHTML = `<iframe src="${demo.dataset.embed}" style="${demo.dataset.style}" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy"></iframe>`;
+        demo.replaceWith(wrap);
+        return;
+      }
+      const rt = t.closest(".readme-toggle");
+      if(rt){
+        const rd = rt.previousElementSibling;
+        const full = rd.classList.toggle("full");
+        rt.textContent = full ? "show less ▴" : "show full readme ▾";
+        return;
+      }
+    });
+  }
+  function moveCarousel(car, s, dir){
+    let i = (+car.dataset.i + dir + s.images.length) % s.images.length;
+    car.dataset.i = i;
+    $(".frame img", car).src = s.images[i];
+    $(".count", car).textContent = `${i+1} / ${s.images.length}`;
+    car.querySelectorAll(".dots i").forEach((d,di)=>d.classList.toggle("on", di===i));
+  }
+
+  /* ---------- filtering ---------- */
+  function passes(s){
+    if(state.q){
+      const hay = (s.name+" "+(s.author||"")+" "+(s.desc||"")+" "+(s.tags||[]).join(" ")).toLowerCase();
+      if(!hay.includes(state.q)) return false;
+    }
+    for(const f of state.facets){ if(!(s.facets && s.facets[f])) return false; }
+    if(state.tags.size){
+      const st = new Set((s.tags||[]).map(t=>t.toLowerCase()));
+      for(const t of state.tags){ if(!st.has(t)) return false; }
+    }
+    return true;
+  }
+  function sortFn(a,b){
+    switch(state.sort){
+      case "name": return a.name.localeCompare(b.name);
+      case "author": return (a.author||"~").localeCompare(b.author||"~") || a.name.localeCompare(b.name);
+      case "demo": return (b.demo?1:0)-(a.demo?1:0) || (b.upd||"").localeCompare(a.upd||"");
+      default: return (b.upd||"").localeCompare(a.upd||"") || a.name.localeCompare(b.name);
+    }
+  }
+
+  /* ---------- render ---------- */
+  const grid = $("#grid"), empty = $("#empty"), resmeta = $("#resmeta");
+  function render(){
+    const list = state.all.filter(passes).sort(sortFn);
+    grid.innerHTML = "";
+    if(!list.length){ grid.hidden=true; empty.hidden=false; }
+    else{
+      empty.hidden=true; grid.hidden=false;
+      const frag = document.createDocumentFragment();
+      const tmp = document.createElement("div");
+      list.forEach(s => {
+        tmp.innerHTML = cardHTML(s);
+        const card = tmp.firstElementChild;
+        wireCard(card, s);
+        frag.appendChild(card);
+      });
+      grid.appendChild(frag);
+    }
+    const fcount = state.facets.size + state.tags.size + (state.q?1:0);
+    resmeta.innerHTML = `<b>${list.length}</b> of ${state.all.length} scripts` + (fcount?` · ${fcount} filter${fcount>1?'s':''} active`:"");
+    renderActive();
+    syncChips();
+  }
+
+  function renderActive(){
+    const box = $("#active");
+    const chips = [];
+    state.tags.forEach(t => chips.push(`<span class="ftag">${esc(t)}<button data-rm-tag="${esc(t)}" aria-label="remove">×</button></span>`));
+    state.facets.forEach(f => chips.push(`<span class="ftag">${esc(f)}<button data-rm-facet="${esc(f)}" aria-label="remove">×</button></span>`));
+    box.innerHTML = chips.length ? chips.join("") + `<button class="clearall" id="clearAll">clear all</button>` : "";
+  }
+  function syncChips(){
+    document.querySelectorAll("#facetbar .chip").forEach(c => c.classList.toggle("on", state.facets.has(c.dataset.facet)));
+    document.querySelectorAll("#tagrail .tag").forEach(c => c.classList.toggle("on", state.tags.has(c.dataset.tag)));
+  }
+
+  function toggleTag(t){ t=t.toLowerCase(); state.tags.has(t)?state.tags.delete(t):state.tags.add(t); render(); }
+  function toggleFacet(f){ state.facets.has(f)?state.facets.delete(f):state.facets.add(f); render(); }
+
+  /* ---------- tag rail ---------- */
+  function buildTagRail(){
+    const counts = {};
+    state.all.forEach(s => (s.tags||[]).forEach(t => { const k=t.toLowerCase(); counts[k]=(counts[k]||0)+1; }));
+    const sorted = Object.entries(counts).sort((a,b)=>b[1]-a[1]);
+    const rail = $("#tagrail");
+    const TOP = 18;
+    function paint(){
+      const show = state.tagsExpanded ? sorted : sorted.slice(0, TOP);
+      rail.innerHTML = `<span class="lbl">tags</span>` + show.map(([t,c]) =>
+        `<button class="tag${state.tags.has(t)?' on':''}" data-tag="${esc(t)}">${esc(t)} <span class="ct">${c}</span></button>`).join("")
+        + (sorted.length>TOP ? `<button class="more" id="moreTags">${state.tagsExpanded?'show fewer':'+'+(sorted.length-TOP)+' more'}</button>` : "");
+    }
+    paint();
+    rail.addEventListener("click", (e) => {
+      const tg = e.target.closest(".tag");
+      if(tg){ toggleTag(tg.dataset.tag); return; }
+      if(e.target.id==="moreTags"){ state.tagsExpanded=!state.tagsExpanded; paint(); syncChips(); }
+    });
+
+    // facet counts
+    const f = {demo:0,images:0,readme:0,engine:0,nb:0,doc:0};
+    state.all.forEach(s => { for(const k in f){ if(s.facets&&s.facets[k]) f[k]++; } });
+    for(const k in f){ const el=$("#ct-"+k); if(el) el.textContent=f[k]; }
+  }
+
+  /* ---------- events ---------- */
+  $("#facetbar").addEventListener("click", e => { const c=e.target.closest(".chip"); if(c) toggleFacet(c.dataset.facet); });
+  $("#active").addEventListener("click", e => {
+    if(e.target.id==="clearAll"){ state.tags.clear(); state.facets.clear(); render(); return; }
+    const rt=e.target.dataset.rmTag, rf=e.target.dataset.rmFacet;
+    if(rt){ state.tags.delete(rt); render(); }
+    if(rf){ state.facets.delete(rf); render(); }
+  });
+  const qi = $("#q"), sw = $("#searchWrap");
+  let deb;
+  qi.addEventListener("input", () => {
+    sw.classList.toggle("has", qi.value.length>0);
+    clearTimeout(deb); deb=setTimeout(()=>{ state.q=qi.value.trim().toLowerCase(); render(); }, 120);
+  });
+  $("#clrSearch").addEventListener("click", () => { qi.value=""; sw.classList.remove("has"); state.q=""; render(); qi.focus(); });
+  $("#sort").addEventListener("change", e => { state.sort=e.target.value; render(); });
+
+  /* ---------- boot ---------- */
+  fetch("data.json", {cache:"no-store"})
+    .then(r => { if(!r.ok) throw new Error(r.status); return r.json(); })
+    .then(d => {
+      state.all = d.scripts || [];
+      const dt = d.generated || "";
+      $("#genmeta").innerHTML = `<b>${state.all.length}</b> scripts${dt?` · updated ${esc(dt)}`:""}`;
+      buildTagRail();
+      $("#loading").remove();
+      render();
+    })
+    .catch(err => {
+      $("#loading").innerHTML = `<div class="empty"><h3>couldn't load the catalog</h3><p>data.json failed to load (${esc(String(err))}). If you're viewing this locally, serve the folder over http (e.g. <code>python3 -m http.server</code>) rather than opening the file directly.</p></div>`;
+    });
+})();
+</script>
+</body>
+</html>
