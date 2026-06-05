@@ -36,6 +36,7 @@
     backdrop-filter:saturate(140%) blur(12px);
     -webkit-backdrop-filter:saturate(140%) blur(12px);
     border-bottom:1px solid var(--trim);
+    transition:transform .28s ease; will-change:transform;
   }
   .top-inner{max-width:1280px; margin:0 auto; padding:14px 18px 12px}
   .brand{display:flex; align-items:baseline; gap:12px; flex-wrap:wrap}
@@ -242,6 +243,8 @@
     .search{min-width:100%; order:-1}
     select.sort{flex:1}
     .filter-toggle{display:inline-flex; flex:0 0 auto}
+    /* hide the top bar when scrolling down, reveal on scroll up (set via JS) */
+    header.top.hide{transform:translateY(-105%)}
     /* collapse the whole filter panel behind the toggle to reclaim vertical space */
     .filters{display:none}
     .filters.open{display:block; background:var(--panel2); border-bottom:1px solid var(--trim)}
@@ -669,6 +672,21 @@
     const f = $("#filters"), open = f.classList.toggle("open");
     $("#filterToggle").setAttribute("aria-expanded", open);
   });
+  // mobile: hide the top bar on scroll-down, reveal on scroll-up (CSS gates the
+  // transform to ≤640px, so this is a no-op visually on desktop)
+  (() => {
+    const bar = $("header.top"); let lastY = 0, ticking = false;
+    window.addEventListener("scroll", () => {
+      if(ticking) return; ticking = true;
+      requestAnimationFrame(() => {
+        const y = window.scrollY;
+        // never hide while the filter panel is open (its toggle lives in the bar)
+        if(y > 90 && y > lastY + 4 && !$("#filters").classList.contains("open")) bar.classList.add("hide");
+        else if(y < lastY - 4 || y <= 90) bar.classList.remove("hide");
+        lastY = y; ticking = false;
+      });
+    }, {passive:true});
+  })();
 
   /* ---------- boot ---------- */
   fetch("data.json", {cache:"no-store"})
