@@ -147,6 +147,12 @@
   }
   .badge.eng{color:#241a0d; background:var(--accent)}
   .badge.nb{color:var(--bg); background:var(--accent2)}
+  .badge.gh{color:var(--faint); background:color-mix(in srgb,var(--faint) 16%,transparent); border:1px solid color-mix(in srgb,var(--faint) 32%,transparent)}
+  .badge.arch{color:var(--err); background:color-mix(in srgb,var(--err) 14%,transparent)}
+  /* source toggle: visually set apart from the boolean facet chips */
+  .chip.srctoggle{margin-left:6px; border-style:dashed; border-color:color-mix(in srgb,var(--accent2) 45%,transparent)}
+  .chip.srctoggle.on{background:color-mix(in srgb,var(--accent2) 20%,transparent); border-style:solid; border-color:var(--accent2); color:var(--accent2)}
+  .foot .stars{color:var(--faint)}
   .card .by{font-size:12.5px; color:var(--muted); margin-top:2px}
   .card .by a{color:var(--muted)}
   .card .by a:hover{color:var(--accent2)}
@@ -298,6 +304,7 @@
       <button class="chip" data-facet="engine">⚙ engine <span class="ct" id="ct-engine"></span></button>
       <button class="chip" data-facet="nb" title="registers an nb (note-bridge) voice">♪ nb voice <span class="ct" id="ct-nb"></span></button>
       <button class="chip" data-facet="doc">📖 docs <span class="ct" id="ct-doc"></span></button>
+      <button class="chip srctoggle" id="srcToggle" title="also show norns repos found on GitHub that aren't on norns.community">＋ on GitHub <span class="ct" id="ct-gh"></span></button>
     </div>
     <div class="tagrail" id="tagrail"></div>
     <div class="active" id="active"></div>
@@ -330,7 +337,11 @@
   "use strict";
   const $ = (s, r=document) => r.querySelector(s);
   const esc = (s) => (s||"").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  const state = { all:[], tags:new Set(), facets:new Set(), q:"", sort:"updated", tagsExpanded:false, only:"" };
+  const state = { all:[], tags:new Set(), facets:new Set(), q:"", sort:"updated", tagsExpanded:false, only:"", src:"community" };
+  // source visibility: "community" (curated, the default front door) hides
+  // GitHub-discovered repos; "all" reveals them too. A single-script permalink
+  // (state.only) always shows, regardless of source.
+  function inSource(s){ return state.src === "all" || (s.source || "community") === "community"; }
 
   /* ---------- demo embed detection ---------- */
   function demoEmbed(url){
@@ -368,7 +379,9 @@
     const tags = (s.tags||[]).map(t =>
       `<span class="pill${state.tags.has(t.toLowerCase())?' on':''}" data-tag="${esc(t.toLowerCase())}">${esc(t)}</span>`).join("");
     const badges = (s.engine?`<span class="badge eng" title="ships SuperCollider engine ${esc(s.engine)}">${esc(s.engine)}</span>`:"")
-                 + (s.facets&&s.facets.nb?'<span class="badge nb" title="registers an nb voice">nb</span>':"");
+                 + (s.facets&&s.facets.nb?'<span class="badge nb" title="registers an nb voice">nb</span>':"")
+                 + (s.source==="github"?'<span class="badge gh" title="found on GitHub — not on norns.community">GitHub</span>':"")
+                 + (s.archived?'<span class="badge arch" title="repository archived by its owner">archived</span>':"");
     const install = s.proj
       ? `<button class="lnk copy-install" data-install="${esc(s.proj)}" title="copy maiden install command — ;install ${esc(s.proj)}">${ICON.install}</button>`
       : "";
@@ -387,7 +400,7 @@
       ${s.desc?`<p class="desc">${esc(s.desc)}</p>`:""}
       ${tags?`<div class="pills">${tags}</div>`:""}
       <div class="foot">
-        <span class="upd">${s.upd?'updated '+esc(s.upd):''}</span>
+        <span class="upd">${s.upd?'updated '+esc(s.upd):''}${s.source==="github"&&s.stars?' · ★ '+s.stars:''}</span>
         ${links}
         ${expandable?`<button class="expander" aria-expanded="false">details <span class="car">▾</span></button>`:""}
       </div>
@@ -499,6 +512,7 @@
   /* ---------- filtering ---------- */
   function passes(s){
     if(state.only) return s.slug === state.only;  // single-script permalink view
+    if(!inSource(s)) return false;                 // community-only unless the toggle is on
     if(state.q){
       const hay = (s.name+" "+(s.author||"")+" "+(s.desc||"")+" "+(s.tags||[]).join(" ")).toLowerCase();
       if(!hay.includes(state.q)) return false;
@@ -538,7 +552,8 @@
       grid.appendChild(frag);
     }
     const fcount = state.facets.size + state.tags.size + (state.q?1:0);
-    resmeta.innerHTML = `<b>${list.length}</b> of ${state.all.length} scripts` + (fcount?` · ${fcount} filter${fcount>1?'s':''} active`:"");
+    const srcTotal = state.all.filter(inSource).length;
+    resmeta.innerHTML = `<b>${list.length}</b> of ${srcTotal} scripts` + (fcount?` · ${fcount} filter${fcount>1?'s':''} active`:"");
     const fc = state.facets.size + state.tags.size;
     $("#filterCount").textContent = fc || "";
     renderActive();
@@ -568,6 +583,7 @@
       if(state.q) p.set("q", state.q);
       if(state.tags.size) p.set("tag", [...state.tags].join(","));
       if(state.facets.size) p.set("facet", [...state.facets].join(","));
+      if(state.src === "all") p.set("src", "all");
     }
     if(state.sort && state.sort !== "updated") p.set("sort", state.sort);
     const h = p.toString();
@@ -594,6 +610,7 @@
     state.q = (p.get("q") || "").toLowerCase();
     state.tags = new Set((p.get("tag") || "").split(",").filter(Boolean).map(x => x.toLowerCase()));
     state.facets = new Set((p.get("facet") || "").split(",").filter(Boolean));
+    state.src = p.get("src") === "all" ? "all" : "community";
     state.sort = p.get("sort") || "updated";
   }
   function syncInputs(){
@@ -616,40 +633,60 @@
   }
   function syncChips(){
     document.querySelectorAll("#facetbar .chip").forEach(c => c.classList.toggle("on", state.facets.has(c.dataset.facet)));
+    const tog = $("#srcToggle"); if(tog) tog.classList.toggle("on", state.src==="all");
     document.querySelectorAll("#tagrail .tag").forEach(c => c.classList.toggle("on", state.tags.has(c.dataset.tag)));
   }
 
   function toggleTag(t){ state.only=""; t=t.toLowerCase(); state.tags.has(t)?state.tags.delete(t):state.tags.add(t); render(); }
   function toggleFacet(f){ state.only=""; state.facets.has(f)?state.facets.delete(f):state.facets.add(f); render(); }
 
-  /* ---------- tag rail ---------- */
-  function buildTagRail(){
+  /* ---------- tag rail + counts (source-aware) ---------- */
+  let _tagSorted = [];
+  const TAG_TOP = 18;
+  function recomputeCounts(){
+    // Tag + facet counts reflect only what's currently visible by source, so the
+    // numbers track the community/all toggle. The GitHub-toggle count is the
+    // full discovered total (constant), shown on the toggle itself.
+    const vis = state.all.filter(inSource);
     const counts = {};
-    state.all.forEach(s => (s.tags||[]).forEach(t => { const k=t.toLowerCase(); counts[k]=(counts[k]||0)+1; }));
-    const sorted = Object.entries(counts).sort((a,b)=>b[1]-a[1]);
+    vis.forEach(s => (s.tags||[]).forEach(t => { const k=t.toLowerCase(); counts[k]=(counts[k]||0)+1; }));
+    _tagSorted = Object.entries(counts).sort((a,b)=>b[1]-a[1]);
+    const f = {demo:0,images:0,readme:0,engine:0,nb:0,doc:0};
+    vis.forEach(s => { for(const k in f){ if(s.facets&&s.facets[k]) f[k]++; } });
+    for(const k in f){ const el=$("#ct-"+k); if(el) el.textContent=f[k]; }
+    const gh = state.all.filter(s => (s.source||"community")==="github").length;
+    const ghEl = $("#ct-gh"); if(ghEl) ghEl.textContent = gh || "";
+    // hide the toggle when there's nothing to reveal (style.display, not [hidden],
+    // because .chip sets display:inline-flex which would override the attribute)
+    const tog = $("#srcToggle"); if(tog) tog.style.display = gh ? "" : "none";
+  }
+  function paintTagRail(){
     const rail = $("#tagrail");
-    const TOP = 18;
-    function paint(){
-      const show = state.tagsExpanded ? sorted : sorted.slice(0, TOP);
-      rail.innerHTML = `<span class="lbl">tags</span>` + show.map(([t,c]) =>
-        `<button class="tag${state.tags.has(t)?' on':''}" data-tag="${esc(t)}">${esc(t)} <span class="ct">${c}</span></button>`).join("")
-        + (sorted.length>TOP ? `<button class="more" id="moreTags">${state.tagsExpanded?'show fewer':'+'+(sorted.length-TOP)+' more'}</button>` : "");
-    }
-    paint();
-    rail.addEventListener("click", (e) => {
+    const show = state.tagsExpanded ? _tagSorted : _tagSorted.slice(0, TAG_TOP);
+    rail.innerHTML = `<span class="lbl">tags</span>` + show.map(([t,c]) =>
+      `<button class="tag${state.tags.has(t)?' on':''}" data-tag="${esc(t)}">${esc(t)} <span class="ct">${c}</span></button>`).join("")
+      + (_tagSorted.length>TAG_TOP ? `<button class="more" id="moreTags">${state.tagsExpanded?'show fewer':'+'+(_tagSorted.length-TAG_TOP)+' more'}</button>` : "");
+  }
+  function buildTagRail(){
+    recomputeCounts();
+    paintTagRail();
+    $("#tagrail").addEventListener("click", (e) => {
       const tg = e.target.closest(".tag");
       if(tg){ toggleTag(tg.dataset.tag); return; }
-      if(e.target.id==="moreTags"){ state.tagsExpanded=!state.tagsExpanded; paint(); syncChips(); }
+      if(e.target.id==="moreTags"){ state.tagsExpanded=!state.tagsExpanded; paintTagRail(); syncChips(); }
     });
-
-    // facet counts
-    const f = {demo:0,images:0,readme:0,engine:0,nb:0,doc:0};
-    state.all.forEach(s => { for(const k in f){ if(s.facets&&s.facets[k]) f[k]++; } });
-    for(const k in f){ const el=$("#ct-"+k); if(el) el.textContent=f[k]; }
+  }
+  function toggleSource(){
+    state.only=""; state.src = state.src==="all" ? "community" : "all";
+    recomputeCounts(); paintTagRail(); render();
   }
 
   /* ---------- events ---------- */
-  $("#facetbar").addEventListener("click", e => { const c=e.target.closest(".chip"); if(c) toggleFacet(c.dataset.facet); });
+  $("#facetbar").addEventListener("click", e => {
+    const c=e.target.closest(".chip"); if(!c) return;
+    if(c.id==="srcToggle"){ toggleSource(); return; }
+    toggleFacet(c.dataset.facet);
+  });
   $("#active").addEventListener("click", e => {
     if(e.target.id==="clearAll"){ state.only=""; state.tags.clear(); state.facets.clear(); render(); return; }
     if(e.target.dataset.clearOnly!==undefined){ state.only=""; render(); return; }
@@ -679,10 +716,12 @@
     .then(d => {
       state.all = d.scripts || [];
       const dt = d.generated || "";
-      $("#genmeta").innerHTML = `<b>${state.all.length}</b> scripts${dt?` · updated ${esc(dt)}`:""}`;
+      const commCount = state.all.filter(s => (s.source||"community")==="community").length;
+      $("#genmeta").innerHTML = `<b>${commCount}</b> scripts${dt?` · updated ${esc(dt)}`:""}`;
       buildTagRail();
       $("#loading").remove();
       applyHash();
+      recomputeCounts(); paintTagRail();   // honor src from the URL before first paint
       syncInputs();
       render();
     })
