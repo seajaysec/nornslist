@@ -37,14 +37,17 @@ jobs:
 
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
-          cache: 'pip'
+          # Float on the latest 3.x so a runner Python bump never breaks the build.
+          python-version: '3.x'
 
       - name: Install openpyxl
         run: python -m pip install --upgrade pip openpyxl
 
       - name: Regenerate data.json from latest scrape
-        run: python docs/build_data.py
+        # build_data.py degrades gracefully and exits 0 even on data problems
+        # (it preserves the committed last-good data.json). The `|| true` is a
+        # belt-and-suspenders guard so a regen hiccup can never block the deploy.
+        run: python docs/build_data.py || echo "build_data.py reported an issue; deploying committed data.json"
 
       - name: Stage site
         run: |

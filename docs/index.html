@@ -161,6 +161,9 @@
   .lnk:hover{color:var(--accent); border-color:var(--accent2); text-decoration:none}
   .lnk svg{width:15px; height:15px}
   .lnk.demo{color:var(--accent2)}
+  .lnk.copy-install{cursor:pointer; background:transparent}
+  .lnk.copy-install:hover{color:var(--accent); border-color:var(--accent)}
+  .lnk.copied{color:var(--ok); border-color:var(--ok)}
   .expander{
     border:0; background:transparent; color:var(--faint); cursor:pointer; font-size:12px;
     padding:2px 4px; display:inline-flex; align-items:center; gap:4px;
@@ -317,7 +320,9 @@
     disc:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>',
     doc:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>',
     comm:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>',
-    demo:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>'
+    demo:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>',
+    install:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0 4-4m-4 4-4-4"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>',
+    check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg>'
   };
 
   /* ---------- card render ---------- */
@@ -331,7 +336,11 @@
       `<span class="pill${state.tags.has(t.toLowerCase())?' on':''}" data-tag="${esc(t.toLowerCase())}">${esc(t)}</span>`).join("");
     const badges = (s.engine?`<span class="badge eng" title="ships SuperCollider engine ${esc(s.engine)}">${esc(s.engine)}</span>`:"")
                  + (s.facets&&s.facets.nb?'<span class="badge nb" title="registers an nb voice">nb</span>':"");
-    const links = linkIcon(s.proj,'proj','project / source')
+    const install = s.proj
+      ? `<button class="lnk copy-install" data-install="${esc(s.proj)}" title="copy maiden install command — ;install ${esc(s.proj)}">${ICON.install}</button>`
+      : "";
+    const links = install
+                + linkIcon(s.proj,'proj','project / source')
                 + linkIcon(s.disc,'disc','discussion thread')
                 + linkIcon(s.doc,'doc','documentation')
                 + linkIcon(s.comm,'comm','norns.community page')
@@ -394,6 +403,8 @@
     card.addEventListener("click", (ev) => {
       const t = ev.target;
       if(t.closest("a")) return; // let links work
+      const cp = t.closest(".copy-install");
+      if(cp){ copyInstall(cp); return; }
       const pill = t.closest(".pill");
       if(pill){ toggleTag(pill.dataset.tag); return; }
       const exp = t.closest(".expander");
@@ -421,6 +432,24 @@
         return;
       }
     });
+  }
+  function copyInstall(btn){
+    const cmd = ";install " + btn.dataset.install;
+    const done = () => {
+      btn.classList.add("copied"); btn.innerHTML = ICON.check;
+      btn.title = "copied  " + cmd;
+      setTimeout(() => { btn.classList.remove("copied"); btn.innerHTML = ICON.install; }, 1400);
+    };
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(cmd).then(done, fallbackCopy.bind(null, cmd, done));
+    } else { fallbackCopy(cmd, done); }
+  }
+  function fallbackCopy(text, done){
+    const ta = document.createElement("textarea");
+    ta.value = text; ta.style.position="fixed"; ta.style.opacity="0";
+    document.body.appendChild(ta); ta.select();
+    try{ document.execCommand("copy"); done(); }catch(e){}
+    document.body.removeChild(ta);
   }
   function moveCarousel(car, s, dir){
     let i = (+car.dataset.i + dir + s.images.length) % s.images.length;
@@ -474,6 +503,37 @@
     resmeta.innerHTML = `<b>${list.length}</b> of ${state.all.length} scripts` + (fcount?` · ${fcount} filter${fcount>1?'s':''} active`:"");
     renderActive();
     syncChips();
+    writeHash();
+  }
+
+  /* ---------- shareable URL state ---------- */
+  const TITLE = "nornslist · norns community scripts";
+  function writeHash(){
+    const p = new URLSearchParams();
+    if(state.q) p.set("q", state.q);
+    if(state.tags.size) p.set("tag", [...state.tags].join(","));
+    if(state.facets.size) p.set("facet", [...state.facets].join(","));
+    if(state.sort && state.sort !== "updated") p.set("sort", state.sort);
+    const h = p.toString();
+    // replaceState (not location.hash=) so we don't spam history or fire hashchange
+    history.replaceState(null, "", location.pathname + location.search + (h ? "#"+h : location.hash && "#"));
+    const bits = [];
+    if(state.q) bits.push("“"+state.q+"”");
+    state.tags.forEach(t => bits.push(t));
+    state.facets.forEach(f => bits.push(f));
+    document.title = (bits.length ? bits.join(" · ") + " · " : "") + TITLE;
+  }
+  function applyHash(){
+    const h = location.hash.replace(/^#/, "");
+    const p = new URLSearchParams(h);
+    state.q = (p.get("q") || "").toLowerCase();
+    state.tags = new Set((p.get("tag") || "").split(",").filter(Boolean).map(x => x.toLowerCase()));
+    state.facets = new Set((p.get("facet") || "").split(",").filter(Boolean));
+    state.sort = p.get("sort") || "updated";
+  }
+  function syncInputs(){
+    qi.value = state.q; sw.classList.toggle("has", !!state.q);
+    $("#sort").value = state.sort;
   }
 
   function renderActive(){
@@ -533,6 +593,8 @@
   });
   $("#clrSearch").addEventListener("click", () => { qi.value=""; sw.classList.remove("has"); state.q=""; render(); qi.focus(); });
   $("#sort").addEventListener("change", e => { state.sort=e.target.value; render(); });
+  // back/forward or an externally-pasted #hash re-applies filter state
+  window.addEventListener("hashchange", () => { applyHash(); syncInputs(); render(); });
 
   /* ---------- boot ---------- */
   fetch("data.json", {cache:"no-store"})
@@ -543,6 +605,8 @@
       $("#genmeta").innerHTML = `<b>${state.all.length}</b> scripts${dt?` · updated ${esc(dt)}`:""}`;
       buildTagRail();
       $("#loading").remove();
+      applyHash();
+      syncInputs();
       render();
     })
     .catch(err => {
