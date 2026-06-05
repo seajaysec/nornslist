@@ -66,6 +66,34 @@ web app, so it doesn't have to derive this enrichment live on the device:
 - **Emitted automatically** at the end of a full run (disable with `--no-feed`);
   rebuild standalone with `--feed-only`; choose the path with `--feed-output`.
 
+### Web catalog (GitHub Pages)
+
+A static, browsable catalog of every script is published at
+**[seajaysec.github.io/nornslist](https://seajaysec.github.io/nornslist/)** — a
+single-page browser styled after [`ingenue`](https://github.com/seajaysec/ingenue),
+with full norns.community parity (authors, descriptions, tags, discussion /
+project / docs / community links, last-updated) plus the enrichment layer
+(READMEs, screenshot carousels, demo embeds, engine + nb badges).
+
+- **Source**: everything lives in `docs/`. `docs/index.html` is a dependency-free
+  vanilla-JS SPA that fetches one file, `docs/data.json`.
+- **Data product**: `docs/build_data.py` merges the catalog rows from
+  `norns_scripts_discourse.xlsx` (the norns.community parity layer) with
+  `feed.json` (the enrichment layer) into a self-contained `docs/data.json`. The
+  page is thus a static snapshot of the latest scrape with **zero runtime
+  dependency** on any external service.
+- **Deploy**: `.github/workflows/pages.yml` regenerates `data.json` from the
+  latest committed `xlsx` + `feed.json` and publishes `docs/` to GitHub Pages on
+  every push to `main`. Because the nightly scrape commits the `xlsx` + `feed.json`,
+  the live site auto-refreshes each night with no extra wiring. The committed
+  `docs/data.json` is a seed/fallback for local preview; the live site always
+  rebuilds from the freshest data at deploy time.
+- **One-time setup**: in the repo's **Settings → Pages**, set the source to
+  **"GitHub Actions"**.
+- **Local preview**: `python docs/build_data.py && (cd docs && python3 -m http.server)`
+  then open <http://localhost:8000> (serve over HTTP — `data.json` won't load from
+  a `file://` URL).
+
 ### Sync Tracking
 
 - **Out of Sync Detection**: Automatically compares scraped data with existing Excel data
