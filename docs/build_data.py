@@ -126,6 +126,7 @@ def _normalize_row(d: dict) -> dict:
         "kind": d["facets"] if isinstance(d.get("facets"), list) else [],
         "stars": int(d["stars"]) if str(d.get("stars") or "").strip().isdigit() else 0,
         "archived": bool(d.get("archived")),
+        "status": (pick("status", "Status") or "active"),
     }
 
 

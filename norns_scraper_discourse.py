@@ -2888,10 +2888,18 @@ class NornsScraper:
         cache = self._load_lastupd_cache(excel_path) if excel_path else {}
         cache_lock = threading.Lock()
         results = {}
+        # Per-run repo status (archived / missing-404), captured for free from the
+        # shared repo-meta — feeds the catalog 'status' field (roadmap #5).
+        self._repo_status_map = {}
 
         def _task(owner_repo):
             owner, repo = owner_repo
             meta = self._repo_meta(owner, repo)  # shared per-run call
+            missing = meta.get("_status") == 404
+            archived = bool(meta.get("archived"))
+            self._repo_status_map[owner_repo] = (
+                "missing" if missing else ("archived" if archived else "active")
+            )
             pushed_at = (
                 "" if meta.get("_status") in (403, 404) else (meta.get("pushed_at") or "")
             )
@@ -2903,12 +2911,14 @@ class NornsScraper:
             # Only persist a real date paired with a known change signal, so
             # transient failures / missing repos self-heal on the next run
             # instead of caching an empty value behind a matching pushed_at.
+            # `archived` rides along so --catalog-only can read it without a fetch.
             if value and pushed_at:
                 with cache_lock:
                     cache[ck] = {
                         "last_updated": value,
                         "pushed_at": pushed_at,
                         "computed_at": self._today_iso(),
+                        "archived": archived,
                     }
             return owner_repo, value, False
 
@@ -3514,9 +3524,46 @@ class NornsScraper:
         entry["source"] = "github"
         entry["facets"] = list(rec.get("facets") or [])
         entry["stars"] = int(rec.get("stars") or 0)
+        entry["status"] = "archived" if rec.get("archived") else "active"
         if rec.get("archived"):
             entry["archived"] = True
         return entry
+
+    def _community_status_map(self, rows, excel_path: str) -> dict:
+        """name_lower -> status for community rows (roadmap #5). `delisted` when the
+        name is gone from the live community.json, `missing` when the repo 404s this
+        run, `archived` from the GitHub archived flag (this run's status map or the
+        persisted Last-Updated cache), else `active`. Network-light: reuses the
+        cached community.json + the committed Last-Updated cache."""
+        comm = None
+        try:
+            entries = self.fetch_community_json()
+            if entries:
+                comm = {(e.get("project_name") or "").strip().lower() for e in entries}
+                comm.discard("")
+        except Exception:
+            comm = None  # unknown -> never flag delisted (fail safe)
+        lu = self._load_lastupd_cache(excel_path) if excel_path else {}
+        run_status = getattr(self, "_repo_status_map", {}) or {}
+        out = {}
+        for row in rows:
+            nm = self._catalog_clean(row.get("Name")).lower()
+            if not nm:
+                continue
+            owner, repo = self._parse_github_repo(row.get("Project URL", ""))
+            rst = run_status.get((owner, repo)) if owner else None
+            archived = owner and (
+                rst == "archived" or bool((lu.get(f"{owner}/{repo}") or {}).get("archived"))
+            )
+            if comm is not None and nm not in comm:
+                out[nm] = "delisted"
+            elif rst == "missing":
+                out[nm] = "missing"
+            elif archived:
+                out[nm] = "archived"
+            else:
+                out[nm] = "active"
+        return out
 
     def write_catalog_json(self, rows, excel_path: str, output_path: str = None,
                            discovered: dict = None) -> None:
@@ -3527,6 +3574,7 @@ class NornsScraper:
 
         try:
             cols = list(self.FIELD_MAP.keys())
+            status_map = self._community_status_map(rows, excel_path)
             scripts = []
             for row in rows:
                 name = self._catalog_clean(row.get("Name"))
@@ -3540,6 +3588,7 @@ class NornsScraper:
                         entry[c] = self._catalog_clean(row.get(c, ""))
                 entry["Name"] = name
                 entry["source"] = "community"
+                entry["status"] = status_map.get(name.lower(), "active")
                 scripts.append(entry)
 
             # Append GitHub-discovered repos that aren't already a community script.

@@ -148,7 +148,8 @@
   .badge.eng{color:#241a0d; background:var(--accent)}
   .badge.nb{color:var(--bg); background:var(--accent2)}
   .badge.gh{color:var(--faint); background:color-mix(in srgb,var(--faint) 16%,transparent); border:1px solid color-mix(in srgb,var(--faint) 32%,transparent)}
-  .badge.arch{color:var(--err); background:color-mix(in srgb,var(--err) 14%,transparent)}
+  .badge.arch{color:#caa46a; background:color-mix(in srgb,#caa46a 15%,transparent)}
+  .badge.del{color:var(--err); background:color-mix(in srgb,var(--err) 15%,transparent)}
   /* source toggle: visually set apart from the boolean facet chips */
   .chip.srctoggle{margin-left:6px; border-style:dashed; border-color:color-mix(in srgb,var(--accent2) 45%,transparent)}
   .chip.srctoggle.on{background:color-mix(in srgb,var(--accent2) 20%,transparent); border-style:solid; border-color:var(--accent2); color:var(--accent2)}
@@ -381,7 +382,9 @@
     const badges = (s.engine?`<span class="badge eng" title="ships SuperCollider engine ${esc(s.engine)}">${esc(s.engine)}</span>`:"")
                  + (s.facets&&s.facets.nb?'<span class="badge nb" title="registers an nb voice">nb</span>':"")
                  + (s.source==="github"?'<span class="badge gh" title="found on GitHub — not on norns.community">GitHub</span>':"")
-                 + (s.archived?'<span class="badge arch" title="repository archived by its owner">archived</span>':"");
+                 + (s.status==="archived"?'<span class="badge arch" title="repository archived by its owner — still installable, no longer maintained">archived</span>':"")
+                 + (s.status==="delisted"?'<span class="badge del" title="removed from norns.community since it was last cataloged">delisted</span>':"")
+                 + (s.status==="missing"?'<span class="badge del" title="repository no longer exists on GitHub">unavailable</span>':"");
     const install = s.proj
       ? `<button class="lnk copy-install" data-install="${esc(s.proj)}" title="copy maiden install command — ;install ${esc(s.proj)}">${ICON.install}</button>`
       : "";
@@ -514,7 +517,10 @@
     if(state.only) return s.slug === state.only;  // single-script permalink view
     if(!inSource(s)) return false;                 // community-only unless the toggle is on
     if(state.q){
-      const hay = (s.name+" "+(s.author||"")+" "+(s.desc||"")+" "+(s.tags||[]).join(" ")).toLowerCase();
+      // status (when not active) joins the haystack so "archived"/"delisted"/
+      // "unavailable" act as a lightweight archive view via search.
+      const st = s.status && s.status!=="active" ? (s.status==="missing"?"unavailable missing":s.status) : "";
+      const hay = (s.name+" "+(s.author||"")+" "+(s.desc||"")+" "+(s.tags||[]).join(" ")+" "+st).toLowerCase();
       if(!hay.includes(state.q)) return false;
     }
     for(const f of state.facets){ if(!(s.facets && s.facets[f])) return false; }

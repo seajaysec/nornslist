@@ -129,6 +129,7 @@ check("entry_source", e["source"], "github")
 check("entry_tags_from_topics", e["Tags"], ["drone", "grid"])
 check("entry_facets", e["facets"], ["script", "engine"])
 check("entry_archived", e["archived"], True)
+check("entry_status_archived", e["status"], "archived")
 check("entry_community_cols_blank", e["Discussion URL"], "")
 
 # --- write_catalog_json: dedup (community wins) + most-starred github wins ---

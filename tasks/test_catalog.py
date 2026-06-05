@@ -59,8 +59,9 @@ check("catalog_sorted_by_name", [s["Name"] for s in scripts], ["apple", "Zebra"]
 zebra = next(s for s in scripts if s["Name"] == "Zebra")
 check("catalog_tags_is_list", isinstance(zebra["Tags"], list), True)
 check("catalog_tags_split_deduped", zebra["Tags"], ["drone", "grid"])
-check("catalog_all_fieldmap_cols", set(zebra) == set(S.FIELD_MAP) | {"source"}, True)
+check("catalog_all_fieldmap_cols", set(zebra) == set(S.FIELD_MAP) | {"source", "status"}, True)
 check("catalog_source_community", zebra["source"], "community")
+check("catalog_status_default_active", zebra["status"], "active")
 apple = next(s for s in scripts if s["Name"] == "apple")
 check("catalog_tags_list_input_deduped", apple["Tags"], ["art", "fx"])  # case-insensitive dedupe
 
