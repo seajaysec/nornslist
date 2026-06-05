@@ -118,6 +118,14 @@ def _normalize_row(d: dict) -> dict:
         "doc": pick("doc", "documentation url", "Documentation URL"),
         "comm": pick("comm", "community url", "Community URL"),
         "upd": pick("upd", "last updated", "Last Updated"),
+        # Discovery passthrough (catalog.json only): provenance + GitHub-derived
+        # structural kind (script/mod/library/engine) + stars/archived. Default
+        # source 'community' for legacy rows. `kind` is distinct from the boolean
+        # UI `facets` dict merge() builds below.
+        "source": (pick("source", "Source") or "community"),
+        "kind": d["facets"] if isinstance(d.get("facets"), list) else [],
+        "stars": int(d["stars"]) if str(d.get("stars") or "").strip().isdigit() else 0,
+        "archived": bool(d.get("archived")),
     }
 
 
@@ -192,6 +200,11 @@ def merge(catalog: list[dict], feed: dict) -> list[dict]:
                     s["tags"].append(t.strip())
                     existing.add(t.lower())
 
+        # Structural kind (script/mod/library/engine): from the catalog for
+        # GitHub-discovered rows, else from feed enrichment for community rows.
+        kind = list(s.get("kind") or enr.get("facets") or [])
+        s["kind"] = kind
+
         if engine:
             s["engine"] = engine
         if nb:
@@ -202,8 +215,10 @@ def merge(catalog: list[dict], feed: dict) -> list[dict]:
             s["images"] = images
 
         # Boolean facets the UI filters on (kept out of `tags` to avoid clutter).
+        # For GitHub rows with no feed enrichment, the engine signal comes from
+        # the structural kind instead of an extracted engine name.
         s["facets"] = {
-            "engine": bool(engine),
+            "engine": bool(engine) or ("engine" in kind),
             "nb": nb,
             "demo": bool(s["demo"]),
             "images": bool(images),

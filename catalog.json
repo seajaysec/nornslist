@@ -19,7 +19,8 @@
       "Project URL": "https://github.com/p3r7/3d",
       "Tags": [
         "art"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "21echoes",
@@ -38,7 +39,8 @@
         "arc",
         "crow",
         "midi"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "Hanjo",
@@ -57,7 +59,8 @@
         "controller",
         "utility",
         "performance"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "infinitedigits",
@@ -73,7 +76,8 @@
       "Project URL": "https://github.com/schollz/abacus",
       "Tags": [
         "sequencer"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "infinitedigits",
@@ -91,7 +95,8 @@
         "generative",
         "midi",
         "crow"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "jah",
@@ -105,7 +110,8 @@
       "Out of Sync": "",
       "Playwright Status": "",
       "Project URL": "https://github.com/antonhornquist/ack",
-      "Tags": []
+      "Tags": [],
+      "source": "community"
     },
     {
       "Author": "infinitedigits",
@@ -124,7 +130,8 @@
         "sampler",
         "crow",
         "grid"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "infinitedigits",
@@ -142,7 +149,8 @@
         "drum",
         "sampler",
         "looper"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "infinitedigits",
@@ -159,7 +167,8 @@
       "Tags": [
         "drum",
         "sampler"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "crim",
@@ -178,7 +187,8 @@
         "crow",
         "grid",
         "midi"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "mimetaur",
@@ -194,7 +204,8 @@
       "Project URL": "https://github.com/mimetaur/arcify",
       "Tags": [
         "lib"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "tyleretters",
@@ -217,7 +228,8 @@
         "midi",
         "arc",
         "crow"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "markeats",
@@ -234,7 +246,8 @@
       "Tags": [
         "sequencer",
         "grid"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "tehn",
@@ -254,7 +267,8 @@
         "looper",
         "drum",
         "synth"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "nunosmash",
@@ -273,7 +287,8 @@
         "engine",
         "midi",
         "grid"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "notester",
@@ -293,7 +308,8 @@
         "hid",
         "sequencer",
         "synth"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "pangrus",
@@ -310,7 +326,8 @@
       "Tags": [
         "utility",
         "midi"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "kurogedelic",
@@ -330,7 +347,8 @@
         "art",
         "drone",
         "norns only"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "tehn",
@@ -347,7 +365,8 @@
       "Tags": [
         "sequencer",
         "grid"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "nattog",
@@ -364,7 +383,8 @@
       "Tags": [
         "sequencer",
         "grid"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "GoneCaving",
@@ -381,7 +401,8 @@
       "Tags": [
         "sequencer",
         "grid"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "frederickk",
@@ -397,7 +418,8 @@
       "Project URL": "https://github.com/frederickk/b-b-b-b-beat",
       "Tags": [
         "audio_fx"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "tyleretters",
@@ -415,7 +437,8 @@
         "drum",
         "sequencer",
         "eduscript"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "infinitedigits",
@@ -431,7 +454,8 @@
       "Project URL": "https://github.com/schollz/barcode",
       "Tags": [
         "looper"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "echophon",
@@ -448,7 +472,8 @@
       "Tags": [
         "sequencer",
         "norns only"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "tomw",
@@ -465,7 +490,8 @@
       "Tags": [
         "sampler",
         "keyboard"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "mattbiddulph",
@@ -483,7 +509,8 @@
         "sequencer",
         "drum",
         "grid"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "scaxan",
@@ -500,7 +527,8 @@
       "Tags": [
         "synth",
         "norns only"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "cfd90",
@@ -517,7 +545,8 @@
       "Tags": [
         "sequencer",
         "grid"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "midouest",
@@ -534,7 +563,8 @@
       "Tags": [
         "synth",
         "keyboard"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "alanza",
@@ -551,7 +581,8 @@
       "Tags": [
         "synth",
         "midi"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "toneburst",
@@ -571,7 +602,8 @@
         "synth",
         "midi",
         "norns only"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "cfd90",
@@ -588,7 +620,8 @@
       "Tags": [
         "synth",
         "norns only"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "infinitedigits",
@@ -604,7 +637,8 @@
       "Project URL": "https://github.com/schollz/blndr",
       "Tags": [
         "audio_fx"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "infinitedigits",
@@ -623,7 +657,8 @@
         "midi",
         "grid",
         "crow"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "tehn",
@@ -640,7 +675,8 @@
       "Tags": [
         "art",
         "norns only"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "justmat",
@@ -659,7 +695,8 @@
         "midi",
         "jf",
         "grid"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "justmat",
@@ -676,7 +713,8 @@
       "Tags": [
         "looper",
         "delay"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "trentgill",
@@ -693,7 +731,8 @@
       "Tags": [
         "utility",
         "crow"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "tomw",
@@ -712,7 +751,8 @@
         "generative",
         "midi",
         "norns only"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "lylem",
@@ -735,7 +775,8 @@
         "midi",
         "grid",
         "crow"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "synthetiv",
@@ -752,7 +793,8 @@
       "Tags": [
         "utility",
         "crow"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "WilliamHazard",
@@ -769,7 +811,8 @@
       "Tags": [
         "delay",
         "art"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "monome",
@@ -787,7 +830,8 @@
         "midi",
         "utility",
         "grid"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "ypxkap",
@@ -804,7 +848,8 @@
       "Tags": [
         "utility",
         "arc"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "markeats",
@@ -822,7 +867,8 @@
         "sequencer",
         "utility",
         "midi"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "dan_derks",
@@ -845,7 +891,8 @@
         "arc",
         "grid",
         "jf"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "alanza",
@@ -861,7 +908,8 @@
       "Project URL": "https://github.com/ryleelyman/choukanzu",
       "Tags": [
         "mod"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "jakecarter",
@@ -878,7 +926,8 @@
       "Tags": [
         "sequencer",
         "crow"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "okyeron",
@@ -896,7 +945,8 @@
         "utility",
         "arc",
         "clock"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "infinitedigits",
@@ -912,7 +962,8 @@
       "Project URL": "https://github.com/schollz/clcks",
       "Tags": [
         "audio_fx"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "jaseknighter",
@@ -928,7 +979,8 @@
       "Project URL": "https://github.com/jaseknighter/clipper",
       "Tags": [
         "sampler"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "niksilver",
@@ -947,7 +999,8 @@
         "utilities",
         "clock",
         "mod"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "yams",
@@ -965,7 +1018,8 @@
         "sequencer",
         "grid",
         "midi"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "modularbeat",
@@ -983,7 +1037,8 @@
         "mod",
         "utility",
         "grid"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "justmat",
@@ -997,7 +1052,8 @@
       "Out of Sync": "",
       "Playwright Status": "",
       "Project URL": "https://github.com/justmat/combos",
-      "Tags": []
+      "Tags": [],
+      "source": "community"
     },
     {
       "Author": "Olivier",
@@ -1016,7 +1072,8 @@
         "looper",
         "grid",
         "arc"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "sonoCircuit",
@@ -1036,7 +1093,8 @@
         "looper",
         "grid",
         "arc"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "toomanatees",
@@ -1055,7 +1113,8 @@
         "sequencer",
         "midi",
         "crow"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "Quixotic7",
@@ -1074,7 +1133,8 @@
         "generative",
         "grid",
         "midi"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "dan_derks",
@@ -1092,7 +1152,8 @@
         "delay",
         "looper",
         "grid"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "justmat",
@@ -1110,7 +1171,8 @@
         "utility",
         "keyboard",
         "crow"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "wardores",
@@ -1126,7 +1188,8 @@
       "Project URL": "https://github.com/joelwalden/cryptkeeper",
       "Tags": [
         "utility"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "modularbeat",
@@ -1144,7 +1207,8 @@
         "mod",
         "utility",
         "midi"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "21echoes",
@@ -1165,7 +1229,8 @@
         "arc",
         "grid",
         "crow"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "justmat",
@@ -1182,7 +1247,8 @@
       "Tags": [
         "audio_fx",
         "midi"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "ljudvagg",
@@ -1200,7 +1266,8 @@
         "sampler",
         "sequencer",
         "grid"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "cfd90",
@@ -1216,7 +1283,8 @@
       "Project URL": "https://github.com/cfdrake/delayyyyyyyy",
       "Tags": [
         "delay"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "KevinLindley",
@@ -1233,7 +1301,8 @@
       "Tags": [
         "sequencer",
         "midi"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "KevinLindley",
@@ -1251,7 +1320,8 @@
         "synth",
         "noise",
         "norns only"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "kjames",
@@ -1268,7 +1338,8 @@
       "Tags": [
         "sequencer",
         "grid"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "emanuelep",
@@ -1284,7 +1355,8 @@
       "Project URL": "https://github.com/emanuelep/dimension-expander",
       "Tags": [
         "audio_fx"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "infinitedigits",
@@ -1300,7 +1372,8 @@
       "Project URL": "https://github.com/schollz/downtown",
       "Tags": [
         "looper"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "modularbeat",
@@ -1320,7 +1393,8 @@
         "crow",
         "midi",
         "nb"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "echophon",
@@ -1336,7 +1410,8 @@
       "Project URL": "https://github.com/echophon/drift",
       "Tags": [
         "sequencer"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "tyleretters license",
@@ -1355,7 +1430,8 @@
         "drone",
         "generative",
         "norns only"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "markeats",
@@ -1372,7 +1448,8 @@
       "Tags": [
         "drum",
         "midi"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "Olivier",
@@ -1390,7 +1467,8 @@
         "sequencer",
         "midi",
         "norns only"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "junklight",
@@ -1407,7 +1485,8 @@
       "Tags": [
         "grid",
         "synth"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "trickyflemming",
@@ -1424,7 +1503,8 @@
       "Tags": [
         "granulator",
         "arc"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "andrew",
@@ -1443,7 +1523,8 @@
         "looper",
         "crow",
         "arc"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "tyler",
@@ -1461,7 +1542,8 @@
         "sequencer",
         "midi",
         "grid"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "midouest",
@@ -1481,7 +1563,8 @@
         "grid",
         "crow",
         "jf"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "notester",
@@ -1497,7 +1580,8 @@
       "Project URL": "https://github.com/cachilders/esper",
       "Tags": [
         "sequencer"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "etsuko.fm",
@@ -1514,7 +1598,8 @@
       "Tags": [
         "sequencer",
         "sampler"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "synthetivv setfield",
@@ -1532,7 +1617,8 @@
         "sequencer",
         "synth",
         "norns only"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "alanza",
@@ -1550,7 +1636,8 @@
         "sequencer",
         "grid",
         "arc"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "ambalek",
@@ -1570,7 +1657,8 @@
         "synth",
         "crow",
         "midi"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "tyleretters license",
@@ -1587,7 +1675,8 @@
       "Tags": [
         "art",
         "generative"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "obi",
@@ -1606,7 +1695,8 @@
         "generative",
         "crow",
         "midi"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "xmacex",
@@ -1622,7 +1712,8 @@
       "Project URL": "https://github.com/xmacex/fixed-filter-banking-crisis",
       "Tags": [
         "audio_fx"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "jaseknighter",
@@ -1644,7 +1735,8 @@
         "crow",
         "jf",
         "w/"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "lazzarello",
@@ -1662,7 +1754,8 @@
         "synth",
         "grid",
         "midi"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "csboling",
@@ -1678,7 +1771,8 @@
       "Project URL": "https://github.com/csboling/folio",
       "Tags": [
         "utility"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "ululo",
@@ -1695,7 +1789,8 @@
       "Tags": [
         "looper",
         "generative"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "notester",
@@ -1714,7 +1809,8 @@
         "generative",
         "crow",
         "midi"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "imminent_gloom",
@@ -1734,7 +1830,8 @@
         "grid",
         "nb",
         "crow"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "justmat",
@@ -1753,7 +1850,8 @@
         "sequencer",
         "midi",
         "grid"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "csboling",
@@ -1769,7 +1867,8 @@
       "Project URL": "https://github.com/csboling/foundry",
       "Tags": [
         "utility"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "popgoblin",
@@ -1787,7 +1886,8 @@
         "sequencer",
         "grid",
         "arc"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "its_your_bedtime",
@@ -1804,7 +1904,8 @@
       "Tags": [
         "sequencer",
         "grid"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "tyleretters",
@@ -1821,7 +1922,8 @@
       "Tags": [
         "sequencer",
         "crow"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "trickyflemming",
@@ -1838,7 +1940,8 @@
       "Tags": [
         "granulator",
         "arc"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "tomw",
@@ -1854,7 +1957,8 @@
       "Project URL": "https://github.com/tomwaters/get_in_the_sea",
       "Tags": [
         "midi"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "JulesV",
@@ -1871,7 +1975,8 @@
       "Tags": [
         "looper",
         "midi"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "dwtong",
@@ -1887,7 +1992,8 @@
       "Project URL": "https://github.com/dwtong/glaciers",
       "Tags": [
         "audio_fx"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "infinitedigits",
@@ -1903,7 +2009,8 @@
       "Project URL": "https://github.com/schollz/glitchlets",
       "Tags": [
         "audio_fx"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "carltesta",
@@ -1920,7 +2027,8 @@
       "Tags": [
         "looper",
         "audio_fx"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "artfwo",
@@ -1937,7 +2045,8 @@
       "Tags": [
         "granulator",
         "grid"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "tyleretters",
@@ -1953,7 +2062,8 @@
       "Project URL": "https://github.com/northern-information/goldeneye",
       "Tags": [
         "grid"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "infinitedigits",
@@ -1969,7 +2079,8 @@
       "Project URL": "https://github.com/schollz/graintopia",
       "Tags": [
         "granulator"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "infinitedigits",
@@ -1987,7 +2098,8 @@
         "sequencer",
         "granulator",
         "grid"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "yota",
@@ -2006,7 +2118,8 @@
         "art",
         "sequencer",
         "norns only"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "cfd90",
@@ -2024,7 +2137,8 @@
         "synth",
         "midi",
         "norns only"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "justmat",
@@ -2040,7 +2154,8 @@
       "Project URL": "https://github.com/justmat/greyhole",
       "Tags": [
         "delay"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "okyeron",
@@ -2057,7 +2172,8 @@
       "Tags": [
         "utility",
         "grid"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "duncangeere",
@@ -2080,7 +2196,8 @@
         "crow",
         "midi",
         "jf"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "smonthms",
@@ -2097,7 +2214,8 @@
       "Tags": [
         "grid",
         "synth"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "Quixotic7",
@@ -2115,7 +2233,8 @@
         "sequencer",
         "midi",
         "grid"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "Quixotic7",
@@ -2134,7 +2253,8 @@
         "generative",
         "grid",
         "midi"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "icco",
@@ -2153,7 +2273,8 @@
         "midi",
         "generative",
         "euclidean"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "pangrus",
@@ -2170,7 +2291,8 @@
       "Tags": [
         "drum",
         "norns only"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "LFSaw",
@@ -2190,7 +2312,8 @@
         "midi",
         "noise",
         "norns only"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "SzymonKaliski",
@@ -2207,7 +2330,8 @@
       "Tags": [
         "looper",
         "granulator"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "speakerdamage",
@@ -2225,7 +2349,8 @@
         "granulator",
         "audio_fx",
         "synth"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "okyeron",
@@ -2241,7 +2366,8 @@
       "Project URL": "https://github.com/okyeron/hid-demo/",
       "Tags": [
         "eduscript"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "Hanjo",
@@ -2259,7 +2385,8 @@
         "sequencer",
         "midi",
         "velocity"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "andy",
@@ -2278,7 +2405,8 @@
         "grid",
         "crow",
         "ansible"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "onegin",
@@ -2297,7 +2425,8 @@
         "sequencer",
         "midi",
         "norns only"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "imminent_gloom",
@@ -2315,7 +2444,8 @@
         "synth",
         "grid",
         "arc"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "infinitedigits",
@@ -2332,7 +2462,8 @@
       "Tags": [
         "synth",
         "midi"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "andrew",
@@ -2352,7 +2483,8 @@
         "arc",
         "grid",
         "mod"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "Mendrzec",
@@ -2370,7 +2502,8 @@
         "drum",
         "sequencer",
         "grid"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "vicimity",
@@ -2389,7 +2522,8 @@
         "crow",
         "midi",
         "grid"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "infinitedigits",
@@ -2405,7 +2539,8 @@
       "Project URL": "https://github.com/schollz/internorns",
       "Tags": [
         "utility"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "yota",
@@ -2422,7 +2557,8 @@
       "Tags": [
         "utility",
         "engine"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "RGB",
@@ -2439,7 +2575,8 @@
       "Tags": [
         "utility",
         "midi"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "junklight",
@@ -2458,7 +2595,8 @@
         "synth",
         "looper",
         "grid"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "carvingcode",
@@ -2475,7 +2613,8 @@
       "Tags": [
         "sequencer",
         "grid"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "ulfster",
@@ -2493,7 +2632,8 @@
         "sequencer",
         "midi",
         "norns only"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "Molotov",
@@ -2509,7 +2649,8 @@
       "Project URL": "https://github.com/lukes-anger/jiffy",
       "Tags": [
         "looper"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "midouest",
@@ -2529,7 +2670,8 @@
         "grid",
         "midi",
         "jf"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "sonoCircuit",
@@ -2547,7 +2689,8 @@
         "sequencer",
         "crow",
         "jf"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "dillbo",
@@ -2566,7 +2709,8 @@
         "midi",
         "generative",
         "norns only"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "infinitedigits",
@@ -2584,7 +2728,8 @@
         "sequencer",
         "drum",
         "grid"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "frederickk",
@@ -2603,7 +2748,8 @@
         "sequencer",
         "midi",
         "crow"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "junklight",
@@ -2621,7 +2767,8 @@
         "sequencer",
         "grid",
         "midi"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "jaseknighter",
@@ -2640,7 +2787,8 @@
         "synth",
         "crow",
         "midi"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "infinitedigits",
@@ -2658,7 +2806,8 @@
         "generative",
         "grid",
         "crow"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "Not_A_Creative",
@@ -2677,7 +2826,8 @@
         "sequencer",
         "midi",
         "norns only"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "alanza",
@@ -2695,7 +2845,8 @@
         "synth",
         "sequencer",
         "crow"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "justmat",
@@ -2713,7 +2864,8 @@
         "delay",
         "looper",
         "arc"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "notester",
@@ -2729,7 +2881,8 @@
       "Project URL": "https://github.com/cachilders/lemniscate",
       "Tags": [
         "looper"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "sym",
@@ -2746,7 +2899,8 @@
       "Tags": [
         "audio_fx",
         "engine"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "vicimity dan_derks",
@@ -2768,7 +2922,8 @@
         "w",
         "midi",
         "generative"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "LFSaw",
@@ -2787,7 +2942,8 @@
         "generative",
         "midi",
         "norns only"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "markeats",
@@ -2808,7 +2964,8 @@
         "jf",
         "crow",
         "grid"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "oksami",
@@ -2828,7 +2985,8 @@
         "utilities",
         "utility",
         "crow"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "infinitedigits",
@@ -2845,7 +3003,8 @@
       "Tags": [
         "sequencer",
         "drum"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "duncangeere",
@@ -2867,7 +3026,8 @@
         "crow",
         "utility",
         "grid"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "isabelgk",
@@ -2885,7 +3045,8 @@
         "sequencer",
         "generative",
         "norns only"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "jlmitch5",
@@ -2906,7 +3067,8 @@
         "jf",
         "midi",
         "crow"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "notester",
@@ -2923,7 +3085,8 @@
       "Tags": [
         "midi",
         "crow"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "infinitedigits",
@@ -2940,7 +3103,8 @@
       "Tags": [
         "sampler",
         "drum"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "justmat",
@@ -2958,7 +3122,8 @@
         "granulator",
         "grid",
         "arc"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "carltesta",
@@ -2974,7 +3139,8 @@
       "Project URL": "https://github.com/carltesta/manifold",
       "Tags": [
         "audio_fx"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "notester",
@@ -2992,7 +3158,8 @@
         "sequencer",
         "arc",
         "grid"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "justmat",
@@ -3008,7 +3175,8 @@
       "Project URL": "https://github.com/justmat/massif",
       "Tags": [
         "audio_fx"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "Hanjo",
@@ -3027,7 +3195,8 @@
         "controller",
         "utility",
         "performance"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "Hanjo",
@@ -3046,7 +3215,8 @@
         "controller",
         "utility",
         "performance"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "alphacactus dansimco tehn",
@@ -3067,7 +3237,8 @@
         "grid",
         "crow",
         "jf"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "kasperbauer",
@@ -3086,7 +3257,8 @@
         "midi",
         "grid",
         "crow"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "adamstaff",
@@ -3105,7 +3277,8 @@
         "midi",
         "nb",
         "grid"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "okyeron",
@@ -3122,7 +3295,8 @@
       "Tags": [
         "utility",
         "midi"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "niksilver",
@@ -3139,7 +3313,8 @@
       "Tags": [
         "utility",
         "midi"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "dwtong",
@@ -3157,7 +3332,8 @@
         "looper",
         "midi",
         "mod"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "Jaggednz",
@@ -3175,7 +3351,8 @@
         "utility",
         "midi",
         "mod"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "sonoCircuit",
@@ -3191,7 +3368,8 @@
       "Project URL": "https://github.com/sonocircuit/midiplayer",
       "Tags": [
         "midi"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "tehn",
@@ -3211,7 +3389,8 @@
         "looper",
         "delay",
         "grid"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "sonoCircuit",
@@ -3233,7 +3412,8 @@
         "grid",
         "arc",
         "crow"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "Hanjo",
@@ -3253,7 +3433,8 @@
         "monomachine",
         "sound design",
         "hardware"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "markeats",
@@ -3271,7 +3452,8 @@
         "synth",
         "grid",
         "midi"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "jah",
@@ -3287,7 +3469,8 @@
       "Project URL": "https://github.com/antonhornquist/moln",
       "Tags": [
         "synth"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "neauoire",
@@ -3304,7 +3487,8 @@
       "Tags": [
         "utility",
         "midi"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "xmacex",
@@ -3321,7 +3505,8 @@
       "Tags": [
         "mod",
         "utility"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "infinitedigits",
@@ -3338,7 +3523,8 @@
       "Tags": [
         "drum",
         "grid"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "byzero",
@@ -3360,7 +3546,8 @@
         "nb",
         "crow",
         "keyboard"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "cfd90",
@@ -3379,7 +3566,8 @@
         "mouse",
         "keyboard",
         "grid"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "infinitedigits",
@@ -3396,7 +3584,8 @@
       "Tags": [
         "synth",
         "midi"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "infinitedigits",
@@ -3413,7 +3602,8 @@
       "Tags": [
         "synth",
         "midi"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "zbs",
@@ -3432,7 +3622,8 @@
         "grid",
         "midi",
         "nb"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "jlmitch5",
@@ -3448,7 +3639,8 @@
       "Project URL": "https://github.com/jlmitch5/n16o",
       "Tags": [
         "utility"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "xo-xn",
@@ -3467,7 +3659,8 @@
         "drone",
         "art",
         "happyaccident"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "postsolarpunk",
@@ -3487,7 +3680,8 @@
         "crow",
         "drum",
         "nb"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "sonoCircuit",
@@ -3505,7 +3699,8 @@
         "mod",
         "synth",
         "nb"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "sonoCircuit",
@@ -3523,7 +3718,8 @@
         "mod",
         "synth",
         "nb"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "sonoCircuit",
@@ -3541,7 +3737,8 @@
         "mod",
         "sampler",
         "nb"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "norns-community",
@@ -3558,7 +3755,8 @@
       "Tags": [
         "art",
         "norns only"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "norns-community",
@@ -3575,7 +3773,8 @@
       "Tags": [
         "art",
         "norns only"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "norns-community",
@@ -3592,7 +3791,8 @@
       "Tags": [
         "art",
         "norns only"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "andrew",
@@ -3612,7 +3812,8 @@
         "sampler",
         "grid",
         "arc"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "MentalSandal",
@@ -3628,7 +3829,8 @@
       "Project URL": "https://github.com/MentalSandal/nice-tapes",
       "Tags": [
         "mod"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "its_your_bedtime",
@@ -3645,7 +3847,8 @@
       "Tags": [
         "sequencer",
         "tracker"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "NightMachines",
@@ -3662,7 +3865,8 @@
       "Tags": [
         "sequencer",
         "midi"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "NightMachines",
@@ -3679,7 +3883,8 @@
       "Tags": [
         "delay",
         "looper"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "NightMachines",
@@ -3695,7 +3900,8 @@
       "Project URL": "https://github.com/TuesdayNightMachines/nmRain",
       "Tags": [
         "delay"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "NightMachines",
@@ -3713,7 +3919,8 @@
         "delay",
         "looper",
         "granulator"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "deeg_deeg_deeg",
@@ -3730,7 +3937,8 @@
       "Tags": [
         "synth",
         "midi"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "deeg_deeg_deeg",
@@ -3748,7 +3956,8 @@
         "synth",
         "midi",
         "norns only"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "crim",
@@ -3764,7 +3973,8 @@
       "Project URL": "https://github.com/crimclark/norman",
       "Tags": [
         "utility"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "infinitedigits",
@@ -3780,7 +3990,8 @@
       "Project URL": "https://github.com/schollz/norns.online",
       "Tags": [
         "utility"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "tapecanvas",
@@ -3797,7 +4008,8 @@
       "Tags": [
         "art",
         "utility"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "sixolet",
@@ -3817,7 +4029,8 @@
         "sequencer",
         "grid",
         "crow"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "frederickk",
@@ -3835,7 +4048,8 @@
         "sequencer",
         "generative",
         "midi"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "infinitedigits",
@@ -3853,7 +4067,8 @@
         "sequencer",
         "synth",
         "norns only"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "stvnrlly",
@@ -3869,7 +4084,8 @@
       "Project URL": "https://github.com/stvnrlly/oblique",
       "Tags": [
         "mod"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "zbs",
@@ -3888,7 +4104,8 @@
         "drum",
         "synth",
         "nb"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "mimetaur",
@@ -3905,7 +4122,8 @@
       "Tags": [
         "utility",
         "midi"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "anoikisnomads",
@@ -3922,7 +4140,8 @@
       "Tags": [
         "art",
         "norns only"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "infinitedigits",
@@ -3940,7 +4159,8 @@
         "looper",
         "delay",
         "grid"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "P1505",
@@ -3957,7 +4177,8 @@
       "Tags": [
         "sequencer",
         "art"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "its_your_bedtime",
@@ -3981,7 +4202,8 @@
         "arc",
         "grid",
         "crow"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "andrew",
@@ -3999,7 +4221,8 @@
         "audio_fx",
         "synth",
         "grid"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "andrew",
@@ -4019,7 +4242,8 @@
         "looper",
         "audio_fx",
         "grid"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "felart",
@@ -4037,7 +4261,8 @@
         "utility",
         "sampler",
         "midi"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "justmat",
@@ -4055,7 +4280,8 @@
         "delay",
         "looper",
         "sampler"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "trackdriver",
@@ -4074,7 +4300,8 @@
         "additive",
         "midi",
         "grid"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "markeats",
@@ -4090,7 +4317,8 @@
       "Project URL": "https://github.com/markwheeler/overwintering",
       "Tags": [
         "generative"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "eigen",
@@ -4106,7 +4334,8 @@
       "Project URL": "https://github.com/p3r7/p8",
       "Tags": [
         "art"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "infinitedigits",
@@ -4127,7 +4356,8 @@
         "keyboard",
         "grid",
         "crow"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "xmacex",
@@ -4145,7 +4375,8 @@
         "midi",
         "sequencer",
         "norns"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "jaseknighter",
@@ -4161,7 +4392,8 @@
       "Project URL": "https://github.com/jaseknighter/parrot",
       "Tags": [
         "crow"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "markeats",
@@ -4179,7 +4411,8 @@
         "synth",
         "midi",
         "grid"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "nattog",
@@ -4197,7 +4430,8 @@
         "utility",
         "mod",
         "midi"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "Olivier",
@@ -4215,7 +4449,8 @@
         "sequencer",
         "grid",
         "crow"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "awakening.systems",
@@ -4232,7 +4467,8 @@
       "Tags": [
         "crow",
         "utility"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "21echoes",
@@ -4250,7 +4486,8 @@
         "audio_fx",
         "crow",
         "arc"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "sixolet",
@@ -4268,7 +4505,8 @@
         "generative",
         "keyboard",
         "midi"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "justmat",
@@ -4284,7 +4522,8 @@
       "Project URL": "https://github.com/justmat/phyllis",
       "Tags": [
         "audio_fx"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "infinitedigits eigen jaseknighter tyleretters",
@@ -4302,7 +4541,8 @@
         "utility",
         "art",
         "16n"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "postsolarpunk",
@@ -4323,7 +4563,8 @@
         "keyboard",
         "nb",
         "sequencer"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "delineator",
@@ -4342,7 +4583,8 @@
         "utility",
         "midi",
         "grid"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "infinitedigits",
@@ -4362,7 +4604,8 @@
         "midi",
         "grid",
         "looper"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "infinitedigits",
@@ -4379,7 +4622,8 @@
       "Tags": [
         "looper",
         "sampler"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "distropolis",
@@ -4400,7 +4644,8 @@
         "art",
         "midi",
         "norns only"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "tehn",
@@ -4417,7 +4662,8 @@
       "Tags": [
         "art",
         "grid"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "infinitedigits",
@@ -4435,7 +4681,8 @@
         "sequencer",
         "keyboard",
         "grid"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "justmat",
@@ -4451,7 +4698,8 @@
       "Project URL": "https://github.com/justmat/pools",
       "Tags": [
         "audio_fx"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "imminent_gloom",
@@ -4468,7 +4716,8 @@
       "Tags": [
         "sampler",
         "arc"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "duncangeere",
@@ -4486,7 +4735,8 @@
         "art",
         "drone",
         "crow"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "neauoire",
@@ -4503,7 +4753,8 @@
       "Tags": [
         "sequencer",
         "grid"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "notester",
@@ -4522,7 +4773,8 @@
         "generative",
         "midi",
         "norns only"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "RobSchoen",
@@ -4542,7 +4794,8 @@
         "grid",
         "crow",
         "midi"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "jah",
@@ -4558,7 +4811,8 @@
       "Project URL": "https://github.com/antonhornquist/r",
       "Tags": [
         "lib"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "infinitedigits",
@@ -4576,7 +4830,8 @@
         "generative",
         "sequencer",
         "drone"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "toomanatees",
@@ -4593,7 +4848,8 @@
       "Tags": [
         "delay",
         "audio_fx"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "ambalek",
@@ -4613,7 +4869,8 @@
         "synth",
         "midi",
         "norns only"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "DanielGorgan",
@@ -4629,7 +4886,8 @@
       "Project URL": "https://github.com/danut007ro/randomizer_typhon",
       "Tags": [
         "utility"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "tgk",
@@ -4647,7 +4905,8 @@
         "sampler",
         "granulator",
         "arc"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "enneff",
@@ -4663,7 +4922,8 @@
       "Project URL": "https://github.com/nf/rebound",
       "Tags": [
         "sequencer"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "its_your_bedtime",
@@ -4680,7 +4940,8 @@
       "Tags": [
         "looper",
         "delay"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "spoitras",
@@ -4699,7 +4960,8 @@
         "looper",
         "texture",
         "engine"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "awwaiid",
@@ -4718,7 +4980,8 @@
         "looper",
         "grid",
         "keyboard"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "tehn",
@@ -4735,7 +4998,8 @@
       "Tags": [
         "sequencer",
         "arc"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "andrew",
@@ -4752,7 +5016,8 @@
       "Tags": [
         "delay",
         "looper"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "eigen",
@@ -4769,7 +5034,8 @@
       "Tags": [
         "utility",
         "sampler"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "cfd90",
@@ -4787,7 +5053,8 @@
         "sequencer",
         "drum",
         "norns only"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "justmat",
@@ -4804,7 +5071,8 @@
       "Tags": [
         "sampler",
         "utility"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "infinitedigits",
@@ -4820,7 +5088,8 @@
       "Project URL": "https://github.com/schollz/sampswap",
       "Tags": [
         "sampler"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "21echoes",
@@ -4837,7 +5106,8 @@
       "Tags": [
         "looper",
         "delay"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "ooray",
@@ -4855,7 +5125,8 @@
         "looper",
         "sampler",
         "happyaccident"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "WilliamHazard",
@@ -4879,7 +5150,8 @@
         "crow",
         "jf",
         "w/"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "adamstaff",
@@ -4898,7 +5170,8 @@
         "sequencer",
         "nb",
         "midi"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "WilliamHazard",
@@ -4918,7 +5191,8 @@
         "art",
         "drone",
         "norns only"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "lylem",
@@ -4935,7 +5209,8 @@
       "Tags": [
         "utility",
         "grid"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "awakening.systems",
@@ -4955,7 +5230,8 @@
         "midi",
         "osc",
         "crow"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "jaseknighter",
@@ -4972,7 +5248,8 @@
       "Tags": [
         "mod",
         "utility"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "zbs",
@@ -4990,7 +5267,8 @@
         "sequencer",
         "grid",
         "crow"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "xmacex",
@@ -5006,7 +5284,8 @@
       "Project URL": "https://github.com/xmacex/serialism",
       "Tags": [
         "midi"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "tyler",
@@ -5022,7 +5301,8 @@
       "Project URL": "https://github.com/tlubke/shapes",
       "Tags": [
         "utility"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "germinal",
@@ -5040,7 +5320,8 @@
         "sequencer",
         "crow",
         "grid"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "WilliamHazard",
@@ -5064,7 +5345,8 @@
         "crow",
         "jf",
         "w/"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "justmat",
@@ -5081,7 +5363,8 @@
       "Tags": [
         "art",
         "norns only"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "sonoCircuit",
@@ -5101,7 +5384,8 @@
         "grid",
         "mod",
         "nb"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "justmat",
@@ -5121,7 +5405,8 @@
         "keyboard",
         "grid",
         "arc"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "oootini",
@@ -5140,7 +5425,8 @@
         "drone",
         "16n",
         "midi"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "markel_m",
@@ -5156,7 +5442,8 @@
       "Project URL": "https://github.com/unit-cell/skylines",
       "Tags": [
         "sequencer"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "license",
@@ -5173,7 +5460,8 @@
       "Tags": [
         "sequencer",
         "drum"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "sym",
@@ -5192,7 +5480,8 @@
         "generative",
         "engine",
         "grid"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "tomw",
@@ -5211,7 +5500,8 @@
         "sequencer",
         "grid",
         "midi"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "tyleretters",
@@ -5227,7 +5517,8 @@
       "Project URL": "https://github.com/northern-information/splicer",
       "Tags": [
         "eduscript"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "jaseknighter",
@@ -5248,7 +5539,8 @@
         "jf",
         "crow",
         "grid"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "cfd90",
@@ -5264,7 +5556,8 @@
       "Project URL": "https://github.com/cfdrake/stack",
       "Tags": [
         "audio_fx"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "jah",
@@ -5281,7 +5574,8 @@
       "Tags": [
         "sampler",
         "sequencer"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "frederickk",
@@ -5300,7 +5594,8 @@
         "drone",
         "midi",
         "norns only"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "sonoCircuit",
@@ -5319,7 +5614,8 @@
         "grid",
         "crow",
         "midi"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "justmat",
@@ -5338,7 +5634,8 @@
         "sequencer",
         "grid",
         "midi"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "carvingcode",
@@ -5355,7 +5652,8 @@
       "Tags": [
         "sequencer",
         "grid"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "sonoCircuit",
@@ -5374,7 +5672,8 @@
         "delay",
         "grid",
         "arc"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "imminent_gloom",
@@ -5391,7 +5690,8 @@
       "Tags": [
         "synth",
         "arc"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "imminent_gloom",
@@ -5409,7 +5709,8 @@
         "synth",
         "delay",
         "grid"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "beat",
@@ -5427,7 +5728,8 @@
         "sequencer",
         "grid",
         "midi"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "infinitedigits",
@@ -5445,7 +5747,8 @@
         "generative",
         "drum",
         "norns only"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "carltesta",
@@ -5462,7 +5765,8 @@
       "Tags": [
         "generative",
         "audio_fx"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "Midworld",
@@ -5478,7 +5782,8 @@
       "Project URL": "https://github.com/icerigger/sweet-bees",
       "Tags": [
         "looper"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "infinitedigits",
@@ -5496,7 +5801,8 @@
         "synth",
         "sequencer",
         "norns only"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "its_your_bedtime",
@@ -5510,7 +5816,8 @@
       "Out of Sync": "",
       "Playwright Status": "",
       "Project URL": "https://github.com/itsyourbedtime/takt",
-      "Tags": []
+      "Tags": [],
+      "source": "community"
     },
     {
       "Author": "ngwese",
@@ -5529,7 +5836,8 @@
         "midi",
         "arc",
         "grid"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "infinitedigits",
@@ -5545,7 +5853,8 @@
       "Project URL": "https://github.com/schollz/tapedeck",
       "Tags": [
         "audio_fx"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "skibu",
@@ -5562,7 +5871,8 @@
       "Tags": [
         "art",
         "birds"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "nvillar",
@@ -5580,7 +5890,8 @@
         "synth",
         "sequencer",
         "grid"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "WilliamHazard",
@@ -5596,7 +5907,8 @@
       "Project URL": "https://github.com/williamthazard/TetraBobo",
       "Tags": [
         "synth"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "WilliamHazard",
@@ -5612,7 +5924,8 @@
       "Project URL": "https://github.com/williamthazard/Tetrabotis",
       "Tags": [
         "synth"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "zebra",
@@ -5628,7 +5941,8 @@
       "Project URL": "https://github.com/catfact/thebangs.git",
       "Tags": [
         "engine"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "infinitedigits",
@@ -5645,7 +5959,8 @@
       "Tags": [
         "sequencer",
         "grid"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "mpelath",
@@ -5665,7 +5980,8 @@
         "midi",
         "sequencer",
         "generative"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "maaark",
@@ -5686,7 +6002,8 @@
         "synth",
         "granulator",
         "w"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "markeats",
@@ -5703,7 +6020,8 @@
       "Tags": [
         "sampler",
         "midi"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "emanuelep",
@@ -5721,7 +6039,8 @@
         "drum",
         "synth",
         "norns only"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "crim",
@@ -5740,7 +6059,8 @@
         "delay",
         "grid",
         "crow"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "infinitedigits",
@@ -5757,7 +6077,8 @@
       "Tags": [
         "utility",
         "midi"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "okyeron",
@@ -5775,7 +6096,8 @@
         "sequencer",
         "grid",
         "midi"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "ypxkap",
@@ -5793,7 +6115,8 @@
         "sequencer",
         "grid",
         "midi"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "ChrisLowis",
@@ -5810,7 +6133,8 @@
       "Tags": [
         "synth",
         "norns only"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "tyleretters",
@@ -5828,7 +6152,8 @@
         "generative",
         "sequencer",
         "midi"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "markeats",
@@ -5844,7 +6169,8 @@
       "Project URL": "https://github.com/markwheeler/tuner",
       "Tags": [
         "utility"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "speakerdamage",
@@ -5861,7 +6187,8 @@
       "Tags": [
         "delay",
         "audio_fx"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "adamstaff",
@@ -5879,7 +6206,8 @@
         "norns",
         "crow",
         "sampler"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "ljudvagg vicimity",
@@ -5896,7 +6224,8 @@
       "Tags": [
         "sequencer",
         "crow"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "cfd90",
@@ -5912,7 +6241,8 @@
       "Project URL": "https://github.com/cfdrake/twine",
       "Tags": [
         "granulator"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "dddstudio",
@@ -5929,7 +6259,8 @@
       "Tags": [
         "granulator",
         "audio_fx"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "tyleretters",
@@ -5945,7 +6276,8 @@
       "Project URL": "https://github.com/northern-information/u",
       "Tags": [
         "utility"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "duncangeere",
@@ -5965,7 +6297,8 @@
         "midi",
         "drone",
         "generative"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "speakerdamage",
@@ -5981,7 +6314,8 @@
       "Project URL": "https://github.com/speakerdamage/uhf",
       "Tags": [
         "granulator"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "justmat",
@@ -5998,7 +6332,8 @@
       "Tags": [
         "crow",
         "grid"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "nattog",
@@ -6016,7 +6351,8 @@
         "sequencer",
         "sampler",
         "grid"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "infinitedigits",
@@ -6032,7 +6368,8 @@
       "Project URL": "https://github.com/schollz/warmreload",
       "Tags": [
         "mod"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "alanza",
@@ -6048,7 +6385,8 @@
       "Project URL": "https://github.com/ryleelyman/waver",
       "Tags": [
         "utility"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "xmacex",
@@ -6064,7 +6402,8 @@
       "Project URL": "https://github.com/xmacex/window-crowparator",
       "Tags": [
         "crow"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "infinitedigits",
@@ -6082,7 +6421,8 @@
         "utility",
         "crow",
         "midi"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "andrew",
@@ -6099,7 +6439,8 @@
       "Tags": [
         "delay",
         "looper"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "alanza",
@@ -6116,7 +6457,8 @@
       "Tags": [
         "synth",
         "midi"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "argotechnica infinitedigits license tyleretters",
@@ -6135,7 +6477,8 @@
         "tracker",
         "midi",
         "keyboard"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "sbaio",
@@ -6152,7 +6495,8 @@
       "Tags": [
         "sequencer",
         "grid"
-      ]
+      ],
+      "source": "community"
     },
     {
       "Author": "infinitedigits",
@@ -6172,7 +6516,8 @@
         "keyboard",
         "midi",
         "crow"
-      ]
+      ],
+      "source": "community"
     }
   ]
 }

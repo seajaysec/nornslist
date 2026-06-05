@@ -194,6 +194,10 @@ class NornsScraper:
         # catalog.json (canonical full-rows catalog; build_data.py prefers it).
         self.catalog_enabled = True
         self.catalog_output = None
+        # GitHub discovery (roadmap #3): off by default — opt in with --discover.
+        self.discover_enabled = False
+        self.discover_aggressive = True
+        self.discover_max_authors = None
 
         # --- Efficiency: per-run memoization (avoids redundant GitHub/index calls) ---
         # Cached HTML of the norns.community index page. It was fetched twice per
@@ -204,6 +208,11 @@ class NornsScraper:
         # Last-Updated cache also needs pushed_at). Keyed by (owner, repo).
         self._repo_meta_cache = {}
         self._repo_meta_lock = threading.Lock()
+        # GitHub search API is ~30 req/min authenticated; the discovery sweep
+        # fires many searches, so throttle every search request to stay under it.
+        self._search_last = 0.0
+        self._search_lock = threading.Lock()
+        self._search_min_interval = 2.1
 
     def discover_demo_video(
         self, discussion_url, _no_resolve=False, author="", script_name=""
@@ -3490,9 +3499,30 @@ class NornsScraper:
             pass
         return str(value).strip() if value is not None else ""
 
-    def write_catalog_json(self, rows, excel_path: str, output_path: str = None) -> None:
-        """Write catalog.json from merged rows. Best-effort: logs and returns on
-        any failure so it can never abort a run whose xlsx already saved."""
+    def _discovered_to_catalog_entry(self, rec: dict) -> dict:
+        """Map a discovery record (GitHub-sourced) into a catalog entry. Carries
+        only what GitHub gives us (name/author/desc/proj/upd/tags=topics) plus the
+        discovery-only fields (facets/stars/archived/source); community-only
+        columns (Discussion/Community URL, Demo) stay empty."""
+        entry = {c: "" for c in self.FIELD_MAP}
+        entry["Name"] = rec.get("name") or ""
+        entry["Author"] = rec.get("author") or ""
+        entry["Description"] = rec.get("desc") or ""
+        entry["Project URL"] = rec.get("proj") or ""
+        entry["Last Updated"] = rec.get("upd") or ""
+        entry["Tags"] = list(rec.get("topics") or [])
+        entry["source"] = "github"
+        entry["facets"] = list(rec.get("facets") or [])
+        entry["stars"] = int(rec.get("stars") or 0)
+        if rec.get("archived"):
+            entry["archived"] = True
+        return entry
+
+    def write_catalog_json(self, rows, excel_path: str, output_path: str = None,
+                           discovered: dict = None) -> None:
+        """Write catalog.json from merged community rows, plus any GitHub-discovered
+        repos (source='github'). Best-effort: logs and returns on any failure so it
+        can never abort a run whose xlsx already saved."""
         import json
 
         try:
@@ -3509,7 +3539,23 @@ class NornsScraper:
                     else:
                         entry[c] = self._catalog_clean(row.get(c, ""))
                 entry["Name"] = name
+                entry["source"] = "community"
                 scripts.append(entry)
+
+            # Append GitHub-discovered repos that aren't already a community script.
+            # Dedupe by lowercase name — the site slug / install key — so forks and
+            # renamed repos collapse onto the community entry (which always wins).
+            # Among same-named GitHub repos, the most-starred wins (stable, not
+            # arbitrary classification order).
+            if discovered:
+                have = {s["Name"].lower() for s in scripts}
+                for rec in sorted(discovered.values(),
+                                  key=lambda r: (-(r.get("stars") or 0), r.get("name", ""))):
+                    nm = (rec.get("name") or "").strip()
+                    if nm and nm.lower() not in have:
+                        scripts.append(self._discovered_to_catalog_entry(rec))
+                        have.add(nm.lower())
+
             scripts.sort(key=lambda r: r["Name"].lower())
             payload = {
                 "file_info": {"version": 1, "kind": "script_catalog"},
@@ -3519,13 +3565,37 @@ class NornsScraper:
             out = output_path or self._default_catalog_output(excel_path)
             with open(out, "w", encoding="utf-8") as f:
                 json.dump(payload, f, indent=2, sort_keys=True, ensure_ascii=False)
-            logger.info(f"Wrote catalog.json: {len(scripts)} scripts -> {out}")
+            n_gh = sum(1 for s in scripts if s.get("source") == "github")
+            logger.info(
+                f"Wrote catalog.json: {len(scripts)} scripts "
+                f"({len(scripts) - n_gh} community, {n_gh} GitHub) -> {out}"
+            )
         except Exception as e:
             logger.warning(f"Failed to write catalog.json: {e}")
 
-    def regenerate_catalog_only(self, excel_path: str, output_path: str = None) -> None:
-        """Rebuild catalog.json from an existing xlsx, with no re-scrape. Use this
-        to seed/refresh the canonical catalog from the current spreadsheet."""
+    def _run_discovery(self, rows, excel_path: str) -> dict:
+        """Extract the community repo set from merged rows and run GitHub
+        discovery. Returns {(owner,repo): record} or {} on any failure."""
+        try:
+            community = set()
+            for row in rows:
+                owner, repo = self._parse_github_repo(row.get("Project URL", ""))
+                if owner and repo:
+                    community.add((owner, repo))
+            return self.discover_github_repos(
+                community, excel_path,
+                aggressive=getattr(self, "discover_aggressive", True),
+                max_author_searches=getattr(self, "discover_max_authors", None),
+            )
+        except Exception as e:
+            logger.warning(f"Discovery failed (catalog still written, community-only): {e}")
+            return {}
+
+    def regenerate_catalog_only(self, excel_path: str, output_path: str = None,
+                                discover: bool = False) -> None:
+        """Rebuild catalog.json from an existing xlsx, with no community re-scrape.
+        With discover=True, also run GitHub discovery and fold in net-new repos.
+        Use this to seed/refresh the canonical catalog from the spreadsheet."""
         if not os.path.exists(excel_path):
             logger.error(f"Excel file not found: {excel_path}")
             return
@@ -3535,7 +3605,286 @@ class NornsScraper:
             logger.error(f"Failed to load Excel for catalog regeneration: {e}")
             return
         rows = df.fillna("").to_dict("records")
-        self.write_catalog_json(rows, excel_path, output_path)
+        discovered = self._run_discovery(rows, excel_path) if discover else None
+        self.write_catalog_json(rows, excel_path, output_path, discovered)
+
+    # ===========================================================================
+    # GitHub discovery (roadmap #3): broaden the catalog beyond community.json.
+    #
+    # community.json is the curated ground truth (~351 repos) but a search-only
+    # crawl tops out at ~72% of it (forks, SuperCollider engines, renames, and a
+    # long tail of repos with no "norns" keyword/topic). So we SEED from
+    # community.json (100% guaranteed) and UNION several GitHub search strategies
+    # to surface net-new norns repos. Every net-new candidate is gated by the
+    # runtime-API fingerprint (NORNS_FP) — the same signal ingenue uses, verified
+    # 343/343 on the community corpus — so generic-lua cruft stays out. Verdicts
+    # cache per repo keyed on pushed_at, so nightly runs only reclassify
+    # changed/new repos.
+    # ===========================================================================
+
+    # Runtime-API fingerprint, ported verbatim from ingenue's classifier.
+    NORNS_FP = re.compile(
+        r"engine\.|softcut\.|\bscreen\.|params:add|function init\(|function redraw\(|"
+        r"function enc\(|function key\(|controlspec|musicutil|grid\.connect|"
+        r"arc\.connect|metro\.|norns\.|_norns|mod\.hook|mod\.menu"
+    )
+    # norns infra / lists / hardware — never installable scripts.
+    GH_BLOCK = {
+        "monome/norns", "monome/norns-shield", "okyeron/shieldxl",
+        "p3r7/awesome-monome-norns", "monome/norns-image", "monome/dust",
+        "monome/norns-community", "figrhed/norns-on-raspberry-pi",
+        "jguzak/shieldxl_battery", "seajaysec/ingenue",
+    }
+    GH_BLOCK_NAMES = {"ingenue"}
+    DISCOVERY_CACHE_TTL_DAYS = 30  # reclassify an unchanged repo at most this stale
+    # Bump when classifier logic changes — invalidates cached verdicts so they rebuild.
+    DISCOVERY_LOGIC_VERSION = 1
+
+    def _discovery_cache_path(self, excel_path: str) -> str:
+        base, _ = os.path.splitext(excel_path)
+        return f"{base}.discovery_cache.json"
+
+    def _load_discovery_cache(self, excel_path: str) -> dict:
+        import json
+
+        path = self._discovery_cache_path(excel_path)
+        if not os.path.exists(path):
+            return {}
+        try:
+            with open(path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            if isinstance(data, dict):
+                logger.info(f"Loaded {len(data)} discovery-cache entries from {path}")
+                return data
+        except Exception as e:
+            logger.warning(f"Failed to load discovery cache from {path}: {e}")
+        return {}
+
+    def _save_discovery_cache(self, excel_path: str, cache: dict) -> None:
+        import json
+
+        path = self._discovery_cache_path(excel_path)
+        try:
+            with open(path, "w", encoding="utf-8") as f:
+                json.dump(cache, f, indent=2, sort_keys=True, ensure_ascii=False)
+            logger.info(f"Saved {len(cache)} discovery-cache entries to {path}")
+        except Exception as e:
+            logger.warning(f"Failed to save discovery cache to {path}: {e}")
+
+    def _discovery_fresh(self, entry: dict, pushed_at: str) -> bool:
+        """A classification is reusable while the repo hasn't been pushed since we
+        classified it (same pushed_at) and it's within TTL."""
+        if not isinstance(entry, dict):
+            return False
+        if entry.get("logic_version") != self.DISCOVERY_LOGIC_VERSION:
+            return False
+        cached_pa = str(entry.get("pushed_at") or "")
+        if not cached_pa or cached_pa != str(pushed_at or ""):
+            return False
+        classified_at = str(entry.get("classified_at") or "")[:10]
+        try:
+            from datetime import datetime
+
+            age = (datetime.now() - datetime.strptime(classified_at, "%Y-%m-%d")).days
+            return age <= self.DISCOVERY_CACHE_TTL_DAYS
+        except Exception:
+            return False
+
+    def _search_repos(self, q: str, max_pages: int = 10, sort: str = "updated") -> list:
+        """Paginated GitHub repo search -> list of item dicts. Stops at the GitHub
+        1000-result cap or `max_pages`. Degrades to a partial/empty list on
+        rate-limit or error so discovery never aborts a run."""
+        items, seen_ids = [], set()
+        for page in range(1, max_pages + 1):
+            tries = 0
+            while True:
+                tries += 1
+                self._throttle_search()
+                try:
+                    r = self.github_session.get(
+                        "https://api.github.com/search/repositories",
+                        params={"q": q, "per_page": 100, "page": page,
+                                "sort": sort, "order": "desc"},
+                        timeout=30,
+                    )
+                except Exception as e:
+                    logger.debug(f"Discovery: search error {q!r} p{page}: {e}")
+                    return items
+                if r.status_code == 403 and tries <= 2:
+                    # primary/secondary rate limit — honor Retry-After, then retry once.
+                    wait = int(r.headers.get("Retry-After") or 0) or 15
+                    logger.warning(f"Discovery: search 403 on {q!r} p{page}; backing off {wait}s")
+                    time.sleep(wait)
+                    continue
+                break
+            if r.status_code != 200:
+                if r.status_code == 403:
+                    logger.warning(f"Discovery: search still rate-limited on {q!r} p{page}; partial")
+                break
+            try:
+                batch = r.json().get("items") or []
+            except Exception:
+                break
+            for it in batch:
+                if it.get("id") not in seen_ids:
+                    seen_ids.add(it.get("id"))
+                    items.append(it)
+            if len(batch) < 100:
+                break
+        return items
+
+    def _throttle_search(self) -> None:
+        """Space out GitHub search requests to respect the ~30 req/min limit."""
+        with self._search_lock:
+            now = time.monotonic()
+            wait = self._search_min_interval - (now - self._search_last)
+            if wait > 0:
+                time.sleep(wait)
+            self._search_last = time.monotonic()
+
+    def _classify_norns_repo(self, owner: str, repo: str, branch: str, pushed_at: str,
+                             cache: dict, cache_lock) -> dict:
+        """Gate a candidate repo on the norns fingerprint. Structural proof
+        (lib/mod.lua or a .sc engine / engine/ dir) short-circuits with no content
+        read; otherwise read ONE key file and test NORNS_FP. Returns
+        {is_norns, facets, ...}. Cached on pushed_at; transient/unknown verdicts
+        are NOT cached so they self-heal."""
+        ck = f"{owner}/{repo}"
+        cached = cache.get(ck)
+        if cached and self._discovery_fresh(cached, pushed_at):
+            return cached
+
+        result = {"is_norns": None, "facets": []}  # None = couldn't determine (don't cache)
+        try:
+            tr = self.github_session.get(
+                f"https://api.github.com/repos/{owner}/{repo}/git/trees/{branch or 'HEAD'}",
+                params={"recursive": "1"}, timeout=15,
+            )
+            if tr.status_code == 403 or tr.status_code != 200:
+                return result  # rate-limited / unreadable -> undetermined
+            paths = [str(t.get("path", "")) for t in (tr.json().get("tree") or [])
+                     if t.get("type") == "blob"]
+            top_lua = [p for p in paths if "/" not in p and p.lower().endswith(".lua")]
+            has_mod = any(re.match(r"^lib/mod\.lua$", p, re.I) for p in paths)
+            lib_lua = [p for p in paths if p.lower().endswith(".lua") and re.search(r"(^|/)lib/", p, re.I)]
+            # `.sc` files are the norns SuperCollider-engine convention -> strong proof.
+            # An `engine/` *directory* alone is too generic (kernels, generic audio
+            # projects) -> only a facet hint; such repos still must pass the content gate.
+            has_sc = any(p.lower().endswith(".sc") for p in paths)
+            is_norns = bool(has_mod or has_sc)  # structural proof — no content read
+
+            if not is_norns:
+                keyfile = (next((p for p in top_lua if p.lower() == f"{repo.lower()}.lua"), None)
+                           or (top_lua[0] if top_lua else None)
+                           or ("lib/mod.lua" if has_mod else None)
+                           or (lib_lua[0] if lib_lua else None))
+                if keyfile:
+                    from urllib.parse import quote
+
+                    seg = "/".join(quote(s) for s in keyfile.split("/"))
+                    fr = self.github_session.get(
+                        f"https://api.github.com/repos/{owner}/{repo}/contents/{seg}",
+                        headers={"Accept": "application/vnd.github.raw"},
+                        params={"ref": branch}, timeout=15,
+                    )
+                    if fr.status_code == 200 and self.NORNS_FP.search(fr.text):
+                        is_norns = True
+                elif not paths:
+                    return result  # empty/unreadable tree -> undetermined
+
+            result = {
+                "is_norns": is_norns,
+                "facets": self._facets_from_paths(paths),
+                "pushed_at": pushed_at or "",
+                "classified_at": self._today_iso(),
+                "logic_version": self.DISCOVERY_LOGIC_VERSION,
+            }
+            if pushed_at:  # only cache a determinate verdict with a change signal
+                with cache_lock:
+                    cache[ck] = result
+        except Exception as e:
+            logger.debug(f"Discovery: classify error {owner}/{repo}: {e}")
+        return result
+
+    def discover_github_repos(self, community_repos: set, excel_path: str,
+                              aggressive: bool = True,
+                              max_author_searches: int = None) -> dict:
+        """Union GitHub search strategies, gate net-new candidates on NORNS_FP,
+        and return {(owner, repo): record} for repos that pass — each record
+        carrying the fields a catalog row needs (name/author/desc/proj/upd/tags/
+        facets/archived/source). community repos are excluded here (they're seeded
+        separately and known-norns). The per-author sweep seeds from the repo
+        OWNERS in community_repos (the actual GitHub logins) — community.json's
+        `author` field is a human display name, not a username. Read-only."""
+        cache = self._load_discovery_cache(excel_path)
+        candidates = {}  # (owner, name) -> richest item dict
+
+        def add(items):
+            for it in items:
+                owner = (it.get("owner") or {}).get("login", "").lower()
+                name = (it.get("name") or "").lower()
+                if not owner or not name:
+                    continue
+                if f"{owner}/{name}" in self.GH_BLOCK or name in self.GH_BLOCK_NAMES:
+                    continue
+                candidates.setdefault((owner, name), it)
+
+        strategies = ["norns language:lua", "topic:norns", "norns"]
+        if aggressive:
+            strategies.append("fork:true norns language:lua")
+        for q in strategies:
+            add(self._search_repos(q))
+            logger.info(f"Discovery: after [{q}] -> {len(candidates)} unique candidates")
+
+        if aggressive:
+            owners = sorted({o for (o, _) in community_repos if o})
+            if max_author_searches is not None:
+                owners = owners[:max_author_searches]
+            logger.info(f"Discovery: per-author sweep over {len(owners)} community repo owners")
+            for i, o in enumerate(owners, 1):
+                add(self._search_repos(f"user:{o} language:lua", max_pages=3))
+                if i % 25 == 0:
+                    logger.info(f"Discovery: author sweep {i}/{len(owners)} -> "
+                                f"{len(candidates)} candidates")
+
+        netnew = {k: it for k, it in candidates.items() if k not in community_repos}
+        logger.info(f"Discovery: {len(candidates)} total candidates, "
+                    f"{len(netnew)} net-new (not on community); classifying...")
+
+        discovered, cache_lock = {}, threading.Lock()
+
+        def _task(item):
+            (owner, name), it = item
+            verdict = self._classify_norns_repo(
+                owner, name, it.get("default_branch"), it.get("pushed_at"), cache, cache_lock)
+            if not verdict.get("is_norns"):
+                return None
+            return (owner, name), {
+                "owner": owner, "name": it.get("name") or name,
+                "author": (it.get("owner") or {}).get("login", ""),
+                "desc": it.get("description") or "",
+                "proj": it.get("html_url") or f"https://github.com/{owner}/{name}",
+                "upd": (it.get("pushed_at") or "")[:10],
+                "topics": (it.get("topics") or [])[:8],
+                "facets": verdict.get("facets") or [],
+                "archived": bool(it.get("archived")),
+                "stars": it.get("stargazers_count") or 0,
+                "source": "github",
+            }
+
+        with ThreadPoolExecutor(max_workers=self.max_workers) as ex:
+            for fut in as_completed({ex.submit(_task, it): it for it in netnew.items()}):
+                try:
+                    res = fut.result()
+                    if res:
+                        discovered[res[0]] = res[1]
+                except Exception:
+                    pass
+
+        self._save_discovery_cache(excel_path, cache)
+        logger.info(f"Discovery: {len(discovered)}/{len(netnew)} net-new candidates "
+                    f"passed the norns gate")
+        return discovered
 
     def _scrape_by_community_url(self, community_url: str):
         """Build script details for sync-check by looking up the community.json entry."""
@@ -4753,9 +5102,16 @@ class NornsScraper:
 
         # Emit catalog.json — the canonical full-rows catalog that build_data.py
         # prefers over the xlsx. Best-effort; the xlsx is already safely written.
+        # With discovery enabled, fold in net-new GitHub repos (source='github');
+        # the xlsx stays community-only (this only widens catalog.json + the site).
         if getattr(self, "catalog_enabled", True):
+            discovered = (
+                self._run_discovery(merged_data, filename)
+                if getattr(self, "discover_enabled", False)
+                else None
+            )
             self.write_catalog_json(
-                merged_data, filename, getattr(self, "catalog_output", None)
+                merged_data, filename, getattr(self, "catalog_output", None), discovered
             )
 
     def print_summary(self):
@@ -4943,6 +5299,26 @@ def main():
         default=None,
         help="Path to write catalog.json (default: 'catalog.json' next to the Excel file).",
     )
+    parser.add_argument(
+        "--discover",
+        action="store_true",
+        help=(
+            "Enable GitHub discovery: union search strategies, gate net-new repos on "
+            "the norns fingerprint, and fold them into catalog.json as source='github' "
+            "(the xlsx stays community-only). Off by default."
+        ),
+    )
+    parser.add_argument(
+        "--discover-only",
+        action="store_true",
+        help="Rebuild catalog.json from the existing xlsx WITH discovery, no re-scrape.",
+    )
+    parser.add_argument(
+        "--discover-max-authors",
+        type=int,
+        default=None,
+        help="Cap the per-author discovery sweep to the first N authors (default: all).",
+    )
 
     args = parser.parse_args()
 
@@ -4957,6 +5333,8 @@ def main():
     scraper.feed_output = args.feed_output
     scraper.catalog_enabled = not args.no_catalog
     scraper.catalog_output = args.catalog_output
+    scraper.discover_enabled = args.discover
+    scraper.discover_max_authors = args.discover_max_authors
 
     # Optional fast-path: rebuild feed.json from existing xlsx + cache and exit
     if args.feed_only:
@@ -4964,8 +5342,10 @@ def main():
         return
 
     # Optional fast-path: rebuild catalog.json from existing xlsx and exit
-    if args.catalog_only:
-        scraper.regenerate_catalog_only(args.excel, args.catalog_output)
+    if args.catalog_only or args.discover_only:
+        scraper.regenerate_catalog_only(
+            args.excel, args.catalog_output, discover=args.discover_only
+        )
         return
 
     # Optional fast-path: apply statuses from a log and exit
