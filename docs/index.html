@@ -36,7 +36,6 @@
     backdrop-filter:saturate(140%) blur(12px);
     -webkit-backdrop-filter:saturate(140%) blur(12px);
     border-bottom:1px solid var(--trim);
-    transition:transform .45s cubic-bezier(.4,0,.2,1); will-change:transform;
   }
   .top-inner{max-width:1280px; margin:0 auto; padding:14px 18px 12px}
   .brand{display:flex; align-items:baseline; gap:12px; flex-wrap:wrap}
@@ -243,8 +242,9 @@
     .search{min-width:100%; order:-1}
     select.sort{flex:1}
     .filter-toggle{display:inline-flex; flex:0 0 auto}
-    /* hide the top bar when scrolling down, reveal on scroll up (set via JS) */
-    header.top.hide{transform:translateY(-105%)}
+    /* on phones the bar sits at the top of the page and scrolls away naturally
+       (scroll back to the top to get it) — no sticky/hide-on-scroll dance */
+    header.top{position:static}
     /* collapse the whole filter panel behind the toggle to reclaim vertical space */
     .filters{display:none}
     .filters.open{display:block; background:var(--panel2); border-bottom:1px solid var(--trim)}
@@ -672,27 +672,6 @@
     const f = $("#filters"), open = f.classList.toggle("open");
     $("#filterToggle").setAttribute("aria-expanded", open);
   });
-  // mobile: hide the top bar on scroll-down, reveal on scroll-up (CSS gates the
-  // transform to ≤640px, so this is a no-op visually on desktop)
-  (() => {
-    const bar = $("header.top"); let lastY = 0, upAcc = 0, ticking = false;
-    const REVEAL_AT = 110;  // require a deliberate up-scroll before revealing
-    window.addEventListener("scroll", () => {
-      if(ticking) return; ticking = true;
-      requestAnimationFrame(() => {
-        const y = window.scrollY, dy = y - lastY;
-        if(dy > 0){            // scrolling down — hide, reset the up accumulator
-          upAcc = 0;
-          // never hide while the filter panel is open (its toggle lives in the bar)
-          if(y > 90 && !$("#filters").classList.contains("open")) bar.classList.add("hide");
-        } else if(dy < 0){     // scrolling up — only reveal after a real intent
-          upAcc -= dy;
-          if(upAcc > REVEAL_AT || y <= 90) bar.classList.remove("hide");
-        }
-        lastY = y; ticking = false;
-      });
-    }, {passive:true});
-  })();
 
   /* ---------- boot ---------- */
   fetch("data.json", {cache:"no-store"})
