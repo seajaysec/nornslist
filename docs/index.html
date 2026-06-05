@@ -73,7 +73,19 @@
   }
   select.sort:focus{border-color:var(--accent2)}
 
-  .facetbar{display:flex; gap:7px; margin-top:11px; flex-wrap:wrap; align-items:center}
+  .filter-toggle{
+    display:none; align-items:center; gap:6px; white-space:nowrap;
+    background:var(--panel2); border:1px solid var(--trim); color:var(--fg);
+    border-radius:10px; padding:9px 12px; font-size:13px; cursor:pointer;
+  }
+  .filter-toggle svg{width:15px; height:15px}
+  .filter-toggle .fct{background:var(--accent); color:#241a0d; border-radius:9px; padding:0 6px; font-size:11px; font-weight:700}
+  .filter-toggle .fct:empty{display:none}
+  .filter-toggle[aria-expanded="true"]{border-color:var(--accent2); color:var(--accent2)}
+
+  .filters-inner{max-width:1280px; margin:0 auto; padding:9px 18px 11px; display:flex; flex-direction:column; gap:11px}
+
+  .facetbar{display:flex; gap:7px; flex-wrap:wrap; align-items:center}
   .facetbar .lbl{font-size:11px; text-transform:uppercase; letter-spacing:.6px; color:var(--faint); margin-right:2px}
   .chip{
     appearance:none; border:1px solid var(--trim); background:var(--panel2);
@@ -86,10 +98,7 @@
   .chip.on .ct{color:color-mix(in srgb,var(--accent) 75%,var(--fg))}
 
   /* ---- tag rail ---- */
-  .tagrail{
-    max-width:1280px; margin:14px auto 0; padding:0 18px;
-    display:flex; gap:7px; flex-wrap:wrap; align-items:center;
-  }
+  .tagrail{display:flex; gap:7px; flex-wrap:wrap; align-items:center}
   .tagrail .lbl{font-size:11px; text-transform:uppercase; letter-spacing:.6px; color:var(--faint)}
   .tag{
     appearance:none; border:1px solid var(--trim); background:transparent;
@@ -102,7 +111,7 @@
   .tagrail .more{color:var(--accent2); font-size:12px; background:none; border:0; cursor:pointer; padding:3px 6px}
 
   /* ---- active filters ---- */
-  .active{max-width:1280px; margin:11px auto 0; padding:0 18px; display:flex; gap:8px; flex-wrap:wrap; align-items:center; min-height:0}
+  .active{display:flex; gap:8px; flex-wrap:wrap; align-items:center; min-height:0}
   .active:empty{display:none}
   .active .ftag{
     display:inline-flex; align-items:center; gap:6px; font-size:12px;
@@ -221,8 +230,19 @@
   @media (max-width:640px){
     .grid,.skel{grid-template-columns:1fr}
     .brand h1{font-size:20px}
+    .brand .ghlink{display:none}
     .top-inner{padding:12px 14px}
-    .tagrail,.active,.resmeta,main,footer{padding-left:14px; padding-right:14px}
+    .resmeta,main,footer{padding-left:14px; padding-right:14px}
+    .filters-inner{padding-left:14px; padding-right:14px}
+    /* search takes the first row full-width; sort + filter toggle share the next */
+    .controls{flex-wrap:wrap}
+    .search{min-width:100%; order:-1}
+    select.sort{flex:1}
+    .filter-toggle{display:inline-flex; flex:0 0 auto}
+    /* collapse the whole filter panel behind the toggle to reclaim vertical space */
+    .filters{display:none}
+    .filters.open{display:block; background:var(--panel2); border-bottom:1px solid var(--trim)}
+    .filters.open .filters-inner{max-height:56vh; overflow-y:auto; -webkit-overflow-scrolling:touch}
   }
   @media (prefers-reduced-motion:reduce){
     *{animation-duration:.001ms !important; transition-duration:.001ms !important; scroll-behavior:auto}
@@ -254,8 +274,16 @@
         <option value="author">author a–z</option>
         <option value="demo">has demo first</option>
       </select>
+      <button class="filter-toggle" id="filterToggle" aria-expanded="false" aria-controls="filters">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 5h18M6 12h12M10 19h4"/></svg>
+        filters<span class="fct" id="filterCount"></span>
+      </button>
     </div>
+  </div>
+</header>
 
+<div class="filters" id="filters">
+  <div class="filters-inner">
     <div class="facetbar" id="facetbar">
       <span class="lbl">show only</span>
       <button class="chip" data-facet="demo">▶ demo <span class="ct" id="ct-demo"></span></button>
@@ -265,11 +293,10 @@
       <button class="chip" data-facet="nb" title="registers an nb (note-bridge) voice">♪ nb voice <span class="ct" id="ct-nb"></span></button>
       <button class="chip" data-facet="doc">📖 docs <span class="ct" id="ct-doc"></span></button>
     </div>
+    <div class="tagrail" id="tagrail"></div>
+    <div class="active" id="active"></div>
   </div>
-</header>
-
-<div class="tagrail" id="tagrail"></div>
-<div class="active" id="active"></div>
+</div>
 <div class="resmeta" id="resmeta"></div>
 
 <main>
@@ -501,6 +528,8 @@
     }
     const fcount = state.facets.size + state.tags.size + (state.q?1:0);
     resmeta.innerHTML = `<b>${list.length}</b> of ${state.all.length} scripts` + (fcount?` · ${fcount} filter${fcount>1?'s':''} active`:"");
+    const fc = state.facets.size + state.tags.size;
+    $("#filterCount").textContent = fc || "";
     renderActive();
     syncChips();
     writeHash();
@@ -595,6 +624,11 @@
   $("#sort").addEventListener("change", e => { state.sort=e.target.value; render(); });
   // back/forward or an externally-pasted #hash re-applies filter state
   window.addEventListener("hashchange", () => { applyHash(); syncInputs(); render(); });
+  // mobile: collapse/expand the filter panel
+  $("#filterToggle").addEventListener("click", () => {
+    const f = $("#filters"), open = f.classList.toggle("open");
+    $("#filterToggle").setAttribute("aria-expanded", open);
+  });
 
   /* ---------- boot ---------- */
   fetch("data.json", {cache:"no-store"})
