@@ -3249,15 +3249,15 @@
       "script",
       "engine"
     ],
-    "fetched_at": "2026-06-05",
+    "fetched_at": "2026-06-06",
     "images": [
       "https://raw.githubusercontent.com/nunosmash/AshSynth/main/demo.png"
     ],
     "logic_version": 2,
     "nb": false,
     "nb_role": "",
-    "readme": "AshSynth\n\nDemos: Demo 1 · Demo 2 (Shorts)\n\nAshSynth is a monophonic synthesizer script for norns. It starts from a familiar dual-oscillator → LP filter → dual-ADSR layout, then adds norns-friendly UI and a few sound-design choices of its own. The screen stays live; parameters show as bar graphs so you can read the patch at a glance.\n\nWhat it sounds like\n\nAshSynth is designed to be a genuine standalone synth, capable of serving as a complete instrument in its own right.\nMono voice — one note at a time, clear and direct; good for bass, leads, and short pads or sequences.\nDual oscillators — wave, pitch, octave, level, and detune live on separate OSC1 / OSC2 pages so each source is easy to shape on its own.\nFM layer — a high-ratio FM voice in MIX; depth can be swept with the LFO.\nSplit filter & amp envelopes — filter moves on its own, or LINK ties it to the amp envelope.\nWide LFO — routes to pitch, filter, amp, pulse width, detune, noise, FM, glide, drive, delay mix, and reverb mix; LFO Master scales all depths at once.\nDelay & reverb — clock-synced delay (triplets, dotted notes, bars, and more) plus FreeVerb2 reverb, with light makeup gain so wet mixes do not collapse in level. …",
-    "source_upd": "2026-06-04"
+    "readme": "AshSynth\n\nDemos: Demo 1 · Demo 2 (Shorts)\n\nAshSynth is a monophonic synthesizer script for norns. It starts from a familiar dual-oscillator → LP filter → dual-ADSR layout, then adds norns-friendly UI and a few sound-design choices of its own. The screen stays live; parameters show as bar graphs so you can read the patch at a glance.\n\nWhat it sounds like\n\nAshSynth is designed to be a genuine standalone synth, capable of serving as a complete instrument in its own right.\nMono voice — one note at a time, clear and direct; good for bass, leads, and short pads or sequences.\nDual oscillators — wave, pitch, octave, level, and detune live on separate OSC1 / OSC2 pages so each source is easy to shape on its own.\nFM layer — a high-ratio FM voice in MIX; depth can be swept with the LFO.\nSplit filter & amp envelopes — dedicated FENV and AENV pages; LINK ties base ADSR values together, and when LINK is on the amp envelope follows the filter envelope (including LFO filter-env modulation).\nDual LFO — LFO1 and LFO2 each have rate, shape, master depth, and 16 destinations; both sum onto the same targets for layered modulation. …",
+    "source_upd": "2026-06-05"
   },
   "nvillar/tetra": {
     "engine": "",
