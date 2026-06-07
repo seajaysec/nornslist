@@ -206,6 +206,15 @@
     "project_url": "https://github.com/tehn/ash",
     "tags": "arc, grid, looper, drum, synth"
   },
+  "ashsynth": {
+    "author": "Ash",
+    "description": "Norns monophonic synthesizer: dual oscillators, FM, split envelopes, clock-synced delay & reverb",
+    "discussion_url": "",
+    "documentation_url": "https://github.com/nunosmash/ashsynth/blob/main/README.md",
+    "project_name": "ashsynth",
+    "project_url": "https://github.com/nunosmash/ashsynth",
+    "tags": "synth, engine, midi, grid"
+  },
   "asterion": {
     "author": "notester",
     "description": "adventure game as drone sequencer",
@@ -241,6 +250,15 @@
     "project_name": "awake",
     "project_url": "https://github.com/tehn/awake",
     "tags": "sequencer, grid"
+  },
+  "awake-ashsynth": {
+    "author": "Ash",
+    "description": "Awake dual sequencer with AshSynth — TIE legato, glide, grid",
+    "discussion_url": "https://llllllll.co/t/awake/21022",
+    "documentation_url": "https://github.com/nunosmash/awake-ashsynth/blob/main/README.md",
+    "project_name": "awake-ashsynth",
+    "project_url": "https://github.com/nunosmash/awake-ashsynth",
+    "tags": "sequencer, grid, synth, midi"
   },
   "awake-passersby": {
     "author": "nattog",
@@ -1249,6 +1267,15 @@
     "project_name": "impact",
     "project_url": "https://github.com/Mendrzec/impact",
     "tags": "drum, sequencer, grid"
+  },
+  "ingenue": {
+    "author": "seajay",
+    "description": "responsive browser ui for norns. runs on the device alongside maiden.",
+    "discussion_url": "https://llllllll.co/t/ingenue-a-modern-responsive-web-interface-for-norns/74794",
+    "documentation_url": "https://github.com/seajaysec/ingenue/blob/main/README.md",
+    "project_name": "ingenue",
+    "project_url": "https://github.com/seajaysec/ingenue",
+    "tags": "utility"
   },
   "initenere": {
     "author": "vicimity",

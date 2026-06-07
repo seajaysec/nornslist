@@ -1,5 +1,5 @@
 {
-  "date": "2026-06-06",
+  "date": "2026-06-07",
   "file_info": {
     "kind": "script_feed",
     "version": 1
@@ -251,7 +251,7 @@
         "midi",
         "grid"
       ],
-      "upd": "2026-06-05"
+      "upd": "2026-06-06"
     },
     "asterion": {
       "engine": "Asterion",
@@ -319,6 +319,22 @@
         "grid"
       ],
       "upd": "2026-04-30"
+    },
+    "awake-ashsynth": {
+      "facets": [
+        "script"
+      ],
+      "images": [
+        "https://raw.githubusercontent.com/nunosmash/Awake-AshSynth/main/awake-ashsynth.png"
+      ],
+      "readme": "Awake-AshSynth\r\n\r\n\r\n\r\nDemos: Demo 1 · Demo 2\r\n\r\nA norns script that pairs the Awake sequencer with the AshSynth engine. \r\nIt follows the same sequencing structure as awake-passersby, but uses the Ash engine instead of Passersby.\r\n\nOverview\r\n\r\nAwake uses two overlapping sequencers:\r\n\r\nLayer Role \r\n------- ------ \r\nTop (one) Melody. Sound only triggers when this layer has a note \r\nBottom (two) Pitch offset. Added to the top layer to set the final pitch \r\n\r\n\r\n\r\nA bottom value of 0 is not a rest — it means offset 0. If the top layer has a note, sound still plays even when the bottom is 0.\r\n\nRequirements\r\nnorns\r\nashsynth must also be installed (ashsynth/lib/EngineAsh.sc)\r\nThe SuperCollider engine file should live in ashsynth only. A separate EngineAsh.sc inside awake-ashsynth will cause duplicate engine errors\r\nGrid (optional): monome grid or toga integration\r\nlib/ashengine.lua and lib/beatclock-crow.lua are included in this script\r\nInstallation\r\n\nEngine / Sound\r\nEngine: engine.name = \"Ash\" — same as ashsynth\r\nParameters: lib/ashengine.lua — same Ash parameter set as ashsynth\r\nDifferences from ashsynth\r\nNo awake halfsecond (softcut) delay loop — direct engine output …",
+      "tags": [
+        "sequencer",
+        "grid",
+        "synth",
+        "midi"
+      ],
+      "upd": "2026-06-06"
     },
     "awake-passersby": {
       "facets": [
@@ -1980,6 +1996,24 @@
         "grid"
       ],
       "upd": "2022-07-26"
+    },
+    "ingenue": {
+      "facets": [
+        "script"
+      ],
+      "images": [
+        "https://raw.githubusercontent.com/seajaysec/ingenue/main/screenshots/desktop/editor.png",
+        "https://raw.githubusercontent.com/seajaysec/ingenue/main/screenshots/desktop/file-browser.png",
+        "https://raw.githubusercontent.com/seajaysec/ingenue/main/screenshots/desktop/params.png",
+        "https://raw.githubusercontent.com/seajaysec/ingenue/main/screenshots/desktop/repo.png",
+        "https://raw.githubusercontent.com/seajaysec/ingenue/main/screenshots/desktop/discover.png",
+        "https://raw.githubusercontent.com/seajaysec/ingenue/main/screenshots/desktop/mods.png"
+      ],
+      "readme": "ingenue\n\na responsive browser ui for monome norns. it\nruns on the device, opens from any browser on your network, and works on phone,\ntablet, and desktop.\n\ni've been using my norns for years and absolutely love it, and\nmaiden is a fantastic tool, but often\nwhen i'm making music it's specifically so i'm not at my computer, and i kept\nwishing i could reach my phone to install scripts, edit code, manage files,\ntweak params. so, i built ingenue. it's a browser editor served from the device,\nrebuilt to be responsive, plus a few other bits i've been scripting over the\nyears that seemed like they'd have a nice home in a responsive web ui.\n\nthis doesn't replace maiden, or touch it. ingenue installs as its own always-on\nservice on :7777 and the two sit side by side, so there's zero risk to your\nsetup. if you don't like it, run the uninstall script or remove the folder and\nyou're exactly where you started.\n\npoke around without a norns: seajaysec.github.io/ingenue\nis a static demo (every device call is faked, so nothing is connected to a real\nnorns, but the ui is the same one that runs on your device).\n\ninstall\n\nfrom maiden's matron REPL (no terminal needed): …",
+      "tags": [
+        "utility"
+      ],
+      "upd": "2026-06-07"
     },
     "initenere": {
       "facets": [

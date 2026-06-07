@@ -3249,7 +3249,7 @@
       "script",
       "engine"
     ],
-    "fetched_at": "2026-06-06",
+    "fetched_at": "2026-06-07",
     "images": [
       "https://raw.githubusercontent.com/nunosmash/AshSynth/main/demo.png"
     ],
@@ -3257,7 +3257,38 @@
     "nb": false,
     "nb_role": "",
     "readme": "AshSynth\n\nDemos: Demo 1 · Demo 2 (Shorts)\n\nAshSynth is a monophonic synthesizer script for norns. It starts from a familiar dual-oscillator → LP filter → dual-ADSR layout, then adds norns-friendly UI and a few sound-design choices of its own. The screen stays live; parameters show as bar graphs so you can read the patch at a glance.\n\nWhat it sounds like\n\nAshSynth is designed to be a genuine standalone synth, capable of serving as a complete instrument in its own right.\nMono voice — one note at a time, clear and direct; good for bass, leads, and short pads or sequences.\nDual oscillators — wave, pitch, octave, level, and detune live on separate OSC1 / OSC2 pages so each source is easy to shape on its own.\nFM layer — a high-ratio FM voice in MIX; depth can be swept with the LFO.\nSplit filter & amp envelopes — dedicated FENV and AENV pages; LINK ties base ADSR values together, and when LINK is on the amp envelope follows the filter envelope (including LFO filter-env modulation).\nDual LFO — LFO1 and LFO2 each have rate, shape, master depth, and 16 destinations; both sum onto the same targets for layered modulation. …",
-    "source_upd": "2026-06-05"
+    "source_upd": "2026-06-06"
+  },
+  "nunosmash/ashsynth": {
+    "engine": "Ash",
+    "facets": [
+      "script",
+      "engine"
+    ],
+    "fetched_at": "2026-06-07",
+    "images": [
+      "https://raw.githubusercontent.com/nunosmash/AshSynth/main/demo.png"
+    ],
+    "logic_version": 2,
+    "nb": false,
+    "nb_role": "",
+    "readme": "AshSynth\n\nDemos: Demo 1 · Demo 2 (Shorts)\n\nAshSynth is a monophonic synthesizer script for norns. It starts from a familiar dual-oscillator → LP filter → dual-ADSR layout, then adds norns-friendly UI and a few sound-design choices of its own. The screen stays live; parameters show as bar graphs so you can read the patch at a glance.\n\nWhat it sounds like\n\nAshSynth is designed to be a genuine standalone synth, capable of serving as a complete instrument in its own right.\nMono voice — one note at a time, clear and direct; good for bass, leads, and short pads or sequences.\nDual oscillators — wave, pitch, octave, level, and detune live on separate OSC1 / OSC2 pages so each source is easy to shape on its own.\nFM layer — a high-ratio FM voice in MIX; depth can be swept with the LFO.\nSplit filter & amp envelopes — dedicated FENV and AENV pages; LINK ties base ADSR values together, and when LINK is on the amp envelope follows the filter envelope (including LFO filter-env modulation).\nDual LFO — LFO1 and LFO2 each have rate, shape, master depth, and 16 destinations; both sum onto the same targets for layered modulation. …",
+    "source_upd": "2026-06-06"
+  },
+  "nunosmash/awake-ashsynth": {
+    "engine": "",
+    "facets": [
+      "script"
+    ],
+    "fetched_at": "2026-06-07",
+    "images": [
+      "https://raw.githubusercontent.com/nunosmash/Awake-AshSynth/main/awake-ashsynth.png"
+    ],
+    "logic_version": 2,
+    "nb": false,
+    "nb_role": "",
+    "readme": "Awake-AshSynth\r\n\r\n\r\n\r\nDemos: Demo 1 · Demo 2\r\n\r\nA norns script that pairs the Awake sequencer with the AshSynth engine. \r\nIt follows the same sequencing structure as awake-passersby, but uses the Ash engine instead of Passersby.\r\n\nOverview\r\n\r\nAwake uses two overlapping sequencers:\r\n\r\nLayer Role \r\n------- ------ \r\nTop (one) Melody. Sound only triggers when this layer has a note \r\nBottom (two) Pitch offset. Added to the top layer to set the final pitch \r\n\r\n\r\n\r\nA bottom value of 0 is not a rest — it means offset 0. If the top layer has a note, sound still plays even when the bottom is 0.\r\n\nRequirements\r\nnorns\r\nashsynth must also be installed (ashsynth/lib/EngineAsh.sc)\r\nThe SuperCollider engine file should live in ashsynth only. A separate EngineAsh.sc inside awake-ashsynth will cause duplicate engine errors\r\nGrid (optional): monome grid or toga integration\r\nlib/ashengine.lua and lib/beatclock-crow.lua are included in this script\r\nInstallation\r\n\nEngine / Sound\r\nEngine: engine.name = \"Ash\" — same as ashsynth\r\nParameters: lib/ashengine.lua — same Ash parameter set as ashsynth\r\nDifferences from ashsynth\r\nNo awake halfsecond (softcut) delay loop — direct engine output …",
+    "source_upd": "2026-06-06"
   },
   "nvillar/tetra": {
     "engine": "",
@@ -4275,6 +4306,26 @@
     "nb_role": "",
     "readme": "zxcvbn\r\n\r\n\r\n\r\n\r\n\r\ndocs: zxcvbn.norns.online",
     "source_upd": "2024-05-06"
+  },
+  "seajaysec/ingenue": {
+    "engine": "",
+    "facets": [
+      "script"
+    ],
+    "fetched_at": "2026-06-07",
+    "images": [
+      "https://raw.githubusercontent.com/seajaysec/ingenue/main/screenshots/desktop/editor.png",
+      "https://raw.githubusercontent.com/seajaysec/ingenue/main/screenshots/desktop/file-browser.png",
+      "https://raw.githubusercontent.com/seajaysec/ingenue/main/screenshots/desktop/params.png",
+      "https://raw.githubusercontent.com/seajaysec/ingenue/main/screenshots/desktop/repo.png",
+      "https://raw.githubusercontent.com/seajaysec/ingenue/main/screenshots/desktop/discover.png",
+      "https://raw.githubusercontent.com/seajaysec/ingenue/main/screenshots/desktop/mods.png"
+    ],
+    "logic_version": 2,
+    "nb": false,
+    "nb_role": "",
+    "readme": "ingenue\n\na responsive browser ui for monome norns. it\nruns on the device, opens from any browser on your network, and works on phone,\ntablet, and desktop.\n\ni've been using my norns for years and absolutely love it, and\nmaiden is a fantastic tool, but often\nwhen i'm making music it's specifically so i'm not at my computer, and i kept\nwishing i could reach my phone to install scripts, edit code, manage files,\ntweak params. so, i built ingenue. it's a browser editor served from the device,\nrebuilt to be responsive, plus a few other bits i've been scripting over the\nyears that seemed like they'd have a nice home in a responsive web ui.\n\nthis doesn't replace maiden, or touch it. ingenue installs as its own always-on\nservice on :7777 and the two sit side by side, so there's zero risk to your\nsetup. if you don't like it, run the uninstall script or remove the folder and\nyou're exactly where you started.\n\npoke around without a norns: seajaysec.github.io/ingenue\nis a static demo (every device call is faked, so nothing is connected to a real\nnorns, but the ui is the same one that runs on your device).\n\ninstall\n\nfrom maiden's matron REPL (no terminal needed): …",
+    "source_upd": "2026-06-07"
   },
   "sixolet/nydl": {
     "engine": "NotYourDreamLooper",
