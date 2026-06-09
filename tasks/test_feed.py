@@ -12,9 +12,12 @@ from norns_scraper_discourse import NornsScraper  # noqa: E402
 
 S = NornsScraper  # static/class helpers only — no instance/network needed
 fails = []
+_checks = 0
 
 
 def check(name, got, want):
+    global _checks
+    _checks += 1
     if got != want:
         fails.append(f"{name}: got {got!r} want {want!r}")
 
@@ -175,9 +178,22 @@ check("feed_emits_sha", scripts["awake"].get("sha"), "deadbeef" * 5)
 scripts2 = inst._build_feed_scripts(rows, {("tehn", "awake"): {"readme": "hi"}})
 check("feed_no_sha_key_when_absent", "sha" in scripts2["awake"], False)
 
+# --- Phase 2: README media extraction (video > audio precedence) ---
+md_video = "Here's a demo: https://www.youtube.com/watch?v=abc123XYZ_0 and audio https://soundcloud.com/x/y"
+check("media_prefers_video", S._extract_readme_media(md_video), "https://www.youtube.com/watch?v=abc123XYZ_0")
+
+md_audio_only = "listen: https://soundcloud.com/artist/track-name"
+check("media_audio_when_no_video", S._extract_readme_media(md_audio_only), "https://soundcloud.com/artist/track-name")
+
+md_vimeo = "[demo](https://vimeo.com/123456789)"
+check("media_vimeo", S._extract_readme_media(md_vimeo), "https://vimeo.com/123456789")
+
+check("media_none", S._extract_readme_media("no links here, just prose"), "")
+check("media_ignores_plain_github", S._extract_readme_media("https://github.com/o/r"), "")
+
 if fails:
     print("FAILED:")
     for f in fails:
         print("  -", f)
     sys.exit(1)
-print(f"ALL {43 - 0} CHECKS PASSED")
+print(f"ALL {_checks} CHECKS PASSED")

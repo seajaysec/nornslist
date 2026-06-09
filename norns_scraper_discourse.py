@@ -3239,6 +3239,34 @@ class NornsScraper:
                 break
         return out
 
+    # README demo extraction: embeddable platforms the site renders, video>audio.
+    _MEDIA_VIDEO = re.compile(
+        r"https?://(?:www\.)?(?:youtube\.com/(?:watch\?[^\s)]*v=|embed/|shorts/)[\w-]{6,}"
+        r"|youtu\.be/[\w-]{6,}"
+        r"|vimeo\.com/(?:video/)?\d+"
+        r"|(?:www\.)?instagram\.com/(?:p|reel)/[\w-]+)",
+        re.I,
+    )
+    _MEDIA_AUDIO = re.compile(
+        r"https?://(?:(?:www\.)?soundcloud\.com/[\w-]+/[\w-]+"
+        r"|[\w-]+\.bandcamp\.com/(?:track|album)/[\w-]+)",
+        re.I,
+    )
+
+    @staticmethod
+    def _extract_readme_media(md: str) -> str:
+        """Best single demo URL from README text: first video link if any, else
+        first audio link, else ''. Matches the site's embeddable platforms."""
+        if not md:
+            return ""
+        mv = NornsScraper._MEDIA_VIDEO.search(md)
+        if mv:
+            return mv.group(0).rstrip(").,")
+        ma = NornsScraper._MEDIA_AUDIO.search(md)
+        if ma:
+            return ma.group(0).rstrip(").,")
+        return ""
+
     def _screenshots_from_paths(self, paths, owner: str, repo: str, branch: str) -> list:
         """Fallback gallery: raster image files committed to the repo (excluding
         .github/ assets). Used only when the README carried no images."""
