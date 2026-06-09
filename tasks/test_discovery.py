@@ -265,6 +265,19 @@ check("enrich_cache_demo", _recs[("o", "r")]["demo"], "https://youtu.be/c")
 check("enrich_cache_readme", _recs[("o", "r")]["readme"], "cached")
 check("enrich_cache_images", _recs[("o", "r")]["images"], ["https://i/x.png"])
 
+# --- G1: discovered repos carry the HEAD sha (for ingenue update detection) ---
+_si = object.__new__(NornsScraper)
+_si._load_feed_cache = lambda p: {"o/r": {"source_upd": "2024-01-01", "fetched_at": _today,
+    "logic_version": _LV, "sha": "a" * 40, "demo": "", "readme": "", "images": []}}
+_si._save_feed_cache = lambda p, c: None
+_si._github_fetch_feed_enrichment = _no_refetch
+_srecs = {("o", "r"): {"upd": "2024-01-01", "sha": "", "demo": "", "readme": "", "images": []}}
+_si._enrich_discovered(_srecs, "x.xlsx")
+check("enrich_cache_sha", _srecs[("o", "r")]["sha"], "a" * 40)
+_sentry = object.__new__(NornsScraper)._discovered_to_catalog_entry(
+    {"name": "r", "author": "o", "proj": "https://github.com/o/r", "facets": ["script"], "sha": "b" * 40})
+check("discovered_sha_in_catalog", _sentry.get("sha"), "b" * 40)
+
 # --- Phase 3: github.com system paths are not repos ---
 check("extract_gh_skips_orgs", S._extract_github_url("https://github.com/orgs/monome"), None)
 check("extract_gh_skips_marketplace", S._extract_github_url("https://github.com/marketplace/actions/x"), None)

@@ -3598,6 +3598,8 @@ class NornsScraper:
             entry["readme"] = rec["readme"]
         if rec.get("images"):
             entry["images"] = list(rec["images"])
+        if rec.get("sha"):
+            entry["sha"] = rec["sha"]
         entry["source"] = "github"
         entry["facets"] = list(rec.get("facets") or [])
         entry["stars"] = int(rec.get("stars") or 0)
@@ -4004,6 +4006,11 @@ class NornsScraper:
                 rec["readme"] = enr.get("readme") or ""
             if not rec.get("images"):
                 rec["images"] = list(enr.get("images") or [])
+            # HEAD sha rides along from the same cached enrichment — lets ingenue
+            # detect updates for discovered (gh-exclusive / soft-launch) installs
+            # by diffing the local sha against this, with no GitHub call of its own.
+            if not rec.get("sha"):
+                rec["sha"] = enr.get("sha") or ""
 
     def discover_github_repos(self, community_repos: set, excel_path: str,
                               aggressive: bool = True,
