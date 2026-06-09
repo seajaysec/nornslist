@@ -3718,17 +3718,29 @@ class NornsScraper:
                 aggressive=getattr(self, "discover_aggressive", True),
                 max_author_searches=getattr(self, "discover_max_authors", None),
             )
-            # Forum-driven: repo-linked norns-tag threads not already known.
-            known = set(community) | set(discovered.keys())
-            forum = self.discover_forum_repos(known, max_pages=getattr(self, "forum_max_pages", 5))
+            # Forum-driven soft launch: norns-tag threads that link a GitHub repo.
+            # Exclude ONLY community repos (they carry their own disc/demo). The
+            # "soft launch" signal is a repo that's on GitHub AND has a lines
+            # thread but isn't on norns.community yet — so a repo that github
+            # search ALSO found must be UPGRADED in place (add disc + `lines` tag),
+            # not skipped. Repos seen only on the forum are classified + added new.
+            forum = self.discover_forum_repos(set(community),
+                                              max_pages=getattr(self, "forum_max_pages", 5))
             cache = self._load_discovery_cache(excel_path)
             lock = threading.Lock()
-            forum_recs = {}
+            new_recs = {}
             for (owner, name), meta in forum.items():
                 # Isolate each forum repo: a single bad repo must never discard the
                 # already-complete github-search `discovered` set (the outer except
                 # would otherwise swallow everything and return {}).
                 try:
+                    existing = discovered.get((owner, name))
+                    if existing is not None:
+                        # github search already has it -> promote to soft launch
+                        existing["disc"] = meta["disc"]
+                        if "lines" not in (existing.get("topics") or []):
+                            existing.setdefault("topics", []).append("lines")
+                        continue
                     m = self._repo_meta(owner, name)
                     if m.get("_status") in (403, 404):
                         continue
@@ -3737,7 +3749,7 @@ class NornsScraper:
                         owner, name, branch, m.get("pushed_at"), cache, lock)
                     if not verdict.get("is_norns"):
                         continue
-                    forum_recs[(owner, name)] = {
+                    new_recs[(owner, name)] = {
                         "owner": owner, "name": name,
                         "author": owner, "desc": m.get("description") or "",
                         "proj": f"https://github.com/{owner}/{name}",
@@ -3752,15 +3764,16 @@ class NornsScraper:
                     logger.debug(f"Forum classify failed for {owner}/{name}: {exc}")
                     continue
             self._save_discovery_cache(excel_path, cache)
-            self._enrich_discovered(forum_recs, excel_path)  # cached README/demo/images
-            # Thread-demo fallback only where the README had no playable demo.
-            for (owner, name), rec in forum_recs.items():
-                if not rec.get("demo"):
+            self._enrich_discovered(new_recs, excel_path)  # cached README/demo/images
+            # Thread-demo fallback (upgraded + new) where the README had no demo.
+            for (owner, name), meta in forum.items():
+                rec = discovered.get((owner, name)) or new_recs.get((owner, name))
+                if rec and not rec.get("demo"):
                     try:
-                        rec["demo"] = self.discover_demo_video(rec["disc"]) or ""
+                        rec["demo"] = self.discover_demo_video(meta["disc"]) or ""
                     except Exception:
                         pass
-            discovered.update(forum_recs)
+            discovered.update(new_recs)
             return discovered
         except Exception as e:
             logger.warning(f"Discovery failed (catalog still written, community-only): {e}")

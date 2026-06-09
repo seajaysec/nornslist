@@ -233,6 +233,22 @@ check("run_disc_thread_demo", _rout[("nd", "shiny")]["demo"], "https://youtu.be/
 check("run_disc_readme_carried", _rout[("nd", "shiny")]["readme"], "R")
 check("run_disc_disc_carried", _rout[("nd", "shiny")]["disc"], "https://llllllll.co/t/x/1")
 
+# --- Soft launch: a github-found repo linked by a forum thread is upgraded ---
+_ui = object.__new__(NornsScraper)
+_ui.discover_aggressive = False
+_ui.discover_max_authors = None
+_ui.discover_github_repos = lambda *a, **k: {("gh", "dual"): {"owner": "gh", "name": "dual",
+    "source": "github", "topics": [], "demo": "https://youtu.be/readme", "disc": "", "upd": "2024-01-01"}}
+_ui.discover_forum_repos = lambda known, max_pages=5: {("gh", "dual"): {"disc": "https://llllllll.co/t/dual/5", "topic_id": 5}}
+_ui._enrich_discovered = lambda recs, path: None
+_ui._load_discovery_cache = lambda p: {}
+_ui._save_discovery_cache = lambda p, c: None
+_ui.discover_demo_video = lambda url: "https://youtu.be/thread"
+_uout = _ui._run_discovery([], "x.xlsx")
+check("softlaunch_upgrade_lines", "lines" in _uout[("gh", "dual")]["topics"], True)
+check("softlaunch_upgrade_disc", _uout[("gh", "dual")]["disc"], "https://llllllll.co/t/dual/5")
+check("softlaunch_keeps_readme_demo", _uout[("gh", "dual")]["demo"], "https://youtu.be/readme")
+
 # --- Phase 3: a forum-loop exception must NOT discard github-search results ---
 def _boom(*a, **k):
     raise RuntimeError("simulated repo-meta failure")
