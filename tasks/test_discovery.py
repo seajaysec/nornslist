@@ -162,6 +162,13 @@ entry = inst._discovered_to_catalog_entry(rec)
 check("discovered_demo_mapped", entry["Demo"], "https://youtu.be/abc123")
 check("discovered_disc_mapped", entry["Discussion URL"], "https://llllllll.co/t/thing/1")
 
+# --- Phase 2: discovered readme/images carried on catalog entry ---
+rec2 = {"name": "thing2", "author": "o", "proj": "https://github.com/o/thing2",
+        "facets": ["script"], "readme": "a readme", "images": ["https://x/y.png"]}
+e2 = object.__new__(NornsScraper)._discovered_to_catalog_entry(rec2)
+check("discovered_readme_carried", e2.get("readme"), "a readme")
+check("discovered_images_carried", e2.get("images"), ["https://x/y.png"])
+
 if fails:
     print("FAILED:")
     for f in fails:

@@ -3576,6 +3576,10 @@ class NornsScraper:
         entry["Demo"] = rec.get("demo") or ""
         entry["Discussion URL"] = rec.get("disc") or ""
         entry["Tags"] = list(rec.get("topics") or [])
+        if rec.get("readme"):
+            entry["readme"] = rec["readme"]
+        if rec.get("images"):
+            entry["images"] = list(rec["images"])
         entry["source"] = "github"
         entry["facets"] = list(rec.get("facets") or [])
         entry["stars"] = int(rec.get("stars") or 0)
