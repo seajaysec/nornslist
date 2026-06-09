@@ -146,10 +146,25 @@
     border-radius:5px; padding:1.5px 6px; line-height:1.5;
   }
   .badge.eng{color:#241a0d; background:var(--accent)}
-  .badge.nb{color:var(--bg); background:var(--accent2)}
-  .badge.gh{color:var(--faint); background:color-mix(in srgb,var(--faint) 16%,transparent); border:1px solid color-mix(in srgb,var(--faint) 32%,transparent)}
   .badge.arch{color:#caa46a; background:color-mix(in srgb,#caa46a 15%,transparent)}
   .badge.del{color:var(--err); background:color-mix(in srgb,var(--err) 15%,transparent)}
+  /* type / nb / source facet chips — ingenue-parity portrayal of the structural
+     kind (script/mod/library/engine) the catalog already carries in `kind`. */
+  .facets{display:flex; flex-wrap:wrap; gap:5px; margin:-1px 0 0}
+  .facet{
+    font-size:10.5px; line-height:1.6; padding:1px 8px; border-radius:9px; white-space:nowrap;
+    border:1px solid color-mix(in srgb,var(--fc) 45%,transparent);
+    background:color-mix(in srgb,var(--fc) 14%,transparent); color:var(--fc);
+  }
+  .srctag{font-size:10.5px; font-weight:600; line-height:1.6; padding:1px 8px; border-radius:9px; white-space:nowrap}
+  .srctag.gh{
+    color:#7ee787; background:color-mix(in srgb,#7ee787 14%,transparent);
+    border:1px solid color-mix(in srgb,#7ee787 42%,transparent);
+  }
+  /* github-discovered repos get a left-edge accent (ingenue's .card.gh) */
+  .card.gh{border-left:3px solid color-mix(in srgb,#7ee787 60%,transparent)}
+  /* type-filter chips share .chip styling but read as a distinct group */
+  .facetbar .tlbl{margin-left:8px}
   /* source toggle: visually set apart from the boolean facet chips */
   .chip.srctoggle{margin-left:6px; border-style:dashed; border-color:color-mix(in srgb,var(--accent2) 45%,transparent)}
   .chip.srctoggle.on{background:color-mix(in srgb,var(--accent2) 20%,transparent); border-style:solid; border-color:var(--accent2); color:var(--accent2)}
@@ -286,6 +301,7 @@
         <option value="name">name a–z</option>
         <option value="author">author a–z</option>
         <option value="demo">has demo first</option>
+        <option value="stars">most stars</option>
       </select>
       <button class="filter-toggle" id="filterToggle" aria-expanded="false" aria-controls="filters">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 5h18M6 12h12M10 19h4"/></svg>
@@ -305,6 +321,10 @@
       <button class="chip" data-facet="engine">⚙ engine <span class="ct" id="ct-engine"></span></button>
       <button class="chip" data-facet="nb" title="registers an nb (note-bridge) voice">♪ nb voice <span class="ct" id="ct-nb"></span></button>
       <button class="chip" data-facet="doc">📖 docs <span class="ct" id="ct-doc"></span></button>
+      <span class="lbl tlbl">type</span>
+      <button class="chip" data-facet="type:script" title="a playable norns script">▶ script <span class="ct" id="ct-type-script"></span></button>
+      <button class="chip" data-facet="type:mod" title="a mod — extends norns system-wide via mod.hook">◆ mod <span class="ct" id="ct-type-mod"></span></button>
+      <button class="chip" data-facet="type:library" title="a library other scripts depend on">❏ library <span class="ct" id="ct-type-library"></span></button>
       <button class="chip srctoggle" id="srcToggle" title="also show norns repos found on GitHub that aren't on norns.community">＋ on GitHub <span class="ct" id="ct-gh"></span></button>
     </div>
     <div class="tagrail" id="tagrail"></div>
@@ -376,12 +396,33 @@
     return `<a class="lnk ${kind==='demo'?'demo':''}" href="${esc(href)}" target="_blank" rel="noopener" title="${esc(title)}">${ICON[kind]}</a>`;
   }
 
+  // structural-kind chips (ingenue FACET_META palette): icon, label, color
+  const FACET_META = {
+    script:  ['▶','script','#7ee787'],
+    mod:     ['◆','mod','#c678dd'],
+    library: ['❏','library','#56b6c2'],
+    engine:  ['♪','engine','#e5c07b'],
+  };
+  function facetsHTML(s){
+    // engine kind chip only when no named engine was extracted (the named badge
+    // on the title line already conveys engine-ness, and richer); avoids double-up.
+    const chips = (s.kind||[]).filter(k => k!=="engine" || !s.engine).map(k => {
+      const m = FACET_META[k]; if(!m) return "";
+      return `<span class="facet" style="--fc:${m[2]}">${m[0]} ${esc(m[1])}</span>`;
+    });
+    if(s.facets && s.facets.nb){
+      const provides = s.nb_role !== "uses";   // default to "voices" unless explicitly a consumer
+      chips.push(`<span class="facet" style="--fc:var(--accent2)" title="${provides?'registers nb (note-bridge) voice(s)':'consumes nb voices from another script'}">♪ ${provides?'nb voices':'nb-ready'}</span>`);
+    }
+    // provenance chip — github only; community is the implied default front door
+    if(s.source==="github") chips.push('<span class="srctag gh" title="found on GitHub — not on norns.community">github</span>');
+    return chips.length ? `<div class="facets">${chips.join("")}</div>` : "";
+  }
+
   function cardHTML(s){
     const tags = (s.tags||[]).map(t =>
       `<span class="pill${state.tags.has(t.toLowerCase())?' on':''}" data-tag="${esc(t.toLowerCase())}">${esc(t)}</span>`).join("");
     const badges = (s.engine?`<span class="badge eng" title="ships SuperCollider engine ${esc(s.engine)}">${esc(s.engine)}</span>`:"")
-                 + (s.facets&&s.facets.nb?'<span class="badge nb" title="registers an nb voice">nb</span>':"")
-                 + (s.source==="github"?'<span class="badge gh" title="found on GitHub — not on norns.community">GitHub</span>':"")
                  + (s.status==="archived"?'<span class="badge arch" title="repository archived by its owner — still installable, no longer maintained">archived</span>':"")
                  + (s.status==="delisted"?'<span class="badge del" title="removed from norns.community since it was last cataloged">delisted</span>':"")
                  + (s.status==="missing"?'<span class="badge del" title="repository no longer exists on GitHub">unavailable</span>':"");
@@ -395,12 +436,13 @@
                 + linkIcon(s.comm,'comm','norns.community page')
                 + linkIcon(s.demo,'demo','demo');
     const expandable = !!(s.readme || (s.images&&s.images.length) || s.demo);
-    return `<article class="card" data-name="${esc(s.name.toLowerCase())}" data-slug="${esc(s.slug||'')}">
+    return `<article class="card${s.source==="github"?" gh":""}" data-name="${esc(s.name.toLowerCase())}" data-slug="${esc(s.slug||'')}">
       <div class="head"><div class="id">
         <div class="nm">${esc(s.name)}${badges}</div>
         <div class="by">by <a href="${esc(s.proj||'#')}" target="_blank" rel="noopener">${esc(s.author||'unknown')}</a></div>
       </div></div>
       ${s.desc?`<p class="desc">${esc(s.desc)}</p>`:""}
+      ${facetsHTML(s)}
       ${tags?`<div class="pills">${tags}</div>`:""}
       <div class="foot">
         <span class="upd">${s.upd?'updated '+esc(s.upd):''}${s.source==="github"&&s.stars?' · ★ '+s.stars:''}</span>
@@ -523,7 +565,10 @@
       const hay = (s.name+" "+(s.author||"")+" "+(s.desc||"")+" "+(s.tags||[]).join(" ")+" "+st).toLowerCase();
       if(!hay.includes(state.q)) return false;
     }
-    for(const f of state.facets){ if(!(s.facets && s.facets[f])) return false; }
+    for(const f of state.facets){
+      if(f.indexOf("type:")===0){ if(!(s.kind||[]).includes(f.slice(5))) return false; }
+      else if(!(s.facets && s.facets[f])) return false;
+    }
     if(state.tags.size){
       const st = new Set((s.tags||[]).map(t=>t.toLowerCase()));
       for(const t of state.tags){ if(!st.has(t)) return false; }
@@ -535,6 +580,7 @@
       case "name": return a.name.localeCompare(b.name);
       case "author": return (a.author||"~").localeCompare(b.author||"~") || a.name.localeCompare(b.name);
       case "demo": return (b.demo?1:0)-(a.demo?1:0) || (b.upd||"").localeCompare(a.upd||"");
+      case "stars": return (b.stars||0)-(a.stars||0) || (b.upd||"").localeCompare(a.upd||"");
       default: return (b.upd||"").localeCompare(a.upd||"") || a.name.localeCompare(b.name);
     }
   }
@@ -634,7 +680,8 @@
     }
     const chips = [];
     state.tags.forEach(t => chips.push(`<span class="ftag">${esc(t)}<button data-rm-tag="${esc(t)}" aria-label="remove">×</button></span>`));
-    state.facets.forEach(f => chips.push(`<span class="ftag">${esc(f)}<button data-rm-facet="${esc(f)}" aria-label="remove">×</button></span>`));
+    state.facets.forEach(f => { const lbl = f.indexOf("type:")===0 ? f.slice(5) : f;
+      chips.push(`<span class="ftag">${esc(lbl)}<button data-rm-facet="${esc(f)}" aria-label="remove">×</button></span>`); });
     box.innerHTML = chips.length ? chips.join("") + `<button class="clearall" id="clearAll">clear all</button>` : "";
   }
   function syncChips(){
@@ -660,6 +707,10 @@
     const f = {demo:0,images:0,readme:0,engine:0,nb:0,doc:0};
     vis.forEach(s => { for(const k in f){ if(s.facets&&s.facets[k]) f[k]++; } });
     for(const k in f){ const el=$("#ct-"+k); if(el) el.textContent=f[k]; }
+    // structural-kind (type) counts, source-aware like the facet counts above
+    const t = {script:0,mod:0,library:0};
+    vis.forEach(s => (s.kind||[]).forEach(k => { if(k in t) t[k]++; }));
+    for(const k in t){ const el=$("#ct-type-"+k); if(el) el.textContent=t[k]; }
     const gh = state.all.filter(s => (s.source||"community")==="github").length;
     const ghEl = $("#ct-gh"); if(ghEl) ghEl.textContent = gh || "";
     // hide the toggle when there's nothing to reveal (style.display, not [hidden],

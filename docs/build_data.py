@@ -210,6 +210,11 @@ def merge(catalog: list[dict], feed: dict) -> list[dict]:
             s["engine"] = engine
         if nb:
             s["nb"] = True
+            # provides = registers nb voice(s); uses = consumes them. Drives the
+            # "nb voices" vs "nb-ready" chip distinction on the catalog site.
+            role = enr.get("nb_role")
+            if role:
+                s["nb_role"] = role
         if readme:
             s["readme"] = readme
         if images:
