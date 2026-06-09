@@ -39,6 +39,21 @@ jobs:
           # workflow is retired, `playwright` can be removed from
           # requirements.txt entirely.
 
+      - name: Weekly full discovery refresh (Sundays)
+        # Nightly discovery is incremental — enrichment/classification are cached
+        # by each repo's pushed_at, so unchanged repos aren't re-fetched. Once a
+        # week, wipe those caches so the run rebuilds from scratch: re-classifies
+        # every candidate and re-mines forum-thread demos that changed without a
+        # repo push (which the pushed_at-keyed cache would otherwise never revisit).
+        run: |
+          if [ "$(date -u +%u)" = "7" ]; then
+            echo "Sunday (UTC) — clearing discovery + feed caches for a full rebuild"
+            rm -f norns_scripts_discourse.discovery_cache.json \
+                  norns_scripts_discourse.feed_cache.json
+          else
+            echo "Weekday — incremental run (caches preserved)"
+          fi
+
       - name: Run discourse-variant scraper
         env:
           # GH_PAT (a personal access token, 5000/hr) is preferred for the heavier

@@ -3721,6 +3721,7 @@ class NornsScraper:
             forum = self.discover_forum_repos(known, max_pages=getattr(self, "forum_max_pages", 5))
             cache = self._load_discovery_cache(excel_path)
             lock = threading.Lock()
+            forum_recs = {}
             for (owner, name), meta in forum.items():
                 # Isolate each forum repo: a single bad repo must never discard the
                 # already-complete github-search `discovered` set (the outer except
@@ -3734,11 +3735,7 @@ class NornsScraper:
                         owner, name, branch, m.get("pushed_at"), cache, lock)
                     if not verdict.get("is_norns"):
                         continue
-                    enr = self._github_fetch_feed_enrichment(owner, name)
-                    demo = enr.get("demo") or ""
-                    if not demo:
-                        demo = self.discover_demo_video(meta["disc"]) or ""
-                    discovered[(owner, name)] = {
+                    forum_recs[(owner, name)] = {
                         "owner": owner, "name": name,
                         "author": owner, "desc": m.get("description") or "",
                         "proj": f"https://github.com/{owner}/{name}",
@@ -3746,14 +3743,22 @@ class NornsScraper:
                         "topics": ["lines"], "facets": verdict.get("facets") or [],
                         "archived": bool(m.get("archived")),
                         "stars": int(m.get("stargazers_count") or 0),
-                        "source": "github", "demo": demo,
-                        "readme": enr.get("readme") or "", "images": list(enr.get("images") or []),
+                        "source": "github", "demo": "", "readme": "", "images": [],
                         "disc": meta["disc"],
                     }
                 except Exception as exc:
-                    logger.debug(f"Forum enrich failed for {owner}/{name}: {exc}")
+                    logger.debug(f"Forum classify failed for {owner}/{name}: {exc}")
                     continue
             self._save_discovery_cache(excel_path, cache)
+            self._enrich_discovered(forum_recs, excel_path)  # cached README/demo/images
+            # Thread-demo fallback only where the README had no playable demo.
+            for (owner, name), rec in forum_recs.items():
+                if not rec.get("demo"):
+                    try:
+                        rec["demo"] = self.discover_demo_video(rec["disc"]) or ""
+                    except Exception:
+                        pass
+            discovered.update(forum_recs)
             return discovered
         except Exception as e:
             logger.warning(f"Discovery failed (catalog still written, community-only): {e}")
@@ -3974,6 +3979,32 @@ class NornsScraper:
             logger.debug(f"Discovery: classify error {owner}/{repo}: {e}")
         return result
 
+    def _enrich_discovered(self, records: dict, excel_path: str) -> None:
+        """Fill demo/readme/images on discovered records via the CACHED feed
+        enrichment path (keyed by pushed_at in feed_cache.json). Unchanged repos
+        are served from cache, so a steady-state nightly run only fetches READMEs
+        for repos that actually changed — not all ~1.2k passing candidates every
+        night. Mutates `records` in place. Each rec must carry 'upd' (pushed_at).
+        Best-effort: on any failure the records keep their (empty) demo/readme."""
+        if not records:
+            return
+        try:
+            repos = {k: (rec.get("upd") or "") for k, rec in records.items()}
+            cache = self._load_feed_cache(excel_path)
+            enr_map = self._gather_feed_enrichment(repos, cache)
+            self._save_feed_cache(excel_path, cache)
+        except Exception as e:
+            logger.warning(f"Discovered-repo enrichment failed (records left bare): {e}")
+            return
+        for k, rec in records.items():
+            enr = enr_map.get(k) or {}
+            if not rec.get("demo"):
+                rec["demo"] = enr.get("demo") or ""
+            if not rec.get("readme"):
+                rec["readme"] = enr.get("readme") or ""
+            if not rec.get("images"):
+                rec["images"] = list(enr.get("images") or [])
+
     def discover_github_repos(self, community_repos: set, excel_path: str,
                               aggressive: bool = True,
                               max_author_searches: int = None) -> dict:
@@ -4027,7 +4058,9 @@ class NornsScraper:
                 owner, name, it.get("default_branch"), it.get("pushed_at"), cache, cache_lock)
             if not verdict.get("is_norns"):
                 return None
-            enr = self._github_fetch_feed_enrichment(owner, it.get("name") or name)
+            # Classification only — demo/readme/images are filled in one cached
+            # batch (_enrich_discovered) after the gate, so README fetches happen
+            # only for repos that changed since the last run.
             return (owner, name), {
                 "owner": owner, "name": it.get("name") or name,
                 "author": (it.get("owner") or {}).get("login", ""),
@@ -4039,10 +4072,7 @@ class NornsScraper:
                 "archived": bool(it.get("archived")),
                 "stars": it.get("stargazers_count") or 0,
                 "source": "github",
-                "demo": enr.get("demo") or "",
-                "readme": enr.get("readme") or "",
-                "images": list(enr.get("images") or []),
-                "disc": "",
+                "demo": "", "readme": "", "images": [], "disc": "",
             }
 
         with ThreadPoolExecutor(max_workers=self.max_workers) as ex:
@@ -4055,6 +4085,7 @@ class NornsScraper:
                     pass
 
         self._save_discovery_cache(excel_path, cache)
+        self._enrich_discovered(discovered, excel_path)  # cached README/demo/images
         logger.info(f"Discovery: {len(discovered)}/{len(netnew)} net-new candidates "
                     f"passed the norns gate")
         return discovered

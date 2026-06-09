@@ -218,7 +218,11 @@ _ri.discover_github_repos = lambda *a, **k: {}
 _ri.discover_forum_repos = lambda known, max_pages=5: {("nd", "shiny"): {"disc": "https://llllllll.co/t/x/1", "topic_id": 1}}
 _ri._repo_meta = lambda o, n: {"default_branch": "main", "pushed_at": "2024-01-01T00:00:00Z", "description": "d", "archived": False, "stargazers_count": 3}
 _ri._classify_norns_repo = lambda o, n, b, p, c, l: {"is_norns": True, "facets": ["script"]}
+# enrichment now flows through the cached _gather_feed_enrichment path
+_ri.max_workers = 2
 _ri._github_fetch_feed_enrichment = lambda o, n: {"demo": "", "readme": "R", "images": []}
+_ri._load_feed_cache = lambda p: {}
+_ri._save_feed_cache = lambda p, c: None
 _ri.discover_demo_video = lambda url: "https://youtu.be/zzz"
 _ri._load_discovery_cache = lambda p: {}
 _ri._save_discovery_cache = lambda p, c: None
@@ -238,11 +242,28 @@ _ri2.discover_max_authors = None
 _ri2.discover_github_repos = lambda *a, **k: {("gh", "found"): {"name": "found", "source": "github"}}
 _ri2.discover_forum_repos = lambda known, max_pages=5: {("nd", "boom"): {"disc": "https://llllllll.co/t/x/9", "topic_id": 9}}
 _ri2._repo_meta = _boom  # forum repo blows up mid-loop
+_ri2._enrich_discovered = lambda recs, path: None  # isolate: test forum-error only
 _ri2._load_discovery_cache = lambda p: {}
 _ri2._save_discovery_cache = lambda p, c: None
 _rout2 = _ri2._run_discovery([], "x.xlsx")
 check("run_disc_survives_forum_error", ("gh", "found") in _rout2, True)
 check("run_disc_drops_bad_forum_repo", ("nd", "boom") in _rout2, False)
+
+# --- Budget opt: discovered enrichment served from feed cache (no refetch) ---
+_ei = object.__new__(NornsScraper)
+_today = NornsScraper._today_iso()
+_LV = NornsScraper.FEED_LOGIC_VERSION
+_ei._load_feed_cache = lambda p: {"o/r": {"source_upd": "2024-01-01", "fetched_at": _today,
+    "logic_version": _LV, "demo": "https://youtu.be/c", "readme": "cached", "images": ["https://i/x.png"]}}
+_ei._save_feed_cache = lambda p, c: None
+def _no_refetch(o, n):
+    raise AssertionError("cached repo must not be re-fetched")
+_ei._github_fetch_feed_enrichment = _no_refetch
+_recs = {("o", "r"): {"upd": "2024-01-01", "demo": "", "readme": "", "images": []}}
+_ei._enrich_discovered(_recs, "x.xlsx")
+check("enrich_cache_demo", _recs[("o", "r")]["demo"], "https://youtu.be/c")
+check("enrich_cache_readme", _recs[("o", "r")]["readme"], "cached")
+check("enrich_cache_images", _recs[("o", "r")]["images"], ["https://i/x.png"])
 
 # --- Phase 3: github.com system paths are not repos ---
 check("extract_gh_skips_orgs", S._extract_github_url("https://github.com/orgs/monome"), None)
