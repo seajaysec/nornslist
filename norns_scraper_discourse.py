@@ -3328,7 +3328,7 @@ class NornsScraper:
         term. Three GitHub calls max: repo meta, README, recursive tree."""
         import base64
 
-        result = {"engine": "", "nb": False, "nb_role": "", "facets": [], "readme": "", "images": [], "sha": ""}
+        result = {"engine": "", "nb": False, "nb_role": "", "facets": [], "readme": "", "images": [], "sha": "", "demo": ""}
         if not owner or not repo:
             return result
         base = f"https://api.github.com/repos/{owner}/{repo}"
@@ -3359,6 +3359,7 @@ class NornsScraper:
                 pass
             if readme_md:
                 result["readme"] = self._readme_to_plaintext(readme_md)
+                result["demo"] = self._extract_readme_media(readme_md)
                 result["images"] = self._extract_readme_images(
                     readme_md, owner, repo, branch
                 )
@@ -3562,15 +3563,18 @@ class NornsScraper:
 
     def _discovered_to_catalog_entry(self, rec: dict) -> dict:
         """Map a discovery record (GitHub-sourced) into a catalog entry. Carries
-        only what GitHub gives us (name/author/desc/proj/upd/tags=topics) plus the
-        discovery-only fields (facets/stars/archived/source); community-only
-        columns (Discussion/Community URL, Demo) stay empty."""
+        GitHub basics (name/author/desc/proj/upd/tags=topics) + discovery-only
+        fields (facets/stars/archived/source), plus any README/forum enrichment the
+        record supplies (Demo, Discussion URL, readme, images). Community URL stays
+        empty (discovered repos aren't on norns.community)."""
         entry = {c: "" for c in self.FIELD_MAP}
         entry["Name"] = rec.get("name") or ""
         entry["Author"] = rec.get("author") or ""
         entry["Description"] = rec.get("desc") or ""
         entry["Project URL"] = rec.get("proj") or ""
         entry["Last Updated"] = rec.get("upd") or ""
+        entry["Demo"] = rec.get("demo") or ""
+        entry["Discussion URL"] = rec.get("disc") or ""
         entry["Tags"] = list(rec.get("topics") or [])
         entry["source"] = "github"
         entry["facets"] = list(rec.get("facets") or [])
@@ -3959,6 +3963,7 @@ class NornsScraper:
                 owner, name, it.get("default_branch"), it.get("pushed_at"), cache, cache_lock)
             if not verdict.get("is_norns"):
                 return None
+            enr = self._github_fetch_feed_enrichment(owner, it.get("name") or name)
             return (owner, name), {
                 "owner": owner, "name": it.get("name") or name,
                 "author": (it.get("owner") or {}).get("login", ""),
@@ -3970,6 +3975,10 @@ class NornsScraper:
                 "archived": bool(it.get("archived")),
                 "stars": it.get("stargazers_count") or 0,
                 "source": "github",
+                "demo": enr.get("demo") or "",
+                "readme": enr.get("readme") or "",
+                "images": list(enr.get("images") or []),
+                "disc": "",
             }
 
         with ThreadPoolExecutor(max_workers=self.max_workers) as ex:

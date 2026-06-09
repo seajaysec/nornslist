@@ -153,6 +153,15 @@ check("catalog_dup_most_starred_wins", by_name["dup"]["Author"], "b")
 check("catalog_has_newthing", by_name["newthing"]["source"], "github")
 check("catalog_total", len(out), 3)  # awake(community) + dup(b) + newthing
 
+# --- Phase 2: discovered repo demo + disc -> catalog columns ---
+inst = object.__new__(NornsScraper)
+rec = {"name": "thing", "author": "o", "desc": "d", "proj": "https://github.com/o/thing",
+       "upd": "2024-01-01", "topics": [], "facets": ["script"], "stars": 5,
+       "demo": "https://youtu.be/abc123", "disc": "https://llllllll.co/t/thing/1"}
+entry = inst._discovered_to_catalog_entry(rec)
+check("discovered_demo_mapped", entry["Demo"], "https://youtu.be/abc123")
+check("discovered_disc_mapped", entry["Discussion URL"], "https://llllllll.co/t/thing/1")
+
 if fails:
     print("FAILED:")
     for f in fails:
