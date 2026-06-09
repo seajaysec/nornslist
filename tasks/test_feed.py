@@ -124,9 +124,48 @@ check("feed_upd_valid", scripts["awake"].get("upd"), "2024-03-12")
 check("feed_invalid_upd_dropped", "upd" in scripts.get("noupd", {}), False)
 check("feed_empty_name_skipped", "" in scripts, False)
 
+# --- Phase 1: HEAD sha extraction ---
+class _ShaSession:
+    """Routes /commits?... to a one-item commit list; records calls."""
+    def __init__(self, sha):
+        self.sha = sha
+        self.calls = []
+    def get(self, url, params=None, timeout=None, headers=None):
+        self.calls.append((url, params))
+        if "/commits" in url:
+            return FakeResp(200, [{"sha": self.sha}])
+        return FakeResp(404)
+
+class FakeResp:
+    def __init__(self, status_code=200, payload=None, text=""):
+        self.status_code = status_code
+        self._payload = payload if payload is not None else {}
+        self.text = text
+        self.headers = {}
+    def json(self):
+        return self._payload
+    def raise_for_status(self):
+        if self.status_code >= 400:
+            raise RuntimeError(str(self.status_code))
+
+def _sha_inst(sha):
+    inst = object.__new__(NornsScraper)
+    inst.github_session = _ShaSession(sha)
+    return inst
+
+inst_sha = _sha_inst("abc123def456")
+check("head_sha_value", inst_sha._github_head_sha("o", "r", "main"), "abc123def456")
+check("head_sha_per_page_1", any(p and p.get("per_page") == 1 for (_u, p) in inst_sha.github_session.calls), True)
+
+# empty / error -> "" (never raises)
+class _EmptySession:
+    def get(self, *a, **k): return FakeResp(200, [])
+inst2 = object.__new__(NornsScraper); inst2.github_session = _EmptySession()
+check("head_sha_empty", inst2._github_head_sha("o", "r", "main"), "")
+
 if fails:
     print("FAILED:")
     for f in fails:
         print("  -", f)
     sys.exit(1)
-print(f"ALL {38 - 0} CHECKS PASSED")
+print(f"ALL {41 - 0} CHECKS PASSED")

@@ -2803,6 +2803,26 @@ class NornsScraper:
             return ""
         return ""
 
+    def _github_head_sha(self, owner: str, repo: str, branch: str) -> str:
+        """Full 40-char HEAD commit SHA of the default branch; '' on any failure.
+        One cheap call (per_page=1). ingenue diffs the installed SHA against this
+        to detect updates without its own per-script GitHub call."""
+        if not owner or not repo:
+            return ""
+        try:
+            r = self.github_session.get(
+                f"https://api.github.com/repos/{owner}/{repo}/commits",
+                params={"sha": branch or "HEAD", "per_page": 1},
+                timeout=15,
+            )
+            if r.status_code != 200:
+                return ""
+            commits = r.json() or []
+            return str(commits[0].get("sha") or "") if commits else ""
+        except Exception as e:
+            logger.debug(f"HEAD sha error for {owner}/{repo}: {e}")
+            return ""
+
     # Recompute an unchanged repo's Last-Updated at most this stale even when
     # pushed_at is unchanged — heals any transient state and bounds drift.
     LASTUPD_CACHE_TTL_DAYS = 30
