@@ -350,7 +350,7 @@
       "Community URL": "",
       "Demo": "https://www.youtube.com/watch?v=va2XAdFtmeU",
       "Description": "A Turing Machine generative sequencer thing",
-      "Discussion URL": "",
+      "Discussion URL": "https://llllllll.co/t/7uring-machine/63798",
       "Documentation URL": "",
       "Last Updated": "2023-08-27",
       "Name": "7uring-machine",
@@ -360,7 +360,8 @@
       "Tags": [
         "generative",
         "norns",
-        "sequencer"
+        "sequencer",
+        "lines"
       ],
       "facets": [
         "script"
@@ -402,14 +403,16 @@
       "Community URL": "",
       "Demo": "https://youtu.be/SwtadkessjA",
       "Description": "a harmonic series aggregator",
-      "Discussion URL": "",
+      "Discussion URL": "https://llllllll.co/t/awed/72603",
       "Documentation URL": "",
       "Last Updated": "2025-11-16",
       "Name": "_awed",
       "Out of Sync": "",
       "Playwright Status": "",
       "Project URL": "https://github.com/melocoi/_awed",
-      "Tags": [],
+      "Tags": [
+        "lines"
+      ],
       "facets": [
         "script",
         "engine"
@@ -490,6 +493,27 @@
       "sha": "24886646bf91a9eb4c35ad3528035380dc0fd9bc",
       "source": "github",
       "stars": 3,
+      "status": "active"
+    },
+    {
+      "Author": "aaronsbrown",
+      "Community URL": "",
+      "Demo": "",
+      "Description": "Norns scripts",
+      "Discussion URL": "",
+      "Documentation URL": "",
+      "Last Updated": "2019-04-21",
+      "Name": "aaronorns",
+      "Out of Sync": "",
+      "Playwright Status": "",
+      "Project URL": "https://github.com/aaronsbrown/aaronorns",
+      "Tags": [],
+      "facets": [
+        "script"
+      ],
+      "sha": "5f01d047dbbf8290ad09deceb73ca066c563f746",
+      "source": "github",
+      "stars": 0,
       "status": "active"
     },
     {
@@ -870,7 +894,7 @@
       "Last Updated": "2019-05-02",
       "Name": "arcify",
       "Out of Sync": "",
-      "Playwright Status": "",
+      "Playwright Status": "Missing Demo",
       "Project URL": "https://github.com/mimetaur/arcify",
       "Tags": [
         "lib"
@@ -928,9 +952,9 @@
     {
       "Author": "p3r7",
       "Community URL": "",
-      "Demo": "",
+      "Demo": "https://www.youtube.com/watch?v=HM0EBvJe1s0",
       "Description": "arc rythm generator",
-      "Discussion URL": "",
+      "Discussion URL": "https://llllllll.co/t/argen/61356",
       "Documentation URL": "",
       "Last Updated": "2024-01-12",
       "Name": "argen",
@@ -939,7 +963,8 @@
       "Project URL": "https://github.com/p3r7/argen",
       "Tags": [
         "monome-norns",
-        "norns-script"
+        "norns-script",
+        "lines"
       ],
       "facets": [
         "script"
@@ -2317,6 +2342,31 @@
       "status": "active"
     },
     {
+      "Author": "semierendonmez-commits",
+      "Community URL": "",
+      "Demo": "",
+      "Description": "",
+      "Discussion URL": "https://llllllll.co/t/boljolin-4-oscillator-benjolin-inspired-script-for-norns/74252",
+      "Documentation URL": "",
+      "Last Updated": "2026-03-15",
+      "Name": "boljolin",
+      "Out of Sync": "",
+      "Playwright Status": "",
+      "Project URL": "https://github.com/semierendonmez-commits/boljolin",
+      "Tags": [
+        "lines"
+      ],
+      "facets": [
+        "script",
+        "engine"
+      ],
+      "readme": "boljolin\n\nbol (Turkish) = plenty. plenty of oscillators, plenty of filters, plenty of modulation.\n\na 4-oscillator chaotic synth with open routing for norns. evolved from the rungler series, inspired by Rob Hordijk's Benjolin — but expanded into a fully configurable instrument.\n\narchitecture\n\n4 oscillators (A/B/C/D) with selectable waveforms (sine/tri/saw/pulse), 2 parallel state variable filters (LP/BP/HP/twin peak), a single 8-bit rungler shift register, 6 cross-modulation paths, internal LFO, and a macro performance page.\n\nany oscillator can feed any filter. any oscillator can be the rungler's data or clock source — or both can be turned OFF for drone mode.\n\ncontrols\n\nnavigation:\nE1: scroll parameters within current page\nK1+E1: change page (PATCH / RUNGLER / FILTERS / FX / SCOPE / PERFORM)\nE2: adjust selected parameter\nE3: adjust next parameter\nK2: toggle alt mode\nK3: randomize current page\nK1+K3: reset all to defaults\n\nperformance page (page 6):\nE2: macro 1/3\nE3: macro 2/4\nK2: change macros 1/2 and 3/4\n\neach macro controls up to 4 parameters with independent depth. assign via params menu under \"macros (performance).\"\npages …",
+      "sha": "5d0b8102e4a4842d3f5aad7c783e2947e16d111e",
+      "source": "github",
+      "stars": 0,
+      "status": "active"
+    },
+    {
       "Author": "danielasun",
       "Community URL": "",
       "Demo": "",
@@ -2737,16 +2787,18 @@
     {
       "Author": "northern-information",
       "Community URL": "",
-      "Demo": "",
+      "Demo": "https://www.youtube.com/watch?v=ZXsQAXx_ao0\nhttps://www.youtube.com/watch?v=fgG-QiChiA8",
       "Description": "Lead the CC Incarnadine and her crew of climate-punks, nautical drones, and GMO algae on a mission to heal the desiccated coral reefs.",
-      "Discussion URL": "",
+      "Discussion URL": "https://llllllll.co/t/coral-carrier-incarnadine-cci-dev/51866",
       "Documentation URL": "",
       "Last Updated": "2022-12-17",
       "Name": "cci",
       "Out of Sync": "",
       "Playwright Status": "",
       "Project URL": "https://github.com/northern-information/cci",
-      "Tags": [],
+      "Tags": [
+        "lines"
+      ],
       "archived": true,
       "facets": [
         "script",
@@ -3583,9 +3635,9 @@
     {
       "Author": "xmacex",
       "Community URL": "",
-      "Demo": "",
+      "Demo": "https://www.youtube.com/watch?v=PTygU0E6K0w\nhttps://www.youtube.com/watch?v=whOw_kVm1do\nhttps://youtu.be/Vf-Br3wwQRw",
       "Description": "Connect OP-Z as an audio device on norns.",
-      "Discussion URL": "",
+      "Discussion URL": "https://llllllll.co/t/connect-opz-using-usb-audio-with-norns/37819",
       "Documentation URL": "",
       "Last Updated": "2026-03-16",
       "Name": "connect-opz",
@@ -3598,7 +3650,8 @@
         "norns",
         "op-z",
         "teenage-engineering",
-        "usb"
+        "usb",
+        "lines"
       ],
       "facets": [
         "script"
@@ -4365,16 +4418,18 @@
     {
       "Author": "semierendonmez-commits",
       "Community URL": "",
-      "Demo": "",
+      "Demo": "https://www.youtube.com/watch?v=EuzSdVT3nKg",
       "Description": "binary waterfall for norns",
-      "Discussion URL": "",
+      "Discussion URL": "https://llllllll.co/t/datafall-binary-waterfall-for-norns/74331",
       "Documentation URL": "",
       "Last Updated": "2026-03-27",
       "Name": "datafall",
       "Out of Sync": "",
       "Playwright Status": "",
       "Project URL": "https://github.com/semierendonmez-commits/datafall",
-      "Tags": [],
+      "Tags": [
+        "lines"
+      ],
       "facets": [
         "script",
         "engine"
@@ -4988,6 +5043,33 @@
       "status": "active"
     },
     {
+      "Author": "khoin",
+      "Community URL": "",
+      "Demo": "https://soundcloud.com/potasmic/dxarts-463-final-full",
+      "Description": "Final project for DXARTS 463. ",
+      "Discussion URL": "https://llllllll.co/t/fx-reflex-familiar-topology-and-impossible-spaces/74664",
+      "Documentation URL": "",
+      "Last Updated": "2018-12-14",
+      "Name": "dx463-final",
+      "Out of Sync": "",
+      "Playwright Status": "",
+      "Project URL": "https://github.com/khoin/dx463-final",
+      "Tags": [
+        "lines"
+      ],
+      "facets": [
+        "engine"
+      ],
+      "images": [
+        "https://raw.githubusercontent.com/khoin/dx463-final/master/imgs/gui.png"
+      ],
+      "readme": "DXARTS project 463\n\nFor woodwind, voice and live electronics\n\nThis is my project for DXARTS 463. Below, I will first give suggestions for the performance, then I will go into the different tools that was built for this project.\nRequirements & Set-Up\nClasses\nThis project requires the UGen ArrayMax, which is not included in this repository but is available through sc3-plugins.\n\nIn /Classes/, these are the classes required for this project to work. You need to install these classes for the project to work.\nSet-Up\nIn final.sc, in ~tree variable, change the frequencies \\freq and the gains \\amp to better match your instrument. Run the first code block to assign the ~tree, then run the second code block to start the project with GUI.\nScore\n\nThere are two scenes in this piece, toggled using Spacebar key. The last (third) scene is empty and silent.\n\nThere are four + three controls in this piece. The GUI will aid you with the controls.\n\nThere is no explicit score for this piece but here are general instructions to follow:\n\nFirst Scene (four controls):\nThe first and third note should be play extended\nThe second note can be played both short and long. …",
+      "sha": "b863d1982d34823f8f39df9b92e3ea948c8243c0",
+      "source": "github",
+      "stars": 2,
+      "status": "active"
+    },
+    {
       "Author": "p3r7",
       "Community URL": "",
       "Demo": "",
@@ -5026,6 +5108,30 @@
         "synth"
       ],
       "source": "community",
+      "status": "active"
+    },
+    {
+      "Author": "sasha-ilatovskii",
+      "Community URL": "",
+      "Demo": "",
+      "Description": "",
+      "Discussion URL": "https://llllllll.co/t/easy-eth-mod-get-ethernet-router-mode/74293",
+      "Documentation URL": "",
+      "Last Updated": "2026-03-21",
+      "Name": "easy-eth",
+      "Out of Sync": "",
+      "Playwright Status": "",
+      "Project URL": "https://github.com/sasha-ilatovskii/easy-eth",
+      "Tags": [
+        "lines"
+      ],
+      "facets": [
+        "mod"
+      ],
+      "readme": "easy-eth\n\na norns mod to switch the ethernet port between client and router modes.\nclient — get an IP from your network via DHCP (default)\nrouter — assign a static IP (192.168.50.1) and serve DHCP to connected devices (192.168.50.10–100)\n\nuseful for connecting norns directly to a laptop or other device without a router in between.\ninstall\n\nfrom maiden:\n\n;install https://github.com/sasha-ilatovskii/easy-eth\n\nor copy the easy-eth folder to ~/dust/code/ on your norns.\nsetup\n\n1. go to SYSTEM > MODS\n2. select easy-eth, turn E3 to enable (plus appears)\n3. restart norns\nusage\n\nnavigate to SYSTEM > MODS > EASY-ETH:\nE2 — scroll between CLIENT / ROUTER / UNINSTALL\nK3 — apply selected action\nK2 — back\n\non first use, select INSTALL to set up dnsmasq (requires internet).\n\nthe active mode is marked with . switching modes is non-blocking — norns stays responsive.\n\nuninstall removes dnsmasq and restores the original network config from backup.\nwhat it does\nclient mode: stops dnsmasq, removes static IP config from dhcpcd.conf, restarts dhcpcd\nrouter mode: writes a static IP block to dhcpcd.conf, writes a dnsmasq config to /etc/dnsmasq.d/easy-eth.conf, starts dnsmasq …",
+      "sha": "ece93b9016cff433fc0b66e6cda0a44a895ad5a6",
+      "source": "github",
+      "stars": 0,
       "status": "active"
     },
     {
@@ -5266,6 +5372,27 @@
         "script"
       ],
       "sha": "eec95d181d65b7c3b12d8076cf376d8e5caabbdf",
+      "source": "github",
+      "stars": 0,
+      "status": "active"
+    },
+    {
+      "Author": "synthetiv",
+      "Community URL": "",
+      "Demo": "",
+      "Description": "Test your Norns encoders",
+      "Discussion URL": "",
+      "Documentation URL": "",
+      "Last Updated": "2019-11-17",
+      "Name": "encoder_test",
+      "Out of Sync": "",
+      "Playwright Status": "",
+      "Project URL": "https://github.com/synthetiv/encoder_test",
+      "Tags": [],
+      "facets": [
+        "script"
+      ],
+      "sha": "f41f4e568479eb158063d2e4b65570b039622830",
       "source": "github",
       "stars": 0,
       "status": "active"
@@ -5514,6 +5641,27 @@
         "norns only"
       ],
       "source": "community",
+      "status": "active"
+    },
+    {
+      "Author": "P580C",
+      "Community URL": "",
+      "Demo": "",
+      "Description": "Random grid sequencer for Monome Norns",
+      "Discussion URL": "",
+      "Documentation URL": "",
+      "Last Updated": "2019-06-11",
+      "Name": "euismod",
+      "Out of Sync": "",
+      "Playwright Status": "",
+      "Project URL": "https://github.com/P580C/euismod",
+      "Tags": [],
+      "facets": [
+        "script"
+      ],
+      "sha": "a9a794772192ddfa3f32083f423b91dcf670cd0d",
+      "source": "github",
+      "stars": 1,
       "status": "active"
     },
     {
@@ -6109,16 +6257,18 @@
     {
       "Author": "mrmattallison",
       "Community URL": "",
-      "Demo": "",
+      "Demo": "https://youtu.be/yRzsOOiJ_p4?si=nyapeDRdUcGOTLBm",
       "Description": "2-operator FM synth for Norns",
-      "Discussion URL": "",
+      "Discussion URL": "https://llllllll.co/t/fm2op-an-80s-nostalgia-synth/74402",
       "Documentation URL": "",
       "Last Updated": "2026-04-09",
       "Name": "fm2op",
       "Out of Sync": "",
       "Playwright Status": "",
       "Project URL": "https://github.com/mrmattallison/fm2op",
-      "Tags": [],
+      "Tags": [
+        "lines"
+      ],
       "facets": [
         "script",
         "engine"
@@ -6488,14 +6638,16 @@
       "Community URL": "",
       "Demo": "",
       "Description": "Base framework for supercollider send/insert FX for norns.",
-      "Discussion URL": "",
+      "Discussion URL": "https://llllllll.co/t/fx-mod/62726",
       "Documentation URL": "",
       "Last Updated": "2024-03-16",
       "Name": "fx",
       "Out of Sync": "",
       "Playwright Status": "",
       "Project URL": "https://github.com/sixolet/fx",
-      "Tags": [],
+      "Tags": [
+        "lines"
+      ],
       "facets": [
         "mod",
         "engine"
@@ -6666,6 +6818,34 @@
       "sha": "a23b6e4bb33154f57b29a91ea5102a59606e97e5",
       "source": "github",
       "stars": 6,
+      "status": "active"
+    },
+    {
+      "Author": "notrobintaylor",
+      "Community URL": "",
+      "Demo": "https://www.youtube.com/watch?v=Su__MGkrTwU",
+      "Description": "Creative multitap delay with two built-in modulators for sonic exploration.",
+      "Discussion URL": "https://llllllll.co/t/fx-llll-four-creative-delay-lines/74249",
+      "Documentation URL": "",
+      "Last Updated": "2026-04-21",
+      "Name": "fx_llll",
+      "Out of Sync": "",
+      "Playwright Status": "",
+      "Project URL": "https://github.com/notrobintaylor/fx_llll",
+      "Tags": [
+        "lines"
+      ],
+      "facets": [
+        "mod",
+        "engine"
+      ],
+      "images": [
+        "https://img.youtube.com/vi/Su__MGkrTwU/maxresdefault.jpg"
+      ],
+      "readme": "fxllll\nA multitap delay for the fx mod framework\n\nfxllll is a four-tap stereo delay mod for monome norns. Full stereo signal path, a bandpass filter with resonance, saturation, chorus, crossfeed between taps, a MTM TM-inspired shift register for modulation, and a clock-synced event system.\nWhat it does\n\nFour lines, each with their own feel. You can run line 1 at 1/1, line 2 at a dotted 1/4, line 3 at 1/8 triplet, and line 4 at a fixed 200ms completely independent of tempo. Mix freely. The delays pitch-shift when they change timing. This is deliberate and nicely exploitable. The delay lines allow feedback past unity. The feedback path has a tanh limiter that soft-clips the signal rather than letting it blow up. At high feedback you get warm, saturated self-oscillation rather than digital destruction. Please go ahead and use a limiter downstream or hearing protection. I mean it.\n\nfilter / saturation / chorus sit in the output path, so every echo has full character. Bandpass with selectable slopes and resonance. Saturation from subtle warmth to crunch. Chorus from gentle wobble all the way to audio-rate FM if you're into that sort of thing. …",
+      "sha": "dcaa60867da6c1a7683eafa70940c4f2ef42626b",
+      "source": "github",
+      "stars": 2,
       "status": "active"
     },
     {
@@ -7483,9 +7663,9 @@
     {
       "Author": "p3r7",
       "Community URL": "",
-      "Demo": "",
+      "Demo": "https://www.youtube.com/watch?v=Nza0k0ZhVIo",
       "Description": "mod for monome norns, use grid as midi keyboard anywhere",
-      "Discussion URL": "",
+      "Discussion URL": "https://llllllll.co/t/gridkeys-mod-now-w-q7-layout-crow-jf-outs/49431",
       "Documentation URL": "",
       "Last Updated": "2024-11-22",
       "Name": "gridkeys",
@@ -7496,7 +7676,8 @@
         "mod",
         "monome",
         "monome-grid",
-        "monome-norns"
+        "monome-norns",
+        "lines"
       ],
       "facets": [
         "mod"
@@ -7619,6 +7800,27 @@
         "grid"
       ],
       "source": "community",
+      "status": "active"
+    },
+    {
+      "Author": "jonnybutler",
+      "Community URL": "",
+      "Demo": "",
+      "Description": "Grid test for monome Norns",
+      "Discussion URL": "",
+      "Documentation URL": "",
+      "Last Updated": "2019-07-26",
+      "Name": "gridtest",
+      "Out of Sync": "",
+      "Playwright Status": "",
+      "Project URL": "https://github.com/jonnybutler/gridtest",
+      "Tags": [],
+      "facets": [
+        "script"
+      ],
+      "sha": "6bbbbeca31ad6b66d54187f859ca85f95337b430",
+      "source": "github",
+      "stars": 0,
       "status": "active"
     },
     {
@@ -8268,9 +8470,9 @@
     {
       "Author": "joeygordon",
       "Community URL": "",
-      "Demo": "",
+      "Demo": "https://www.youtube.com/watch?v=oS0FhXjWRz0\nhttps://www.youtube.com/watch?v=9TSlWaYfo3A",
       "Description": "🎹 8-voice MIDI rhythmic arpeggiator for Norns",
-      "Discussion URL": "",
+      "Discussion URL": "https://llllllll.co/t/hopscotch-midi-rhythmic-arpeggiator/47655",
       "Documentation URL": "",
       "Last Updated": "2021-08-29",
       "Name": "hopscotch",
@@ -8284,7 +8486,8 @@
         "norns",
         "norns-script",
         "sequencer",
-        "sequencer-midi"
+        "sequencer-midi",
+        "lines"
       ],
       "facets": [
         "script"
@@ -10233,14 +10436,16 @@
       "Community URL": "",
       "Demo": "",
       "Description": "A polyphonic pulsar synthesizer for the Monome Norns. Vibecoded with Gemini.",
-      "Discussion URL": "",
+      "Discussion URL": "https://llllllll.co/t/magnetar/74381",
       "Documentation URL": "",
       "Last Updated": "2026-04-02",
       "Name": "magnetar",
       "Out of Sync": "",
       "Playwright Status": "",
       "Project URL": "https://github.com/rync/magnetar",
-      "Tags": [],
+      "Tags": [
+        "lines"
+      ],
       "facets": [
         "script",
         "engine"
@@ -10413,6 +10618,30 @@
         "audio_fx"
       ],
       "source": "community",
+      "status": "active"
+    },
+    {
+      "Author": "sixolet",
+      "Community URL": "",
+      "Demo": "https://www.youtube.com/watch?v=EuKNqxhFQuI\nhttps://llllllll.co/uploads/default/original/3X/2/6/26c1f764714b953c0b749f712cf7b73dee37cb37.mp3",
+      "Description": "MOD MATRIX FOR THE MATRIX MOD",
+      "Discussion URL": "https://llllllll.co/t/mod-matrix-for-the-matrix-mod/57231",
+      "Documentation URL": "",
+      "Last Updated": "2023-10-15",
+      "Name": "matrix",
+      "Out of Sync": "",
+      "Playwright Status": "",
+      "Project URL": "https://github.com/sixolet/matrix",
+      "Tags": [
+        "lines"
+      ],
+      "facets": [
+        "mod"
+      ],
+      "readme": "MOD MATRIX FOR THE MATRIX MOD!\n\nThis is a Norns mod providing a mod matrix, and an API to define modulation sources that can participate.\n\nTo use, make sure you have turned on the matrix mod in Norns, and then from your code you can local matrix = require 'matrix/lib/matrix'.\nUsing modulation sources\n\nGo to the SYSTEM > MODS > matrix menu. This is the MATRIX menu, and it will look like the parameters menu. When you press K3 with a parameter selected, you will enter the sources menu for that parameter. You can select the source you desire with E2, then use E3 to adjust the depth of modulation. If you would like to zero out the modulation for the selected source, press K3.\nDefining modulation sources in your code\nmatrix:addbinary(id, name) Adds a binary modulation source. Can modulate binary and trigger parameters; triggers will trigger on every modulation that is greater than zero. Can also modulate numeric parameters, like a pulse wave.\nmatrix:addunipolar(id, name) Adds a unipolar modulation source. Can modulate numeric parameters.\nmatrix:addbipolar(id, name) Adds a bipolar modulation source. Very much like unipolar, but can go negative. …",
+      "sha": "41e11286bee8dbe48e8746e7a456400f93dc739a",
+      "source": "github",
+      "stars": 15,
       "status": "active"
     },
     {
@@ -10632,14 +10861,16 @@
       "Community URL": "",
       "Demo": "",
       "Description": "audio analyzer for norns ",
-      "Discussion URL": "",
+      "Discussion URL": "https://llllllll.co/t/metering-v2-modular-audio-analyzer-for-norns/74222",
       "Documentation URL": "",
       "Last Updated": "2026-03-14",
       "Name": "metering",
       "Out of Sync": "",
       "Playwright Status": "",
       "Project URL": "https://github.com/semierendonmez-commits/metering",
-      "Tags": [],
+      "Tags": [
+        "lines"
+      ],
       "facets": [
         "script",
         "engine"
@@ -10723,16 +10954,18 @@
     {
       "Author": "juhavaaraniemi",
       "Community URL": "",
-      "Demo": "",
+      "Demo": "https://www.youtube.com/watch?v=33F5R_0ngYU",
       "Description": "",
-      "Discussion URL": "",
+      "Discussion URL": "https://llllllll.co/t/mftconf-library-for-loading-midi-fighter-twister-config-with-norns/61138",
       "Documentation URL": "",
       "Last Updated": "2023-12-16",
       "Name": "mftconf",
       "Out of Sync": "",
       "Playwright Status": "",
       "Project URL": "https://github.com/juhavaaraniemi/mftconf",
-      "Tags": [],
+      "Tags": [
+        "lines"
+      ],
       "facets": [
         "script",
         "mod"
@@ -10748,14 +10981,16 @@
       "Community URL": "",
       "Demo": "",
       "Description": "mutable instruments engines for norns",
-      "Discussion URL": "",
+      "Discussion URL": "https://llllllll.co/t/mi-ugens-for-norns/31781",
       "Documentation URL": "",
       "Last Updated": "2021-06-21",
       "Name": "mi-eng",
       "Out of Sync": "",
       "Playwright Status": "",
       "Project URL": "https://github.com/okyeron/mi-eng",
-      "Tags": [],
+      "Tags": [
+        "lines"
+      ],
       "facets": [
         "script",
         "engine"
@@ -10772,6 +11007,30 @@
       "sha": "f9f3ffe8bdd5f290a4b43d75d651d8d8774dcaaa",
       "source": "github",
       "stars": 38,
+      "status": "active"
+    },
+    {
+      "Author": "v7b1",
+      "Community URL": "",
+      "Demo": "",
+      "Description": "some mutable instruments eurorack modules ported to SuperCollider",
+      "Discussion URL": "https://llllllll.co/t/stratum/74645",
+      "Documentation URL": "",
+      "Last Updated": "2026-04-10",
+      "Name": "mi-ugens",
+      "Out of Sync": "",
+      "Playwright Status": "",
+      "Project URL": "https://github.com/v7b1/mi-ugens",
+      "Tags": [
+        "lines"
+      ],
+      "facets": [
+        "engine"
+      ],
+      "readme": "mi-UGens\n\nSome mutable instruments eurorack modules ported to SuperCollider\n\nThanks to Émilie Gillet for making the original source code available!\nhttps://github.com/pichenettes/eurorack\n\nPlease note, this is NOT a project by mutable instruments !\n\nVolker Böhm, 2020\nhttps://vboehm.net\nInstalling\n\nGo to the release page , download the appropriate binaries for your OS and unpack the files into your SC extensions folder. (Re-)start SuperCollider or recompile the class library.\n\nBuilding\n\nClone the repository and its submodules:\n\ngit clone --recurse-submodules https://github.com/v7b1/mi-UGens.git\n\nTo build all projects/UGens in one go:\n\nwhere \"path/to/SC/sources\" is your local path to the SuperCollider sources.\n\nYou should find a newly created folder mi-UGens in the build folder. (If you prefer a different location, you can specify an install directory with -DCMAKEINSTALLPREFIX=\"path/to/my/folder\"). Copy this to your SC extensions folder and recompile the class library.\n\nOn Windows, use the Git Bash terminal to run the above lines.\n\nSingle projects can be built by:",
+      "sha": "10f6824f68ad63475f67dfe3fe5016e2d2634f84",
+      "source": "github",
+      "stars": 233,
       "status": "active"
     },
     {
@@ -11525,6 +11784,30 @@
       "status": "active"
     },
     {
+      "Author": "leontoddjohnson",
+      "Community URL": "",
+      "Demo": "",
+      "Description": "",
+      "Discussion URL": "https://llllllll.co/t/moments/72143",
+      "Documentation URL": "",
+      "Last Updated": "2025-04-12",
+      "Name": "moments",
+      "Out of Sync": "",
+      "Playwright Status": "",
+      "Project URL": "https://github.com/leontoddjohnson/moments",
+      "Tags": [
+        "lines"
+      ],
+      "facets": [
+        "script"
+      ],
+      "readme": "moments\n\nmoments that once were.\ndocs\n\nsee here.",
+      "sha": "5b1289515fab6ea31e32d2c0885e445007b6879b",
+      "source": "github",
+      "stars": 2,
+      "status": "active"
+    },
+    {
       "Author": "neauoire",
       "Community URL": "https://norns.community/monitor/",
       "Demo": "https://www.youtube.com/watch?v=g_joxEeB3ss",
@@ -11982,14 +12265,16 @@
       "Community URL": "",
       "Demo": "",
       "Description": "Random name synthesis for norns",
-      "Discussion URL": "",
+      "Discussion URL": "https://llllllll.co/t/namesizer-name-synthesis-library/39612",
       "Documentation URL": "",
       "Last Updated": "2020-12-22",
       "Name": "namesizer",
       "Out of Sync": "",
       "Playwright Status": "",
       "Project URL": "https://github.com/Quixotic7/namesizer",
-      "Tags": [],
+      "Tags": [
+        "lines"
+      ],
       "facets": [
         "script"
       ],
@@ -12004,14 +12289,16 @@
       "Community URL": "",
       "Demo": "",
       "Description": "Buchla 251e midi controller for Monome Norns. Or, in other words, a Norns Multiple Arbitrary Function Generator (aka a Norns MARF, or NARF). Vibecoded with Gemini. ZORT!",
-      "Discussion URL": "",
+      "Discussion URL": "https://llllllll.co/t/narf-quad-sequential-midi-sequencer/74168",
       "Documentation URL": "",
       "Last Updated": "2026-03-16",
       "Name": "NARF",
       "Out of Sync": "",
       "Playwright Status": "",
       "Project URL": "https://github.com/rync/NARF",
-      "Tags": [],
+      "Tags": [
+        "lines"
+      ],
       "facets": [
         "script"
       ],
@@ -12050,16 +12337,18 @@
     {
       "Author": "sixolet",
       "Community URL": "",
-      "Demo": "",
+      "Demo": "https://vimeo.com/350511851\nhttps://youtu.be/Nza0k0ZhVIo?si=-kv4muWJLx55Ebka",
       "Description": "nota bene, a note-playing voice library for norns.",
-      "Discussion URL": "",
+      "Discussion URL": "https://llllllll.co/t/n-b-et-al-v0-1/60374",
       "Documentation URL": "",
       "Last Updated": "2024-06-19",
       "Name": "nb",
       "Out of Sync": "",
       "Playwright Status": "",
       "Project URL": "https://github.com/sixolet/nb",
-      "Tags": [],
+      "Tags": [
+        "lines"
+      ],
       "facets": [
         "script"
       ],
@@ -12447,6 +12736,31 @@
       "status": "active"
     },
     {
+      "Author": "sonocircuit",
+      "Community URL": "",
+      "Demo": "https://www.youtube.com/watch?v=GgIkX_EDFLA\nhttps://llllllll.co/uploads/default/original/3X/8/4/84fd8654d23779dfda9ca4453da20690da2d61d4.mp3",
+      "Description": "an eight voice supertonic port",
+      "Discussion URL": "https://llllllll.co/t/nb-tonic/74272",
+      "Documentation URL": "",
+      "Last Updated": "2026-03-17",
+      "Name": "nb_tonic",
+      "Out of Sync": "",
+      "Playwright Status": "",
+      "Project URL": "https://github.com/sonocircuit/nb_tonic",
+      "Tags": [
+        "lines"
+      ],
+      "facets": [
+        "mod",
+        "engine"
+      ],
+      "readme": "nbtonic\n\nan eight voice supertonic port – big thanks to zack for supertonic, which itself was inspired by magnus lidström's microtonic drum synth.\nnb tonic makes the supertonic sound available for norns scripts that support nb, with some minor changes and additions:\nextends the number of voices to eight\nadds six choke groups (six voice polyphony)\nload and save kits and individual voices via menu\nkit and voice preview within the file select menu (turn E3 CW)\nreplaces noise generators with a noise buffer (uses two playback heads for stereo noise)\nvelocity modulation is handled differently (a value of 0% will no longer mute the signal)\nadds pan/balance to each voice\ndistortion is handled differently (soft clip + post-distortion attenuation) → gets crunchy but not too loud\ndocumentation:\nInstall and activate nbtonic like other mods. Load a script that supports nb players and select tonic.\ntonic initializes with the default kit loaded. Complete kits can be loaded and saved under tonic kits. When a pset of the active script is saved, all parameters are saved as well, so saving kits isn't necessary but provides a way of backing up your favorite settings. …",
+      "sha": "7d400d651e782f98ca46f1fa845bf0ed0e20a1d4",
+      "source": "github",
+      "stars": 2,
+      "status": "active"
+    },
+    {
       "Author": "chailight",
       "Community URL": "",
       "Demo": "",
@@ -12663,14 +12977,16 @@
       "Community URL": "",
       "Demo": "",
       "Description": "norns system mod to share screen via the NDI streaming video standard",
-      "Discussion URL": "",
+      "Discussion URL": "https://llllllll.co/t/ndi-mod-share-the-norns-screen-over-a-network/56347",
       "Documentation URL": "",
       "Last Updated": "2026-03-16",
       "Name": "ndi-mod",
       "Out of Sync": "",
       "Playwright Status": "",
       "Project URL": "https://github.com/Dewb/ndi-mod",
-      "Tags": [],
+      "Tags": [
+        "lines"
+      ],
       "facets": [
         "library"
       ],
@@ -13596,14 +13912,16 @@
       "Community URL": "",
       "Demo": "",
       "Description": "example mod for matron",
-      "Discussion URL": "",
+      "Discussion URL": "https://llllllll.co/t/norns-mods-development/51013",
       "Documentation URL": "",
       "Last Updated": "2023-11-18",
       "Name": "norns-example-mod",
       "Out of Sync": "",
       "Playwright Status": "",
       "Project URL": "https://github.com/monome/norns-example-mod",
-      "Tags": [],
+      "Tags": [
+        "lines"
+      ],
       "facets": [
         "mod"
       ],
@@ -14149,6 +14467,28 @@
       ],
       "readme": "Norns Script\n\nTrying to make a norns script\nTask\nCreate a supercollider script that produces sound\nTransfer the script to norns\nMake an interface to control it",
       "sha": "78c0e9b7bc0be404cb48d8be7d506bd86939dc34",
+      "source": "github",
+      "stars": 0,
+      "status": "active"
+    },
+    {
+      "Author": "jaredpereira",
+      "Community URL": "",
+      "Demo": "",
+      "Description": "",
+      "Discussion URL": "",
+      "Documentation URL": "",
+      "Last Updated": "2019-05-31",
+      "Name": "norns-scripts",
+      "Out of Sync": "",
+      "Playwright Status": "",
+      "Project URL": "https://github.com/jaredpereira/norns-scripts",
+      "Tags": [],
+      "facets": [
+        "script"
+      ],
+      "readme": "Jared's Norns Scripts\n\nThese are scripts that I'm playing around with to make instruments on the\nmonome norns.\nScripts\nsequencer.lua: a simple sequencer that I'm using to learn and experiment.\nmini-midi: a very simple arpegiator to learn about midi !",
+      "sha": "e76c5034b590e55431f64349c71ac9df082272a6",
       "source": "github",
       "stars": 0,
       "status": "active"
@@ -14711,6 +15051,29 @@
       "sha": "2f07f299bfcf3e9285ba2c5fe1bfb53683eb4095",
       "source": "github",
       "stars": 0,
+      "status": "active"
+    },
+    {
+      "Author": "P580C",
+      "Community URL": "",
+      "Demo": "",
+      "Description": "A public playground for testing norns and Supercollder code. Will gradually build up to show some methods of how to achieve a variety of things.",
+      "Discussion URL": "",
+      "Documentation URL": "",
+      "Last Updated": "2019-05-27",
+      "Name": "nornsBasics",
+      "Out of Sync": "",
+      "Playwright Status": "",
+      "Project URL": "https://github.com/P580C/nornsBasics",
+      "Tags": [],
+      "facets": [
+        "script",
+        "engine"
+      ],
+      "readme": "nornsBasics\nA public playground for testing norns and Supercollder code. Will gradually build up to show some methods of how to achieve a variety of things.",
+      "sha": "6a8f3f2d964cf2209cde391276cc55df30100fba",
+      "source": "github",
+      "stars": 1,
       "status": "active"
     },
     {
@@ -16087,7 +16450,7 @@
       "Last Updated": "2022-06-12",
       "Name": "passthrough",
       "Out of Sync": "",
-      "Playwright Status": "",
+      "Playwright Status": "Missing Demo",
       "Project URL": "https://github.com/nattog/passthrough",
       "Tags": [
         "utility",
@@ -16330,14 +16693,16 @@
       "Community URL": "",
       "Demo": "",
       "Description": "an improvisational sequencer for norns and grid",
-      "Discussion URL": "",
+      "Discussion URL": "https://llllllll.co/t/permute/74211",
       "Documentation URL": "",
       "Last Updated": "2026-05-22",
       "Name": "permute",
       "Out of Sync": "",
       "Playwright Status": "",
       "Project URL": "https://github.com/discepoli/permute",
-      "Tags": [],
+      "Tags": [
+        "lines"
+      ],
       "facets": [
         "script"
       ],
@@ -16636,14 +17001,16 @@
       "Community URL": "",
       "Demo": "",
       "Description": "Playdate integration for Monome Norns",
-      "Discussion URL": "",
+      "Discussion URL": "https://llllllll.co/t/crank-n-arc/71472",
       "Documentation URL": "",
       "Last Updated": "2025-04-06",
       "Name": "playdate-norns",
       "Out of Sync": "",
       "Playwright Status": "",
       "Project URL": "https://github.com/midouest/playdate-norns",
-      "Tags": [],
+      "Tags": [
+        "lines"
+      ],
       "facets": [
         "mod"
       ],
@@ -16894,6 +17261,34 @@
       "sha": "8d5201a03469bd5fdf042779a150c146ad491f0b",
       "source": "github",
       "stars": 2,
+      "status": "active"
+    },
+    {
+      "Author": "notrobintaylor",
+      "Community URL": "",
+      "Demo": "https://www.youtube.com/watch?v=VqkFejb8owY",
+      "Description": "Amp sim based on a combo. Tuner, effects and looper.",
+      "Discussion URL": "https://llllllll.co/t/princeton-amp-cabinet-pedalboard-and-media-simulating-looper/74416",
+      "Documentation URL": "",
+      "Last Updated": "2026-06-01",
+      "Name": "princeton",
+      "Out of Sync": "",
+      "Playwright Status": "",
+      "Project URL": "https://github.com/notrobintaylor/princeton",
+      "Tags": [
+        "lines"
+      ],
+      "facets": [
+        "script",
+        "engine"
+      ],
+      "images": [
+        "https://img.youtube.com/vi/VqkFejb8owY/maxresdefault.jpg"
+      ],
+      "readme": "princeton\nA guitar amp simulator, pedalboard and looper for Monome Norns\n\nprinceton is a guitar amp, pedalboard, and looper for Monome Norns. The amp sits in the middle: a small American combo from the early 1960s, recreated in code. Around it, four pedals before the input, bias tremolo and spring reverb after, and a 40-second stereo looper riding between them. What you loop washes through the same reverb as the live signal.\n\nPlug a guitar into the left input. No preamp or interface required.\n\nThe looper carries the script. Six storage media (BBD, Cassette, CD, Chip, Tape, Vinyl) colour the loop. Imprint sets how much of that colour gets baked in the moment you record; Wear sets how much further the loop erodes on every pass. Four playback modes (Overdub, Overwrite, Sample, Resample) and four direction modes (Forward, Reverse, Pendulum, Random) sit underneath. Tremolo and reverb stay on. The amp stays clean unless you push it past Volume 7. For harder distortion, reach for Push or Distort up the chain.\nWhat it does\n\nLooper. A 40-second stereo buffer between tremolo and reverb, so anything you record sits in the same spring tank as the live string. …",
+      "sha": "a8ba26a9d77a3026a1e2dd26ad9dd7f07c134d1b",
+      "source": "github",
+      "stars": 5,
       "status": "active"
     },
     {
@@ -17489,6 +17884,30 @@
     {
       "Author": "schollz",
       "Community URL": "",
+      "Demo": "https://infinitedigits.bandcamp.com/album/paracosms",
+      "Description": "",
+      "Discussion URL": "https://llllllll.co/t/paracosms/57350",
+      "Documentation URL": "",
+      "Last Updated": "2022-07-03",
+      "Name": "raw",
+      "Out of Sync": "",
+      "Playwright Status": "",
+      "Project URL": "https://github.com/schollz/raw",
+      "Tags": [
+        "lines"
+      ],
+      "facets": [
+        "engine"
+      ],
+      "readme": "raw\n\nrandom audio workstation. basically a command-line program to generate entire songs from short sample loops. this software was used to create paracosms, a new album by infinite digits.\n\nfor me, making an album of music means devising a single process of making music and using that process to generate tracks. my past processes were focused on melody and harmony. for generations I found a process around generative chord changes. for 18,000 I used a coding framework to write small snippets for generative audio. for at the place I tried to devise a paper-and-pen method of developing melodies.\n\nin this current process I'm focusing on effects and structure. I plan on only using samples and trying to elevate the samples by restructuring and juxtaposed effects chains - and have its creation based entirely in a terminal. this current project is based off my other projcets dnb.lua, makebreakbeat, and sampswap. this one should be better capable of cross-platformability.\n\nread more about the process on my blog.\nrequirements\nsox\nsupercollider\n\nsox can be downloaded here (or Linux: apt get sox). …",
+      "sha": "dc47d5557f19c3eca1f0273123e1ddc818efba04",
+      "source": "github",
+      "stars": 18,
+      "status": "active"
+    },
+    {
+      "Author": "schollz",
+      "Community URL": "",
       "Demo": "",
       "Description": "rc-505 for norns",
       "Discussion URL": "",
@@ -17578,16 +17997,18 @@
     {
       "Author": "asymmetriccut",
       "Community URL": "",
-      "Demo": "",
+      "Demo": "https://www.youtube.com/watch?v=VxRLLlFCVU8",
       "Description": "Two loops. Same sound. Different speed.  Reich Phase is my script for Monome Norns inspired by Steve Reich's Phasing Technique — that 1960s discovery in which two identical tapes, left running at slightly different speeds, generate ever-new patterns without anyone having composed them.",
-      "Discussion URL": "",
+      "Discussion URL": "https://llllllll.co/t/reich-phase/74241",
       "Documentation URL": "",
       "Last Updated": "2026-03-11",
       "Name": "reich-phase",
       "Out of Sync": "",
       "Playwright Status": "",
       "Project URL": "https://github.com/asymmetriccut/reich-phase",
-      "Tags": [],
+      "Tags": [
+        "lines"
+      ],
       "facets": [
         "script"
       ],
@@ -17779,6 +18200,27 @@
       "status": "active"
     },
     {
+      "Author": "jonnybutler",
+      "Community URL": "",
+      "Demo": "",
+      "Description": "Grid application for monome Norns",
+      "Discussion URL": "",
+      "Documentation URL": "",
+      "Last Updated": "2019-07-26",
+      "Name": "ricochet",
+      "Out of Sync": "",
+      "Playwright Status": "",
+      "Project URL": "https://github.com/jonnybutler/ricochet",
+      "Tags": [],
+      "facets": [
+        "script"
+      ],
+      "sha": "4a5e6e89997632df57c7f2d5c3013bd765945ddf",
+      "source": "github",
+      "stars": 1,
+      "status": "active"
+    },
+    {
       "Author": "laferrera",
       "Community URL": "",
       "Demo": "",
@@ -17901,14 +18343,16 @@
       "Community URL": "",
       "Demo": "",
       "Description": "A four-track recorder for Monome Norns+Arc. The wheels turn.",
-      "Discussion URL": "",
+      "Discussion URL": "https://llllllll.co/t/rotae-versantur/73937",
       "Documentation URL": "",
       "Last Updated": "2026-02-01",
       "Name": "rotae_versantur",
       "Out of Sync": "",
       "Playwright Status": "",
       "Project URL": "https://github.com/awwaiid/rotae_versantur",
-      "Tags": [],
+      "Tags": [
+        "lines"
+      ],
       "facets": [
         "script",
         "engine"
@@ -18049,6 +18493,56 @@
       "sha": "634f158e19e1a5962a0574747b71b3583aea6f96",
       "source": "github",
       "stars": 0,
+      "status": "active"
+    },
+    {
+      "Author": "semierendonmez-commits",
+      "Community URL": "",
+      "Demo": "",
+      "Description": "",
+      "Discussion URL": "https://llllllll.co/t/rungler-v2-a-benjolin-inspired-norns-script/74199",
+      "Documentation URL": "",
+      "Last Updated": "2026-03-10",
+      "Name": "rungler",
+      "Out of Sync": "",
+      "Playwright Status": "",
+      "Project URL": "https://github.com/semierendonmez-commits/rungler",
+      "Tags": [
+        "lines"
+      ],
+      "facets": [
+        "script",
+        "engine"
+      ],
+      "readme": "rungler\n\na circuit-bent chaotic synth voice for norns\n\ntwo oscillators cross-modulate through an 8-bit shift register. the register feeds back into itself through XOR logic, creating stepped voltage patterns that hover between order and chaos. a twin peak resonator sculpts the output. a gate sequencer turns the rungler into a rhythmic engine. wavefolder, bit crusher and feedback delay bend the circuit further. four stereo panning modes spread the chaos across the field.\n\ninspired by Rob Hordijk's Benjolin & Blippoo Box — \"bent by design.\"\nrequirements\nnorns (shield, standard, or fates)\nno additional libraries required\ninstall\n\nfrom maiden:\n\ncontrols\nnavigation\n\ncontrol function\n--------- ----------\nE1 page select (6 pages)\nK1 held show attractor plot\nK2 toggle alt mode\nK3 randomize current page\nK1 + K3 reset all to defaults\npage 1: OSC\n\ncontrol normal alt\n--------- -------- -----\nE2 osc A frequency rungler → osc A depth\nE3 osc B frequency rungler → osc B depth\npage 2: RUNGLER\n\ncontrol normal alt\n--------- -------- -----\nE2 chaos (recycle ↔ XOR) register length (3–8)\nE3 rungler → filter depth output select\n\noutput modes: filter / osc a / osc b / xor / pwm / rungler\npage 3: GATE …",
+      "sha": "9c47dd1132029005620dbd8f8f24fbf9e229dd29",
+      "source": "github",
+      "stars": 2,
+      "status": "active"
+    },
+    {
+      "Author": "sixolet",
+      "Community URL": "",
+      "Demo": "https://www.youtube.com/watch?v=Mnq53ZR9v-w\nhttps://www.youtube.com/watch?v=P_Fx1yq3A8M",
+      "Description": "",
+      "Discussion URL": "https://llllllll.co/t/sacred-cyborg-harmony/54334",
+      "Documentation URL": "",
+      "Last Updated": "2022-05-16",
+      "Name": "sacred_cyborg_harmony",
+      "Out of Sync": "",
+      "Playwright Status": "",
+      "Project URL": "https://github.com/sixolet/sacred_cyborg_harmony",
+      "Tags": [
+        "lines"
+      ],
+      "facets": [
+        "script",
+        "engine"
+      ],
+      "readme": "Sacred Cyborg Harmony\n\n@sixolet (eng) & @nonverbalpoetry (specifications)\n\nSummon a choir of blessed part-human part-machine voices to sing with you.\n\nSacred Cyborg Harmony is an autotune and midi harmonization script for Norns.\nGetting Started\n\nInstall the script on Norns; restart Norns.\n\nConnect a microphone to the input of Norns, and a MIDI keyboard or other polyphonic controller to USB. In the main menu screen us E1 to navigate to the mixer, and lower the monitor volume to 0, since you'll be monitoring through the script. Use headphones for cleaner input.\n\nNow run the script. Open the Parameters menu. Set the in range low and in range high parameters to the furthest extents of your vocal range; this helps the pitch detection lock on to the right pitch.\n\nSet the scale and root to your favorite key, and close the parameters menu. Sing into the microphone. A line will radiate from the center of the screen to a circle representing the note you're singing, and a smaller line will indicate how accurately you're singing that note. If you sing a tune, note how your voice gets pulled to the nearest in-scale note.\n\nNow sing a note, and as you're singing play a chord on your keyboard. …",
+      "sha": "d4555e503cc22a954fcabc19b61593cf6290bca9",
+      "source": "github",
+      "stars": 14,
       "status": "active"
     },
     {
@@ -19527,16 +20021,18 @@
     {
       "Author": "monome",
       "Community URL": "",
-      "Demo": "",
+      "Demo": "https://www.youtube.com/watch?v=hVU9qGPtwAQ",
       "Description": "",
-      "Discussion URL": "",
+      "Discussion URL": "https://llllllll.co/t/barcode/35297",
       "Documentation URL": "",
       "Last Updated": "2024-12-19",
       "Name": "softcut-studies",
       "Out of Sync": "",
       "Playwright Status": "",
       "Project URL": "https://github.com/monome/softcut-studies",
-      "Tags": [],
+      "Tags": [
+        "lines"
+      ],
       "facets": [
         "script"
       ],
@@ -19719,6 +20215,32 @@
       "status": "active"
     },
     {
+      "Author": "synthetiv",
+      "Community URL": "",
+      "Demo": "https://soundcloud.com/quie-tscol-or/disquiet0410-spiraling",
+      "Description": "Shepard tone organ & sequencer for Monome Norns, developed for disquiet0410",
+      "Discussion URL": "",
+      "Documentation URL": "",
+      "Last Updated": "2019-11-12",
+      "Name": "spiral_shepherd",
+      "Out of Sync": "",
+      "Playwright Status": "",
+      "Project URL": "https://github.com/synthetiv/spiral_shepherd",
+      "Tags": [],
+      "facets": [
+        "script",
+        "engine"
+      ],
+      "images": [
+        "http://synthetiv.github.io/misc/shepherd.jpg"
+      ],
+      "readme": "spiral shepherd\n\nShepard tones for disquiet0410\n\nnorns controls:\n\nE1 = delay level / feedback\\\nE2 = delay filter cutoff\\\nE3 = delay filter resonance\n\nK2 = decrease probability of delay octave jump\\\nK3 = increase probability of delay octave jump\n\ngrid controls:\n\n1,1 - 6,4 = toggle gate sequence steps\\\n7,6 - 8,8 = change gate sequence phase per voice\n\nlisten",
+      "sha": "befad4fae398dd8d346d87ecc4cca075579bf816",
+      "source": "github",
+      "stars": 0,
+      "status": "active"
+    },
+    {
       "Author": "tomw",
       "Community URL": "https://norns.community/spirals/",
       "Demo": "https://www.youtube.com/watch?v=5-2XTOoBuU0",
@@ -19808,14 +20330,16 @@
       "Community URL": "",
       "Demo": "",
       "Description": "Spore a stochastic generative sequencer for Monome Norns something is always becoming",
-      "Discussion URL": "",
+      "Discussion URL": "https://llllllll.co/t/spore/74328",
       "Documentation URL": "",
       "Last Updated": "2026-03-26",
       "Name": "spore",
       "Out of Sync": "",
       "Playwright Status": "",
       "Project URL": "https://github.com/asymmetriccut/spore",
-      "Tags": [],
+      "Tags": [
+        "lines"
+      ],
       "facets": [
         "script"
       ],
@@ -19878,14 +20402,16 @@
       "Community URL": "",
       "Demo": "",
       "Description": "Fun delay / looping / sampling script for Monome Norns inspired by a certain eurorack module.",
-      "Discussion URL": "",
+      "Discussion URL": "https://llllllll.co/t/squid-eight-slot-salmpler/74757",
       "Documentation URL": "",
       "Last Updated": "2026-06-04",
       "Name": "squid",
       "Out of Sync": "",
       "Playwright Status": "",
       "Project URL": "https://github.com/notrobintaylor/squid",
-      "Tags": [],
+      "Tags": [
+        "lines"
+      ],
       "facets": [
         "script",
         "engine"
@@ -20335,6 +20861,30 @@
       "sha": "aeb4aa2ac8722108c3ba8f579406c421e8589f4c",
       "source": "github",
       "stars": 0,
+      "status": "active"
+    },
+    {
+      "Author": "elifieldsteel",
+      "Community URL": "",
+      "Demo": "https://vimeo.com/615483324\nhttps://www.youtube.com/watch?v=PraxXvmo5fo",
+      "Description": "",
+      "Discussion URL": "https://llllllll.co/t/o-o-o/49052",
+      "Documentation URL": "",
+      "Last Updated": "2024-09-02",
+      "Name": "supercollider-tutorials",
+      "Out of Sync": "",
+      "Playwright Status": "",
+      "Project URL": "https://github.com/elifieldsteel/supercollider-tutorials",
+      "Tags": [
+        "lines"
+      ],
+      "facets": [
+        "engine"
+      ],
+      "readme": "I have been creating SuperCollider video tutorials since June 2013, which are available on YouTube:\n\nhttps://www.youtube.com/playlist?list=PLPYzvS8ArTaNDweXe6PX4CXSGq4iEWYC\n\nThis repository contains full transcripts of these videos, which include narration and code examples. The main purpose of this repository is to provide access to the code from these tutorial videos without requiring the user/viewer to manually type the code out themselves.\n\nEli",
+      "sha": "4624bc18dc69495f341bc7379597c4459ab954ad",
+      "source": "github",
+      "stars": 53,
       "status": "active"
     },
     {
@@ -21009,6 +21559,31 @@
       "status": "active"
     },
     {
+      "Author": "kirikoodes",
+      "Community URL": "",
+      "Demo": "https://www.youtube.com/watch?v=TbVlwrFNA8E",
+      "Description": "",
+      "Discussion URL": "https://llllllll.co/t/teammate-poto-an-improvisation-partner-for-norns/74582",
+      "Documentation URL": "",
+      "Last Updated": "2026-06-09",
+      "Name": "teammate",
+      "Out of Sync": "",
+      "Playwright Status": "",
+      "Project URL": "https://github.com/kirikoodes/teammate",
+      "Tags": [
+        "lines"
+      ],
+      "facets": [
+        "script",
+        "engine"
+      ],
+      "readme": "TEAMMATE.POTO — Norns\n\nAn improvisation partner, not an accompanist.\nUn partenaire d'improvisation, pas un accompagnateur.\n\nEnglish\n\nInspired by Somax2 — a co-improvisation system developed at IRCAM (Institut de Recherche et Coordination Acoustique/Musique, Paris) by the Music Representations research team. Somax introduced the idea that a machine could listen to a musician, build a musical memory from what it hears, and navigate that memory in real time to improvise back. That idea changed how I think about human-machine dialogue in music.\n\nTEAMMATE takes that same core intuition — the machine learns only from you, in the moment — and pushes it toward something rawer and more physical.\n\nEverything you play gets sliced into a memory of 48 sound fragments: pitch, energy, timbre, texture. When you stop, TEAMMATE analyzes the whole phrase and decides what to do. Imitate. Contrast. Densify. Thin out. Stay silent. It never plays something it hasn't heard from you. No generative AI, no presets — pure remémoration.\n\nSeven layers running in parallel:\nThe dialogue — phrase by phrase. TEAMMATE waits, listens, builds a portrait of what you just played, and responds from its own memory. …",
+      "sha": "443e3e4317144a4ff774af70cd22e7643f1ad345",
+      "source": "github",
+      "stars": 13,
+      "status": "active"
+    },
+    {
       "Author": "jamminstein",
       "Community URL": "",
       "Demo": "",
@@ -21486,14 +22061,16 @@
       "Community URL": "",
       "Demo": "https://www.instagram.com/p/CS4JRtonRD7",
       "Description": "TouchOSC grid and arc controller for monome norns",
-      "Discussion URL": "",
+      "Discussion URL": "https://llllllll.co/t/toga-touchosc-grid-and-arc-controller-for-monome-norns/47902",
       "Documentation URL": "",
       "Last Updated": "2023-04-07",
       "Name": "toga",
       "Out of Sync": "",
       "Playwright Status": "",
       "Project URL": "https://github.com/wangpy/toga",
-      "Tags": [],
+      "Tags": [
+        "lines"
+      ],
       "facets": [
         "library"
       ],
@@ -22042,6 +22619,30 @@
       "sha": "359c5a148d33b7408a67baaad50a94a4cf5edbe7",
       "source": "github",
       "stars": 52,
+      "status": "active"
+    },
+    {
+      "Author": "leontoddjohnson",
+      "Community URL": "",
+      "Demo": "",
+      "Description": "play multiple instruments with mx.samples",
+      "Discussion URL": "https://llllllll.co/t/tutti/74298",
+      "Documentation URL": "",
+      "Last Updated": "2026-03-21",
+      "Name": "tutti",
+      "Out of Sync": "",
+      "Playwright Status": "",
+      "Project URL": "https://github.com/leontoddjohnson/tutti",
+      "Tags": [
+        "lines"
+      ],
+      "facets": [
+        "script"
+      ],
+      "readme": "tutti\n\nall together\n\ndocs",
+      "sha": "d4f24e50daad069e770e6eb108d2b7640191ff30",
+      "source": "github",
+      "stars": 0,
       "status": "active"
     },
     {

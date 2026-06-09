@@ -6423,6 +6423,21 @@
     "sha": "989cc1640d0d73bdb7f00130c6ff784b7d967d85",
     "source_upd": "2022-06-07"
   },
+  "elifieldsteel/supercollider-tutorials": {
+    "demo": "",
+    "engine": "",
+    "facets": [
+      "engine"
+    ],
+    "fetched_at": "2026-06-09",
+    "images": [],
+    "logic_version": 3,
+    "nb": false,
+    "nb_role": "",
+    "readme": "I have been creating SuperCollider video tutorials since June 2013, which are available on YouTube:\n\nhttps://www.youtube.com/playlist?list=PLPYzvS8ArTaNDweXe6PX4CXSGq4iEWYC\n\nThis repository contains full transcripts of these videos, which include narration and code examples. The main purpose of this repository is to provide access to the code from these tutorial videos without requiring the user/viewer to manually type the code out themselves.\n\nEli",
+    "sha": "4624bc18dc69495f341bc7379597c4459ab954ad",
+    "source_upd": "2024-09-02"
+  },
   "emanuelep/alfies-looper": {
     "demo": "",
     "engine": "",
@@ -11382,6 +11397,23 @@
     "sha": "c62dc91acd5596048fdf97c976926bba16d24f6c",
     "source_upd": "2022-07-23"
   },
+  "khoin/dx463-final": {
+    "demo": "https://soundcloud.com/potasmic/dxarts-463-final-full",
+    "engine": "",
+    "facets": [
+      "engine"
+    ],
+    "fetched_at": "2026-06-09",
+    "images": [
+      "https://raw.githubusercontent.com/khoin/dx463-final/master/imgs/gui.png"
+    ],
+    "logic_version": 3,
+    "nb": false,
+    "nb_role": "",
+    "readme": "DXARTS project 463\n\nFor woodwind, voice and live electronics\n\nThis is my project for DXARTS 463. Below, I will first give suggestions for the performance, then I will go into the different tools that was built for this project.\nRequirements & Set-Up\nClasses\nThis project requires the UGen ArrayMax, which is not included in this repository but is available through sc3-plugins.\n\nIn /Classes/, these are the classes required for this project to work. You need to install these classes for the project to work.\nSet-Up\nIn final.sc, in ~tree variable, change the frequencies \\freq and the gains \\amp to better match your instrument. Run the first code block to assign the ~tree, then run the second code block to start the project with GUI.\nScore\n\nThere are two scenes in this piece, toggled using Spacebar key. The last (third) scene is empty and silent.\n\nThere are four + three controls in this piece. The GUI will aid you with the controls.\n\nThere is no explicit score for this piece but here are general instructions to follow:\n\nFirst Scene (four controls):\nThe first and third note should be play extended\nThe second note can be played both short and long. …",
+    "sha": "b863d1982d34823f8f39df9b92e3ea948c8243c0",
+    "source_upd": "2018-12-14"
+  },
   "khoparzi/drum_room": {
     "demo": "",
     "engine": "",
@@ -11396,6 +11428,22 @@
     "readme": "",
     "sha": "8fa0e48861d723054f55a5d3ea23c95ac96dab88",
     "source_upd": "2025-07-06"
+  },
+  "kirikoodes/teammate": {
+    "demo": "https://www.youtube.com/watch?v=TbVlwrFNA8E",
+    "engine": "Teammate",
+    "facets": [
+      "script",
+      "engine"
+    ],
+    "fetched_at": "2026-06-09",
+    "images": [],
+    "logic_version": 3,
+    "nb": false,
+    "nb_role": "",
+    "readme": "TEAMMATE.POTO — Norns\n\nAn improvisation partner, not an accompanist.\nUn partenaire d'improvisation, pas un accompagnateur.\n\nEnglish\n\nInspired by Somax2 — a co-improvisation system developed at IRCAM (Institut de Recherche et Coordination Acoustique/Musique, Paris) by the Music Representations research team. Somax introduced the idea that a machine could listen to a musician, build a musical memory from what it hears, and navigate that memory in real time to improvise back. That idea changed how I think about human-machine dialogue in music.\n\nTEAMMATE takes that same core intuition — the machine learns only from you, in the moment — and pushes it toward something rawer and more physical.\n\nEverything you play gets sliced into a memory of 48 sound fragments: pitch, energy, timbre, texture. When you stop, TEAMMATE analyzes the whole phrase and decides what to do. Imitate. Contrast. Densify. Thin out. Stay silent. It never plays something it hasn't heard from you. No generative AI, no presets — pure remémoration.\n\nSeven layers running in parallel:\nThe dialogue — phrase by phrase. TEAMMATE waits, listens, builds a portrait of what you just played, and responds from its own memory. …",
+    "sha": "443e3e4317144a4ff774af70cd22e7643f1ad345",
+    "source_upd": "2026-06-09"
   },
   "kkempes/norns": {
     "demo": "",
@@ -11777,6 +11825,21 @@
     "sha": "110ab7b98dc332df8adac2a35ffb526ab0408f9b",
     "source_upd": "2025-02-07"
   },
+  "leontoddjohnson/moments": {
+    "demo": "",
+    "engine": "",
+    "facets": [
+      "script"
+    ],
+    "fetched_at": "2026-06-09",
+    "images": [],
+    "logic_version": 3,
+    "nb": false,
+    "nb_role": "",
+    "readme": "moments\n\nmoments that once were.\ndocs\n\nsee here.",
+    "sha": "5b1289515fab6ea31e32d2c0885e445007b6879b",
+    "source_upd": "2025-04-12"
+  },
   "leontoddjohnson/o-o-o": {
     "demo": "https://vimeo.com/615483324",
     "engine": "Odashodasho",
@@ -11795,6 +11858,21 @@
     "readme": "o-o-o\n\no-o-o (pronounced oh-dasho-dasho) is a fm-based synthesizer and a sequencer that is played by connecting dots.\n\nhttps://vimeo.com/615483324\nRequirements\nnorns\ngrid or midigrid (optional)\nDocumentation\nE1 changes instrument\nE2/E3 changes position\nK3 adds connection\nK2 cancels connection\nK1 for help\nK1+K3 pauses/plays+saves on play\nK1+K2 loads current bank\nK1+E1 changes volume\nK1+E2 changes current bank\nK1+E3 adds random (cw) or removes last (ccw)\n\neach dot represents a sound and has an underlying random euclidean rhythm to play that sound. the rhythm is randomly generated based on a seed (PARAMS > seed). the triggered sounds are all generated using an internal FM engine (\"Odashodasho\" engine). its possible to change the engine to MxSamples in the parameters (PARAMS > engine)\n\na dot will trigger a sound if it is connected to another dot. a dot with zero incoming connections and at least one outgoing connections will trigger first. upon triggering, it will \"arm\" all outgoing connections. when a connection is armed, it will cause the connected dot to trigger the next time the rhythm of that dot hits a beat. …",
     "sha": "1a3f31aecc7cdd51ac060fe5ab90e2953452dcec",
     "source_upd": "2022-07-10"
+  },
+  "leontoddjohnson/tutti": {
+    "demo": "",
+    "engine": "",
+    "facets": [
+      "script"
+    ],
+    "fetched_at": "2026-06-09",
+    "images": [],
+    "logic_version": 3,
+    "nb": false,
+    "nb_role": "",
+    "readme": "tutti\n\nall together\n\ndocs",
+    "sha": "d4f24e50daad069e770e6eb108d2b7640191ff30",
+    "source_upd": "2026-03-21"
   },
   "lesjamusic/nexus": {
     "demo": "",
@@ -15381,6 +15459,42 @@
     "sha": "5f22b5a1a90ecfc46bc404459cf01afc045d1d4f",
     "source_upd": "2020-11-17"
   },
+  "notrobintaylor/fx_llll": {
+    "demo": "https://www.youtube.com/watch?v=Su__MGkrTwU",
+    "engine": "",
+    "facets": [
+      "mod",
+      "engine"
+    ],
+    "fetched_at": "2026-06-09",
+    "images": [
+      "https://img.youtube.com/vi/Su__MGkrTwU/maxresdefault.jpg"
+    ],
+    "logic_version": 3,
+    "nb": false,
+    "nb_role": "",
+    "readme": "fxllll\nA multitap delay for the fx mod framework\n\nfxllll is a four-tap stereo delay mod for monome norns. Full stereo signal path, a bandpass filter with resonance, saturation, chorus, crossfeed between taps, a MTM TM-inspired shift register for modulation, and a clock-synced event system.\nWhat it does\n\nFour lines, each with their own feel. You can run line 1 at 1/1, line 2 at a dotted 1/4, line 3 at 1/8 triplet, and line 4 at a fixed 200ms completely independent of tempo. Mix freely. The delays pitch-shift when they change timing. This is deliberate and nicely exploitable. The delay lines allow feedback past unity. The feedback path has a tanh limiter that soft-clips the signal rather than letting it blow up. At high feedback you get warm, saturated self-oscillation rather than digital destruction. Please go ahead and use a limiter downstream or hearing protection. I mean it.\n\nfilter / saturation / chorus sit in the output path, so every echo has full character. Bandpass with selectable slopes and resonance. Saturation from subtle warmth to crunch. Chorus from gentle wobble all the way to audio-rate FM if you're into that sort of thing. …",
+    "sha": "dcaa60867da6c1a7683eafa70940c4f2ef42626b",
+    "source_upd": "2026-04-21"
+  },
+  "notrobintaylor/princeton": {
+    "demo": "https://www.youtube.com/watch?v=VqkFejb8owY",
+    "engine": "Princeton",
+    "facets": [
+      "script",
+      "engine"
+    ],
+    "fetched_at": "2026-06-09",
+    "images": [
+      "https://img.youtube.com/vi/VqkFejb8owY/maxresdefault.jpg"
+    ],
+    "logic_version": 3,
+    "nb": false,
+    "nb_role": "",
+    "readme": "princeton\nA guitar amp simulator, pedalboard and looper for Monome Norns\n\nprinceton is a guitar amp, pedalboard, and looper for Monome Norns. The amp sits in the middle: a small American combo from the early 1960s, recreated in code. Around it, four pedals before the input, bias tremolo and spring reverb after, and a 40-second stereo looper riding between them. What you loop washes through the same reverb as the live signal.\n\nPlug a guitar into the left input. No preamp or interface required.\n\nThe looper carries the script. Six storage media (BBD, Cassette, CD, Chip, Tape, Vinyl) colour the loop. Imprint sets how much of that colour gets baked in the moment you record; Wear sets how much further the loop erodes on every pass. Four playback modes (Overdub, Overwrite, Sample, Resample) and four direction modes (Forward, Reverse, Pendulum, Random) sit underneath. Tremolo and reverb stay on. The amp stays clean unless you push it past Volume 7. For harder distortion, reach for Push or Distort up the chain.\nWhat it does\n\nLooper. A 40-second stereo buffer between tremolo and reverb, so anything you record sits in the same spring tank as the live string. …",
+    "sha": "a8ba26a9d77a3026a1e2dd26ad9dd7f07c134d1b",
+    "source_upd": "2026-06-01"
+  },
   "notrobintaylor/squid": {
     "demo": "",
     "engine": "Squid",
@@ -18604,6 +18718,21 @@
     "sha": "355e576cc02a4d7f4af1cc8135c6510bba927f45",
     "source_upd": "2020-05-09"
   },
+  "sasha-ilatovskii/easy-eth": {
+    "demo": "",
+    "engine": "",
+    "facets": [
+      "mod"
+    ],
+    "fetched_at": "2026-06-09",
+    "images": [],
+    "logic_version": 3,
+    "nb": false,
+    "nb_role": "",
+    "readme": "easy-eth\n\na norns mod to switch the ethernet port between client and router modes.\nclient — get an IP from your network via DHCP (default)\nrouter — assign a static IP (192.168.50.1) and serve DHCP to connected devices (192.168.50.10–100)\n\nuseful for connecting norns directly to a laptop or other device without a router in between.\ninstall\n\nfrom maiden:\n\n;install https://github.com/sasha-ilatovskii/easy-eth\n\nor copy the easy-eth folder to ~/dust/code/ on your norns.\nsetup\n\n1. go to SYSTEM > MODS\n2. select easy-eth, turn E3 to enable (plus appears)\n3. restart norns\nusage\n\nnavigate to SYSTEM > MODS > EASY-ETH:\nE2 — scroll between CLIENT / ROUTER / UNINSTALL\nK3 — apply selected action\nK2 — back\n\non first use, select INSTALL to set up dnsmasq (requires internet).\n\nthe active mode is marked with . switching modes is non-blocking — norns stays responsive.\n\nuninstall removes dnsmasq and restores the original network config from backup.\nwhat it does\nclient mode: stops dnsmasq, removes static IP config from dhcpcd.conf, restarts dhcpcd\nrouter mode: writes a static IP block to dhcpcd.conf, writes a dnsmasq config to /etc/dnsmasq.d/easy-eth.conf, starts dnsmasq …",
+    "sha": "ece93b9016cff433fc0b66e6cda0a44a895ad5a6",
+    "source_upd": "2026-03-21"
+  },
   "sasha-ilatovskii/oscgard": {
     "demo": "",
     "engine": "",
@@ -19461,6 +19590,21 @@
     "sha": "2f70ad47551109846f6b9b66f6eb496c43c78b96",
     "source_upd": "2024-10-01"
   },
+  "schollz/raw": {
+    "demo": "https://infinitedigits.bandcamp.com/album/paracosms",
+    "engine": "",
+    "facets": [
+      "engine"
+    ],
+    "fetched_at": "2026-06-09",
+    "images": [],
+    "logic_version": 3,
+    "nb": false,
+    "nb_role": "",
+    "readme": "raw\n\nrandom audio workstation. basically a command-line program to generate entire songs from short sample loops. this software was used to create paracosms, a new album by infinite digits.\n\nfor me, making an album of music means devising a single process of making music and using that process to generate tracks. my past processes were focused on melody and harmony. for generations I found a process around generative chord changes. for 18,000 I used a coding framework to write small snippets for generative audio. for at the place I tried to devise a paper-and-pen method of developing melodies.\n\nin this current process I'm focusing on effects and structure. I plan on only using samples and trying to elevate the samples by restructuring and juxtaposed effects chains - and have its creation based entirely in a terminal. this current project is based off my other projcets dnb.lua, makebreakbeat, and sampswap. this one should be better capable of cross-platformability.\n\nread more about the process on my blog.\nrequirements\nsox\nsupercollider\n\nsox can be downloaded here (or Linux: apt get sox). …",
+    "sha": "dc47d5557f19c3eca1f0273123e1ddc818efba04",
+    "source_upd": "2022-07-03"
+  },
   "schollz/rc505": {
     "demo": "",
     "engine": "",
@@ -19832,6 +19976,22 @@
     "sha": "64223cbcf0f1885edbaf3aa37971b2794c520241",
     "source_upd": "2026-05-11"
   },
+  "semierendonmez-commits/boljolin": {
+    "demo": "",
+    "engine": "Boljolin",
+    "facets": [
+      "script",
+      "engine"
+    ],
+    "fetched_at": "2026-06-09",
+    "images": [],
+    "logic_version": 3,
+    "nb": false,
+    "nb_role": "",
+    "readme": "boljolin\n\nbol (Turkish) = plenty. plenty of oscillators, plenty of filters, plenty of modulation.\n\na 4-oscillator chaotic synth with open routing for norns. evolved from the rungler series, inspired by Rob Hordijk's Benjolin — but expanded into a fully configurable instrument.\n\narchitecture\n\n4 oscillators (A/B/C/D) with selectable waveforms (sine/tri/saw/pulse), 2 parallel state variable filters (LP/BP/HP/twin peak), a single 8-bit rungler shift register, 6 cross-modulation paths, internal LFO, and a macro performance page.\n\nany oscillator can feed any filter. any oscillator can be the rungler's data or clock source — or both can be turned OFF for drone mode.\n\ncontrols\n\nnavigation:\nE1: scroll parameters within current page\nK1+E1: change page (PATCH / RUNGLER / FILTERS / FX / SCOPE / PERFORM)\nE2: adjust selected parameter\nE3: adjust next parameter\nK2: toggle alt mode\nK3: randomize current page\nK1+K3: reset all to defaults\n\nperformance page (page 6):\nE2: macro 1/3\nE3: macro 2/4\nK2: change macros 1/2 and 3/4\n\neach macro controls up to 4 parameters with independent depth. assign via params menu under \"macros (performance).\"\npages …",
+    "sha": "5d0b8102e4a4842d3f5aad7c783e2947e16d111e",
+    "source_upd": "2026-03-15"
+  },
   "semierendonmez-commits/datafall": {
     "demo": "",
     "engine": "Datafall",
@@ -19878,6 +20038,22 @@
     "readme": "norns-freedom-system\n\nAI-assisted norns script development. Design and build SuperCollider + Lua scripts for monome norns through natural dialogue with Claude Code.\n\nInspired by plugin-freedom-system by TÂCHES.\nQuick Start\n\nWorkflow\n\nCommand What it does\n--------- -------------\n/sleep Brainstorm concept, sonic brief, parameter spec, UI sketch\n/plan Design SC engine, Lua modules, signal flow\n/implement Build in 3 stages: Engine → Core → UI\n/test Validate against checklist + hardware test protocol\n/deploy SCP to norns, generate README + Lines post\n/improve Add features, fix bugs, regression check\nWhat You Can Build\n\nAnything that runs on norns — synths, samplers, sequencers, effects, generative systems, grid instruments, MIDI tools, experimental noise machines.\n\nOutput: SuperCollider engine + Lua script, ready for ~/dust/code/.\nKnowledge Base\n\nThe system includes a 1100+ line SKILL.md with 35+ critical error patterns, hardware constraints, and proven code patterns from 15+ shipped norns scripts.\nRequirements\nmacOS / Linux\nClaude Code CLI\nmonome norns (Shield or standard)\nOptional: 64-key grid\nProject Structure\n\nLicense\n\nMIT",
     "sha": "c33d49f351105a21d9d9d6c73396c7f3a5334d0e",
     "source_upd": "2026-04-01"
+  },
+  "semierendonmez-commits/rungler": {
+    "demo": "",
+    "engine": "Rungler",
+    "facets": [
+      "script",
+      "engine"
+    ],
+    "fetched_at": "2026-06-09",
+    "images": [],
+    "logic_version": 3,
+    "nb": false,
+    "nb_role": "",
+    "readme": "rungler\n\na circuit-bent chaotic synth voice for norns\n\ntwo oscillators cross-modulate through an 8-bit shift register. the register feeds back into itself through XOR logic, creating stepped voltage patterns that hover between order and chaos. a twin peak resonator sculpts the output. a gate sequencer turns the rungler into a rhythmic engine. wavefolder, bit crusher and feedback delay bend the circuit further. four stereo panning modes spread the chaos across the field.\n\ninspired by Rob Hordijk's Benjolin & Blippoo Box — \"bent by design.\"\nrequirements\nnorns (shield, standard, or fates)\nno additional libraries required\ninstall\n\nfrom maiden:\n\ncontrols\nnavigation\n\ncontrol function\n--------- ----------\nE1 page select (6 pages)\nK1 held show attractor plot\nK2 toggle alt mode\nK3 randomize current page\nK1 + K3 reset all to defaults\npage 1: OSC\n\ncontrol normal alt\n--------- -------- -----\nE2 osc A frequency rungler → osc A depth\nE3 osc B frequency rungler → osc B depth\npage 2: RUNGLER\n\ncontrol normal alt\n--------- -------- -----\nE2 chaos (recycle ↔ XOR) register length (3–8)\nE3 rungler → filter depth output select\n\noutput modes: filter / osc a / osc b / xor / pwm / rungler\npage 3: GATE …",
+    "sha": "9c47dd1132029005620dbd8f8f24fbf9e229dd29",
+    "source_upd": "2026-03-10"
   },
   "semierendonmez-commits/screenshot": {
     "demo": "",
@@ -20213,6 +20389,21 @@
     "sha": "8d6833e2610ee220b72577ec39ca82fdc2cba404",
     "source_upd": "2022-09-05"
   },
+  "sixolet/matrix": {
+    "demo": "",
+    "engine": "",
+    "facets": [
+      "mod"
+    ],
+    "fetched_at": "2026-06-09",
+    "images": [],
+    "logic_version": 3,
+    "nb": false,
+    "nb_role": "",
+    "readme": "MOD MATRIX FOR THE MATRIX MOD!\n\nThis is a Norns mod providing a mod matrix, and an API to define modulation sources that can participate.\n\nTo use, make sure you have turned on the matrix mod in Norns, and then from your code you can local matrix = require 'matrix/lib/matrix'.\nUsing modulation sources\n\nGo to the SYSTEM > MODS > matrix menu. This is the MATRIX menu, and it will look like the parameters menu. When you press K3 with a parameter selected, you will enter the sources menu for that parameter. You can select the source you desire with E2, then use E3 to adjust the depth of modulation. If you would like to zero out the modulation for the selected source, press K3.\nDefining modulation sources in your code\nmatrix:addbinary(id, name) Adds a binary modulation source. Can modulate binary and trigger parameters; triggers will trigger on every modulation that is greater than zero. Can also modulate numeric parameters, like a pulse wave.\nmatrix:addunipolar(id, name) Adds a unipolar modulation source. Can modulate numeric parameters.\nmatrix:addbipolar(id, name) Adds a bipolar modulation source. Very much like unipolar, but can go negative. …",
+    "sha": "41e11286bee8dbe48e8746e7a456400f93dc739a",
+    "source_upd": "2023-10-15"
+  },
   "sixolet/mx.samples": {
     "demo": "https://vimeo.com/509450523",
     "engine": "MxSamples",
@@ -20470,6 +20661,22 @@
     "readme": "PHONOTYPE\n\nIt is like Teletype but for sound.\n\nUseful for:\nCustom midi synths\nEffects chains of your dreams\nFluid live-coding, changing the control flow as you go\nAn entire dang modular in this box yo\n\nTo use PHONOTYPE:\nInstall it onto Norns\nRestart the Norns\nUnplug keyboard from Teletype\nPlug keyboard into Norns\nSelect PHONOTYPE\nCode a sound\nGeneral idea\n\nLike Teletype, PHONOTYPE is a prefix programming language. For example:\n\nIs a statement that yields the sum of 1 and the product of 2 and 2.5: 6.\n\nEvery operation in PHONOTYPE is declarative. Instead of executing, like a line\nof Teletype code, it tells the audio engine (SuperCollider) what to connect to\nwhat. You can think of this much like patching a modular synth. The last line of\nyour main (M) script is output to the output jack.\n\nThe IT op is special: it means \"the result of the above line\".\n\nHere is a program that outputs a FM drone:\n\nNavigation\n\nF1..F8 on the keyboard navigates to script 1 through 8.\n\nF9 on the keyboard navigates to the M (main) script. This is the script that\noutputs sound.\n\nESC nagivates to the scene description.\n\nArrow keys choose a line to edit; enter key actually changes the line. …",
     "sha": "b7cb9f48c691fcaa2944d74f605efb432679e899",
     "source_upd": "2021-12-17"
+  },
+  "sixolet/sacred_cyborg_harmony": {
+    "demo": "",
+    "engine": "TheMachine",
+    "facets": [
+      "script",
+      "engine"
+    ],
+    "fetched_at": "2026-06-09",
+    "images": [],
+    "logic_version": 3,
+    "nb": false,
+    "nb_role": "",
+    "readme": "Sacred Cyborg Harmony\n\n@sixolet (eng) & @nonverbalpoetry (specifications)\n\nSummon a choir of blessed part-human part-machine voices to sing with you.\n\nSacred Cyborg Harmony is an autotune and midi harmonization script for Norns.\nGetting Started\n\nInstall the script on Norns; restart Norns.\n\nConnect a microphone to the input of Norns, and a MIDI keyboard or other polyphonic controller to USB. In the main menu screen us E1 to navigate to the mixer, and lower the monitor volume to 0, since you'll be monitoring through the script. Use headphones for cleaner input.\n\nNow run the script. Open the Parameters menu. Set the in range low and in range high parameters to the furthest extents of your vocal range; this helps the pitch detection lock on to the right pitch.\n\nSet the scale and root to your favorite key, and close the parameters menu. Sing into the microphone. A line will radiate from the center of the screen to a circle representing the note you're singing, and a smaller line will indicate how accurately you're singing that note. If you sing a tune, note how your voice gets pulled to the nearest in-scale note.\n\nNow sing a note, and as you're singing play a chord on your keyboard. …",
+    "sha": "d4555e503cc22a954fcabc19b61593cf6290bca9",
+    "source_upd": "2022-05-16"
   },
   "sixolet/sines": {
     "demo": "",
@@ -21019,6 +21226,38 @@
     "nb_role": "provides",
     "readme": "smpKit\n\nAn nb player to trigger and loop samples with the following features:\n12 slots / samples / voices\nmax 5 min each\nmono / stereo\ncompensates for different sample rates\nclickless looping\ntwo smpKit modes (classic, instrument)\nthree sample playback modes (oneshot, hold, toggle)\nglobal editing of all 12 voices\nsupports nb:modulate and nb:pitchbend\nresonant LPF / HPF and EQ\nsave and load presets / kits\nfx sends for fx mod (hidden when fx mod is not active)\ninstructions:\nInstall and activate smpKit like other mods. Load a script that supports nb players and select smpKit.\nsmpKit initializes in an empty state. Complete states can be recalled under presets. When smpKit is active and a pset of the active script is saved, all parameters are saved as well. Total recall can be achieved either with a scripts' psets or via save/load from the parameter menu.\nUnder settings, the global parameters for main level, root note, pitchbend, and type are accessed. Use type to switch between classic and instrument mode.\nUnder voice, levels, playback, and filters, all parameters of the currently selected voice are accessed. …",
     "sha": "22cd2375b01366834b8160551f935cc3481463c1",
+    "source_upd": "2026-03-17"
+  },
+  "sonocircuit/nb_smpkit": {
+    "demo": "",
+    "engine": "",
+    "facets": [
+      "mod",
+      "engine"
+    ],
+    "fetched_at": "2026-06-09",
+    "images": [],
+    "logic_version": 3,
+    "nb": true,
+    "nb_role": "provides",
+    "readme": "smpKit\n\nAn nb player to trigger and loop samples with the following features:\n12 slots / samples / voices\nmax 5 min each\nmono / stereo\ncompensates for different sample rates\nclickless looping\ntwo smpKit modes (classic, instrument)\nthree sample playback modes (oneshot, hold, toggle)\nglobal editing of all 12 voices\nsupports nb:modulate and nb:pitchbend\nresonant LPF / HPF and EQ\nsave and load presets / kits\nfx sends for fx mod (hidden when fx mod is not active)\ninstructions:\nInstall and activate smpKit like other mods. Load a script that supports nb players and select smpKit.\nsmpKit initializes in an empty state. Complete states can be recalled under presets. When smpKit is active and a pset of the active script is saved, all parameters are saved as well. Total recall can be achieved either with a scripts' psets or via save/load from the parameter menu.\nUnder settings, the global parameters for main level, root note, pitchbend, and type are accessed. Use type to switch between classic and instrument mode.\nUnder voice, levels, playback, and filters, all parameters of the currently selected voice are accessed. …",
+    "sha": "22cd2375b01366834b8160551f935cc3481463c1",
+    "source_upd": "2026-03-17"
+  },
+  "sonocircuit/nb_tonic": {
+    "demo": "",
+    "engine": "",
+    "facets": [
+      "mod",
+      "engine"
+    ],
+    "fetched_at": "2026-06-09",
+    "images": [],
+    "logic_version": 3,
+    "nb": true,
+    "nb_role": "provides",
+    "readme": "nbtonic\n\nan eight voice supertonic port – big thanks to zack for supertonic, which itself was inspired by magnus lidström's microtonic drum synth.\nnb tonic makes the supertonic sound available for norns scripts that support nb, with some minor changes and additions:\nextends the number of voices to eight\nadds six choke groups (six voice polyphony)\nload and save kits and individual voices via menu\nkit and voice preview within the file select menu (turn E3 CW)\nreplaces noise generators with a noise buffer (uses two playback heads for stereo noise)\nvelocity modulation is handled differently (a value of 0% will no longer mute the signal)\nadds pan/balance to each voice\ndistortion is handled differently (soft clip + post-distortion attenuation) → gets crunchy but not too loud\ndocumentation:\nInstall and activate nbtonic like other mods. Load a script that supports nb players and select tonic.\ntonic initializes with the default kit loaded. Complete kits can be loaded and saved under tonic kits. When a pset of the active script is saved, all parameters are saved as well, so saving kits isn't necessary but provides a way of backing up your favorite settings. …",
+    "sha": "7d400d651e782f98ca46f1fa845bf0ed0e20a1d4",
     "source_upd": "2026-03-17"
   },
   "sonocircuit/norns": {
@@ -23036,6 +23275,21 @@
     "readme": "Skylines\n\nMonome grid-based sequencer take on the M185 sequencer by RYK modular, also inspired by the m18s script by jlmitch5.\nTwo voices of up to 8 steps, each step having up to 8 stages.\nClock from crow input 1 or norns global clock. V/oct and gate outs from crow.\nNotes are quantized to a scale of choice, and glide can be set per step.\nThe sequencer can play forward, in reverse, ping-pong or random.\nSeveral play-modes for the stages of each step: all, none, first, every second, every third, every fourth, random.\nRandom note and step generator.\nPreset saving/recalling.\nRequirements\nNorns\nGrid (128 varibright)\nCrow\nDocumentation\n\nPlace the grid vertically, with the USB port on top. Change pages with E1.\nPage 1: Sequencer\n\nThe sequencer will be displayed on the grid while norns is on page 1. Use K3 to start the internal clock, and K2 to reset the sequencer to the first step. Alternatively, send a clock signal into crow input 1 to start the sequencer. A 2V pulse into crow input 2 will reset the sequencer.\n\nPage 2: Presets & scales\n\nThe top block of lit LEDs represents memory slots for presets, which store all the information of a patch (except for the internal clock tempo). …",
     "sha": "3eeffc92382e492de34a80c4a1f07c2df7afe159",
     "source_upd": "2020-11-29"
+  },
+  "v7b1/mi-ugens": {
+    "demo": "",
+    "engine": "",
+    "facets": [
+      "engine"
+    ],
+    "fetched_at": "2026-06-09",
+    "images": [],
+    "logic_version": 3,
+    "nb": false,
+    "nb_role": "",
+    "readme": "mi-UGens\n\nSome mutable instruments eurorack modules ported to SuperCollider\n\nThanks to Émilie Gillet for making the original source code available!\nhttps://github.com/pichenettes/eurorack\n\nPlease note, this is NOT a project by mutable instruments !\n\nVolker Böhm, 2020\nhttps://vboehm.net\nInstalling\n\nGo to the release page , download the appropriate binaries for your OS and unpack the files into your SC extensions folder. (Re-)start SuperCollider or recompile the class library.\n\nBuilding\n\nClone the repository and its submodules:\n\ngit clone --recurse-submodules https://github.com/v7b1/mi-UGens.git\n\nTo build all projects/UGens in one go:\n\nwhere \"path/to/SC/sources\" is your local path to the SuperCollider sources.\n\nYou should find a newly created folder mi-UGens in the build folder. (If you prefer a different location, you can specify an install directory with -DCMAKEINSTALLPREFIX=\"path/to/my/folder\"). Copy this to your SC extensions folder and recompile the class library.\n\nOn Windows, use the Git Bash terminal to run the above lines.\n\nSingle projects can be built by:",
+    "sha": "10f6824f68ad63475f67dfe3fe5016e2d2634f84",
+    "source_upd": "2026-04-10"
   },
   "vaayaa/toga": {
     "demo": "https://www.instagram.com/p/CS4JRtonRD7",
