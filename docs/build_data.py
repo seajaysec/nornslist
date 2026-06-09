@@ -107,13 +107,31 @@ def _normalize_row(d: dict) -> dict:
         "name": pick("name", "Name"),
         "author": pick("author", "Author"),
         "desc": pick("desc", "description", "Description"),
-        "tags": _split_tags(pick("tags", "Tags")) if not isinstance(d.get("tags"), list) else d["tags"],
+        # tags may arrive as a ready list (catalog.json, under "tags" or "Tags")
+        # or a comma string (xlsx / short-key sources) — handle all three.
+        "tags": (d["tags"] if isinstance(d.get("tags"), list)
+                 else d["Tags"] if isinstance(d.get("Tags"), list)
+                 else _split_tags(pick("tags", "Tags"))),
         "demo": pick("demo", "Demo"),
         "disc": pick("disc", "discussion url", "Discussion URL"),
         "proj": pick("proj", "project url", "Project URL"),
         "doc": pick("doc", "documentation url", "Documentation URL"),
         "comm": pick("comm", "community url", "Community URL"),
         "upd": pick("upd", "last updated", "Last Updated"),
+        # Discovery passthrough (catalog.json only): provenance + GitHub-derived
+        # structural kind (script/mod/library/engine) + stars/archived. Default
+        # source 'community' for legacy rows. `kind` is distinct from the boolean
+        # UI `facets` dict merge() builds below.
+        "source": (pick("source", "Source") or "community"),
+        "kind": d["facets"] if isinstance(d.get("facets"), list) else [],
+        "stars": int(d["stars"]) if str(d.get("stars") or "").strip().isdigit() else 0,
+        "archived": bool(d.get("archived")),
+        "status": (pick("status", "Status") or "active"),
+        # README/images carried directly from GitHub-discovered catalog entries.
+        # Skip _clean() for readme — it's multi-line plaintext and must not be
+        # coerced to a single trimmed string.
+        "readme": d.get("readme") or "",
+        "images": d["images"] if isinstance(d.get("images"), list) else [],
     }
 
 
@@ -175,8 +193,8 @@ def merge(catalog: list[dict], feed: dict) -> list[dict]:
         enr = feed.get(s["name"].lower(), {})
 
         engine = _clean(enr.get("engine"))
-        readme = enr.get("readme") or ""
-        images = [u for u in (enr.get("images") or []) if isinstance(u, str) and u.strip()]
+        readme = enr.get("readme") or s.get("readme") or ""
+        images = [u for u in (enr.get("images") or s.get("images") or []) if isinstance(u, str) and u.strip()]
         nb = bool(enr.get("nb"))
 
         # Merge feed tags into catalog tags (catalog order wins, deduped).
@@ -188,18 +206,30 @@ def merge(catalog: list[dict], feed: dict) -> list[dict]:
                     s["tags"].append(t.strip())
                     existing.add(t.lower())
 
+        # Structural kind (script/mod/library/engine): from the catalog for
+        # GitHub-discovered rows, else from feed enrichment for community rows.
+        kind = list(s.get("kind") or enr.get("facets") or [])
+        s["kind"] = kind
+
         if engine:
             s["engine"] = engine
         if nb:
             s["nb"] = True
+            # provides = registers nb voice(s); uses = consumes them. Drives the
+            # "nb voices" vs "nb-ready" chip distinction on the catalog site.
+            role = enr.get("nb_role")
+            if role:
+                s["nb_role"] = role
         if readme:
             s["readme"] = readme
         if images:
             s["images"] = images
 
         # Boolean facets the UI filters on (kept out of `tags` to avoid clutter).
+        # For GitHub rows with no feed enrichment, the engine signal comes from
+        # the structural kind instead of an extracted engine name.
         s["facets"] = {
-            "engine": bool(engine),
+            "engine": bool(engine) or ("engine" in kind),
             "nb": nb,
             "demo": bool(s["demo"]),
             "images": bool(images),

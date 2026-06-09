@@ -39,8 +39,26 @@ jobs:
           # workflow is retired, `playwright` can be removed from
           # requirements.txt entirely.
 
+      - name: Weekly full discovery refresh (Sundays)
+        # Nightly discovery is incremental — enrichment/classification are cached
+        # by each repo's pushed_at, so unchanged repos aren't re-fetched. Once a
+        # week, wipe those caches so the run rebuilds from scratch: re-classifies
+        # every candidate and re-mines forum-thread demos that changed without a
+        # repo push (which the pushed_at-keyed cache would otherwise never revisit).
+        run: |
+          if [ "$(date -u +%u)" = "7" ]; then
+            echo "Sunday (UTC) — clearing discovery + feed caches for a full rebuild"
+            rm -f norns_scripts_discourse.discovery_cache.json \
+                  norns_scripts_discourse.feed_cache.json
+          else
+            echo "Weekday — incremental run (caches preserved)"
+          fi
+
       - name: Run discourse-variant scraper
         env:
+          # GH_PAT (a personal access token, 5000/hr) is preferred for the heavier
+          # daily discovery sweep; falls back to the auto Actions token if unset.
+          GH_PAT: ${{ secrets.GH_PAT }}
           # GITHUB_TOKEN is auto-provided by Actions; the scraper reads it
           # for "Last Updated" GitHub API calls (avoids the 60 req/hr anon limit).
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -55,7 +73,7 @@ jobs:
           # Get one at https://developer.vimeo.com/apps (free).
           VIMEO_API_TOKEN: ${{ secrets.VIMEO_API_TOKEN }}
         run: |
-          python norns_scraper_discourse.py --excel norns_scripts_discourse.xlsx
+          python norns_scraper_discourse.py --excel norns_scripts_discourse.xlsx --discover --discover-max-authors 100
 
       - name: Set date variables
         id: date
@@ -78,13 +96,17 @@ jobs:
           # feed.json is the ingenue data product; feed_cache.json is its
           # per-repo enrichment cache — committing the cache lets each nightly
           # CI run start warm and only re-fetch repos that changed (same reason
-          # the snapshots sidecar is committed).
+          # the snapshots sidecar is committed). lastupd_cache.json is the
+          # equivalent warm cache for the Last-Updated pass: committing it means
+          # nightly runs only re-page commits for repos pushed since last night.
           git add norns_scripts_discourse.xlsx \
                   norns_scripts_discourse.snapshots.json \
                   norns_scripts_discourse.discourse_resolutions.json \
                   norns_scripts_discourse.external_searches.json \
                   feed.json \
-                  norns_scripts_discourse.feed_cache.json
+                  catalog.json \
+                  norns_scripts_discourse.feed_cache.json \
+                  norns_scripts_discourse.lastupd_cache.json
           if ! git diff --staged --quiet; then
             git commit -m "Auto-update (discourse): Daily scrape $(date +'%Y-%m-%d')"
           fi

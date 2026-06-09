@@ -12,9 +12,12 @@ from norns_scraper_discourse import NornsScraper  # noqa: E402
 
 S = NornsScraper  # static/class helpers only — no instance/network needed
 fails = []
+_checks = 0
 
 
 def check(name, got, want):
+    global _checks
+    _checks += 1
     if got != want:
         fails.append(f"{name}: got {got!r} want {want!r}")
 
@@ -124,9 +127,73 @@ check("feed_upd_valid", scripts["awake"].get("upd"), "2024-03-12")
 check("feed_invalid_upd_dropped", "upd" in scripts.get("noupd", {}), False)
 check("feed_empty_name_skipped", "" in scripts, False)
 
+# --- Phase 1: HEAD sha extraction ---
+class _ShaSession:
+    """Routes /commits?... to a one-item commit list; records calls."""
+    def __init__(self, sha):
+        self.sha = sha
+        self.calls = []
+    def get(self, url, params=None, timeout=None, headers=None):
+        self.calls.append((url, params))
+        if "/commits" in url:
+            return FakeResp(200, [{"sha": self.sha}])
+        return FakeResp(404)
+
+class FakeResp:
+    def __init__(self, status_code=200, payload=None, text=""):
+        self.status_code = status_code
+        self._payload = payload if payload is not None else {}
+        self.text = text
+        self.headers = {}
+    def json(self):
+        return self._payload
+    def raise_for_status(self):
+        if self.status_code >= 400:
+            raise RuntimeError(str(self.status_code))
+
+def _sha_inst(sha):
+    inst = object.__new__(NornsScraper)
+    inst.github_session = _ShaSession(sha)
+    return inst
+
+inst_sha = _sha_inst("abc123def456")
+check("head_sha_value", inst_sha._github_head_sha("o", "r", "main"), "abc123def456")
+check("head_sha_per_page_1", any(p and p.get("per_page") == 1 for (_u, p) in inst_sha.github_session.calls), True)
+
+# empty / error -> "" (never raises)
+class _EmptySession:
+    def get(self, *a, **k): return FakeResp(200, [])
+inst2 = object.__new__(NornsScraper); inst2.github_session = _EmptySession()
+check("head_sha_empty", inst2._github_head_sha("o", "r", "main"), "")
+
+# --- Phase 1: sha emitted by _build_feed_scripts ---
+inst = object.__new__(NornsScraper)
+rows = [{"Name": "Awake", "Tags": "grid", "Last Updated": "2024-01-01",
+         "Project URL": "https://github.com/tehn/awake"}]
+enrichment = {("tehn", "awake"): {"sha": "deadbeef" * 5, "readme": "hi"}}
+scripts = inst._build_feed_scripts(rows, enrichment)
+check("feed_emits_sha", scripts["awake"].get("sha"), "deadbeef" * 5)
+
+# missing sha -> key absent (per-field truthy guard)
+scripts2 = inst._build_feed_scripts(rows, {("tehn", "awake"): {"readme": "hi"}})
+check("feed_no_sha_key_when_absent", "sha" in scripts2["awake"], False)
+
+# --- Phase 2: README media extraction (video > audio precedence) ---
+md_video = "Here's a demo: https://www.youtube.com/watch?v=abc123XYZ_0 and audio https://soundcloud.com/x/y"
+check("media_prefers_video", S._extract_readme_media(md_video), "https://www.youtube.com/watch?v=abc123XYZ_0")
+
+md_audio_only = "listen: https://soundcloud.com/artist/track-name"
+check("media_audio_when_no_video", S._extract_readme_media(md_audio_only), "https://soundcloud.com/artist/track-name")
+
+md_vimeo = "[demo](https://vimeo.com/123456789)"
+check("media_vimeo", S._extract_readme_media(md_vimeo), "https://vimeo.com/123456789")
+
+check("media_none", S._extract_readme_media("no links here, just prose"), "")
+check("media_ignores_plain_github", S._extract_readme_media("https://github.com/o/r"), "")
+
 if fails:
     print("FAILED:")
     for f in fails:
         print("  -", f)
     sys.exit(1)
-print(f"ALL {38 - 0} CHECKS PASSED")
+print(f"ALL {_checks} CHECKS PASSED")
