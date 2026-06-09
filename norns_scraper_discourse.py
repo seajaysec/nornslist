@@ -4110,11 +4110,15 @@ class NornsScraper:
                     f"passed the norns gate")
         return discovered
 
+    # The lines forum (Discourse). NOT self.base_url, which is norns.community —
+    # the community-scrape site, whose /tag/norns.json 404s.
+    DISCOURSE_FORUM_BASE = "https://llllllll.co"
+
     def discover_forum_repos(self, known_repos: set, max_pages: int = 5) -> dict:
         """Crawl llllllll.co's `norns` tag for topics whose OP links a GitHub repo
         not already in `known_repos`. Returns {(owner, repo): {disc, topic_id}}.
         Best-effort: any error yields a partial/empty dict (never aborts a run)."""
-        base = getattr(self, "base_url", "https://llllllll.co").rstrip("/")
+        base = self.DISCOURSE_FORUM_BASE
         out = {}
         for page in range(0, max_pages):
             try:
