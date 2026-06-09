@@ -2699,6 +2699,10 @@ class NornsScraper:
         owner, repo = m.group(1), re.sub(r"\.git$", "", m.group(2))
         if not owner or not repo or repo.lower() in ("", "blob", "tree"):
             return None
+        # github.com system paths aren't repos (e.g. /orgs/x, /marketplace/y) —
+        # skip so the forum loop doesn't waste a repo-meta 404 on them.
+        if owner.lower() in ("orgs", "marketplace", "features", "apps", "sponsors", "topics", "settings"):
+            return None
         return owner.lower(), repo.lower()
 
     def _is_readme_only_change(self, files):
@@ -2826,7 +2830,7 @@ class NornsScraper:
         try:
             r = self.github_session.get(
                 f"https://api.github.com/repos/{owner}/{repo}/commits",
-                params={"sha": branch or "HEAD", "per_page": 1},
+                params={"sha": branch or "main", "per_page": 1},
                 timeout=15,
             )
             if r.status_code != 200:
@@ -3718,30 +3722,37 @@ class NornsScraper:
             cache = self._load_discovery_cache(excel_path)
             lock = threading.Lock()
             for (owner, name), meta in forum.items():
-                m = self._repo_meta(owner, name)
-                if m.get("_status") in (403, 404):
+                # Isolate each forum repo: a single bad repo must never discard the
+                # already-complete github-search `discovered` set (the outer except
+                # would otherwise swallow everything and return {}).
+                try:
+                    m = self._repo_meta(owner, name)
+                    if m.get("_status") in (403, 404):
+                        continue
+                    branch = m.get("default_branch") or "main"
+                    verdict = self._classify_norns_repo(
+                        owner, name, branch, m.get("pushed_at"), cache, lock)
+                    if not verdict.get("is_norns"):
+                        continue
+                    enr = self._github_fetch_feed_enrichment(owner, name)
+                    demo = enr.get("demo") or ""
+                    if not demo:
+                        demo = self.discover_demo_video(meta["disc"]) or ""
+                    discovered[(owner, name)] = {
+                        "owner": owner, "name": name,
+                        "author": owner, "desc": m.get("description") or "",
+                        "proj": f"https://github.com/{owner}/{name}",
+                        "upd": str(m.get("pushed_at") or "")[:10],
+                        "topics": ["lines"], "facets": verdict.get("facets") or [],
+                        "archived": bool(m.get("archived")),
+                        "stars": int(m.get("stargazers_count") or 0),
+                        "source": "github", "demo": demo,
+                        "readme": enr.get("readme") or "", "images": list(enr.get("images") or []),
+                        "disc": meta["disc"],
+                    }
+                except Exception as exc:
+                    logger.debug(f"Forum enrich failed for {owner}/{name}: {exc}")
                     continue
-                branch = m.get("default_branch") or "main"
-                verdict = self._classify_norns_repo(
-                    owner, name, branch, m.get("pushed_at"), cache, lock)
-                if not verdict.get("is_norns"):
-                    continue
-                enr = self._github_fetch_feed_enrichment(owner, name)
-                demo = enr.get("demo") or ""
-                if not demo:
-                    demo = self.discover_demo_video(meta["disc"]) or ""
-                discovered[(owner, name)] = {
-                    "owner": owner, "name": name,
-                    "author": owner, "desc": m.get("description") or "",
-                    "proj": f"https://github.com/{owner}/{name}",
-                    "upd": str(m.get("pushed_at") or "")[:10],
-                    "topics": ["lines"], "facets": verdict.get("facets") or [],
-                    "archived": bool(m.get("archived")),
-                    "stars": int(m.get("stargazers_count") or 0),
-                    "source": "github", "demo": demo,
-                    "readme": enr.get("readme") or "", "images": list(enr.get("images") or []),
-                    "disc": meta["disc"],
-                }
             self._save_discovery_cache(excel_path, cache)
             return discovered
         except Exception as e:

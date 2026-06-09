@@ -229,6 +229,25 @@ check("run_disc_thread_demo", _rout[("nd", "shiny")]["demo"], "https://youtu.be/
 check("run_disc_readme_carried", _rout[("nd", "shiny")]["readme"], "R")
 check("run_disc_disc_carried", _rout[("nd", "shiny")]["disc"], "https://llllllll.co/t/x/1")
 
+# --- Phase 3: a forum-loop exception must NOT discard github-search results ---
+def _boom(*a, **k):
+    raise RuntimeError("simulated repo-meta failure")
+_ri2 = object.__new__(NornsScraper)
+_ri2.discover_aggressive = False
+_ri2.discover_max_authors = None
+_ri2.discover_github_repos = lambda *a, **k: {("gh", "found"): {"name": "found", "source": "github"}}
+_ri2.discover_forum_repos = lambda known, max_pages=5: {("nd", "boom"): {"disc": "https://llllllll.co/t/x/9", "topic_id": 9}}
+_ri2._repo_meta = _boom  # forum repo blows up mid-loop
+_ri2._load_discovery_cache = lambda p: {}
+_ri2._save_discovery_cache = lambda p, c: None
+_rout2 = _ri2._run_discovery([], "x.xlsx")
+check("run_disc_survives_forum_error", ("gh", "found") in _rout2, True)
+check("run_disc_drops_bad_forum_repo", ("nd", "boom") in _rout2, False)
+
+# --- Phase 3: github.com system paths are not repos ---
+check("extract_gh_skips_orgs", S._extract_github_url("https://github.com/orgs/monome"), None)
+check("extract_gh_skips_marketplace", S._extract_github_url("https://github.com/marketplace/actions/x"), None)
+
 if fails:
     print("FAILED:")
     for f in fails:
