@@ -4013,6 +4013,45 @@ class NornsScraper:
                     f"passed the norns gate")
         return discovered
 
+    def discover_forum_repos(self, known_repos: set, max_pages: int = 5) -> dict:
+        """Crawl llllllll.co's `norns` tag for topics whose OP links a GitHub repo
+        not already in `known_repos`. Returns {(owner, repo): {disc, topic_id}}.
+        Best-effort: any error yields a partial/empty dict (never aborts a run)."""
+        base = getattr(self, "base_url", "https://llllllll.co").rstrip("/")
+        out = {}
+        for page in range(0, max_pages):
+            try:
+                r = self._discourse_get_with_retry(
+                    f"{base}/tag/norns.json", params={"page": page}, timeout=20)
+                if r.status_code != 200:
+                    break
+                topics = ((r.json() or {}).get("topic_list") or {}).get("topics") or []
+            except Exception as e:
+                logger.debug(f"Forum discovery: tag page {page} error: {e}")
+                break
+            if not topics:
+                break
+            for t in topics:
+                tid = t.get("id")
+                if not tid:
+                    continue
+                try:
+                    tr = self._discourse_get_with_retry(f"{base}/t/{tid}.json", timeout=20)
+                    if tr.status_code != 200:
+                        continue
+                    posts = ((tr.json() or {}).get("post_stream") or {}).get("posts") or []
+                    op = posts[0].get("cooked", "") if posts else ""
+                except Exception:
+                    continue
+                gh = self._extract_github_url(op)
+                if not gh or gh in known_repos or gh in out:
+                    continue
+                if f"{gh[0]}/{gh[1]}" in self.GH_BLOCK or gh[1] in self.GH_BLOCK_NAMES:
+                    continue
+                out[gh] = {"disc": f"{base}/t/{t.get('slug') or tid}/{tid}", "topic_id": tid}
+        logger.info(f"Forum discovery: {len(out)} repo-linked norns-tag threads not in catalog")
+        return out
+
     def _scrape_by_community_url(self, community_url: str):
         """Build script details for sync-check by looking up the community.json entry."""
         # Derive slug from URL path

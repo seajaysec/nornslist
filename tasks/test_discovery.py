@@ -181,6 +181,35 @@ check("extract_gh_ignores_non_repo",
       None)
 check("extract_gh_none", S._extract_github_url("no link here"), None)
 
+# --- Phase 3: forum tag crawl finds a repo-linked, not-yet-cataloged repo ---
+class _ForumStub:
+    """Stubs _discourse_get_with_retry: serves one tag page + per-topic OPs."""
+    def __init__(self):
+        self.calls = []
+    def __call__(self, url, params=None, timeout=20, max_retries=10):
+        self.calls.append(url)
+        if "/tag/norns.json" in url:
+            return FakeResp(200, {"topic_list": {"topics": [
+                {"id": 42, "slug": "shiny-new-script"},
+                {"id": 7, "slug": "old-known"},
+            ]}})
+        if "/t/42.json" in url:
+            return FakeResp(200, {"post_stream": {"posts": [
+                {"cooked": 'see <a href="https://github.com/newdev/shiny">repo</a>'}]}})
+        if "/t/7.json" in url:
+            return FakeResp(200, {"post_stream": {"posts": [
+                {"cooked": 'https://github.com/known/already'}]}})
+        return FakeResp(404)
+
+_finst = object.__new__(NornsScraper)
+_finst.base_url = "https://llllllll.co"
+_finst._discourse_get_with_retry = _ForumStub()
+_fknown = {("known", "already")}
+_ffound = _finst.discover_forum_repos(_fknown, max_pages=1)
+check("forum_finds_newdev_shiny", ("newdev", "shiny") in _ffound, True)
+check("forum_skips_known", ("known", "already") in _ffound, False)
+check("forum_carries_disc", _ffound[("newdev", "shiny")]["disc"].startswith("https://llllllll.co/t/"), True)
+
 if fails:
     print("FAILED:")
     for f in fails:
