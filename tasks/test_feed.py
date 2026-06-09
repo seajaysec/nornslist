@@ -163,9 +163,21 @@ class _EmptySession:
 inst2 = object.__new__(NornsScraper); inst2.github_session = _EmptySession()
 check("head_sha_empty", inst2._github_head_sha("o", "r", "main"), "")
 
+# --- Phase 1: sha emitted by _build_feed_scripts ---
+inst = object.__new__(NornsScraper)
+rows = [{"Name": "Awake", "Tags": "grid", "Last Updated": "2024-01-01",
+         "Project URL": "https://github.com/tehn/awake"}]
+enrichment = {("tehn", "awake"): {"sha": "deadbeef" * 5, "readme": "hi"}}
+scripts = inst._build_feed_scripts(rows, enrichment)
+check("feed_emits_sha", scripts["awake"].get("sha"), "deadbeef" * 5)
+
+# missing sha -> key absent (per-field truthy guard)
+scripts2 = inst._build_feed_scripts(rows, {("tehn", "awake"): {"readme": "hi"}})
+check("feed_no_sha_key_when_absent", "sha" in scripts2["awake"], False)
+
 if fails:
     print("FAILED:")
     for f in fails:
         print("  -", f)
     sys.exit(1)
-print(f"ALL {41 - 0} CHECKS PASSED")
+print(f"ALL {43 - 0} CHECKS PASSED")

@@ -2989,7 +2989,7 @@ class NornsScraper:
     # Bump when engine/nb/readme/image *processing* logic changes. Cached entries
     # store processed output, so a stamped version mismatch invalidates them and
     # forces a one-time rebuild — same idea as the external-search _MATCHER_SIGNATURE.
-    FEED_LOGIC_VERSION = 2  # v2: structural facets (script/mod/library/engine) + key-file nb
+    FEED_LOGIC_VERSION = 3  # v3: + HEAD sha per repo (ingenue update detection)
 
     @staticmethod
     def _today_iso() -> str:
@@ -3300,7 +3300,7 @@ class NornsScraper:
         term. Three GitHub calls max: repo meta, README, recursive tree."""
         import base64
 
-        result = {"engine": "", "nb": False, "nb_role": "", "facets": [], "readme": "", "images": []}
+        result = {"engine": "", "nb": False, "nb_role": "", "facets": [], "readme": "", "images": [], "sha": ""}
         if not owner or not repo:
             return result
         base = f"https://api.github.com/repos/{owner}/{repo}"
@@ -3315,6 +3315,7 @@ class NornsScraper:
             if meta.get("_status") == 404:
                 return result
             branch = meta.get("default_branch") or "main"
+            result["sha"] = self._github_head_sha(owner, repo, branch)
 
             # README: content -> plaintext + curated images + nb hint
             readme_md = ""
@@ -3443,6 +3444,8 @@ class NornsScraper:
                     entry["readme"] = enr["readme"]
                 if enr.get("images"):
                     entry["images"] = list(enr["images"])[: self.FEED_MAX_IMAGES]
+                if enr.get("sha"):
+                    entry["sha"] = enr["sha"]
             if entry:
                 scripts[name.lower()] = entry
         return scripts
@@ -3467,7 +3470,7 @@ class NornsScraper:
 
             scripts = self._build_feed_scripts(rows, enrichment)
             payload = {
-                "file_info": {"version": 1, "kind": "script_feed"},
+                "file_info": {"version": 2, "kind": "script_feed"},
                 "date": self._today_iso(),
                 "scripts": scripts,
             }
