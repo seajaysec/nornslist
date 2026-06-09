@@ -2638,8 +2638,8 @@ class NornsScraper:
         return ""
 
     def _load_github_token(self):
-        """Load GitHub token from env var GITHUB_TOKEN or local gh.api file."""
-        token = os.getenv("GITHUB_TOKEN", "").strip()
+        """Load GitHub token: GH_PAT (preferred) or GITHUB_TOKEN env, else gh.api file."""
+        token = (os.getenv("GH_PAT") or os.getenv("GITHUB_TOKEN") or "").strip()
         if token:
             return token
         for path in ("gh.api", os.path.join(os.path.dirname(__file__), "gh.api")):

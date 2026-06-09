@@ -217,6 +217,24 @@ inst.get_main_page()
 check("main_page_fail_not_cached_retries", inst.session.calls, 2)
 
 
+# --- Phase 2: GH_PAT preferred over GITHUB_TOKEN ---
+import os as _os
+_saved = {k: _os.environ.get(k) for k in ("GH_PAT", "GITHUB_TOKEN")}
+try:
+    _os.environ["GH_PAT"] = "pat_secret"
+    _os.environ["GITHUB_TOKEN"] = "actions_token"
+    _inst = object.__new__(NornsScraper)
+    check("token_prefers_gh_pat", _inst._load_github_token(), "pat_secret")
+    del _os.environ["GH_PAT"]
+    check("token_falls_back", _inst._load_github_token(), "actions_token")
+finally:
+    for _k, _v in _saved.items():
+        if _v is None:
+            _os.environ.pop(_k, None)
+        else:
+            _os.environ[_k] = _v
+
+
 if fails:
     print("FAILED:")
     for f in fails:
