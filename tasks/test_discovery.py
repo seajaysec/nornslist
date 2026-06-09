@@ -169,6 +169,18 @@ e2 = object.__new__(NornsScraper)._discovered_to_catalog_entry(rec2)
 check("discovered_readme_carried", e2.get("readme"), "a readme")
 check("discovered_images_carried", e2.get("images"), ["https://x/y.png"])
 
+# --- Phase 3: extract github repo (owner, name) from forum post body ---
+check("extract_gh_basic",
+      S._extract_github_url("check it out https://github.com/dan/myscript !"),
+      ("dan", "myscript"))
+check("extract_gh_strips_suffix",
+      S._extract_github_url("repo: https://github.com/dan/myscript.git"),
+      ("dan", "myscript"))
+check("extract_gh_ignores_non_repo",
+      S._extract_github_url("see https://github.com/monome (org page)"),
+      None)
+check("extract_gh_none", S._extract_github_url("no link here"), None)
+
 if fails:
     print("FAILED:")
     for f in fails:

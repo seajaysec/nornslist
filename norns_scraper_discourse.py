@@ -2687,6 +2687,20 @@ class NornsScraper:
         except Exception:
             return None, None
 
+    @staticmethod
+    def _extract_github_url(text: str):
+        """First github.com/{owner}/{repo} in `text` as (owner, repo), or None.
+        Ignores org/user pages (no repo segment) and normalizes a .git suffix."""
+        if not text:
+            return None
+        m = re.search(r"github\.com/([A-Za-z0-9_.-]+)/([A-Za-z0-9_.-]+)", text)
+        if not m:
+            return None
+        owner, repo = m.group(1), re.sub(r"\.git$", "", m.group(2))
+        if not owner or not repo or repo.lower() in ("", "blob", "tree"):
+            return None
+        return owner.lower(), repo.lower()
+
     def _is_readme_only_change(self, files):
         """True if all changed files are README.md (case-insensitive basename match)."""
         try:
