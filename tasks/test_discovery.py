@@ -210,6 +210,25 @@ check("forum_finds_newdev_shiny", ("newdev", "shiny") in _ffound, True)
 check("forum_skips_known", ("known", "already") in _ffound, False)
 check("forum_carries_disc", _ffound[("newdev", "shiny")]["disc"].startswith("https://llllllll.co/t/"), True)
 
+# --- Phase 3: _run_discovery folds in forum repos (lines tag + thread demo) ---
+_ri = object.__new__(NornsScraper)
+_ri.discover_aggressive = False
+_ri.discover_max_authors = None
+_ri.discover_github_repos = lambda *a, **k: {}
+_ri.discover_forum_repos = lambda known, max_pages=5: {("nd", "shiny"): {"disc": "https://llllllll.co/t/x/1", "topic_id": 1}}
+_ri._repo_meta = lambda o, n: {"default_branch": "main", "pushed_at": "2024-01-01T00:00:00Z", "description": "d", "archived": False, "stargazers_count": 3}
+_ri._classify_norns_repo = lambda o, n, b, p, c, l: {"is_norns": True, "facets": ["script"]}
+_ri._github_fetch_feed_enrichment = lambda o, n: {"demo": "", "readme": "R", "images": []}
+_ri.discover_demo_video = lambda url: "https://youtu.be/zzz"
+_ri._load_discovery_cache = lambda p: {}
+_ri._save_discovery_cache = lambda p, c: None
+_rout = _ri._run_discovery([], "x.xlsx")
+check("run_disc_forum_added", ("nd", "shiny") in _rout, True)
+check("run_disc_lines_tag", _rout[("nd", "shiny")]["topics"], ["lines"])
+check("run_disc_thread_demo", _rout[("nd", "shiny")]["demo"], "https://youtu.be/zzz")
+check("run_disc_readme_carried", _rout[("nd", "shiny")]["readme"], "R")
+check("run_disc_disc_carried", _rout[("nd", "shiny")]["disc"], "https://llllllll.co/t/x/1")
+
 if fails:
     print("FAILED:")
     for f in fails:

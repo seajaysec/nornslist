@@ -3696,19 +3696,54 @@ class NornsScraper:
             logger.warning(f"Failed to write catalog.json: {e}")
 
     def _run_discovery(self, rows, excel_path: str) -> dict:
-        """Extract the community repo set from merged rows and run GitHub
-        discovery. Returns {(owner,repo): record} or {} on any failure."""
+        """Extract the community repo set from merged rows and run GitHub +
+        forum-driven discovery. Returns {(owner,repo): record} or {} on failure.
+        Forum-found repos (repo-linked norns-tag threads not already known) are
+        classified + enriched like GitHub-search finds, but additionally carry a
+        `lines` tag, the thread's discussion URL, and a demo mined from the thread."""
         try:
             community = set()
             for row in rows:
                 owner, repo = self._parse_github_repo(row.get("Project URL", ""))
                 if owner and repo:
                     community.add((owner, repo))
-            return self.discover_github_repos(
+            discovered = self.discover_github_repos(
                 community, excel_path,
                 aggressive=getattr(self, "discover_aggressive", True),
                 max_author_searches=getattr(self, "discover_max_authors", None),
             )
+            # Forum-driven: repo-linked norns-tag threads not already known.
+            known = set(community) | set(discovered.keys())
+            forum = self.discover_forum_repos(known, max_pages=getattr(self, "forum_max_pages", 5))
+            cache = self._load_discovery_cache(excel_path)
+            lock = threading.Lock()
+            for (owner, name), meta in forum.items():
+                m = self._repo_meta(owner, name)
+                if m.get("_status") in (403, 404):
+                    continue
+                branch = m.get("default_branch") or "main"
+                verdict = self._classify_norns_repo(
+                    owner, name, branch, m.get("pushed_at"), cache, lock)
+                if not verdict.get("is_norns"):
+                    continue
+                enr = self._github_fetch_feed_enrichment(owner, name)
+                demo = enr.get("demo") or ""
+                if not demo:
+                    demo = self.discover_demo_video(meta["disc"]) or ""
+                discovered[(owner, name)] = {
+                    "owner": owner, "name": name,
+                    "author": owner, "desc": m.get("description") or "",
+                    "proj": f"https://github.com/{owner}/{name}",
+                    "upd": str(m.get("pushed_at") or "")[:10],
+                    "topics": ["lines"], "facets": verdict.get("facets") or [],
+                    "archived": bool(m.get("archived")),
+                    "stars": int(m.get("stargazers_count") or 0),
+                    "source": "github", "demo": demo,
+                    "readme": enr.get("readme") or "", "images": list(enr.get("images") or []),
+                    "disc": meta["disc"],
+                }
+            self._save_discovery_cache(excel_path, cache)
+            return discovered
         except Exception as e:
             logger.warning(f"Discovery failed (catalog still written, community-only): {e}")
             return {}
