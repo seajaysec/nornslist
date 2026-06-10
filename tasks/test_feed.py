@@ -207,10 +207,15 @@ check("v_nb_pack_filename", "nb" in v["provides"], True)
 v = voices('local nb = require "nb/lib/nb"', facets=["script"])
 check("v_nb_uses", (v["uses"], v["provides"]), (["nb"], []))
 
-# vendored nb must NOT flag uses — bundled excluded upstream; simulate empty blob
-v2 = S._detect_voices("-- host code, no external nb ref", ["main.lua", "lib/nb/lib/nb.lua"],
-                      {"nb"}, ["script"], "host")
-check("v_nb_vendored_not_uses", "nb" in v2["uses"], False)
+# vendored nb: host requires its OWN bundled nb copy -> NOT an external nb dep.
+# Same blob flips to uses=["nb"] when nb is NOT bundled — proving the guard works.
+_blob_nb = 'local nb = require "nb/lib/nb"'
+check("v_nb_vendored_not_uses",
+      "nb" in S._detect_voices(_blob_nb, ["main.lua", "lib/nb/lib/nb.lua"], {"nb"}, ["script"], "host")["uses"],
+      False)
+check("v_nb_not_vendored_uses",
+      "nb" in S._detect_voices(_blob_nb, ["main.lua"], set(), ["script"], "host")["uses"],
+      True)
 
 # mx.samples / mx.synths via require
 v = voices('engine.name="None"\nlocal mxsamples=require("mx.samples/lib/mx.samples")', facets=["script"])

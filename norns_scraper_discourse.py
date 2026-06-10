@@ -3005,6 +3005,10 @@ class NornsScraper:
     FEED_README_MAXLEN = 1200  # plaintext README prefix length shipped to the device
     FEED_MAX_IMAGES = 6  # carousel cap per script
     VOICE_CORPUS_MAX_FILES = 16  # bounded blob fetch per repo (API-call ceiling)
+    # Voice systems whose `require "<X>/lib"` presence means the script USES that
+    # system's voices. Dotted names matter (mx.samples, mx.synths). Extend as new
+    # voice frameworks appear. Mirrors ingenue analyze_dir's requires extraction.
+    VOICE_USE_LIBS = {"mx.samples", "mx.synths"}
     # Bump when engine/nb/readme/image *processing* logic changes. Cached entries
     # store processed output, so a stamped version mismatch invalidates them and
     # forces a one-time rebuild — same idea as the external-search _MATCHER_SIGNATURE.
@@ -3156,17 +3160,8 @@ class NornsScraper:
         lib = [p for p in paths if p.lower().endswith(".lua")
                and re.search(r"(?:^|/)lib/", p) and not is_bundled(p)]
         sc = [p for p in paths if re.search(r"(?:^|/)Engine_[A-Za-z0-9]+\.sc$", p) and not is_bundled(p)]
-        ordered, seen = [], set()
-        for group in (sorted(top), sorted(lib), sorted(sc)):
-            for p in group:
-                if p not in seen:
-                    seen.add(p); ordered.append(p)
+        ordered = sorted(top) + sorted(lib) + sorted(sc)
         return ordered[: NornsScraper.VOICE_CORPUS_MAX_FILES]
-
-    # Voice systems whose `require "<X>/lib"` presence means the script USES that
-    # system's voices. Dotted names matter (mx.samples, mx.synths). Extend as new
-    # voice frameworks appear. Mirrors ingenue analyze_dir's requires extraction.
-    VOICE_USE_LIBS = {"mx.samples", "mx.synths"}
 
     @staticmethod
     def _detect_voices(blob: str, paths, bundled, facets, repo: str) -> dict:
@@ -3187,6 +3182,7 @@ class NornsScraper:
                            for p in paths)
         if re.search(r"nb:add_player", text) or nb_pack_name or nb_pack_file:
             provides.append("nb")
+        # nb consumer: unanchored by design — corpus is plain Lua source, not minified.
         elif re.search(r"require[\s(]+['\"]nb/|/nb/lib|nb_voice|nb:add", text) and "nb" not in bundled:
             uses.append("nb")
 
@@ -3198,7 +3194,10 @@ class NornsScraper:
                 uses.append(lib)
 
         # --- SuperCollider engines ---
-        self_engines = {m.group(1).lower() for p in paths
+        def _is_bundled_path(p):
+            m = re.match(r"lib/([^/]+)/", str(p))
+            return bool(m and m.group(1).lower() in bundled)
+        self_engines = {m.group(1).lower() for p in paths if not _is_bundled_path(p)
                         for m in [re.search(r"Engine_([A-Za-z0-9]+)\.sc$", os.path.basename(str(p)))] if m}
         if self_engines and "script" not in facets:
             provides.append("sc-engine")          # engine-only/lib/mod repo: lends its engine
@@ -3211,7 +3210,7 @@ class NornsScraper:
         return {"provides": provides, "uses": uses, "systems": sorted(set(provides) | set(uses))}
 
     @staticmethod
-    def _has_init_params(blob: str) -> tuple:
+    def _has_init_params(blob: str) -> tuple[bool, bool]:
         """(has_init, has_params) from the corpus — proof the repo is a runnable
         script (defines init / adds params) vs a bare fragment. Used by the
         installability classifier downstream."""
