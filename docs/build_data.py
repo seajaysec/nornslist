@@ -300,7 +300,7 @@ def _seo_page(s: dict) -> str:
     e = html.escape
     name = e(s["name"])
     author = e(s["author"] or "unknown")
-    desc = e((s.get("desc") or f"{s['name']} — a norns community script.")[:200])
+    desc = e((s.get("desc") or f"{s['name']} — a norns script.")[:200])
     url = SITE_URL + "s/" + s["slug"] + ".html"
     img = (s.get("images") or [None])[0]
     badge = f'<span class="badge">{e(s["engine"])}</span>' if s.get("engine") else ""
@@ -381,7 +381,7 @@ def generate_updates_feed(scripts: list[dict], out_dir: str, limit: int = 60) ->
     items = []
     for s in recent:
         link = SITE_URL + "s/" + s["slug"] + ".html"
-        desc = s.get("desc") or f"{s['name']} — a norns community script."
+        desc = s.get("desc") or f"{s['name']} — a norns script."
         pub = _rfc822(s["upd"])
         items.append(
             f"<item><title>{e(s['name'])}</title><link>{e(link)}</link>"
@@ -393,7 +393,7 @@ def generate_updates_feed(scripts: list[dict], out_dir: str, limit: int = 60) ->
            '<rss version="2.0"><channel>'
            '<title>nornslist — recently updated norns scripts</title>'
            f'<link>{SITE_URL}</link>'
-           '<description>The most recently updated norns community scripts.</description>'
+           '<description>The most recently updated norns scripts.</description>'
            + "".join(items) + '</channel></rss>')
     with open(os.path.join(out_dir, "updates.xml"), "w", encoding="utf-8") as fh:
         fh.write(rss)
