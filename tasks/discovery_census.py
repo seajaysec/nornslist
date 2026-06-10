@@ -82,5 +82,21 @@ def main():
               f"{(rec['desc'] or '')[:60]}")
 
 
+    # --- installability reclassification breakdown (added with voice/install work) ---
+    import json as _json
+    sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "docs"))
+    import build_data as _B
+    _cat = _json.load(open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "catalog.json")))["scripts"]
+    _by = {}
+    for _r in _cat:
+        _nr = _B._normalize_row(_r)
+        _ok, _why = _B.derive_installable(_nr)
+        _key = "installable" if _ok else ",".join(_why)
+        _by[_key] = _by.get(_key, 0) + 1
+    print("\n=== installability breakdown (catalog.json) ===")
+    for _k, _c in sorted(_by.items(), key=lambda x: -x[1]):
+        print(f"  {_c:4d}  {_k}")
+
+
 if __name__ == "__main__":
     main()
