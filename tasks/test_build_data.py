@@ -38,6 +38,22 @@ check("vt_nb_ready_on_uses", "nb-ready" in B.voice_tags({"provides": [], "uses":
 check("vt_mx_subtype", "mx.samples" in B.voice_tags({"provides": [], "uses": ["mx.samples"], "systems": ["mx.samples"]}), True)
 check("vt_empty", B.voice_tags({"provides": [], "uses": [], "systems": []}), [])
 
+# --- GitHub-discovered rows carry voices on the catalog entry (NOT in feed.json) ---
+# Regression for "not catching anything on github or soft launch": merge() must
+# read voices from the catalog row `s` when the feed has no entry for it.
+gh_row = B._normalize_row({"name": "voicepack", "source": "github", "facets": ["mod"],
+                           "voices": {"provides": ["nb"], "uses": [], "systems": ["nb"]}})
+merged = B.merge([gh_row], {})  # empty feed → voices must come from the catalog row
+m = merged[0]
+check("gh_voices_from_catalog", (m.get("voices") or {}).get("provides"), ["nb"])
+check("gh_voices_umbrella_facet", m["facets"]["voices"], True)
+check("gh_voices_tag", "additional voice" in m["tags"], True)
+# a github fork that is behind/unmodified is non-installable; ahead stays installable
+gh_fork = B.merge([B._normalize_row({"name": "afork", "source": "github", "facets": ["script"], "fork": True})], {})[0]
+check("gh_fork_stale_not_installable", gh_fork["facets"]["installable"], False)
+gh_fork_ahead = B.merge([B._normalize_row({"name": "afork2", "source": "github", "facets": ["script"], "fork": True, "fork_ahead": True})], {})[0]
+check("gh_fork_ahead_installable", gh_fork_ahead["facets"]["installable"], True)
+
 if fails:
     print("FAILED:"); [print("  -", f) for f in fails]; sys.exit(1)
 print(f"ALL {_checks} CHECKS PASSED")

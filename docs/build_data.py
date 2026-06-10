@@ -126,6 +126,10 @@ def _normalize_row(d: dict) -> dict:
         "kind": d["facets"] if isinstance(d.get("facets"), list) else [],
         "stars": int(d["stars"]) if str(d.get("stars") or "").strip().isdigit() else 0,
         "fork": bool(d.get("fork")),
+        "fork_ahead": bool(d.get("fork_ahead")),
+        # voices carried directly from GitHub-discovered catalog entries (they're
+        # not in feed.json); community rows get voices from feed enrichment instead.
+        "voices": d["voices"] if isinstance(d.get("voices"), dict) else None,
         "archived": bool(d.get("archived")),
         "status": (pick("status", "Status") or "active"),
         # README/images carried directly from GitHub-discovered catalog entries.
@@ -247,13 +251,15 @@ def merge(catalog: list[dict], feed: dict) -> list[dict]:
         engine = _clean(enr.get("engine"))
         readme = enr.get("readme") or s.get("readme") or ""
         images = [u for u in (enr.get("images") or s.get("images") or []) if isinstance(u, str) and u.strip()]
-        voices = enr.get("voices") or {}
-        # Fork signals for installability: `_normalize_row` carries `fork` from the
-        # catalog for discovered rows; feed enrichment additionally carries `fork`
-        # and `fork_ahead` (computed via the compare call). Prefer the feed values.
+        # Voices: feed carries it for community rows; GitHub-discovered rows carry
+        # it on the catalog entry (they're not in feed.json) — fall back to `s`.
+        voices = enr.get("voices") or s.get("voices") or {}
+        # Fork signals for installability: `_normalize_row` carries `fork`/`fork_ahead`
+        # from the catalog for discovered rows; feed enrichment carries them for
+        # community rows. Prefer the feed value when present, else keep the catalog's.
         if enr.get("fork") is not None:
             s["fork"] = bool(enr.get("fork"))
-        s["fork_ahead"] = bool(enr.get("fork_ahead"))
+        s["fork_ahead"] = bool(enr.get("fork_ahead") or s.get("fork_ahead"))
 
         # Merge feed tags into catalog tags (catalog order wins, deduped).
         feed_tags = enr.get("tags") or []

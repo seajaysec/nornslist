@@ -3701,6 +3701,16 @@ class NornsScraper:
             entry["archived"] = True
         if rec.get("fork"):
             entry["fork"] = True
+        if rec.get("fork_ahead"):
+            entry["fork_ahead"] = True
+        # Voice classification on the catalog entry — discovered repos aren't in
+        # feed.json, so this is how their voices reach build_data/the site.
+        if rec.get("voices") and rec["voices"].get("systems"):
+            entry["voices"] = rec["voices"]
+        if rec.get("has_init"):
+            entry["has_init"] = True
+        if rec.get("has_params"):
+            entry["has_params"] = True
         return entry
 
     def _community_status_map(self, rows, excel_path: str) -> dict:
@@ -4119,6 +4129,19 @@ class NornsScraper:
             # by diffing the local sha against this, with no GitHub call of its own.
             if not rec.get("sha"):
                 rec["sha"] = enr.get("sha") or ""
+            # Voice classification + fork-ahead ride along too: discovered repos
+            # are NOT in feed.json (community-only), so the catalog entry is the
+            # ONLY place GitHub/soft-launch voices reach the site. Without this,
+            # discovered repos show no voices — the exact gap behind "not catching
+            # anything on github or soft launch".
+            if enr.get("voices") and enr["voices"].get("systems"):
+                rec["voices"] = enr["voices"]
+            if enr.get("has_init"):
+                rec["has_init"] = True
+            if enr.get("has_params"):
+                rec["has_params"] = True
+            if enr.get("fork_ahead"):
+                rec["fork_ahead"] = True
 
     def discover_github_repos(self, community_repos: set, excel_path: str,
                               aggressive: bool = True,
