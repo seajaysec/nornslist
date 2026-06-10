@@ -108,15 +108,26 @@ the user's criterion, "another script can load this voice."
 Capture richer raw signals (cheap; mostly already in API responses):
 
 - `fork` — GitHub `fork: bool` (currently discarded). Captured at discovery time.
+- `fork_ahead` — for fork repos only, whether the fork has commits AHEAD of its
+  upstream parent. Computed in enrichment from the repo-meta `parent` + one cached
+  GitHub *compare* call (`ahead_by > 0`). Unknown (compare fails / parent gone) →
+  treated as ahead (keep, don't bury a possibly-valuable fork on a transient error).
 - `has_init` (`function init(`), `has_params` (`params:add`) — from the corpus;
   prove a runnable script vs. a fragment.
 - High-precision red-flag match on name/desc (`tutorial|study|boilerplate|template|exercise|wip`).
 - `dependency` — engine/library/mod facet but no `script` facet (informational only).
 - `unverified` — 0 stars AND no README AND no init/params.
 
+**Fork policy (refined per user):** *some forks are valuable.* So we do NOT exclude
+all forks — only **unmodified / behind-only** forks (a fork with no commits ahead of
+its parent) are non-installable. A **diverged** fork (ahead of upstream) is kept,
+`installable=true`, and **tagged `fork`** for provenance. Every fork (ahead or not)
+gets the `fork` tag.
+
 **Derived `installable` boolean (the default-on filter):** `false` iff
-`fork` OR high-precision red-flag OR no usable facet at all (not script/mod/engine/library)
-OR in `GH_BLOCK`. Otherwise `true`. Mods and voice packs are installable.
+(`fork` AND NOT `fork_ahead`) OR high-precision red-flag OR no usable facet at all
+(not script/mod/engine/library) OR in `GH_BLOCK`. Otherwise `true`. Mods, voice
+packs, and diverged forks are installable.
 
 Everything stays in `catalog.json` and on the site. `installable` drives a
 **default-on** "installable only" filter (one-click off). Classification tags
@@ -129,6 +140,7 @@ exclusionary.
   ingenue is the only consumer and is updated in the dependent subtask). Keep
   `engine`, `facets`.
 - **catalog.json**: add `fork` (bool) and classification tags on GitHub rows.
+  feed.json carries `fork`/`fork_ahead` per enriched repo (the installability inputs).
 - **build_data.py `merge()`**: consume `voices` instead of `nb`/`nb_role`; derive
   `facets.voices` (= `provides` non-empty) and `facets.installable`; emit subtype
   chips; derive `installable` for community rows too (their facets resolve at

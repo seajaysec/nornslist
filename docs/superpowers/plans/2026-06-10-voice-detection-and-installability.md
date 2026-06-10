@@ -601,6 +601,106 @@ git add norns_scraper_discourse.py
 git commit -m "feat(scraper): persist fork flag on github catalog entries"
 ```
 
+### Task 3.3: Compute `fork_ahead` in enrichment; emit fork signals in feed
+
+Rationale: *some forks are valuable.* Only unmodified/behind-only forks should be
+non-installable; a fork that is AHEAD of its upstream parent is kept (tagged `fork`).
+"Ahead" needs the fork's parent (already in the repo-meta response) + one GitHub
+compare call, cached by the feed SHA. Unknown ahead-state → treat as ahead (keep).
+
+**Files:**
+- Modify: `norns_scraper_discourse.py` — `_github_fetch_feed_enrichment` result dict + fork block, new `_fork_ahead` helper, `_build_feed_scripts` emission, `FEED_LOGIC_VERSION`→5
+- Test: `tasks/test_feed.py`
+
+- [ ] **Step 1: Confirm `_repo_meta` exposes fork + parent.** The compare needs the parent repo. Verify the meta call returns the raw GitHub repo object (which includes `fork: bool`, and for forks a `parent` object with `owner.login`, `name`, `default_branch`):
+
+Run: `sed -n '2724,2780p' norns_scraper_discourse.py`
+Expected: `_repo_meta` returns the repo JSON (possibly augmented with `_status`). If it strips fields, note it — the code below reads `meta.get("fork")` and `meta.get("parent")` directly, so those keys must survive. If `_repo_meta` trims to a whitelist, ADD `fork` and `parent` to that whitelist as part of this step.
+
+- [ ] **Step 2: Add fork keys to the result dict** in `_github_fetch_feed_enrichment` (the dict introduced in Task 2.1). Change:
+
+```python
+        result = {"engine": "", "voices": {"provides": [], "uses": [], "systems": []},
+                  "has_init": False, "has_params": False, "facets": [], "readme": "",
+                  "images": [], "sha": "", "demo": ""}
+```
+to add `"fork": False, "fork_ahead": False,`:
+```python
+        result = {"engine": "", "voices": {"provides": [], "uses": [], "systems": []},
+                  "has_init": False, "has_params": False, "fork": False, "fork_ahead": False,
+                  "facets": [], "readme": "", "images": [], "sha": "", "demo": ""}
+```
+
+- [ ] **Step 3: Set fork signals right after `branch` is resolved** in `_github_fetch_feed_enrichment`. Find the line that sets `result["sha"] = self._github_head_sha(owner, repo, branch)` and add immediately after it:
+
+```python
+            result["fork"] = bool(meta.get("fork"))
+            if result["fork"]:
+                result["fork_ahead"] = self._fork_ahead(owner, repo, branch, meta.get("parent"))
+```
+
+- [ ] **Step 4: Add the `_fork_ahead` helper** near `_fetch_blobs`:
+
+```python
+    def _fork_ahead(self, owner: str, repo: str, branch: str, parent) -> bool:
+        """True if this fork has commits AHEAD of its upstream parent (a diverged
+        fork worth keeping). One GitHub compare call. Unknown (no parent / deleted /
+        API error) -> True: keep + tag rather than bury a possibly-valuable fork."""
+        if not parent:
+            return True
+        p_owner = (parent.get("owner") or {}).get("login") or ""
+        p_repo = parent.get("name") or ""
+        p_branch = parent.get("default_branch") or "main"
+        if not p_owner or not p_repo:
+            return True
+        try:
+            from urllib.parse import quote
+            base = quote(f"{p_owner}:{p_branch}")
+            head = quote(f"{owner}:{branch}")
+            r = self.github_session.get(
+                f"https://api.github.com/repos/{p_owner}/{p_repo}/compare/{base}...{head}",
+                timeout=15,
+            )
+            if r.status_code == 200:
+                return int(r.json().get("ahead_by") or 0) > 0
+        except Exception:
+            pass
+        return True  # uncertain -> keep
+```
+
+- [ ] **Step 5: Emit fork signals in `_build_feed_scripts`** (only for forks, so community entries stay clean). After the `has_params` emission block from Task 2.2, add:
+
+```python
+                if enr.get("fork"):
+                    entry["fork"] = True
+                    entry["fork_ahead"] = bool(enr.get("fork_ahead"))
+```
+Bump the version line to:
+```python
+    FEED_LOGIC_VERSION = 5  # v5: + fork/fork_ahead (installability of forks)
+```
+
+- [ ] **Step 6: Add feed-emission tests** in `tasks/test_feed.py`, right after the `feed_voices_emitted` check (reuses the `rows_v` defined there):
+
+```python
+sf = NornsScraper._build_feed_scripts(inst, rows_v, {("o", "foo"): {"fork": True, "fork_ahead": True}})
+check("feed_fork_emitted", (sf["foo"].get("fork"), sf["foo"].get("fork_ahead")), (True, True))
+sf2 = NornsScraper._build_feed_scripts(inst, rows_v, {("o", "foo"): {"fork": False}})
+check("feed_fork_omitted_when_not_fork", "fork" in sf2["foo"], False)
+```
+
+- [ ] **Step 7: Run tests + import**
+
+Run: `~/.virtualenvs/nornslist-vhmg/bin/python tasks/test_feed.py && ~/.virtualenvs/nornslist-vhmg/bin/python -c "import norns_scraper_discourse"`
+Expected: `ALL N CHECKS PASSED` + clean import.
+
+- [ ] **Step 8: Commit**
+
+```bash
+git add norns_scraper_discourse.py tasks/test_feed.py
+git commit -m "feat(scraper): fork_ahead detection + emit fork signals in feed; FEED_LOGIC_VERSION=5"
+```
+
 ---
 
 ## Phase 4 — build_data.py: derive installable + voice tags
@@ -613,7 +713,7 @@ git commit -m "feat(scraper): persist fork flag on github catalog entries"
 
 Helper contracts:
 - `HIGH_PRECISION_REDFLAG = re.compile(r"\b(tutorial|study|boilerplate|template|exercise|wip)\b", re.I)` — validated 0 false positives on curated.
-- `derive_installable(row) -> (bool, list[str])`: returns `(installable, reasons)`. Non-installable iff `row["fork"]` OR high-precision redflag in name/desc OR no usable facet at all (kind has none of script/mod/library/engine). Community rows (`fork` absent) and any mod/voice pack stay installable.
+- `derive_installable(row) -> (bool, list[str])`: returns `(installable, reasons)`. Non-installable iff (`row["fork"]` AND NOT `row["fork_ahead"]`) OR high-precision redflag in name/desc OR no usable facet at all (kind has none of script/mod/library/engine). Community rows (`fork` absent) and any mod/voice pack stay installable. **Diverged forks** (`fork` AND `fork_ahead`) stay installable — they're potentially valuable — and get tagged `fork` (the tag is applied in `merge()`, Task 4.2). Unmodified/behind-only forks (`fork` AND NOT `fork_ahead`) are the only forks excluded.
 - `voice_tags(voices) -> list[str]`: umbrella `"additional voice"` iff `provides` non-empty; plus subtype tags (`nb`, `mx.samples`, `mx.synths`, `sc-engine`) and role tags (`nb-ready` when nb in uses but not provides).
 
 - [ ] **Step 1: Write the failing test** — create `tasks/test_build_data.py`:
@@ -632,11 +732,12 @@ def check(name, got, want):
 # --- installability gate ---
 def inst(**row):
     row.setdefault("name", "x"); row.setdefault("desc", ""); row.setdefault("kind", ["script"])
-    row.setdefault("fork", False); row.setdefault("source", "github")
+    row.setdefault("fork", False); row.setdefault("fork_ahead", False); row.setdefault("source", "github")
     return B.derive_installable(row)[0]
 
 check("inst_plain_script", inst(), True)
-check("inst_fork_excluded", inst(fork=True), False)
+check("inst_fork_stale_excluded", inst(fork=True), False)            # unmodified/behind-only fork
+check("inst_fork_ahead_kept", inst(fork=True, fork_ahead=True), True)  # diverged fork: valuable, kept
 check("inst_mod_ok", inst(kind=["mod"]), True)              # mods are installable
 check("inst_engine_only_ok", inst(kind=["library", "engine"]), True)  # ack-shape dep is installable
 check("inst_no_facet_excluded", inst(kind=[]), False)
@@ -682,13 +783,17 @@ _USABLE_FACETS = {"script", "mod", "library", "engine"}
 
 def derive_installable(row: dict) -> tuple[bool, list[str]]:
     """(installable, reasons). Non-installable ONLY on high-precision structural
-    signals so no curated script is ever mis-hidden: a fork, a high-precision
-    red-flag in name/desc, or a repo with no usable facet at all. Mods, voice
-    packs, and engine/library deps stay installable. Community rows are never
-    forks (canonical) and default installable."""
+    signals so no curated script is ever mis-hidden: an unmodified/behind-only
+    fork (no commits ahead of upstream), a high-precision red-flag in name/desc,
+    or a repo with no usable facet at all. Mods, voice packs, engine/library deps,
+    and diverged forks stay installable. Community rows are never forks (canonical)
+    and default installable."""
     reasons = []
-    if row.get("fork"):
-        reasons.append("fork")
+    # Some forks are valuable: only EXCLUDE unmodified/behind-only forks (no commits
+    # ahead of upstream). A diverged fork (fork_ahead) stays installable and is tagged
+    # 'fork' in merge(). Unknown ahead-state is treated as ahead upstream (kept).
+    if row.get("fork") and not row.get("fork_ahead"):
+        reasons.append("fork-stale")
     blob = f"{row.get('name','')} {row.get('desc','')}"
     if HIGH_PRECISION_REDFLAG.search(blob):
         reasons.append("red-flag")
@@ -751,6 +856,12 @@ git commit -m "feat(build_data): pure derive_installable + voice_tags helpers"
 (keep going to the nb write block). Replace the `nb = bool(...)` line with:
 ```python
         voices = enr.get("voices") or {}
+        # Fork signals for installability: `_normalize_row` carries `fork` from the
+        # catalog for discovered rows; feed enrichment additionally carries `fork`
+        # and `fork_ahead` (computed via the compare call). Prefer the feed values.
+        if enr.get("fork") is not None:
+            s["fork"] = bool(enr.get("fork"))
+        s["fork_ahead"] = bool(enr.get("fork_ahead"))
 ```
 Then replace the nb write block (~216-222):
 ```python
@@ -771,6 +882,10 @@ with:
             for t in voice_tags(voices):                 # surface as filterable tags
                 if t.lower() not in {x.lower() for x in s["tags"]}:
                     s["tags"].append(t)
+        # Provenance tag for ALL forks (ahead or not), so even kept diverged forks
+        # are visibly forks; installability is handled separately below.
+        if s.get("fork") and "fork" not in {x.lower() for x in s["tags"]}:
+            s["tags"].append("fork")
 ```
 
 - [ ] **Step 3: Update the `facets` dict** (~line 231). Replace:
