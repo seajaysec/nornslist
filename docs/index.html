@@ -318,12 +318,12 @@
   // Filter state: src/type/feat/tags are multiselect Sets. Source defaults to the
   // curated norns.community front door; reveal soft-launch / gh-exclusive via the
   // Source dropdown. type/feat/tags empty = no filter.
-  const state = { all:[], src:new Set(["community"]), type:new Set(), feat:new Set(), tags:new Set(), q:"", sort:"updated:desc", only:"" };
+  const state = { all:[], src:new Set(["community"]), type:new Set(), feat:new Set(["installable"]), tags:new Set(), q:"", sort:"updated:desc", only:"" };
   // The three source categories (mirrors ingenue): community, soft launch (on
   // github + a lines thread), gh-exclusive (github only).
   const CATS=[["community","norns.community"],["softlaunch","soft launch"],["ghx","gh exclusive"]];
   const TYPES=["script","mod","library","engine"];
-  const FEATS=[["demo","▶ demo"],["images","▣ screenshots"],["readme","≣ readme"],["engine","⚙ engine"],["nb","♪ nb voice"],["doc","📖 docs"]];
+  const FEATS=[["installable","✓ installable"],["voices","♪ additional voice"],["demo","▶ demo"],["images","▣ screenshots"],["readme","≣ readme"],["engine","⚙ engine"],["doc","📖 docs"]];
   const catOf=(s)=> (s.source||"community")==="community" ? "community" : ((s.disc||"").trim() ? "softlaunch" : "ghx");
 
   /* ---------- demo embed detection ---------- */
@@ -372,9 +372,14 @@
       const m = FACET_META[k]; if(!m) return "";
       return `<span class="facet" style="--fc:${m[2]}">${m[0]} ${esc(m[1])}</span>`;
     });
-    if(s.facets && s.facets.nb){
-      const provides = s.nb_role !== "uses";   // default to "voices" unless explicitly a consumer
-      chips.push(`<span class="facet" style="--fc:var(--accent2)" title="${provides?'registers nb (note-bridge) voice(s)':'consumes nb voices from another script'}">♪ ${provides?'nb voices':'nb-ready'}</span>`);
+    if(s.voices){
+      const pr = s.voices.provides||[], us = s.voices.uses||[];
+      if(pr.includes("nb"))
+        chips.push(`<span class="facet" style="--fc:var(--accent2)" title="registers nb (note-bridge) voice(s) other scripts can play">♪ nb voices</span>`);
+      else if(us.includes("nb"))
+        chips.push(`<span class="facet" style="--fc:var(--accent2)" title="plays through nb — needs an nb voice installed to make sound">♪ nb-ready</span>`);
+      (s.voices.systems||[]).filter(x => x!=="nb").forEach(x =>
+        chips.push(`<span class="facet" style="--fc:var(--accent2)" title="voice system: ${esc(x)}">♪ ${esc(x)}</span>`));
     }
     // provenance chip — github only; community is the implied default front door
     if(s.source==="github") chips.push('<span class="srctag gh" title="found on GitHub — not on norns.community">github</span>');
@@ -661,6 +666,7 @@
   const TITLE = "nornslist · norns scripts";
   const SRC_LBL = Object.fromEntries(CATS), FEAT_LBL = Object.fromEntries(FEATS);
   const isDefaultSrc = () => state.src.size===1 && state.src.has("community");
+  const isDefaultFeat = () => state.feat.size===1 && state.feat.has("installable");
   function writeHash(){
     const p = new URLSearchParams();
     if(state.only){
@@ -671,7 +677,7 @@
       // ("src=") round-trips the "all sources" state so it stays shareable.
       if(!isDefaultSrc()) p.set("src", [...state.src].join(","));
       if(state.type.size) p.set("type", [...state.type].join(","));
-      if(state.feat.size) p.set("feat", [...state.feat].join(","));
+      if(!isDefaultFeat()) p.set("feat", [...state.feat].join(","));
       if(state.tags.size) p.set("tag", [...state.tags].join(","));
     }
     if(state.sort && state.sort !== "updated:desc") p.set("sort", state.sort);
@@ -700,7 +706,8 @@
     // absent src → default {community}; present (even empty) → honor it (empty = all)
     state.src = p.has("src") ? setOf(p.get("src")) : new Set(["community"]);
     state.type = setOf(p.get("type"));
-    state.feat = setOf(p.get("feat"));
+    // absent feat → default {installable}; present (even empty) → honor it (empty = installable off)
+    state.feat = p.has("feat") ? setOf(p.get("feat")) : new Set(["installable"]);
     state.tags = new Set((p.get("tag") || "").split(",").filter(Boolean).map(x => x.toLowerCase()));
     state.sort = p.get("sort") || "updated:desc";
   }
