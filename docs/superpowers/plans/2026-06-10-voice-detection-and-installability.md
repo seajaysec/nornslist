@@ -11,8 +11,8 @@
 **Test runner:** `~/.virtualenvs/nornslist-vhmg/bin/python tasks/<test>.py` (pure-helper tests; stdlib only).
 
 **Key reference:** ingenue `web/server.py` `analyze_dir` (~line 1790) is the authoritative detector being mirrored. Regex vocabulary to match:
-- requires: `require[\s(]+['"]([A-Za-z0-9_.\-]+)/lib` (dotted names → mx.samples, mx.synths), minus self/core/bundled
-- nb consumer: `require[\s(]+['"]nb/|/nb/lib|nb_voice|nb:add`
+- requires: `require[\s(]*['"]([A-Za-z0-9_.\-]+)/lib` (dotted names → mx.samples, mx.synths; `[\s(]*` matches Lua's paren-less `require"x"`), minus self/core/bundled
+- nb consumer: `require[\s(]*['"]nb/|/nb/lib|nb_voice|nb:add`
 - nb provider: `nb:add_player`
 - engines used: `engine\.name\s*=\s*['"]([A-Za-z0-9_]+)['"]`
 - self engine: `Engine_(.+)\.sc$` (basename)
@@ -274,11 +274,11 @@ Expected: FAIL with `AttributeError ... _detect_voices`
                            for p in paths)
         if re.search(r"nb:add_player", text) or nb_pack_name or nb_pack_file:
             provides.append("nb")
-        elif re.search(r"require[\s(]+['\"]nb/|/nb/lib|nb_voice|nb:add", text) and "nb" not in bundled:
+        elif re.search(r"require[\s(]*['\"]nb/|/nb/lib|nb_voice|nb:add", text) and "nb" not in bundled:
             uses.append("nb")
 
         # --- required voice libs (mx.samples, mx.synths, …) -> uses ---
-        for lib in sorted(set(re.findall(r"require[\s(]+['\"]([A-Za-z0-9_.\-]+)/lib", text))):
+        for lib in sorted(set(re.findall(r"require[\s(]*['\"]([A-Za-z0-9_.\-]+)/lib", text))):
             if lib.lower() in bundled:
                 continue
             if lib in NornsScraper.VOICE_USE_LIBS:
@@ -1265,12 +1265,22 @@ Leave the legacy `"nb": nb_referenced and "nb" not in bundled` in the report ONL
 Run: `grep -n '"nb"\|rep\[.nb.\|\.get(.nb.' ~/gits/ingenue/web/server.py`
 If nothing outside this dict reads it, delete the `"nb":` line.
 
-- [ ] **Step 2: Sanity check** the server module parses:
+- [ ] **Step 2: Unify the require regexes to `[\s(]*` for parity.** nornslist's `_detect_voices` uses `require[\s(]*` (matches Lua's paren-less `require"x"`). ingenue's `analyze_dir` currently uses `require[\s(]+` for `reqs` and `nb_referenced` — bump both to `[\s(]*` so the precomputed feed matches live detection. Find and change in `analyze_dir`:
+```python
+    reqs = sorted(set(r for r in re.findall(r"require[\s(]+['\"]([A-Za-z0-9_.\-]+)/lib", blob)
+```
+→ `require[\s(]*` ; and
+```python
+    nb_referenced = bool(re.search(r"require[\s(]+['\"]nb/|/nb/lib|nb_voice|nb:add", blob))
+```
+→ `require[\s(]*`. (index.html's live nb regex already uses `[\s(]*`; Task 7.2 Step 4's require extraction also uses `[\s(]*`.)
+
+- [ ] **Step 3: Sanity check** the server module parses:
 
 Run: `cd ~/gits/ingenue && python3 -c "import ast; ast.parse(open('web/server.py').read()); print('ok')"`
 Expected: `ok`
 
-- [ ] **Step 3: Commit (in ingenue)**
+- [ ] **Step 4: Commit (in ingenue)**
 
 ```bash
 cd ~/gits/ingenue && git add web/server.py
@@ -1329,7 +1339,7 @@ with (compute a `voices` object instead of `nb`/`nbRole`):
           let vProv=[],vUse=[];
           if(/nb:add_player/.test(blob)){ vProv.push('nb'); }
           else if(/nb:add_param|require[\s(]*['"][^'"]*nb\/lib/.test(blob)){ vUse.push('nb'); }
-          (blob.match(/require[\s(]+['"]([A-Za-z0-9_.\-]+)\/lib/g)||[]).forEach(m=>{
+          (blob.match(/require[\s(]*['"]([A-Za-z0-9_.\-]+)\/lib/g)||[]).forEach(m=>{
             const lib=(m.match(/['"]([A-Za-z0-9_.\-]+)\/lib/)||[])[1];
             if(lib==='mx.samples'||lib==='mx.synths') vUse.push(lib);
           });
