@@ -3885,7 +3885,7 @@ class NornsScraper:
     GH_BLOCK_NAMES = {"ingenue"}
     DISCOVERY_CACHE_TTL_DAYS = 30  # reclassify an unchanged repo at most this stale
     # Bump when classifier logic changes — invalidates cached verdicts so they rebuild.
-    DISCOVERY_LOGIC_VERSION = 1
+    DISCOVERY_LOGIC_VERSION = 2  # v2: capture fork flag for installability classification
 
     def _discovery_cache_path(self, excel_path: str) -> str:
         base, _ = os.path.splitext(excel_path)
@@ -4149,6 +4149,7 @@ class NornsScraper:
                 "topics": (it.get("topics") or [])[:8],
                 "facets": verdict.get("facets") or [],
                 "archived": bool(it.get("archived")),
+                "fork": bool(it.get("fork")),
                 "stars": it.get("stargazers_count") or 0,
                 "source": "github",
                 "demo": "", "readme": "", "images": [], "disc": "",
