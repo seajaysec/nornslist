@@ -187,6 +187,57 @@ def derive_catalog_from_feed(feed: dict) -> list[dict]:
     return out
 
 
+# Validated against the 348 curated scripts: ZERO false positives. Low-precision
+# words (test|playground|example|sandbox) were excluded — they matched 5 real
+# curated scripts (acid-test, grid-test, twins, passthrough, cheat_codes_2).
+HIGH_PRECISION_REDFLAG = re.compile(r"\b(tutorial|study|boilerplate|template|exercise|wip)\b", re.I)
+_USABLE_FACETS = {"script", "mod", "library", "engine"}
+
+
+def derive_installable(row: dict) -> tuple[bool, list[str]]:
+    """(installable, reasons). Non-installable ONLY on high-precision structural
+    signals so no curated script is ever mis-hidden: an unmodified/behind-only
+    fork (no commits ahead of upstream), a high-precision red-flag in name/desc,
+    or a repo with no usable facet at all. Mods, voice packs, engine/library deps,
+    and diverged forks stay installable. Community rows are never forks (canonical)
+    and default installable."""
+    reasons = []
+    # Some forks are valuable: only EXCLUDE unmodified/behind-only forks (no commits
+    # ahead of upstream). A diverged fork (fork_ahead) stays installable and is tagged
+    # 'fork' in merge(). Unknown ahead-state is treated as ahead upstream (kept).
+    if row.get("fork") and not row.get("fork_ahead"):
+        reasons.append("fork-stale")
+    blob = f"{row.get('name','')} {row.get('desc','')}"
+    if HIGH_PRECISION_REDFLAG.search(blob):
+        reasons.append("red-flag")
+    kind = row.get("kind") or []
+    if not any(k in _USABLE_FACETS for k in kind):
+        reasons.append("no-facet")
+    return (not reasons, reasons)
+
+
+def voice_tags(voices: dict) -> list[str]:
+    """UI tags from a voices object. Umbrella 'additional voice' iff another script
+    can load this voice (provides non-empty). Plus per-system subtype tags and an
+    'nb-ready' tag for consumers."""
+    voices = voices or {}
+    provides = voices.get("provides") or []
+    uses = voices.get("uses") or []
+    tags = []
+    if provides:
+        tags.append("additional voice")
+    for s in voices.get("systems") or []:
+        tags.append(s)
+    if "nb" in uses and "nb" not in provides:
+        tags.append("nb-ready")
+    # dedupe preserving order
+    seen, out = set(), []
+    for t in tags:
+        if t not in seen:
+            seen.add(t); out.append(t)
+    return out
+
+
 def merge(catalog: list[dict], feed: dict) -> list[dict]:
     """Fold feed enrichment into each catalog row; derive filter facets."""
     for s in catalog:
