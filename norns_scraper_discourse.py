@@ -3089,28 +3089,28 @@ class NornsScraper:
             + quote(path.lstrip("/"))
         )
 
-    def _fetch_blobs(self, owner: str, repo: str, branch: str, rel_paths) -> str:
-        """Concatenate the raw contents of rel_paths into one corpus blob. Best-
-        effort: missing/unreadable files are skipped. Sequential (the path list is
-        already capped at VOICE_CORPUS_MAX_FILES) and inside the per-repo enrichment
-        task, which itself runs in the enrichment thread pool."""
-        from urllib.parse import quote
+    def _fetch_blobs(self, owner: str, repo: str, branch: str, rel_paths) -> tuple:
+        """Concatenate the raw contents of rel_paths into one corpus blob, fetched
+        from raw.githubusercontent.com — NOT the REST /contents API. raw is not
+        metered by the REST rate limit, so the per-repo corpus pass adds zero
+        rate-limit pressure during the full re-enrichment a FEED_LOGIC_VERSION bump
+        forces. Returns (blob, rate_limited): rate_limited=True if a fetch was
+        throttled (403/429) so the caller can refuse to cache a truncated corpus."""
         parts = []
+        rate_limited = False
         for p in rel_paths:
             try:
-                seg = "/".join(quote(s) for s in str(p).split("/"))
                 r = self.github_session.get(
-                    f"https://api.github.com/repos/{owner}/{repo}/contents/{seg}",
-                    headers={"Accept": "application/vnd.github.raw"},
-                    params={"ref": branch}, timeout=15,
+                    self._raw_github_url(owner, repo, branch, str(p)), timeout=15
                 )
                 if r.status_code == 200:
                     parts.append(r.text)
-                elif r.status_code == 403:
-                    break  # rate-limited: stop early, keep what we have
+                elif r.status_code in (403, 429):
+                    rate_limited = True
+                    break  # throttled: stop, signal caller not to cache this
             except Exception:
                 continue
-        return "\n".join(parts)
+        return "\n".join(parts), rate_limited
 
     def _fork_ahead(self, owner: str, repo: str, branch: str, parent) -> bool:
         """True if this fork has commits AHEAD of its upstream parent (a diverged
@@ -3415,7 +3415,7 @@ class NornsScraper:
         return out
 
     def _github_fetch_feed_enrichment(self, owner: str, repo: str) -> dict:
-        """Fetch {engine, nb, readme, images} for one repo. Best-effort: returns
+        """Fetch {engine, voices, readme, images} for one repo. Best-effort: returns
         partial/empty data on any failure, and sets 'error' True on transient
         failures (rate limit / network) so the caller won't cache the miss long
         term. Three GitHub calls max: repo meta, README, recursive tree."""
@@ -3485,7 +3485,9 @@ class NornsScraper:
                     # lib/<X>/ copies, into one blob and classify accurately.
                     bundled = self._bundled_libs_from_paths(paths)
                     corpus = self._voice_corpus_paths(paths, bundled)
-                    blob = self._fetch_blobs(owner, repo, branch, corpus)
+                    blob, blob_rate_limited = self._fetch_blobs(owner, repo, branch, corpus)
+                    if blob_rate_limited:
+                        result["error"] = True  # don't cache a truncated corpus as good
                     result["voices"] = self._detect_voices(blob, paths, bundled, facets, repo)
                     result["has_init"], result["has_params"] = self._has_init_params(blob)
                     if not result["images"]:
@@ -3616,12 +3618,11 @@ class NornsScraper:
                 json.dump(payload, f, indent=2, sort_keys=True, ensure_ascii=False)
 
             n_eng = sum(1 for v in scripts.values() if v.get("engine"))
-            n_nb = sum(1 for v in scripts.values() if v.get("nb"))
             n_rd = sum(1 for v in scripts.values() if v.get("readme"))
             n_img = sum(1 for v in scripts.values() if v.get("images"))
             logger.info(
                 f"Wrote feed.json: {len(scripts)} scripts "
-                f"({n_eng} engine, {n_nb} nb, {n_rd} readme, {n_img} images) -> {out}"
+                f"({n_eng} engine, {n_rd} readme, {n_img} images) -> {out}"
             )
         except Exception as e:
             logger.warning(f"Failed to write feed.json: {e}")
