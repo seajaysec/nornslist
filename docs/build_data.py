@@ -125,6 +125,7 @@ def _normalize_row(d: dict) -> dict:
         "source": (pick("source", "Source") or "community"),
         "kind": d["facets"] if isinstance(d.get("facets"), list) else [],
         "stars": int(d["stars"]) if str(d.get("stars") or "").strip().isdigit() else 0,
+        "fork": bool(d.get("fork")),
         "archived": bool(d.get("archived")),
         "status": (pick("status", "Status") or "active"),
         # README/images carried directly from GitHub-discovered catalog entries.
@@ -246,7 +247,13 @@ def merge(catalog: list[dict], feed: dict) -> list[dict]:
         engine = _clean(enr.get("engine"))
         readme = enr.get("readme") or s.get("readme") or ""
         images = [u for u in (enr.get("images") or s.get("images") or []) if isinstance(u, str) and u.strip()]
-        nb = bool(enr.get("nb"))
+        voices = enr.get("voices") or {}
+        # Fork signals for installability: `_normalize_row` carries `fork` from the
+        # catalog for discovered rows; feed enrichment additionally carries `fork`
+        # and `fork_ahead` (computed via the compare call). Prefer the feed values.
+        if enr.get("fork") is not None:
+            s["fork"] = bool(enr.get("fork"))
+        s["fork_ahead"] = bool(enr.get("fork_ahead"))
 
         # Merge feed tags into catalog tags (catalog order wins, deduped).
         feed_tags = enr.get("tags") or []
@@ -264,13 +271,17 @@ def merge(catalog: list[dict], feed: dict) -> list[dict]:
 
         if engine:
             s["engine"] = engine
-        if nb:
-            s["nb"] = True
-            # provides = registers nb voice(s); uses = consumes them. Drives the
-            # "nb voices" vs "nb-ready" chip distinction on the catalog site.
-            role = enr.get("nb_role")
-            if role:
-                s["nb_role"] = role
+        if voices.get("systems"):
+            s["voices"] = {"provides": list(voices.get("provides") or []),
+                           "uses": list(voices.get("uses") or []),
+                           "systems": list(voices.get("systems") or [])}
+            for t in voice_tags(voices):                 # surface as filterable tags
+                if t.lower() not in {x.lower() for x in s["tags"]}:
+                    s["tags"].append(t)
+        # Provenance tag for ALL forks (ahead or not), so even kept diverged forks
+        # are visibly forks; installability is handled separately below.
+        if s.get("fork") and "fork" not in {x.lower() for x in s["tags"]}:
+            s["tags"].append("fork")
         if readme:
             s["readme"] = readme
         if images:
@@ -279,9 +290,14 @@ def merge(catalog: list[dict], feed: dict) -> list[dict]:
         # Boolean facets the UI filters on (kept out of `tags` to avoid clutter).
         # For GitHub rows with no feed enrichment, the engine signal comes from
         # the structural kind instead of an extracted engine name.
+        installable, reasons = derive_installable(s)
+        if reasons:
+            s["installable_reason"] = reasons
+        provides = bool((voices.get("provides") or []))
         s["facets"] = {
             "engine": bool(engine) or ("engine" in kind),
-            "nb": nb,
+            "voices": provides,                 # umbrella: another script can load it
+            "installable": installable,
             "demo": bool(s["demo"]),
             "images": bool(images),
             "readme": bool(readme),
@@ -366,7 +382,7 @@ def _seo_page(s: dict) -> str:
     meta = " · ".join(filter(None, [
         f"updated {e(s['upd'])}" if s.get("upd") else "",
         f"engine {e(s['engine'])}" if s.get("engine") else "",
-        "registers an nb voice" if (s.get("facets") or {}).get("nb") else "",
+        "registers an nb voice" if (s.get("facets") or {}).get("voices") else "",
     ]))
     return _PAGE_TMPL.format(
         title=f"{name} · nornslist", ogtitle=f"{name} — norns script", desc=desc, url=url,
