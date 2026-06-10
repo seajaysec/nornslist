@@ -1,7 +1,13 @@
 # Voice detection & installability classification — design
 
 Date: 2026-06-10
-Status: Approved (pending spec review)
+Status: Approved
+
+Confirmed decisions (2026-06-10): replace `nb`/`nb_role` outright with **no
+transition shim** — `voices` is the only voice schema in feed.json. The ingenue
+repo (`~/gits/ingenue`) is updated **in lockstep** in the same effort (it is the
+sole consumer and the user's own project); correctness is guaranteed by testing
+before going live, not by feed back-compat.
 Scope: `norns_scraper_discourse.py`, `docs/build_data.py`, `tasks/`, `feed.json`/`catalog.json` schema. Dependent subtask in the **ingenue** repo.
 
 ## Problem
