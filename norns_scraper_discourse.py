@@ -3665,6 +3665,8 @@ class NornsScraper:
         entry["status"] = "archived" if rec.get("archived") else "active"
         if rec.get("archived"):
             entry["archived"] = True
+        if rec.get("fork"):
+            entry["fork"] = True
         return entry
 
     def _community_status_map(self, rows, excel_path: str) -> dict:
