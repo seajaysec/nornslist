@@ -929,6 +929,100 @@ git add docs/build_data.py
 git commit -m "feat(build_data): derive facets.voices/installable + voice tags from feed"
 ```
 
+### Task 4.3: Catalog SPA frontend — voice chips + default-on installable filter
+
+The public catalog SPA (`docs/index.html`, a single self-contained file) consumes
+`docs/data.json`. It currently renders an nb chip from the removed `s.facets.nb`/
+`s.nb_role`, and has no installable filter. Update it to the new schema and add a
+**default-on** `installable` filter, mirroring the existing `src`-defaults-to-community
+pattern (default value omitted from the URL when unchanged, restorable, shown as a
+removable active-filter chip). No unit-test harness here — verified by grep for stale
+refs + the Phase 8 visual smoke test.
+
+**Files:**
+- Modify: `docs/index.html` (the `FEATS` list, `state` init, `facetsHTML`, `readState`/`writeState`)
+
+- [ ] **Step 1: Replace the feature list.** Find (line ~326):
+```javascript
+  const FEATS=[["demo","▶ demo"],["images","▣ screenshots"],["readme","≣ readme"],["engine","⚙ engine"],["nb","♪ nb voice"],["doc","📖 docs"]];
+```
+Replace with (drop `nb`, add `installable` first + `voices`):
+```javascript
+  const FEATS=[["installable","✓ installable"],["voices","♪ additional voice"],["demo","▶ demo"],["images","▣ screenshots"],["readme","≣ readme"],["engine","⚙ engine"],["doc","📖 docs"]];
+```
+(`FEAT_LBL = Object.fromEntries(FEATS)` updates automatically — no separate edit.)
+
+- [ ] **Step 2: Default the installable filter ON.** Find (line ~321):
+```javascript
+  const state = { all:[], src:new Set(["community"]), type:new Set(), feat:new Set(), tags:new Set(), q:"", sort:"updated:desc", only:"" };
+```
+Replace `feat:new Set()` with `feat:new Set(["installable"])`:
+```javascript
+  const state = { all:[], src:new Set(["community"]), type:new Set(), feat:new Set(["installable"]), tags:new Set(), q:"", sort:"updated:desc", only:"" };
+```
+
+- [ ] **Step 3: Add `isDefaultFeat` and use it in `writeState`.** Find (line ~663):
+```javascript
+  const isDefaultSrc = () => state.src.size===1 && state.src.has("community");
+```
+Add right after it:
+```javascript
+  const isDefaultFeat = () => state.feat.size===1 && state.feat.has("installable");
+```
+Then find (line ~674):
+```javascript
+      if(state.feat.size) p.set("feat", [...state.feat].join(","));
+```
+Replace with (so an explicit empty `feat=` records "installable turned off"; absent = default on):
+```javascript
+      if(!isDefaultFeat()) p.set("feat", [...state.feat].join(","));
+```
+
+- [ ] **Step 4: Default-on in `readState`.** Find (line ~703):
+```javascript
+    state.feat = setOf(p.get("feat"));
+```
+Replace with:
+```javascript
+    // absent feat → default {installable}; present (even empty) → honor it (empty = installable off)
+    state.feat = p.has("feat") ? setOf(p.get("feat")) : new Set(["installable"]);
+```
+
+- [ ] **Step 5: Render voice chips from the new schema.** Find the nb block in `facetsHTML` (lines ~375-378):
+```javascript
+    if(s.facets && s.facets.nb){
+      const provides = s.nb_role !== "uses";   // default to "voices" unless explicitly a consumer
+      chips.push(`<span class="facet" style="--fc:var(--accent2)" title="${provides?'registers nb (note-bridge) voice(s)':'consumes nb voices from another script'}">♪ ${provides?'nb voices':'nb-ready'}</span>`);
+    }
+```
+Replace with:
+```javascript
+    if(s.voices){
+      const pr = s.voices.provides||[], us = s.voices.uses||[];
+      if(pr.includes("nb"))
+        chips.push(`<span class="facet" style="--fc:var(--accent2)" title="registers nb (note-bridge) voice(s) other scripts can play">♪ nb voices</span>`);
+      else if(us.includes("nb"))
+        chips.push(`<span class="facet" style="--fc:var(--accent2)" title="plays through nb — needs an nb voice installed to make sound">♪ nb-ready</span>`);
+      (s.voices.systems||[]).filter(x => x!=="nb").forEach(x =>
+        chips.push(`<span class="facet" style="--fc:var(--accent2)" title="voice system: ${esc(x)}">♪ ${esc(x)}</span>`));
+    }
+```
+
+- [ ] **Step 6: Confirm no stale references remain.**
+Run: `grep -n "facets\.nb\b\|s\.nb_role\|nbRole\|\"nb\",\|'nb'," docs/index.html`
+Expected: no functional matches (a `♪` label string is fine; the `["nb",...]` FEATS entry must be gone).
+Also sanity-check the file still has balanced braces by loading it conceptually — confirm the `FEATS`, `state`, `facetsHTML`, `readState`, `writeState` edits are syntactically intact (matching `(`/`)` and backticks in the replaced template strings).
+
+- [ ] **Step 7: Rebuild data + eyeball.**
+Run: `cd /Users/seajay/gits/nornslist && ~/.virtualenvs/nornslist-vhmg/bin/python docs/build_data.py`
+Expected: writes `docs/data.json` without error. (Voice/installable values are only fully populated after a live scrape — Phase 8 — but the frontend must not error on the current data.)
+
+- [ ] **Step 8: Commit**
+```bash
+git add docs/index.html
+git commit -m "feat(site): voice chips + default-on installable filter in catalog SPA"
+```
+
 ---
 
 ## Phase 5 — Census + regression tasks
