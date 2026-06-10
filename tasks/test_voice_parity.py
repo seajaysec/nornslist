@@ -11,6 +11,7 @@ from norns_scraper_discourse import NornsScraper as S  # noqa: E402
 FIXTURES = [
     ('nb:add_player("x", p)', ["m.lua"], ["mod"], "m", {"provides": ["nb"], "uses": []}),
     ('local nb=require"nb/lib/nb"', ["m.lua"], ["script"], "m", {"provides": [], "uses": ["nb"]}),
+    ('nb:add_player_params()', ["m.lua"], ["script"], "m", {"provides": [], "uses": ["nb"]}),
     ('require("mx.samples/lib/mx.samples")', ["m.lua"], ["script"], "m", {"provides": [], "uses": ["mx.samples"]}),
     ('require("mx.synths/lib/mx.synths")', ["m.lua"], ["script"], "m", {"provides": [], "uses": ["mx.synths"]}),
     ("SynthDef", ["lib/Engine_Ack.sc"], ["library", "engine"], "ack", {"provides": ["sc-engine"], "uses": []}),

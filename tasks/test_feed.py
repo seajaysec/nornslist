@@ -202,9 +202,19 @@ def voices(blob, paths=None, facets=None, repo="x"):
 v = voices('nb:add_player("foo", MyPlayer)', facets=["mod"])
 check("v_nb_provides", (v["provides"], "nb" in v["uses"]), (["nb"], False))
 
-# nb provider via filename convention (nb_* pack)
-v = voices("-- voice pack", paths=["lib/nb_drumcrow.lua"], facets=["mod"], repo="nb_drumcrow")
-check("v_nb_pack_filename", "nb" in v["provides"], True)
+# nb provider via repo-name convention (nb_* pack), no add_player in the sample
+v = voices("-- voice pack", paths=["lib/mod.lua"], facets=["mod"], repo="nb_drumcrow")
+check("v_nb_pack_by_reponame", "nb" in v["provides"], True)
+
+# REGRESSION: nb:add_player_params() is the CONSUMER call, NOT a provider registration
+v = voices("nb:add_player_params()", facets=["script"], repo="host")
+check("v_nb_add_player_params_not_provider", v["provides"], [])
+check("v_nb_add_player_params_is_consumer", "nb" in v["uses"], True)
+
+# REGRESSION: a consumer's lib/nb-output.lua integration file must NOT make it a provider
+v = voices('local nb = require "nb/lib/nb"', paths=["forge.lua", "lib/nb-output.lua"], facets=["script"], repo="forge")
+check("v_nb_output_file_not_provider", v["provides"], [])
+check("v_nb_output_file_is_consumer", "nb" in v["uses"], True)
 
 # nb consumer (uses) — require nb/lib buried in a lib file
 v = voices('local nb = require "nb/lib/nb"', facets=["script"])

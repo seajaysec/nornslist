@@ -3224,13 +3224,15 @@ class NornsScraper:
         provides, uses = [], []
 
         # --- nb ---
+        # provides: a real voice registration `nb:add_player(` — the \b excludes the
+        # CONSUMER call `nb:add_player_params()` (a host injecting installed voices'
+        # params; `_` is a word char so no boundary follows "player" there) — or a
+        # repo named nb_* (the voice-pack convention). We read the full corpus, so the
+        # code signal is authoritative; no filename heuristic (it false-flagged
+        # consumer integration files like lib/nb-output.lua).
         nb_pack_name = bool(re.match(r"nb[_-]", (repo or "").lower()))
-        nb_pack_file = any(re.match(r"nb[_-].+\.lua$", os.path.basename(str(p)).lower())
-                           or re.search(r"[_-]nb\.lua$", os.path.basename(str(p)).lower())
-                           for p in paths)
-        if re.search(r"nb:add_player", text) or nb_pack_name or nb_pack_file:
+        if re.search(r"nb:add_player\b", text) or nb_pack_name:
             provides.append("nb")
-        # nb consumer: unanchored by design — corpus is plain Lua source, not minified.
         elif re.search(r"require[\s(]*['\"]nb/|/nb/lib|nb_voice|nb:add", text) and "nb" not in bundled:
             uses.append("nb")
 
