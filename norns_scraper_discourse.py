@@ -3089,6 +3089,29 @@ class NornsScraper:
             + quote(path.lstrip("/"))
         )
 
+    def _fetch_blobs(self, owner: str, repo: str, branch: str, rel_paths) -> str:
+        """Concatenate the raw contents of rel_paths into one corpus blob. Best-
+        effort: missing/unreadable files are skipped. Sequential (the path list is
+        already capped at VOICE_CORPUS_MAX_FILES) and inside the per-repo enrichment
+        task, which itself runs in the enrichment thread pool."""
+        from urllib.parse import quote
+        parts = []
+        for p in rel_paths:
+            try:
+                seg = "/".join(quote(s) for s in str(p).split("/"))
+                r = self.github_session.get(
+                    f"https://api.github.com/repos/{owner}/{repo}/contents/{seg}",
+                    headers={"Accept": "application/vnd.github.raw"},
+                    params={"ref": branch}, timeout=15,
+                )
+                if r.status_code == 200:
+                    parts.append(r.text)
+                elif r.status_code == 403:
+                    break  # rate-limited: stop early, keep what we have
+            except Exception:
+                continue
+        return "\n".join(parts)
+
     @staticmethod
     def _engine_from_paths(paths) -> str:
         """SuperCollider engine class name the repo *ships*, from `Engine_<Name>.sc`.
@@ -3438,7 +3461,9 @@ class NornsScraper:
         term. Three GitHub calls max: repo meta, README, recursive tree."""
         import base64
 
-        result = {"engine": "", "nb": False, "nb_role": "", "facets": [], "readme": "", "images": [], "sha": "", "demo": ""}
+        result = {"engine": "", "voices": {"provides": [], "uses": [], "systems": []},
+                  "has_init": False, "has_params": False, "facets": [], "readme": "",
+                  "images": [], "sha": "", "demo": ""}
         if not owner or not repo:
             return result
         base = f"https://api.github.com/repos/{owner}/{repo}"
@@ -3490,14 +3515,16 @@ class NornsScraper:
                         if t.get("type") == "blob"
                     ]
                     result["engine"] = self._engine_from_paths(paths)
-                    result["facets"] = self._facets_from_paths(paths)
-                    # accurate nb: read the key file (catches add_param buried in lib/),
-                    # falling back to the filename/README heuristic for providers whose
-                    # registration lives in a lib file we don't read.
-                    nb_kf, nb_role = self._nb_from_keyfile(owner, repo, branch, paths)
-                    heuristic_nb = self._detect_nb(readme_md, paths)
-                    result["nb"] = bool(nb_kf or heuristic_nb)
-                    result["nb_role"] = nb_role or ("provides" if heuristic_nb else "")
+                    facets = self._facets_from_paths(paths)
+                    result["facets"] = facets
+                    # Corpus-based voice/deps detection (mirrors ingenue analyze_dir):
+                    # read all top-level/lib *.lua + Engine_*.sc, EXCLUDING bundled
+                    # lib/<X>/ copies, into one blob and classify accurately.
+                    bundled = self._bundled_libs_from_paths(paths)
+                    corpus = self._voice_corpus_paths(paths, bundled)
+                    blob = self._fetch_blobs(owner, repo, branch, corpus)
+                    result["voices"] = self._detect_voices(blob, paths, bundled, facets, repo)
+                    result["has_init"], result["has_params"] = self._has_init_params(blob)
                     if not result["images"]:
                         result["images"] = self._screenshots_from_paths(
                             paths, owner, repo, branch
