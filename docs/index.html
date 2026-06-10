@@ -183,17 +183,24 @@
   .lnk.copy-install{cursor:pointer; background:transparent}
   .lnk.copy-install:hover{color:var(--accent); border-color:var(--accent)}
   .lnk.copied{color:var(--ok); border-color:var(--ok)}
-  .expander{
-    border:0; background:transparent; color:var(--faint); cursor:pointer; font-size:12px;
-    padding:2px 4px; display:inline-flex; align-items:center; gap:4px;
-  }
-  .expander:hover{color:var(--accent)}
-  .expander .car{transition:transform .18s; display:inline-block}
-  .card.open .expander .car{transform:rotate(180deg)}
 
-  /* ---- expanded body ---- */
-  .more{display:none; margin-top:4px; padding-top:11px; border-top:1px solid var(--trim); flex-direction:column; gap:11px}
-  .card.open .more{display:flex}
+  /* ---- inline rich body (open by default, ingenue-parity) ---- */
+  .more{display:flex; margin-top:2px; padding-top:10px; border-top:1px solid var(--trim); flex-direction:column; gap:7px}
+  /* source-provenance line + a quiet correction link pushed to the right */
+  .prov{font-size:11.5px; color:var(--faint); display:flex; gap:8px; align-items:baseline}
+  .prov b{color:var(--muted); font-weight:600}
+  .prov .correct{margin-left:auto; color:var(--faint); white-space:nowrap}
+  .prov .correct:hover{color:var(--accent2)}
+  /* lazy load-on-tap affordances: demo / screenshots / readme */
+  .aff{
+    align-self:flex-start; appearance:none; border:1px solid color-mix(in srgb,var(--accent2) 55%,transparent);
+    background:transparent; color:var(--accent2); border-radius:8px; padding:6px 12px; font-size:12.5px;
+    font-weight:600; cursor:pointer; display:inline-flex; align-items:center; gap:7px; text-align:left;
+  }
+  .aff:hover{background:color-mix(in srgb,var(--accent2) 14%,transparent); text-decoration:none}
+  .aff svg{width:14px; height:14px}
+  .aff .n{color:var(--faint); font-weight:500}
+  .nodemo{font-size:11.5px; color:var(--faint); align-self:flex-start}
   .carousel{position:relative; border-radius:9px; overflow:hidden; background:var(--panel2); border:1px solid var(--trim)}
   .carousel .frame{aspect-ratio:16/10; display:flex; align-items:center; justify-content:center; overflow:hidden}
   .carousel img{width:100%; height:100%; object-fit:contain; background:#111}
@@ -209,12 +216,6 @@
   .carousel .count{position:absolute; top:7px; right:9px; font-size:11px; color:#ddd; background:rgba(0,0,0,.5); padding:1px 7px; border-radius:10px}
   .demoembed{border-radius:9px; overflow:hidden; border:1px solid var(--trim); background:#000}
   .demoembed iframe{display:block; width:100%; border:0}
-  .demobtn{
-    align-self:flex-start; appearance:none; border:1px solid var(--accent2); background:transparent;
-    color:var(--accent2); border-radius:8px; padding:7px 13px; font-size:12.5px; font-weight:600; cursor:pointer;
-    display:inline-flex; align-items:center; gap:7px;
-  }
-  .demobtn:hover{background:color-mix(in srgb,var(--accent2) 16%,transparent)}
   .readme{
     font-size:12.5px; color:var(--muted); line-height:1.55; white-space:pre-wrap; word-break:break-word;
     max-height:280px; overflow:auto; background:var(--panel2); border:1px solid var(--trim); border-radius:9px; padding:11px 12px;
@@ -222,10 +223,6 @@
   }
   .readme.full{max-height:none}
   .readme-toggle{font-size:11.5px; color:var(--accent2); background:none; border:0; cursor:pointer; align-self:flex-start; padding:0}
-  .metarow{font-size:11.5px; color:var(--faint); display:flex; gap:14px; flex-wrap:wrap}
-  .metarow b{color:var(--muted); font-weight:600}
-  .metarow .correct{color:var(--faint)}
-  .metarow .correct:hover{color:var(--accent2)}
 
   /* ---- states ---- */
   .empty,.loading{text-align:center; padding:80px 20px; color:var(--muted)}
@@ -400,7 +397,22 @@
                 + linkIcon(s.doc,'doc','documentation')
                 + linkIcon(s.comm,'comm','norns.community page')
                 + linkIcon(s.demo,'demo','demo');
-    const expandable = !!(s.readme || (s.images&&s.images.length) || s.demo);
+    // inline rich body (open by default): provenance line + lazy load-on-tap
+    // affordances for the demo / screenshots / readme we already scraped.
+    const aff = [];
+    if(s.demo){
+      const e = demoEmbed(s.demo);
+      if(e && !e.ext){
+        const h = e.ratio==="audio" ? 'height:120px' : 'aspect-ratio:'+e.ratio;
+        aff.push(`<button class="aff" data-embed="${esc(e.src)}" data-style="${h}">${ICON.demo} load ${esc(e.type)} demo</button>`);
+      } else {
+        aff.push(`<a class="aff" href="${esc(s.demo)}" target="_blank" rel="noopener">${ICON.demo} watch demo ↗</a>`);
+      }
+    }
+    if(s.images && s.images.length)
+      aff.push(`<button class="aff" data-shots="1">▣ screenshots <span class="n">${s.images.length}</span></button>`);
+    if(s.readme)
+      aff.push(`<button class="aff" data-readme="1">📖 load README</button>`);
     return `<article class="card${s.source==="github"?" gh":""}" data-name="${esc(s.name.toLowerCase())}" data-slug="${esc(s.slug||'')}">
       <div class="head"><div class="id">
         <div class="nm">${esc(s.name)}${badges}</div>
@@ -412,50 +424,56 @@
       <div class="foot">
         <span class="upd">${s.upd?'updated '+esc(s.upd):''}${s.source==="github"&&s.stars?' · ★ '+s.stars:''}</span>
         ${links}
-        ${expandable?`<button class="expander" aria-expanded="false">details <span class="car">▾</span></button>`:""}
       </div>
-      ${expandable?`<div class="more" data-lazy="1"></div>`:""}
+      <div class="more">
+        <div class="prov">via <b>${esc(srcLabel(s))}</b><a class="correct" href="${correctionURL(s)}" target="_blank" rel="noopener">report a correction ↗</a></div>
+        ${aff.join("")}
+      </div>
     </article>`;
   }
 
-  /* ---------- lazy expanded body ---------- */
-  function fillMore(card, s){
-    const more = $(".more", card);
-    if(!more || more.dataset.lazy!=="1") return;
-    more.dataset.lazy="0";
-    let html = "";
-    if(s.images && s.images.length){
-      html += `<div class="carousel" data-i="0">
-        <div class="frame"><img src="${esc(s.images[0])}" alt="${esc(s.name)} screenshot" loading="lazy" onerror="this.closest('.carousel').dataset.broken=(+(this.closest('.carousel').dataset.broken||0)+1)"></div>
-        ${s.images.length>1?`<button class="nav prev" aria-label="previous">‹</button><button class="nav next" aria-label="next">›</button>
-          <span class="count">1 / ${s.images.length}</span>
-          <div class="dots">${s.images.map((_,i)=>`<i class="${i===0?'on':''}"></i>`).join("")}</div>`:""}
-      </div>`;
-    }
-    if(s.demo){
-      const e = demoEmbed(s.demo);
-      if(e && !e.ext){
-        const h = e.ratio==="audio" ? 'height:120px' : 'aspect-ratio:'+e.ratio;
-        html += `<button class="demobtn" data-embed="${esc(e.src)}" data-style="${h}">${ICON.demo} play ${e.type} demo</button>`;
-      } else {
-        html += `<a class="demobtn" href="${esc(s.demo)}" target="_blank" rel="noopener">${ICON.demo} watch demo ↗</a>`;
-      }
-    }
-    if(s.readme){
-      const long = s.readme.length>600;
-      html += `<div class="readme">${esc(s.readme)}</div>`;
-      if(long) html += `<button class="readme-toggle">show full readme ▾</button>`;
-    }
-    const meta = [];
-    if(s.author) meta.push(`<span><b>author</b> ${esc(s.author)}</span>`);
-    if(s.upd) meta.push(`<span><b>updated</b> ${esc(s.upd)}</span>`);
-    if(s.engine) meta.push(`<span><b>engine</b> ${esc(s.engine)}</span>`);
-    const issue = "https://github.com/seajaysec/nornslist/issues/new?title="
+  /* ---------- source label + correction link ---------- */
+  function srcLabel(s){
+    const c = catOf(s);
+    return c==="community" ? "norns.community" : c==="softlaunch" ? "soft launch · lines" : "GitHub";
+  }
+  function correctionURL(s){
+    return "https://github.com/seajaysec/nornslist/issues/new?title="
       + encodeURIComponent("correction: " + s.name)
       + "&body=" + encodeURIComponent("Script: " + s.name + "\nPage: " + location.origin + location.pathname + "#s=" + (s.slug||"") + "\n\nWhat's wrong / what should it be:\n");
-    meta.push(`<a href="${issue}" target="_blank" rel="noopener" class="correct">report a correction ↗</a>`);
-    html += `<div class="metarow">${meta.join("")}</div>`;
-    more.innerHTML = html;
+  }
+
+  /* ---------- lazy content loaders (replace the affordance buttons on tap) ---------- */
+  function loadShots(btn, s){
+    const wrap = document.createElement("div");
+    wrap.className = "carousel"; wrap.dataset.i = "0";
+    wrap.innerHTML = `<div class="frame"><img src="${esc(s.images[0])}" alt="${esc(s.name)} screenshot" loading="lazy" onerror="this.closest('.carousel').dataset.broken=(+(this.closest('.carousel').dataset.broken||0)+1)"></div>`
+      + (s.images.length>1?`<button class="nav prev" aria-label="previous">‹</button><button class="nav next" aria-label="next">›</button>
+        <span class="count">1 / ${s.images.length}</span>
+        <div class="dots">${s.images.map((_,i)=>`<i class="${i===0?'on':''}"></i>`).join("")}</div>`:"");
+    btn.replaceWith(wrap);
+  }
+  function loadReadme(btn, s){
+    const div = document.createElement("div");
+    div.className = "readme"; div.textContent = s.readme;   // textContent: no manual escaping
+    btn.replaceWith(div);
+    if(s.readme.length>600){
+      const tog = document.createElement("button");
+      tog.className = "readme-toggle"; tog.textContent = "show full readme ▾";
+      div.after(tog);
+    }
+  }
+  function loadDemo(btn){
+    const wrap = document.createElement("div");
+    wrap.className = "demoembed";
+    wrap.innerHTML = `<iframe src="${btn.dataset.embed}" style="${btn.dataset.style}" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy"></iframe>`;
+    btn.replaceWith(wrap);
+  }
+  // single-script permalink view: eagerly load everything for the one card
+  function expandAll(card, s){
+    card.querySelectorAll(".aff[data-embed]").forEach(loadDemo);
+    card.querySelectorAll(".aff[data-shots]").forEach(b => loadShots(b, s));
+    card.querySelectorAll(".aff[data-readme]").forEach(b => loadReadme(b, s));
   }
 
   /* ---------- carousel + interactions (event-delegated) ---------- */
@@ -467,21 +485,13 @@
       if(cp){ copyInstall(cp); return; }
       const pill = t.closest(".pill");
       if(pill){ toggleTag(pill.dataset.tag); return; }
-      const exp = t.closest(".expander");
-      if(exp){
-        const open = card.classList.toggle("open");
-        exp.setAttribute("aria-expanded", open);
-        if(open) fillMore(card, s);
-        return;
-      }
       const nav = t.closest(".nav");
       if(nav){ moveCarousel(nav.closest(".carousel"), s, nav.classList.contains("next")?1:-1); return; }
-      const demo = t.closest(".demobtn");
-      if(demo && demo.dataset.embed){
-        const wrap = document.createElement("div");
-        wrap.className = "demoembed";
-        wrap.innerHTML = `<iframe src="${demo.dataset.embed}" style="${demo.dataset.style}" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy"></iframe>`;
-        demo.replaceWith(wrap);
+      const aff = t.closest(".aff");
+      if(aff){
+        if(aff.dataset.embed) loadDemo(aff);
+        else if(aff.dataset.shots) loadShots(aff, s);
+        else if(aff.dataset.readme) loadReadme(aff, s);
         return;
       }
       const rt = t.closest(".readme-toggle");
@@ -640,9 +650,7 @@
       const s = state.all.find(x => x.slug === state.only);
       const card = grid.firstElementChild;
       if(card && s){
-        card.classList.add("open");
-        const exp = card.querySelector(".expander"); if(exp) exp.setAttribute("aria-expanded","true");
-        fillMore(card, s);
+        expandAll(card, s);   // permalink view: eagerly load demo + shots + readme
         document.title = s.name + " · " + TITLE;
         window.scrollTo(0, 0);
       }
