@@ -191,6 +191,20 @@ check("media_vimeo", S._extract_readme_media(md_vimeo), "https://vimeo.com/12345
 check("media_none", S._extract_readme_media("no links here, just prose"), "")
 check("media_ignores_plain_github", S._extract_readme_media("https://github.com/o/r"), "")
 
+# --- Phase A: corpus candidate paths (bounded; excludes bundled libs) ---
+_paths = ["awake.lua", "lib/engine_helper.lua", "lib/nb/lib/nb.lua",
+          "lib/Engine_Foo.sc", "README.md", "docs/x.md", "data/preset.json"]
+_bundled = S._bundled_libs_from_paths(_paths)
+_corpus = S._voice_corpus_paths(_paths, _bundled)
+check("corpus_keeps_toplevel_lua", "awake.lua" in _corpus, True)
+check("corpus_keeps_lib_lua", "lib/engine_helper.lua" in _corpus, True)
+check("corpus_keeps_sc_engine", "lib/Engine_Foo.sc" in _corpus, True)
+check("corpus_excludes_bundled", "lib/nb/lib/nb.lua" in _corpus, False)
+check("corpus_excludes_nonlua", any(p.endswith(".md") or p.endswith(".json") for p in _corpus), False)
+check("corpus_capped",
+      len(S._voice_corpus_paths([f"lib/f{i}.lua" for i in range(50)] + ["top.lua"], set())) <= S.VOICE_CORPUS_MAX_FILES,
+      True)
+
 # --- Phase A: bundled-lib detection (vendored copies excluded from corpus) ---
 check("bundled_basic",
       sorted(S._bundled_libs_from_paths(["lib/nb/lib/nb.lua", "lib/nb/README.md", "main.lua"])),

@@ -3004,6 +3004,7 @@ class NornsScraper:
     FEED_CACHE_TTL_DAYS = 30  # re-fetch unchanged repos at most this stale (heals transient misses)
     FEED_README_MAXLEN = 1200  # plaintext README prefix length shipped to the device
     FEED_MAX_IMAGES = 6  # carousel cap per script
+    VOICE_CORPUS_MAX_FILES = 16  # bounded blob fetch per repo (API-call ceiling)
     # Bump when engine/nb/readme/image *processing* logic changes. Cached entries
     # store processed output, so a stamped version mismatch invalidates them and
     # forces a one-time rebuild — same idea as the external-search _MATCHER_SIGNATURE.
@@ -3140,6 +3141,27 @@ class NornsScraper:
                 dirs.setdefault(m.group(1).lower(), []).append(m.group(2))
         return {x for x, inner in dirs.items()
                 if any(f.lower().endswith((".lua", ".sc", ".sh")) for f in inner)}
+
+    @staticmethod
+    def _voice_corpus_paths(paths, bundled) -> list:
+        """Files whose contents form the voice/deps corpus: top-level *.lua,
+        lib/**/*.lua (minus bundled lib/<X>/ copies), and Engine_*.sc. Deterministic
+        order (top-level first, then lib, then engines), capped at
+        VOICE_CORPUS_MAX_FILES so a pathological repo can't explode the fetch."""
+        bundled = {b.lower() for b in (bundled or set())}
+        def is_bundled(p):
+            m = re.match(r"lib/([^/]+)/", p)
+            return bool(m and m.group(1).lower() in bundled)
+        top = [p for p in paths if "/" not in p and p.lower().endswith(".lua")]
+        lib = [p for p in paths if p.lower().endswith(".lua")
+               and re.search(r"(?:^|/)lib/", p) and not is_bundled(p)]
+        sc = [p for p in paths if re.search(r"(?:^|/)Engine_[A-Za-z0-9]+\.sc$", p) and not is_bundled(p)]
+        ordered, seen = [], set()
+        for group in (sorted(top), sorted(lib), sorted(sc)):
+            for p in group:
+                if p not in seen:
+                    seen.add(p); ordered.append(p)
+        return ordered[: NornsScraper.VOICE_CORPUS_MAX_FILES]
 
     @staticmethod
     def _nb_key_file(repo: str, paths) -> str:
