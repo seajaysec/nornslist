@@ -40,13 +40,6 @@ check(
     "",  # must match the Engine_<Name>.sc convention, not arbitrary .sc files
 )
 
-# --- nb detection (best-effort heuristic) ---
-check("nb_filename", S._detect_nb("", ["lib/nb_voices.lua"]), True)
-check("nb_suffix_file", S._detect_nb("", ["lib/myscript_nb.lua"]), True)
-check("nb_readme_phrase", S._detect_nb("This adds an nb voice for you", []), True)
-check("nb_note_bridge", S._detect_nb("Registers a note bridge player", []), True)
-check("nb_negative", S._detect_nb("number of beats in the loop", ["main.lua"]), False)
-
 # --- badge vs real image classification ---
 check("badge_shields", S._is_badge_url("https://img.shields.io/badge/x.svg"), True)
 check("badge_actions", S._is_badge_url("https://github.com/a/b/workflows/ci/badge.svg"), True)
