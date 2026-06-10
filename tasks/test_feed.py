@@ -191,6 +191,52 @@ check("media_vimeo", S._extract_readme_media(md_vimeo), "https://vimeo.com/12345
 check("media_none", S._extract_readme_media("no links here, just prose"), "")
 check("media_ignores_plain_github", S._extract_readme_media("https://github.com/o/r"), "")
 
+# --- Phase 1: voice classifier (corpus-based; mirrors ingenue analyze_dir) ---
+def voices(blob, paths=None, facets=None, repo="x"):
+    return S._detect_voices(blob, paths or [], set(), facets or [], repo)
+
+# nb provider via add_player
+v = voices('nb:add_player("foo", MyPlayer)', facets=["mod"])
+check("v_nb_provides", (v["provides"], "nb" in v["uses"]), (["nb"], False))
+
+# nb provider via filename convention (nb_* pack)
+v = voices("-- voice pack", paths=["lib/nb_drumcrow.lua"], facets=["mod"], repo="nb_drumcrow")
+check("v_nb_pack_filename", "nb" in v["provides"], True)
+
+# nb consumer (uses) — require nb/lib buried in a lib file
+v = voices('local nb = require "nb/lib/nb"', facets=["script"])
+check("v_nb_uses", (v["uses"], v["provides"]), (["nb"], []))
+
+# vendored nb must NOT flag uses — bundled excluded upstream; simulate empty blob
+v2 = S._detect_voices("-- host code, no external nb ref", ["main.lua", "lib/nb/lib/nb.lua"],
+                      {"nb"}, ["script"], "host")
+check("v_nb_vendored_not_uses", "nb" in v2["uses"], False)
+
+# mx.samples / mx.synths via require
+v = voices('engine.name="None"\nlocal mxsamples=require("mx.samples/lib/mx.samples")', facets=["script"])
+check("v_mxsamples_uses", "mx.samples" in v["uses"], True)
+
+# sc-engine PROVIDER: ships engine, no top-level script (engine-only/library+engine)
+v = voices("SynthDef stuff", paths=["lib/Engine_Ack.sc"], facets=["library", "engine"], repo="ack")
+check("v_scengine_provides", "sc-engine" in v["provides"], True)
+
+# sc-engine NON-provider: standalone script that ships its own engine (acid-test shape)
+v = voices("SynthDef stuff", paths=["acid-test.lua", "lib/Engine_AcidTest.sc"],
+           facets=["script", "engine"], repo="acid-test")
+check("v_scengine_own_not_provider", "sc-engine" in v["provides"], False)
+
+# sc-engine USES: references an engine it does not ship
+v = voices('engine.name = "Rings"', paths=["main.lua"], facets=["script"], repo="m")
+check("v_scengine_uses", "sc-engine" in v["uses"], True)
+
+# pure midi/crow output does NOT count as a voice (the ~300-script noise)
+v = voices('crow.output[1].volts=1\nmidi:note_on(60,100)', facets=["script"])
+check("v_raw_io_no_voice", (v["provides"], v["uses"]), ([], []))
+
+# systems = union
+v = voices('nb:add_player("p", x)\nrequire("mx.synths/lib/mx.synths")', facets=["mod"])
+check("v_systems_union", sorted(v["systems"]), ["mx.synths", "nb"])
+
 # --- Phase A: corpus candidate paths (bounded; excludes bundled libs) ---
 _paths = ["awake.lua", "lib/engine_helper.lua", "lib/nb/lib/nb.lua",
           "lib/Engine_Foo.sc", "README.md", "docs/x.md", "data/preset.json"]

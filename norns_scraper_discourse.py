@@ -3163,6 +3163,53 @@ class NornsScraper:
                     seen.add(p); ordered.append(p)
         return ordered[: NornsScraper.VOICE_CORPUS_MAX_FILES]
 
+    # Voice systems whose `require "<X>/lib"` presence means the script USES that
+    # system's voices. Dotted names matter (mx.samples, mx.synths). Extend as new
+    # voice frameworks appear. Mirrors ingenue analyze_dir's requires extraction.
+    VOICE_USE_LIBS = {"mx.samples", "mx.synths"}
+
+    @staticmethod
+    def _detect_voices(blob: str, paths, bundled, facets, repo: str) -> dict:
+        """Classify a repo's relationship to the norns voice ecosystem from its
+        corpus blob + tree. Returns {provides, uses, systems}. provides = voices
+        OTHER scripts can load (drives the 'additional voices' umbrella tag); uses
+        = voice systems this script consumes. Mirrors ingenue's analyze_dir regex
+        vocabulary so precomputed signals match its live /api/deps. Pure/offline."""
+        text = blob or ""
+        facets = list(facets or [])
+        bundled = {b.lower() for b in (bundled or set())}
+        provides, uses = [], []
+
+        # --- nb ---
+        nb_pack_name = bool(re.match(r"nb[_-]", (repo or "").lower()))
+        nb_pack_file = any(re.match(r"nb[_-].+\.lua$", os.path.basename(str(p)).lower())
+                           or re.search(r"[_-]nb\.lua$", os.path.basename(str(p)).lower())
+                           for p in paths)
+        if re.search(r"nb:add_player", text) or nb_pack_name or nb_pack_file:
+            provides.append("nb")
+        elif re.search(r"require[\s(]+['\"]nb/|/nb/lib|nb_voice|nb:add", text) and "nb" not in bundled:
+            uses.append("nb")
+
+        # --- required voice libs (mx.samples, mx.synths, …) -> uses ---
+        for lib in sorted(set(re.findall(r"require[\s(]+['\"]([A-Za-z0-9_.\-]+)/lib", text))):
+            if lib.lower() in bundled:
+                continue
+            if lib in NornsScraper.VOICE_USE_LIBS:
+                uses.append(lib)
+
+        # --- SuperCollider engines ---
+        self_engines = {m.group(1).lower() for p in paths
+                        for m in [re.search(r"Engine_([A-Za-z0-9]+)\.sc$", os.path.basename(str(p)))] if m}
+        if self_engines and "script" not in facets:
+            provides.append("sc-engine")          # engine-only/lib/mod repo: lends its engine
+        used_engines = {e.lower() for e in re.findall(r"engine\.name\s*=\s*['\"]([A-Za-z0-9]+)['\"]", text)}
+        if any(e not in self_engines for e in used_engines):
+            uses.append("sc-engine")
+
+        provides = sorted(set(provides))
+        uses = sorted(set(u for u in uses if u not in provides))
+        return {"provides": provides, "uses": uses, "systems": sorted(set(provides) | set(uses))}
+
     @staticmethod
     def _nb_key_file(repo: str, paths) -> str:
         """The one file most likely to reference nb — mirrors ingenue's classifyRepo
