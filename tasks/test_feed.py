@@ -237,6 +237,11 @@ check("v_raw_io_no_voice", (v["provides"], v["uses"]), ([], []))
 v = voices('nb:add_player("p", x)\nrequire("mx.synths/lib/mx.synths")', facets=["mod"])
 check("v_systems_union", sorted(v["systems"]), ["mx.synths", "nb"])
 
+# --- Phase 1: runnable-script signals from corpus ---
+check("init_params_both", S._has_init_params("function init()\nparams:add{}\nend"), (True, True))
+check("init_params_init_only", S._has_init_params("function init ()\n end"), (True, False))
+check("init_params_neither", S._has_init_params("local x = 1"), (False, False))
+
 # --- Phase A: corpus candidate paths (bounded; excludes bundled libs) ---
 _paths = ["awake.lua", "lib/engine_helper.lua", "lib/nb/lib/nb.lua",
           "lib/Engine_Foo.sc", "README.md", "docs/x.md", "data/preset.json"]

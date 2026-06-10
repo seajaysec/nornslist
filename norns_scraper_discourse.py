@@ -3211,6 +3211,15 @@ class NornsScraper:
         return {"provides": provides, "uses": uses, "systems": sorted(set(provides) | set(uses))}
 
     @staticmethod
+    def _has_init_params(blob: str) -> tuple:
+        """(has_init, has_params) from the corpus — proof the repo is a runnable
+        script (defines init / adds params) vs a bare fragment. Used by the
+        installability classifier downstream."""
+        text = blob or ""
+        return (bool(re.search(r"function\s+init\s*\(", text)),
+                bool(re.search(r"params\s*:\s*add", text)))
+
+    @staticmethod
     def _nb_key_file(repo: str, paths) -> str:
         """The one file most likely to reference nb — mirrors ingenue's classifyRepo
         key-file pick: top-level <repo>.lua, else any top-level .lua, else lib/mod.lua,
