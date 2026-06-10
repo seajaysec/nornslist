@@ -191,6 +191,20 @@ check("media_vimeo", S._extract_readme_media(md_vimeo), "https://vimeo.com/12345
 check("media_none", S._extract_readme_media("no links here, just prose"), "")
 check("media_ignores_plain_github", S._extract_readme_media("https://github.com/o/r"), "")
 
+# --- Phase A: bundled-lib detection (vendored copies excluded from corpus) ---
+check("bundled_basic",
+      sorted(S._bundled_libs_from_paths(["lib/nb/lib/nb.lua", "lib/nb/README.md", "main.lua"])),
+      ["nb"])
+check("bundled_needs_code",
+      S._bundled_libs_from_paths(["lib/docs/notes.md", "main.lua"]),
+      set())  # a lib/<X>/ dir with no code is not a bundled lib
+check("bundled_multi",
+      sorted(S._bundled_libs_from_paths(["lib/nb/x.lua", "lib/mx/y.sc", "main.lua"])),
+      ["mx", "nb"])
+check("bundled_ignores_direct_lib_files",
+      S._bundled_libs_from_paths(["lib/util.lua", "main.lua"]),
+      set())  # lib/util.lua is not under a lib/<X>/ subdir
+
 if fails:
     print("FAILED:")
     for f in fails:

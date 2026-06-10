@@ -3127,6 +3127,21 @@ class NornsScraper:
         return facets
 
     @staticmethod
+    def _bundled_libs_from_paths(paths) -> set:
+        """Names X of bundled support libs the repo ships under lib/<X>/ (dir
+        containing at least one .lua/.sc/.sh). Mirrors ingenue analyze_dir: a
+        bundled copy self-resolves its own require's, so its source is EXCLUDED
+        from the voice corpus — otherwise a vendored lib/nb/lib/nb.lua would make
+        the host falsely look like an nb consumer (the dreamsequence false-pos)."""
+        dirs = {}
+        for p in paths:
+            m = re.match(r"lib/([^/]+)/(.+)$", str(p))
+            if m:
+                dirs.setdefault(m.group(1).lower(), []).append(m.group(2))
+        return {x for x, inner in dirs.items()
+                if any(f.lower().endswith((".lua", ".sc", ".sh")) for f in inner)}
+
+    @staticmethod
     def _nb_key_file(repo: str, paths) -> str:
         """The one file most likely to reference nb — mirrors ingenue's classifyRepo
         key-file pick: top-level <repo>.lua, else any top-level .lua, else lib/mod.lua,
