@@ -3231,11 +3231,11 @@ class NornsScraper:
         if re.search(r"nb:add_player", text) or nb_pack_name or nb_pack_file:
             provides.append("nb")
         # nb consumer: unanchored by design — corpus is plain Lua source, not minified.
-        elif re.search(r"require[\s(]+['\"]nb/|/nb/lib|nb_voice|nb:add", text) and "nb" not in bundled:
+        elif re.search(r"require[\s(]*['\"]nb/|/nb/lib|nb_voice|nb:add", text) and "nb" not in bundled:
             uses.append("nb")
 
         # --- required voice libs (mx.samples, mx.synths, …) -> uses ---
-        for lib in sorted(set(re.findall(r"require[\s(]+['\"]([A-Za-z0-9_.\-]+)/lib", text))):
+        for lib in sorted(set(re.findall(r"require[\s(]*['\"]([A-Za-z0-9_.\-]+)/lib", text))):
             if lib.lower() in bundled:
                 continue
             if lib in NornsScraper.VOICE_USE_LIBS:
