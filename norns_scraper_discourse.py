@@ -3012,7 +3012,7 @@ class NornsScraper:
     # Bump when engine/nb/readme/image *processing* logic changes. Cached entries
     # store processed output, so a stamped version mismatch invalidates them and
     # forces a one-time rebuild — same idea as the external-search _MATCHER_SIGNATURE.
-    FEED_LOGIC_VERSION = 4  # v4: voices object (replaces nb/nb_role) + has_init/params from corpus
+    FEED_LOGIC_VERSION = 5  # v5: + fork/fork_ahead (installability of forks)
 
     @staticmethod
     def _today_iso() -> str:
@@ -3111,6 +3111,31 @@ class NornsScraper:
             except Exception:
                 continue
         return "\n".join(parts)
+
+    def _fork_ahead(self, owner: str, repo: str, branch: str, parent) -> bool:
+        """True if this fork has commits AHEAD of its upstream parent (a diverged
+        fork worth keeping). One GitHub compare call. Unknown (no parent / deleted /
+        API error) -> True: keep + tag rather than bury a possibly-valuable fork."""
+        if not parent:
+            return True
+        p_owner = (parent.get("owner") or {}).get("login") or ""
+        p_repo = parent.get("name") or ""
+        p_branch = parent.get("default_branch") or "main"
+        if not p_owner or not p_repo:
+            return True
+        try:
+            from urllib.parse import quote
+            base = quote(f"{p_owner}:{p_branch}")
+            head = quote(f"{owner}:{branch}")
+            r = self.github_session.get(
+                f"https://api.github.com/repos/{p_owner}/{p_repo}/compare/{base}...{head}",
+                timeout=15,
+            )
+            if r.status_code == 200:
+                return int(r.json().get("ahead_by") or 0) > 0
+        except Exception:
+            pass
+        return True  # uncertain -> keep
 
     @staticmethod
     def _engine_from_paths(paths) -> str:
@@ -3397,8 +3422,8 @@ class NornsScraper:
         import base64
 
         result = {"engine": "", "voices": {"provides": [], "uses": [], "systems": []},
-                  "has_init": False, "has_params": False, "facets": [], "readme": "",
-                  "images": [], "sha": "", "demo": ""}
+                  "has_init": False, "has_params": False, "fork": False, "fork_ahead": False,
+                  "facets": [], "readme": "", "images": [], "sha": "", "demo": ""}
         if not owner or not repo:
             return result
         base = f"https://api.github.com/repos/{owner}/{repo}"
@@ -3414,6 +3439,9 @@ class NornsScraper:
                 return result
             branch = meta.get("default_branch") or "main"
             result["sha"] = self._github_head_sha(owner, repo, branch)
+            result["fork"] = bool(meta.get("fork"))
+            if result["fork"]:
+                result["fork_ahead"] = self._fork_ahead(owner, repo, branch, meta.get("parent"))
 
             # README: content -> plaintext + curated images + nb hint
             readme_md = ""
@@ -3546,6 +3574,9 @@ class NornsScraper:
                     entry["has_init"] = True
                 if enr.get("has_params"):
                     entry["has_params"] = True
+                if enr.get("fork"):
+                    entry["fork"] = True
+                    entry["fork_ahead"] = bool(enr.get("fork_ahead"))
                 if enr.get("readme"):
                     entry["readme"] = enr["readme"]
                 if enr.get("images"):

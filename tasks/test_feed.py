@@ -121,6 +121,10 @@ rows_v = [{"Name": "Foo", "Tags": "x", "Last Updated": "2024-01-01", "Project UR
 enr_v = {("o", "foo"): {"voices": {"provides": ["nb"], "uses": [], "systems": ["nb"]}}}
 sv = NornsScraper._build_feed_scripts(inst, rows_v, enr_v)
 check("feed_voices_emitted", sv["foo"].get("voices"), {"provides": ["nb"], "uses": [], "systems": ["nb"]})
+sf = NornsScraper._build_feed_scripts(inst, rows_v, {("o", "foo"): {"fork": True, "fork_ahead": True}})
+check("feed_fork_emitted", (sf["foo"].get("fork"), sf["foo"].get("fork_ahead")), (True, True))
+sf2 = NornsScraper._build_feed_scripts(inst, rows_v, {("o", "foo"): {"fork": False}})
+check("feed_fork_omitted_when_not_fork", "fork" in sf2["foo"], False)
 check("feed_tags", scripts["awake"].get("tags"), ["grid", "generative"])
 check("feed_upd_valid", scripts["awake"].get("upd"), "2024-03-12")
 check("feed_invalid_upd_dropped", "upd" in scripts.get("noupd", {}), False)
