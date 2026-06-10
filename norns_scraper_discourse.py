@@ -3012,7 +3012,7 @@ class NornsScraper:
     # Bump when engine/nb/readme/image *processing* logic changes. Cached entries
     # store processed output, so a stamped version mismatch invalidates them and
     # forces a one-time rebuild — same idea as the external-search _MATCHER_SIGNATURE.
-    FEED_LOGIC_VERSION = 3  # v3: + HEAD sha per repo (ingenue update detection)
+    FEED_LOGIC_VERSION = 4  # v4: voices object (replaces nb/nb_role) + has_init/params from corpus
 
     @staticmethod
     def _today_iso() -> str:
@@ -3602,10 +3602,15 @@ class NornsScraper:
                     entry["engine"] = enr["engine"]
                 if enr.get("facets"):
                     entry["facets"] = list(enr["facets"])
-                if enr.get("nb"):
-                    entry["nb"] = True
-                if enr.get("nb_role"):
-                    entry["nb_role"] = enr["nb_role"]
+                v = enr.get("voices") or {}
+                if v.get("systems"):
+                    entry["voices"] = {"provides": list(v.get("provides") or []),
+                                       "uses": list(v.get("uses") or []),
+                                       "systems": list(v.get("systems") or [])}
+                if enr.get("has_init"):
+                    entry["has_init"] = True
+                if enr.get("has_params"):
+                    entry["has_params"] = True
                 if enr.get("readme"):
                     entry["readme"] = enr["readme"]
                 if enr.get("images"):

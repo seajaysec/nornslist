@@ -121,7 +121,13 @@ enrichment = {("monome", "awake"): {"engine": "PolyPerc", "nb": False, "readme":
 scripts = NornsScraper._build_feed_scripts(inst, rows, enrichment)
 check("feed_key_lowercased", "awake" in scripts, True)
 check("feed_engine_set", scripts["awake"].get("engine"), "PolyPerc")
-check("feed_nb_omitted_when_false", "nb" in scripts["awake"], False)
+check("feed_no_voices_key_when_empty", "voices" in scripts["awake"], False)
+
+# voices emitted when non-empty
+rows_v = [{"Name": "Foo", "Tags": "x", "Last Updated": "2024-01-01", "Project URL": "https://github.com/o/foo"}]
+enr_v = {("o", "foo"): {"voices": {"provides": ["nb"], "uses": [], "systems": ["nb"]}}}
+sv = NornsScraper._build_feed_scripts(inst, rows_v, enr_v)
+check("feed_voices_emitted", sv["foo"].get("voices"), {"provides": ["nb"], "uses": [], "systems": ["nb"]})
 check("feed_tags", scripts["awake"].get("tags"), ["grid", "generative"])
 check("feed_upd_valid", scripts["awake"].get("upd"), "2024-03-12")
 check("feed_invalid_upd_dropped", "upd" in scripts.get("noupd", {}), False)
