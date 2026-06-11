@@ -1,5 +1,5 @@
 {
-  "date": "2026-06-10",
+  "date": "2026-06-11",
   "file_info": {
     "kind": "script_catalog",
     "version": 1
@@ -3596,16 +3596,7 @@
       "sha": "1a98b1e179d74db5e204557f1aa141b66036b4e3",
       "source": "github",
       "stars": 0,
-      "status": "active",
-      "voices": {
-        "provides": [
-          "nb"
-        ],
-        "systems": [
-          "nb"
-        ],
-        "uses": []
-      }
+      "status": "active"
     },
     {
       "Author": "okyeron",
@@ -4400,16 +4391,7 @@
       "sha": "367fa956bb9bad475447f508a3a02541b28a080d",
       "source": "github",
       "stars": 0,
-      "status": "active",
-      "voices": {
-        "provides": [
-          "nb"
-        ],
-        "systems": [
-          "nb"
-        ],
-        "uses": []
-      }
+      "status": "active"
     },
     {
       "Author": "jaseknighter",
@@ -5920,13 +5902,13 @@
       "stars": 10,
       "status": "active",
       "voices": {
-        "provides": [
-          "nb"
-        ],
+        "provides": [],
         "systems": [
           "nb"
         ],
-        "uses": []
+        "uses": [
+          "nb"
+        ]
       }
     },
     {
@@ -8628,13 +8610,13 @@
       "stars": 13,
       "status": "active",
       "voices": {
-        "provides": [
-          "nb"
-        ],
+        "provides": [],
         "systems": [
           "nb"
         ],
-        "uses": []
+        "uses": [
+          "nb"
+        ]
       }
     },
     {
@@ -8664,13 +8646,13 @@
       "stars": 0,
       "status": "active",
       "voices": {
-        "provides": [
-          "nb"
-        ],
+        "provides": [],
         "systems": [
           "nb"
         ],
-        "uses": []
+        "uses": [
+          "nb"
+        ]
       }
     },
     {
@@ -12492,13 +12474,13 @@
       "stars": 0,
       "status": "active",
       "voices": {
-        "provides": [
-          "nb"
-        ],
+        "provides": [],
         "systems": [
           "nb"
         ],
-        "uses": []
+        "uses": [
+          "nb"
+        ]
       }
     },
     {
@@ -13813,13 +13795,13 @@
       "stars": 35,
       "status": "active",
       "voices": {
-        "provides": [
-          "nb"
-        ],
+        "provides": [],
         "systems": [
           "nb"
         ],
-        "uses": []
+        "uses": [
+          "nb"
+        ]
       }
     },
     {
@@ -17088,6 +17070,7 @@
         "https://raw.githubusercontent.com/ethancforrest/nornscopy/main/crone/doc/routing.png",
         "https://raw.githubusercontent.com/ethancforrest/nornscopy/main/crone/doc/softcut-voice.png"
       ],
+      "readme": "norns\nchanges. travels. is open to possibilities.\n\nnorns is primarily intended to run on a pi-based sound computer designed by monome.\n\nnorns is many sound instruments. it connects to grids, MIDI, and other objects. norns lets you define its behavior with scripts and DSP.\nquick reference\n\n(NB: the --release flag creates builds specifically for armv8/cortex-a53 instruction set, meaning optimized for rpi3 and compatible with rpi4. It also enables aggressive compiler optimizations. Omit flag if you need debug symbols or to build for a different architecture. It does need to supplied to both configuration and build steps.)\ndocumentation\nuser docs\nAPI docs\nbuilding and execution\ndiscussion and help\nrelated\nsupporting repositories\nmaiden editing interface\nsoftcut sample-cutting editor part of matron\ntools\nnorns disk image raspbian-based disk image\nmonome linux kernel custom, monome-flavored linux kernel\nDIY shield instructions the DIY open-source hardware variant\nacknowledgments\n\nmatron (control system) and crone (audio system) were created by @catfact. maiden (editor) was created by @ngwese. …",
       "sha": "110ab7b98dc332df8adac2a35ffb526ab0408f9b",
       "source": "github",
       "stars": 0,
@@ -24446,13 +24429,13 @@
       "stars": 5,
       "status": "active",
       "voices": {
-        "provides": [
-          "nb"
-        ],
+        "provides": [],
         "systems": [
           "nb"
         ],
-        "uses": []
+        "uses": [
+          "nb"
+        ]
       }
     },
     {
@@ -24994,13 +24977,13 @@
       "stars": 1,
       "status": "archived",
       "voices": {
-        "provides": [
-          "nb"
-        ],
+        "provides": [],
         "systems": [
           "nb"
         ],
-        "uses": []
+        "uses": [
+          "nb"
+        ]
       }
     },
     {
@@ -26221,13 +26204,13 @@
       "stars": 10,
       "status": "active",
       "voices": {
-        "provides": [
-          "nb"
-        ],
+        "provides": [],
         "systems": [
           "nb"
         ],
-        "uses": []
+        "uses": [
+          "nb"
+        ]
       }
     },
     {
