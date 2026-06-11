@@ -9040,7 +9040,7 @@
       "readme": "grvl\n\ndual data pavement.\n\na digital tape machine – joyfully abandoning transparency. recorded sound is treated as raw, unadulterated data (like loose sediment), subject to multiple layers of erosion in the time & amplitude domains, clicks & all. you might hate it.\n\na spiritual successor to anaphora & dirge, a strange cousin of ndls\n\n! please note !: this script is a public beta. please expect some bugs & general instability. please feel free to ask questions & report any & all issues you may run into at lllllll.co.\n\n! explore with care ! loud sounds may result from multiple extreme settings.\nhardware\n\nrequired\nnorns\n\nalso supported\ngrid (128 or 64)\narc (2 or 4 rings)\ncrow\nmidi mapping\ninstall\n\nin the maiden REPL, type:\n\ngrid UI\n\nnorns UI\nE1: page/channel focus\nE2-E3: various\nK2-K3: record, hold to clear\nK1 (hold): survey\narc UI\n\nch 1 ch 1 ch 2 ch 2\n------ -------- ------ --------\nlevel ablation level ablation\nsediment abrasion (fine) sediment abrasion (fine)\nstart end start end\npm frequency pm depth pm frequency pm depth\n\nhorizontal & vertical orientation via arc focus component, hold two keys to flip\npatcher …",
       "sha": "02ac14cb33f690583d12315d84240a0e668d23b0",
       "source": "github",
-      "stars": 12,
+      "stars": 13,
       "status": "active"
     },
     {
