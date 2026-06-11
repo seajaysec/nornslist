@@ -3012,7 +3012,12 @@ class NornsScraper:
     # Bump when engine/nb/readme/image *processing* logic changes. Cached entries
     # store processed output, so a stamped version mismatch invalidates them and
     # forces a one-time rebuild — same idea as the external-search _MATCHER_SIGNATURE.
-    FEED_LOGIC_VERSION = 5  # v5: + fork/fork_ahead (installability of forks)
+    # v6: invalidate enrichments cached during development with the pre-`\b`-fix nb
+    # logic (nb:add_player matched the consumer call nb:add_player_params, and the
+    # discovered path lacked bundled-aware voices) — those were stamped v5 but are
+    # stale, so vendored-nb consumers (e.g. crocus) were mis-tagged as providers.
+    # RULE: any change to enrichment/voice/fork detection MUST bump this.
+    FEED_LOGIC_VERSION = 6
 
     @staticmethod
     def _today_iso() -> str:
