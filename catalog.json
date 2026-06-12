@@ -1,5 +1,5 @@
 {
-  "date": "2026-06-11",
+  "date": "2026-06-12",
   "file_info": {
     "kind": "script_catalog",
     "version": 1
@@ -11228,7 +11228,7 @@
       "readme": "LNRA-8. Organismic synthesizer for norns\n\nA norns interface to Mike Moreno's LIRA-8, A Pd emulation of SOMA's LYRA-8.\n\nWhat is an \"organismic synthesizer\"? SOMA says of their LYRA-8\n“Organismic” means that LYRA uses some principles that lie in the base of living organisms. The way how LYRA’s modules interacting between each other and the behaviour of the instrument resembles a live conversation.\n\nIt is a kind of a hierarchical organization of eight oscillators in four pairs on two sides, with cross-modulation. LFO, delay and distortion to taste.\n\nLIRA-8 is a Pd emulation/version/variation of that. It is in itself great fun to explore on the computer, running Pure Data or it's modern variant plug data. LNRA-8 continues my interest/intéressement exploring Pd on our beloved norns as a sound engine alternative to SuperCollider, earlier started with Swarmatron and a growing bunch of private explorations. Running LIRA-8 on norns rather than a computer is probably worse than on real computer (limited UI; audio glitching), but also somehow better (fun; \"why not?\"; MIDI mapping). …",
       "sha": "0787a37e4f801b83c0512e2534b4c897f7aca093",
       "source": "github",
-      "stars": 3,
+      "stars": 4,
       "status": "active"
     },
     {
@@ -12509,7 +12509,7 @@
       "Description": "Custom workflow for the Norns, BSP and Launchpad",
       "Discussion URL": "",
       "Documentation URL": "",
-      "Last Updated": "2026-03-17",
+      "Last Updated": "2026-06-11",
       "Name": "midi_thru_machine",
       "Out of Sync": "",
       "Playwright Status": "",
@@ -13530,6 +13530,31 @@
       "sha": "78001f6e9a012e63e153542ff72789384c195f2d",
       "source": "github",
       "stars": 1,
+      "status": "active"
+    },
+    {
+      "Author": "Seinzu",
+      "Community URL": "",
+      "Demo": "",
+      "Description": "",
+      "Discussion URL": "",
+      "Documentation URL": "",
+      "Last Updated": "2026-06-11",
+      "Name": "murmuration-norns",
+      "Out of Sync": "",
+      "Playwright Status": "",
+      "Project URL": "https://github.com/Seinzu/murmuration-norns",
+      "Tags": [],
+      "facets": [
+        "script",
+        "engine"
+      ],
+      "has_init": true,
+      "has_params": true,
+      "readme": "Murmuration for norns\n\nThis repo contains the norns version of Murmuration: a small 3D boids simulation with grid-controlled cells, arc-controlled synthesis parameters, and a Crone SuperCollider engine.\n\nGrid is essential, arc is supported.\nMaiden / Project Manager Install\n\nInstalling this whole repository with maiden's ;install is possible.\nManual Install\n\nCopy the contents of this norns directory to:\n\nThe installed tree should look like:\n\nThe Lua script uses project-relative includes.\nControls\nE1: boid count\nE2: separation weight\nE3: cohesion weight\nK2: thunder strike\nK3: toggle drone/trigger audio mode\ngrid: toggle active cells\narc: adjust attack, release, filter multiplier, and resonance\narc key: reset the encoder's mapped parameter to its default\n16n: optional USB MIDI control over CC32-47\n\nActive grid cells are both audio zones and obstacle points for the flock.\nParameters\n\nThe script exposes params for flock weights, scale, audio mode, drone radius, trigger density, maximum drone count, output level, synth levels, envelope, FX, and obstacle avoidance. max drones defaults to 24 to keep the engine load modest on norns. …",
+      "sha": "e73cead8e027f78165898e785aa049b6a80e81b5",
+      "source": "github",
+      "stars": 0,
       "status": "active"
     },
     {
@@ -15607,6 +15632,29 @@
       ],
       "readme": "norns-edge\nnorns-edge extends the established Norns framework with a cutting-edge, Lua-based architecture for real-time event processing and cross-platform deployment. It features a novel granular synthesis engine (inspired by Spectral Modeling Synthesis) and a lightweight event-driven framework, running on Cloudflare Workers (via fengari-lua for WebAssembly) and ESP32-S2 (via Lua-RTOS). Supporting WebSocket/serial communication and 64-byte CRYPTODOME packets for grid/arc events, it achieves a ~120 kB footprint and ~200 ms boot time on ESP32. An interactive waveform chart visualizes the granular synthesis output.\nWhat's New in norns-edge Architecture\nUnified Codebase Across Edge and Embedded: A single Lua script runs on serverless Cloudflare Workers and embedded ESP32-S2, unlike traditional architectures requiring separate codebases (e.g., JavaScript for serverless, C for embedded).\nMinimal Resource Footprint: ~120 kB with zero dependencies (except fengari-lua for WASM and lua-websockets), outperforming heavier runtimes like Node.js (~30 MB) or MicroPython (~500 kB). …",
       "sha": "392d2b923f8a69fe5c63bed48d769e2b52bc3b98",
+      "source": "github",
+      "stars": 0,
+      "status": "active"
+    },
+    {
+      "Author": "rvogtenh",
+      "Community URL": "",
+      "Demo": "",
+      "Description": "",
+      "Discussion URL": "",
+      "Documentation URL": "",
+      "Last Updated": "2026-06-11",
+      "Name": "norns-emulator",
+      "Out of Sync": "",
+      "Playwright Status": "",
+      "Project URL": "https://github.com/rvogtenh/norns-emulator",
+      "Tags": [],
+      "facets": [
+        "library"
+      ],
+      "has_params": true,
+      "readme": "norns-emulator\n\nA browser-based emulator for monome norns — run and develop norns Lua scripts\nlocally without hardware, with a simulated screen, encoders, keys,\ngrid and arc, WebAudio engines, softcut, WebMIDI, and a\nbuilt-in maiden-style script editor.\nPart of the Little Modular project.\n\nCompatibility: 19/20 scripts from current set render (tested 2026-05-30).\n\nHow it works\n\nKey idea: your script runs in real Lua 5.3 inside the container. The\nnorns API (screen, enc, key, metro, clock, params, grid, arc,\nmidi, engine, softcut, …) is reimplemented in matron/norns/\nand emits/consumes JSON over stdio. The browser is the display + input + audio.\n\nQuick start\n\nStop with norns-down or docker compose down.\n\ndocker-compose.yml mounts ../current set, ../new project, and ./examples\ninto the container at /scripts, so all your norns scripts appear in the picker.\nWithout Docker (local)\n\nRequires Node ≥ 20 and lua5.3 (brew install lua@5.3):\n\nUsing it\n\n1. Pick folder + script — use the two dropdowns (folder left, script name right) and click load.\nStart with examples / hello or current set / awake.\n2. Drive the script:\n\nInput Mouse Keyboard\n------- ------- ---------- …",
+      "sha": "9b5046c3daf31b87b24a4f4238b65fea7f380e22",
       "source": "github",
       "stars": 0,
       "status": "active"
@@ -24276,7 +24324,7 @@
       "Description": "",
       "Discussion URL": "https://llllllll.co/t/teammate-poto-an-improvisation-partner-for-norns/74582",
       "Documentation URL": "",
-      "Last Updated": "2026-06-09",
+      "Last Updated": "2026-06-11",
       "Name": "teammate",
       "Out of Sync": "",
       "Playwright Status": "",
@@ -24290,7 +24338,7 @@
       ],
       "has_init": true,
       "readme": "TEAMMATE.POTO — Norns\n\nAn improvisation partner, not an accompanist.\nUn partenaire d'improvisation, pas un accompagnateur.\n\nEnglish\n\nInspired by Somax2 — a co-improvisation system developed at IRCAM (Institut de Recherche et Coordination Acoustique/Musique, Paris) by the Music Representations research team. Somax introduced the idea that a machine could listen to a musician, build a musical memory from what it hears, and navigate that memory in real time to improvise back. That idea changed how I think about human-machine dialogue in music.\n\nTEAMMATE takes that same core intuition — the machine learns only from you, in the moment — and pushes it toward something rawer and more physical.\n\nEverything you play gets sliced into a memory of 48 sound fragments: pitch, energy, timbre, texture. When you stop, TEAMMATE analyzes the whole phrase and decides what to do. Imitate. Contrast. Densify. Thin out. Stay silent. It never plays something it hasn't heard from you. No generative AI, no presets — pure remémoration.\n\nSeven layers running in parallel:\nThe dialogue — phrase by phrase. TEAMMATE waits, listens, builds a portrait of what you just played, and responds from its own memory. …",
-      "sha": "4fc41b51051dced3f5c14cb82520090b14673d31",
+      "sha": "71a9e602986f9bba97d88c7dea3288b419c1762a",
       "source": "github",
       "stars": 13,
       "status": "active"
@@ -25704,7 +25752,7 @@
       "Description": "randomized dual granular playground, inspired by twine",
       "Discussion URL": "https://llllllll.co/t/twins/71052",
       "Documentation URL": "",
-      "Last Updated": "2026-05-31",
+      "Last Updated": "2026-06-11",
       "Name": "twins",
       "Out of Sync": "",
       "Playwright Status": "",

@@ -7148,7 +7148,7 @@
       "script",
       "engine"
     ],
-    "fetched_at": "2026-06-11",
+    "fetched_at": "2026-06-12",
     "fork": false,
     "fork_ahead": false,
     "has_init": true,
@@ -7159,8 +7159,8 @@
     ],
     "logic_version": 6,
     "readme": "Twins\n\nA randomized dual granular sample playground for Monome Norns.\n\nInspired by @cfd90’s Twine and contains influence and code from other norns users. This is basically Twine on steroids. A granular playground. It contains a lot of effects and extra granular parameters. You can turn off granular processing and use this as a normal sample player with effects. Live input processing is also possible. My main goal was building a tool for creating nice ambient soundscapes. And no problem if you do not have external controllers. I have tweaked the GUI and controls, so it is playable even with only a norns. Let me know if you find this useful.\n\nSome of the new features:\nMorphing\nReverb, delay, chorus, tape effects, glitch, shimmer, EQ, filters, bit reduction, etc.\nExtra granular parameters, increased parameter ranges\nPitch quantization\nFreely assignable LFOs with randomization\nOn screen navigation with parameter locking\nSymmetry mode and mirroring\nLive input processing\nFlexible volume control\n\nAnd a lot more.\nRequirements\nnorns / norns shield\nsome features might require a pi4 based unit. If you hear clicks and crackles try turning off a few effects. …",
-    "sha": "62ec70a4ed4b996e8dc7d3728a49f6b01b0b4dc4",
-    "source_upd": "2026-05-31",
+    "sha": "ce32c4785fe73084d7eab5dde57751de08b141f5",
+    "source_upd": "2026-06-11",
     "voices": {
       "provides": [],
       "systems": [],
@@ -13475,7 +13475,7 @@
     "facets": [
       "script"
     ],
-    "fetched_at": "2026-06-11",
+    "fetched_at": "2026-06-12",
     "fork": true,
     "fork_ahead": true,
     "has_init": true,
@@ -13488,8 +13488,8 @@
     ],
     "logic_version": 6,
     "readme": "arcologies\n\nan interactive environment for designing 2d sound arcologies with norns and grid\n\nIf you are an artist, musician, or arcologist here to use this tool, everything you need to know is in the docs. Join the discussion on lines.\n\nThis README is for developers looking to contribute in building arcologies.\nChangelog\n\nThe changelog is located here.\nTechnical\nThe developer manual video is the fastest way to learn arcologies. It includes a walkthrough of the architecture and deep dives into the most complex parts of the software.\nTo learn the codebase, read arcologies.lua and lib/includes.lua.\nNext, skim through keeper.lua, Cell.lua, Signal.lua, and counters.lua.\nCell and Signal are the only classes. Signals are primitive. Cells are complex.\nconfig.lua is where signal, cellular, and global behavior is composed.\nCell traits/mixins are inside lib/mixins. Even though there are many different types of cell structures, they're all just instances of the same Cell class. Changing their structure toggles behaviors and traits on and off (e.g. …",
-    "sha": "d8e4da1b36a0fea0349a2ffe6371db17a711dd30",
-    "source_upd": "2026-06-10",
+    "sha": "cdc51b07400078e89d9b78dac4cf75137ed4669f",
+    "source_upd": "2026-06-11",
     "voices": {
       "provides": [],
       "systems": [],
@@ -17363,7 +17363,7 @@
       "script",
       "engine"
     ],
-    "fetched_at": "2026-06-11",
+    "fetched_at": "2026-06-12",
     "fork": false,
     "fork_ahead": false,
     "has_init": true,
@@ -17371,8 +17371,8 @@
     "images": [],
     "logic_version": 6,
     "readme": "TEAMMATE.POTO — Norns\n\nAn improvisation partner, not an accompanist.\nUn partenaire d'improvisation, pas un accompagnateur.\n\nEnglish\n\nInspired by Somax2 — a co-improvisation system developed at IRCAM (Institut de Recherche et Coordination Acoustique/Musique, Paris) by the Music Representations research team. Somax introduced the idea that a machine could listen to a musician, build a musical memory from what it hears, and navigate that memory in real time to improvise back. That idea changed how I think about human-machine dialogue in music.\n\nTEAMMATE takes that same core intuition — the machine learns only from you, in the moment — and pushes it toward something rawer and more physical.\n\nEverything you play gets sliced into a memory of 48 sound fragments: pitch, energy, timbre, texture. When you stop, TEAMMATE analyzes the whole phrase and decides what to do. Imitate. Contrast. Densify. Thin out. Stay silent. It never plays something it hasn't heard from you. No generative AI, no presets — pure remémoration.\n\nSeven layers running in parallel:\nThe dialogue — phrase by phrase. TEAMMATE waits, listens, builds a portrait of what you just played, and responds from its own memory. …",
-    "sha": "4fc41b51051dced3f5c14cb82520090b14673d31",
-    "source_upd": "2026-06-09",
+    "sha": "71a9e602986f9bba97d88c7dea3288b419c1762a",
+    "source_upd": "2026-06-11",
     "voices": {
       "provides": [],
       "systems": [],
@@ -27678,6 +27678,28 @@
       "uses": []
     }
   },
+  "rvogtenh/norns-emulator": {
+    "demo": "",
+    "engine": "",
+    "facets": [
+      "library"
+    ],
+    "fetched_at": "2026-06-12",
+    "fork": false,
+    "fork_ahead": false,
+    "has_init": false,
+    "has_params": true,
+    "images": [],
+    "logic_version": 6,
+    "readme": "norns-emulator\n\nA browser-based emulator for monome norns — run and develop norns Lua scripts\nlocally without hardware, with a simulated screen, encoders, keys,\ngrid and arc, WebAudio engines, softcut, WebMIDI, and a\nbuilt-in maiden-style script editor.\nPart of the Little Modular project.\n\nCompatibility: 19/20 scripts from current set render (tested 2026-05-30).\n\nHow it works\n\nKey idea: your script runs in real Lua 5.3 inside the container. The\nnorns API (screen, enc, key, metro, clock, params, grid, arc,\nmidi, engine, softcut, …) is reimplemented in matron/norns/\nand emits/consumes JSON over stdio. The browser is the display + input + audio.\n\nQuick start\n\nStop with norns-down or docker compose down.\n\ndocker-compose.yml mounts ../current set, ../new project, and ./examples\ninto the container at /scripts, so all your norns scripts appear in the picker.\nWithout Docker (local)\n\nRequires Node ≥ 20 and lua5.3 (brew install lua@5.3):\n\nUsing it\n\n1. Pick folder + script — use the two dropdowns (folder left, script name right) and click load.\nStart with examples / hello or current set / awake.\n2. Drive the script:\n\nInput Mouse Keyboard\n------- ------- ---------- …",
+    "sha": "9b5046c3daf31b87b24a4f4238b65fea7f380e22",
+    "source_upd": "2026-06-11",
+    "voices": {
+      "provides": [],
+      "systems": [],
+      "uses": []
+    }
+  },
   "rwhaling/shfts": {
     "demo": "",
     "engine": "",
@@ -30038,6 +30060,29 @@
     "readme": "wifi5ghz\n\nnorns mod that locks the active wifi connection to 5 GHz only.\nWhy\n\nSome mesh APs (notably TP-Link Deco firmwares) have a bug where the\n2.4 GHz radio of certain nodes silently drops inbound L2 frames to\nassociated STAs. The STA gets an IP via DHCP and can ping the gateway,\nbut it is unreachable from the LAN. Cold-boot band-steering decides\nthe band, so the bug appears non-deterministically after reboot.\n\nThis mod prevents norns from ever associating to a 2.4 GHz radio.\nWhat it does\nAdds SYSTEM > MODS > wifi5ghz menu page.\nK3 toggles the lock ON/OFF.\nStores state in ~/dust/data/wifi5ghz/state.\nWhen ON, sets 802-11-wireless.band = a on the currently-active\nNM wifi-station connection and re-ups the connection.\nWhen OFF, clears the band restriction (back to NM default).\nReconciles at every boot via systempoststartup hook.\n\nThe lock is per-NM-connection — it lives in the connection's keyfile\nunder /etc/NetworkManager/system-connections/. Switching to a\ndifferent SSID gets the default behavior on that profile until you\ntoggle the mod ON while connected to it.\nTravel scenario\n\nAt a 2.4-only network:\n1. Front panel: SYSTEM > MODS > wifi5ghz\n2. K3 to toggle OFF\n3. …",
     "sha": "64223cbcf0f1885edbaf3aa37971b2794c520241",
     "source_upd": "2026-05-11",
+    "voices": {
+      "provides": [],
+      "systems": [],
+      "uses": []
+    }
+  },
+  "seinzu/murmuration-norns": {
+    "demo": "",
+    "engine": "Murmuration",
+    "facets": [
+      "script",
+      "engine"
+    ],
+    "fetched_at": "2026-06-12",
+    "fork": false,
+    "fork_ahead": false,
+    "has_init": true,
+    "has_params": true,
+    "images": [],
+    "logic_version": 6,
+    "readme": "Murmuration for norns\n\nThis repo contains the norns version of Murmuration: a small 3D boids simulation with grid-controlled cells, arc-controlled synthesis parameters, and a Crone SuperCollider engine.\n\nGrid is essential, arc is supported.\nMaiden / Project Manager Install\n\nInstalling this whole repository with maiden's ;install is possible.\nManual Install\n\nCopy the contents of this norns directory to:\n\nThe installed tree should look like:\n\nThe Lua script uses project-relative includes.\nControls\nE1: boid count\nE2: separation weight\nE3: cohesion weight\nK2: thunder strike\nK3: toggle drone/trigger audio mode\ngrid: toggle active cells\narc: adjust attack, release, filter multiplier, and resonance\narc key: reset the encoder's mapped parameter to its default\n16n: optional USB MIDI control over CC32-47\n\nActive grid cells are both audio zones and obstacle points for the flock.\nParameters\n\nThe script exposes params for flock weights, scale, audio mode, drone radius, trigger density, maximum drone count, output level, synth levels, envelope, FX, and obstacle avoidance. max drones defaults to 24 to keep the engine load modest on norns. …",
+    "sha": "e73cead8e027f78165898e785aa049b6a80e81b5",
+    "source_upd": "2026-06-11",
     "voices": {
       "provides": [],
       "systems": [],
@@ -34740,7 +34785,7 @@
     "facets": [
       "script"
     ],
-    "fetched_at": "2026-06-11",
+    "fetched_at": "2026-06-12",
     "fork": false,
     "fork_ahead": false,
     "has_init": true,
@@ -34749,7 +34794,7 @@
     "logic_version": 6,
     "readme": "MIDI Thru Machine - MIDI Processing & Sequencing System\n\nA sophisticated MIDI processing and live looping workstation for the Monome Norns platform. MIDI Thru Machine provides an 8-track MIDI processing system with real-time manipulation, sequencing, automation, and hardware controller integration.\nOverview\n\nMIDI Thru Machine transforms your Norns into a powerful MIDI hub that can:\nRoute and process MIDI between multiple devices\nGenerate notes via arpeggiators, randomization, and algorithmic sequencers\nApply scale quantization with sophisticated follow modes\nRecord and loop MIDI performances with overdub/overwrite\nAutomate parameters, CC curves, and preset changes\nControl everything via Novation Launchpad or similar grid controllers\nFeatures\nCore Architecture\n8 Independent Tracks: Each track has a complete processing chain\nMulti-Device Routing: Connect and route between multiple MIDI devices\nEvent-Driven Design: Loosely coupled components communicate via publish/subscribe\nHardware Integration: Native support for grid controllers, LaunchControl, and Crow CV/gate\nInput Generation\n\nEach track can generate or transform MIDI input in multiple modes: …",
     "sha": "d0e4308f61cfac7b1dc7b1f2d0bb7a3cb41ecb4f",
-    "source_upd": "2026-03-17",
+    "source_upd": "2026-06-11",
     "voices": {
       "provides": [],
       "systems": [],
@@ -35135,7 +35180,7 @@
       "script",
       "engine"
     ],
-    "fetched_at": "2026-06-11",
+    "fetched_at": "2026-06-12",
     "fork": true,
     "fork_ahead": true,
     "has_init": false,
@@ -35146,8 +35191,8 @@
     ],
     "logic_version": 6,
     "readme": "norns\nchanges. travels. is open to possibilities.\n\nnorns is primarily intended to run on a pi-based sound computer designed by monome.\n\nnorns is many sound instruments. it connects to grids, MIDI, and other objects. norns lets you define its behavior with scripts and DSP.\nquick reference\n\n(NB: the --release flag creates builds specifically for armv8/cortex-a53 instruction set, meaning optimized for rpi3 and compatible with rpi4. It also enables aggressive compiler optimizations. Omit flag if you need debug symbols or to build for a different architecture. It does need to supplied to both configuration and build steps.)\ndocumentation\nuser docs\nAPI docs\nbuilding and execution\ndiscussion and help\nrelated\nsupporting repositories\nmaiden editing interface\nsoftcut sample-cutting editor part of matron\ntools\nnorns disk image raspbian-based disk image\nmonome linux kernel custom, monome-flavored linux kernel\nDIY shield instructions the DIY open-source hardware variant\nacknowledgments\n\nmatron (control system) and crone (audio system) were created by @catfact. maiden (editor) was created by @ngwese. …",
-    "sha": "339f44709e925ffa7e90e8780ce51f51c9dcec73",
-    "source_upd": "2026-06-10",
+    "sha": "48feb3a9344a2555a4ce5d74a1f3c7aed9445e3f",
+    "source_upd": "2026-06-11",
     "voices": {
       "provides": [],
       "systems": [],
