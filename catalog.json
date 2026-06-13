@@ -1,5 +1,5 @@
 {
-  "date": "2026-06-12",
+  "date": "2026-06-13",
   "file_info": {
     "kind": "script_catalog",
     "version": 1
@@ -13539,7 +13539,7 @@
       "Description": "",
       "Discussion URL": "",
       "Documentation URL": "",
-      "Last Updated": "2026-06-11",
+      "Last Updated": "2026-06-12",
       "Name": "murmuration-norns",
       "Out of Sync": "",
       "Playwright Status": "",
@@ -13552,7 +13552,7 @@
       "has_init": true,
       "has_params": true,
       "readme": "Murmuration for norns\n\nThis repo contains the norns version of Murmuration: a small 3D boids simulation with grid-controlled cells, arc-controlled synthesis parameters, and a Crone SuperCollider engine.\n\nGrid is essential, arc is supported.\nMaiden / Project Manager Install\n\nInstalling this whole repository with maiden's ;install is possible.\nManual Install\n\nCopy the contents of this norns directory to:\n\nThe installed tree should look like:\n\nThe Lua script uses project-relative includes.\nControls\nE1: boid count\nE2: separation weight\nE3: cohesion weight\nK2: thunder strike\nK3: toggle drone/trigger audio mode\ngrid: toggle active cells\narc: adjust attack, release, filter multiplier, and resonance\narc key: reset the encoder's mapped parameter to its default\n16n: optional USB MIDI control over CC32-47\n\nActive grid cells are both audio zones and obstacle points for the flock.\nParameters\n\nThe script exposes params for flock weights, scale, audio mode, drone radius, trigger density, maximum drone count, output level, synth levels, envelope, FX, and obstacle avoidance. max drones defaults to 24 to keep the engine load modest on norns. …",
-      "sha": "e73cead8e027f78165898e785aa049b6a80e81b5",
+      "sha": "f5a6f29e4e5ed7ca542e3e28a69721e0ce959bce",
       "source": "github",
       "stars": 0,
       "status": "active"
@@ -25752,7 +25752,7 @@
       "Description": "randomized dual granular playground, inspired by twine",
       "Discussion URL": "https://llllllll.co/t/twins/71052",
       "Documentation URL": "",
-      "Last Updated": "2026-06-11",
+      "Last Updated": "2026-06-12",
       "Name": "twins",
       "Out of Sync": "",
       "Playwright Status": "",

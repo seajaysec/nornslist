@@ -7148,7 +7148,7 @@
       "script",
       "engine"
     ],
-    "fetched_at": "2026-06-12",
+    "fetched_at": "2026-06-13",
     "fork": false,
     "fork_ahead": false,
     "has_init": true,
@@ -7159,8 +7159,8 @@
     ],
     "logic_version": 6,
     "readme": "Twins\n\nA randomized dual granular sample playground for Monome Norns.\n\nInspired by @cfd90’s Twine and contains influence and code from other norns users. This is basically Twine on steroids. A granular playground. It contains a lot of effects and extra granular parameters. You can turn off granular processing and use this as a normal sample player with effects. Live input processing is also possible. My main goal was building a tool for creating nice ambient soundscapes. And no problem if you do not have external controllers. I have tweaked the GUI and controls, so it is playable even with only a norns. Let me know if you find this useful.\n\nSome of the new features:\nMorphing\nReverb, delay, chorus, tape effects, glitch, shimmer, EQ, filters, bit reduction, etc.\nExtra granular parameters, increased parameter ranges\nPitch quantization\nFreely assignable LFOs with randomization\nOn screen navigation with parameter locking\nSymmetry mode and mirroring\nLive input processing\nFlexible volume control\n\nAnd a lot more.\nRequirements\nnorns / norns shield\nsome features might require a pi4 based unit. If you hear clicks and crackles try turning off a few effects. …",
-    "sha": "ce32c4785fe73084d7eab5dde57751de08b141f5",
-    "source_upd": "2026-06-11",
+    "sha": "b9e1f9c40df5a92bd3809a3d381d66f374dc2df9",
+    "source_upd": "2026-06-12",
     "voices": {
       "provides": [],
       "systems": [],
@@ -30073,7 +30073,7 @@
       "script",
       "engine"
     ],
-    "fetched_at": "2026-06-12",
+    "fetched_at": "2026-06-13",
     "fork": false,
     "fork_ahead": false,
     "has_init": true,
@@ -30081,8 +30081,8 @@
     "images": [],
     "logic_version": 6,
     "readme": "Murmuration for norns\n\nThis repo contains the norns version of Murmuration: a small 3D boids simulation with grid-controlled cells, arc-controlled synthesis parameters, and a Crone SuperCollider engine.\n\nGrid is essential, arc is supported.\nMaiden / Project Manager Install\n\nInstalling this whole repository with maiden's ;install is possible.\nManual Install\n\nCopy the contents of this norns directory to:\n\nThe installed tree should look like:\n\nThe Lua script uses project-relative includes.\nControls\nE1: boid count\nE2: separation weight\nE3: cohesion weight\nK2: thunder strike\nK3: toggle drone/trigger audio mode\ngrid: toggle active cells\narc: adjust attack, release, filter multiplier, and resonance\narc key: reset the encoder's mapped parameter to its default\n16n: optional USB MIDI control over CC32-47\n\nActive grid cells are both audio zones and obstacle points for the flock.\nParameters\n\nThe script exposes params for flock weights, scale, audio mode, drone radius, trigger density, maximum drone count, output level, synth levels, envelope, FX, and obstacle avoidance. max drones defaults to 24 to keep the engine load modest on norns. …",
-    "sha": "e73cead8e027f78165898e785aa049b6a80e81b5",
-    "source_upd": "2026-06-11",
+    "sha": "f5a6f29e4e5ed7ca542e3e28a69721e0ce959bce",
+    "source_upd": "2026-06-12",
     "voices": {
       "provides": [],
       "systems": [],
