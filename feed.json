@@ -1,5 +1,5 @@
 {
-  "date": "2026-06-13",
+  "date": "2026-06-14",
   "file_info": {
     "kind": "script_feed",
     "version": 2
@@ -6919,12 +6919,12 @@
         "https://github.com/user-attachments/assets/e2308c34-df38-47f8-b595-72deed76e240"
       ],
       "readme": "Twins\n\nA randomized dual granular sample playground for Monome Norns.\n\nInspired by @cfd90’s Twine and contains influence and code from other norns users. This is basically Twine on steroids. A granular playground. It contains a lot of effects and extra granular parameters. You can turn off granular processing and use this as a normal sample player with effects. Live input processing is also possible. My main goal was building a tool for creating nice ambient soundscapes. And no problem if you do not have external controllers. I have tweaked the GUI and controls, so it is playable even with only a norns. Let me know if you find this useful.\n\nSome of the new features:\nMorphing\nReverb, delay, chorus, tape effects, glitch, shimmer, EQ, filters, bit reduction, etc.\nExtra granular parameters, increased parameter ranges\nPitch quantization\nFreely assignable LFOs with randomization\nOn screen navigation with parameter locking\nSymmetry mode and mirroring\nLive input processing\nFlexible volume control\n\nAnd a lot more.\nRequirements\nnorns / norns shield\nsome features might require a pi4 based unit. If you hear clicks and crackles try turning off a few effects. …",
-      "sha": "b9e1f9c40df5a92bd3809a3d381d66f374dc2df9",
+      "sha": "eb04a37513678068e48aeeace672425668f88c36",
       "tags": [
         "granulator",
         "audio_fx"
       ],
-      "upd": "2026-06-12"
+      "upd": "2026-06-13"
     },
     "u": {
       "facets": [

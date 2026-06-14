@@ -1,5 +1,5 @@
 {
-  "date": "2026-06-13",
+  "date": "2026-06-14",
   "file_info": {
     "kind": "script_catalog",
     "version": 1
@@ -13539,7 +13539,7 @@
       "Description": "",
       "Discussion URL": "",
       "Documentation URL": "",
-      "Last Updated": "2026-06-12",
+      "Last Updated": "2026-06-13",
       "Name": "murmuration-norns",
       "Out of Sync": "",
       "Playwright Status": "",
@@ -13551,8 +13551,8 @@
       ],
       "has_init": true,
       "has_params": true,
-      "readme": "Murmuration for norns\n\nThis repo contains the norns version of Murmuration: a small 3D boids simulation with grid-controlled cells, arc-controlled synthesis parameters, and a Crone SuperCollider engine.\n\nGrid is essential, arc is supported.\nMaiden / Project Manager Install\n\nInstalling this whole repository with maiden's ;install is possible.\nManual Install\n\nCopy the contents of this norns directory to:\n\nThe installed tree should look like:\n\nThe Lua script uses project-relative includes.\nControls\nE1: boid count\nE2: separation weight\nE3: cohesion weight\nK2: thunder strike\nK3: toggle drone/trigger audio mode\ngrid: toggle active cells\narc: adjust attack, release, filter multiplier, and resonance\narc key: reset the encoder's mapped parameter to its default\n16n: optional USB MIDI control over CC32-47\n\nActive grid cells are both audio zones and obstacle points for the flock.\nParameters\n\nThe script exposes params for flock weights, scale, audio mode, drone radius, trigger density, maximum drone count, output level, synth levels, envelope, FX, and obstacle avoidance. max drones defaults to 24 to keep the engine load modest on norns. …",
-      "sha": "f5a6f29e4e5ed7ca542e3e28a69721e0ce959bce",
+      "readme": "Murmuration for norns\n\nThis repo contains the norns version of Murmuration: a small 3D boids simulation with grid-controlled cells, arc-controlled synthesis parameters, and a Crone SuperCollider engine.\n\nGrid is essential, arc is supported.\nMaiden / Project Manager Install\n\nInstalling this whole repository with maiden's ;install is possible.\nManual Install\n\nCopy the contents of this norns directory to:\n\nThe installed tree should look like:\n\nThe Lua script uses project-relative includes.\nControls\nE1: boid count\nE2: separation weight\nE3: cohesion weight\nK2: thunder strike\nK3: toggle drone/trigger audio mode\ngrid: toggle active cells\narc: adjust attack, release, filter multiplier, and resonance\narc key: reset the encoder's mapped parameter to its default\n16n: optional USB MIDI control over CC32-47\n\nActive grid cells are both audio zones and obstacle points for the flock. In drone mode, selected nearby boids excite voices using stable per-boid scale pitches; distance still controls level and modulation depth.\nParameters …",
+      "sha": "8e6c997ce23ca8d722acf54b6d047063e6a9eb00",
       "source": "github",
       "stars": 0,
       "status": "active"
@@ -24324,7 +24324,7 @@
       "Description": "",
       "Discussion URL": "https://llllllll.co/t/teammate-poto-an-improvisation-partner-for-norns/74582",
       "Documentation URL": "",
-      "Last Updated": "2026-06-11",
+      "Last Updated": "2026-06-13",
       "Name": "teammate",
       "Out of Sync": "",
       "Playwright Status": "",
@@ -24338,9 +24338,9 @@
       ],
       "has_init": true,
       "readme": "TEAMMATE.POTO — Norns\n\nAn improvisation partner, not an accompanist.\nUn partenaire d'improvisation, pas un accompagnateur.\n\nEnglish\n\nInspired by Somax2 — a co-improvisation system developed at IRCAM (Institut de Recherche et Coordination Acoustique/Musique, Paris) by the Music Representations research team. Somax introduced the idea that a machine could listen to a musician, build a musical memory from what it hears, and navigate that memory in real time to improvise back. That idea changed how I think about human-machine dialogue in music.\n\nTEAMMATE takes that same core intuition — the machine learns only from you, in the moment — and pushes it toward something rawer and more physical.\n\nEverything you play gets sliced into a memory of 48 sound fragments: pitch, energy, timbre, texture. When you stop, TEAMMATE analyzes the whole phrase and decides what to do. Imitate. Contrast. Densify. Thin out. Stay silent. It never plays something it hasn't heard from you. No generative AI, no presets — pure remémoration.\n\nSeven layers running in parallel:\nThe dialogue — phrase by phrase. TEAMMATE waits, listens, builds a portrait of what you just played, and responds from its own memory. …",
-      "sha": "71a9e602986f9bba97d88c7dea3288b419c1762a",
+      "sha": "14998e29d9c6d6c08104ea98b303900df948fa70",
       "source": "github",
-      "stars": 13,
+      "stars": 14,
       "status": "active"
     },
     {
@@ -24867,7 +24867,7 @@
       "readme": "toga\nTouchOSC grid and arc controller for monome norns\nDemo Video\nhttps://www.instagram.com/p/CS4JRtonRD7/\nInstruction\n1. Install toga: from maiden type: ;install https://github.com/wangpy/toga\n2. Edit script you want to use toga with (similar to how to edit script to add midigrid support)\n1. Find occurence of \"grid.connect()\" in the script code and insert the following line above:\n\nIf the script is already edited to support midigrid, you can add the support on midigrid library script file: add the line above to line 1 in code/midigrid/lib/midigrid.lua. When no midigrid-supported device is connected, toga grid will be initialized.\n2. Find occurence of \"grid.connect()\" in the script code and insert the following line above:\n\n3. Select the edited script on norns to load\n3. Download toga.tosc controller file and import to TouchOSC (new version, not working with Mk1).\n4. Set up connections to norns:\n1. Choose UDP\n2. Look up norns IP address in SYSTEM -> WIFI and input to Host field\n3. Input 10111 to Send Port\n4. Input 8002 to Receive Port (any unused port number should work)\n5. Run the TouchOSC controller (by clicking Play button).\n6. …",
       "sha": "b42898d15c8148163fcc95b469edff78436b37b8",
       "source": "github",
-      "stars": 54,
+      "stars": 55,
       "status": "active"
     },
     {
@@ -25752,7 +25752,7 @@
       "Description": "randomized dual granular playground, inspired by twine",
       "Discussion URL": "https://llllllll.co/t/twins/71052",
       "Documentation URL": "",
-      "Last Updated": "2026-06-12",
+      "Last Updated": "2026-06-13",
       "Name": "twins",
       "Out of Sync": "",
       "Playwright Status": "",
