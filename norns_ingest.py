@@ -616,12 +616,27 @@ FIELD = {"name": "Name", "author": "Author", "desc": "Description", "proj": "Pro
          "upd": "Last Updated", "topics": "Tags"}
 
 
+def load_demos(path="demos.json"):
+    """repo (owner/name, lowercased) -> demo video URL. Maintained by video_search.py
+    (the decoupled YouTube/Vimeo discovery), merged into the catalog's Demo field here so
+    a consumer can embed a demo without computing it. Absent file -> no demos."""
+    try:
+        with open(path) as f:
+            return {k.lower(): (v.get("demo") if isinstance(v, dict) else v) or ""
+                    for k, v in json.load(f).items()}
+    except Exception:
+        return {}
+
+
 def write_catalog(rows, path):
+    demos = load_demos()
     scripts = []
     for r in rows:
+        m = re.search(r"github\.com/([^/]+)/([^/\s]+)", r["proj"])
+        demo = demos.get(f"{m.group(1)}/{m.group(2)}".lower(), "") if m else ""
         e = {"Name": r["name"], "Author": r["author"], "Description": r.get("desc", ""),
              "Project URL": r["proj"], "Last Updated": r.get("upd", ""),
-             "Tags": r.get("topics", []), "Demo": "", "Discussion URL": "",
+             "Tags": r.get("topics", []), "Demo": demo, "Discussion URL": "",
              "Documentation URL": "", "Community URL": "",
              "source": "github", "status": "archived" if r.get("archived") else "active",
              "stars": r.get("stars", 0), "facets": r.get("facets", []),

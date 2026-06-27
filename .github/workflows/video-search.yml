@@ -1,0 +1,75 @@
+name: Video Search
+
+# Decoupled from the catalog refresh: YouTube/Vimeo discovery is quota-limited and slow,
+# so it runs on its own cadence and only touches demos.json + the search state.
+#   daily   — scripts whose repo changed since last look (a new commit may mean a new demo)
+#   weekly  — scripts still without a demo (budget-capped; backlog drains over weeks)
+#   monthly — re-verify existing demos are still public + a broad re-search
+on:
+  schedule:
+    - cron: '0 6 * * *'    # daily   06:00 UTC
+    - cron: '0 7 * * 1'    # weekly  Monday 07:00 UTC
+    - cron: '0 8 1 * *'    # monthly 1st 08:00 UTC
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'daily | weekly | monthly'
+        default: 'daily'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: video-search
+  cancel-in-progress: false
+
+jobs:
+  search:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Pick mode from the schedule
+        id: mode
+        env:
+          SCHEDULE: ${{ github.event.schedule }}
+          INPUT_MODE: ${{ github.event.inputs.mode }}
+        run: |
+          # Untrusted inputs go through env vars; FLAG is chosen from a fixed whitelist
+          # (never built from the raw input), so a hand-set mode can't inject a command.
+          case "$SCHEDULE" in
+            "0 7 * * 1") FLAG="--weekly" ;;
+            "0 8 1 * *") FLAG="--monthly" ;;
+            *)
+              case "$INPUT_MODE" in
+                weekly)  FLAG="--weekly" ;;
+                monthly) FLAG="--monthly" ;;
+                *)       FLAG="--daily" ;;
+              esac ;;
+          esac
+          echo "flag=$FLAG" >> "$GITHUB_OUTPUT"
+
+      - name: Search for demos
+        env:
+          YT_API_KEY: ${{ secrets.YT_API_KEY }}
+          VIMEO_TOKEN: ${{ secrets.VIMEO_TOKEN }}
+        run: python video_search.py "${{ steps.mode.outputs.flag }}"
+
+      - name: Commit demo updates
+        run: |
+          git config user.email "action@github.com"
+          git config user.name "GitHub Action"
+          git add demos.json video_search_state.json
+          if ! git diff --staged --quiet; then
+            git commit -m "demos: refresh ($(date -u +%F))"
+            git pull --rebase origin main || true
+            git push
+          fi

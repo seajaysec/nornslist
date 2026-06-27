@@ -1,0 +1,450 @@
+{
+ "21echoes/samsara": {
+  "demo": "https://www.youtube.com/watch?v=AmQ7AMnooj0",
+  "checked": "2026-06-27"
+ },
+ "adamstaff/scholastic": {
+  "demo": "https://www.youtube.com/watch?v=vvl44pg3hMM",
+  "checked": "2026-06-27"
+ },
+ "adamstaff/turntable": {
+  "demo": "https://www.youtube.com/watch?v=kpuc4MYNU9A",
+  "checked": "2026-06-27"
+ },
+ "ambalek/fall": {
+  "demo": "https://www.youtube.com/watch?v=Gud-dWz-etE",
+  "checked": "2026-06-27"
+ },
+ "ambalek/raindrops": {
+  "demo": "https://www.youtube.com/watch?v=3N9N_We4R4M",
+  "checked": "2026-06-27"
+ },
+ "andr-ew/eels": {
+  "demo": "https://www.youtube.com/watch?v=NxpqsLtH880",
+  "checked": "2026-06-27"
+ },
+ "andr-ew/orgn": {
+  "demo": "https://www.youtube.com/watch?v=Ug39z2mZhsQ",
+  "checked": "2026-06-27"
+ },
+ "andr-ew/rpls": {
+  "demo": "https://www.youtube.com/watch?v=AUcsdTWoAys",
+  "checked": "2026-06-27"
+ },
+ "artfwo/glut": {
+  "demo": "https://www.youtube.com/watch?v=Cc2ZtBWfH3k",
+  "checked": "2026-06-27"
+ },
+ "awwaiid/repl-looper": {
+  "demo": "https://www.youtube.com/watch?v=FPE5DOlScIY",
+  "checked": "2026-06-27"
+ },
+ "brokyo/seeker_ii": {
+  "demo": "https://www.youtube.com/watch?v=sDeOvZlGJTs",
+  "checked": "2026-06-27"
+ },
+ "cachilders/asterion": {
+  "demo": "https://www.youtube.com/watch?v=ntL8QDOhhL8",
+  "checked": "2026-06-27"
+ },
+ "cachilders/esper": {
+  "demo": "https://www.youtube.com/watch?v=dswKyUUhKMI",
+  "checked": "2026-06-27"
+ },
+ "carltesta/sway": {
+  "demo": "https://www.youtube.com/watch?v=w9RZHmo4JAs",
+  "checked": "2026-06-27"
+ },
+ "carvingcode/strum": {
+  "demo": "https://www.youtube.com/watch?v=BK2LxQRKShc",
+  "checked": "2026-06-27"
+ },
+ "cassiel/shado": {
+  "demo": "http://vimeo.com/1338613",
+  "checked": "2026-06-27"
+ },
+ "cfdrake/kollide": {
+  "demo": "https://www.youtube.com/watch?v=MxSnN6wv9QA",
+  "checked": "2026-06-27"
+ },
+ "distropolis/pixels": {
+  "demo": "https://www.youtube.com/watch?v=cySo5vEykiI",
+  "checked": "2026-06-27"
+ },
+ "dndrks/cheat_codes": {
+  "demo": "https://www.youtube.com/watch?v=dNlWIG53YBQ",
+  "checked": "2026-06-27"
+ },
+ "duncangeere/gridofpoints": {
+  "demo": "http://www.youtube.com/watch?v=oZ8iEdrWWwE",
+  "checked": "2026-06-27"
+ },
+ "dwtong/glaciers": {
+  "demo": "https://vimeo.com/551661371",
+  "checked": "2026-06-27"
+ },
+ "dwtong/midididi": {
+  "demo": "https://www.youtube.com/watch?v=_Mm79ezd1Oc",
+  "checked": "2026-06-27"
+ },
+ "dzautner/13-angels": {
+  "demo": "https://www.youtube.com/watch?v=9fN7udMAMog",
+  "checked": "2026-06-27"
+ },
+ "echophon/drift": {
+  "demo": "https://www.youtube.com/watch?v=lKfChwQeTRk",
+  "checked": "2026-06-27"
+ },
+ "entzmingerc/drumcrow": {
+  "demo": "https://www.youtube.com/watch?v=rrcj5uk-hhY",
+  "checked": "2026-06-27"
+ },
+ "entzmingerc/nb_drumcrow": {
+  "demo": "https://www.youtube.com/watch?v=DU_R516qjAc",
+  "checked": "2026-06-27"
+ },
+ "entzmingerc/pit-orchisstra": {
+  "demo": "https://www.youtube.com/watch?v=NpIjsqzu0Q0",
+  "checked": "2026-06-27"
+ },
+ "fivedollarman/bidiwave": {
+  "demo": "https://www.youtube.com/watch?v=ab8NMI8u-go",
+  "checked": "2026-06-27"
+ },
+ "fivedollarman/fiiiiive": {
+  "demo": "https://www.youtube.com/watch?v=hJ4rc51NJ-M",
+  "checked": "2026-06-27"
+ },
+ "frederickk/noergaard": {
+  "demo": "https://www.youtube.com/watch?v=Q_FGImH1RWE",
+  "checked": "2026-06-27"
+ },
+ "frederickk/stjoernuithrott": {
+  "demo": "https://www.youtube.com/watch?v=iaO3x2EGuU0",
+  "checked": "2026-06-27"
+ },
+ "gonecaving/awake-rings": {
+  "demo": "https://www.youtube.com/watch?v=pWnMl8b_Uuk",
+  "checked": "2026-06-27"
+ },
+ "hanjo-synth/hiswing": {
+  "demo": "https://www.youtube.com/watch?v=_qFI1p-oa7s",
+  "checked": "2026-06-27"
+ },
+ "hanjo-synth/mdpatch": {
+  "demo": "https://www.youtube.com/watch?v=tShiKs0ePec",
+  "checked": "2026-06-27"
+ },
+ "hanjo-synth/mdscaler": {
+  "demo": "https://www.youtube.com/watch?v=c_i3obivn7A",
+  "checked": "2026-06-27"
+ },
+ "hanjo-synth/mnmpatch": {
+  "demo": "https://www.youtube.com/watch?v=yFiYw2ncZfU",
+  "checked": "2026-06-27"
+ },
+ "jakecarter/circles": {
+  "demo": "https://www.youtube.com/watch?v=t3IKu6pQcxM",
+  "checked": "2026-06-27"
+ },
+ "jaseknighter/flora": {
+  "demo": "https://vimeo.com/496481575",
+  "checked": "2026-06-27"
+ },
+ "jaseknighter/krill": {
+  "demo": "https://vimeo.com/48382205",
+  "checked": "2026-06-27"
+ },
+ "junklight/eastwind": {
+  "demo": "https://www.youtube.com/watch?v=6yVP39R6n48",
+  "checked": "2026-06-27"
+ },
+ "junklight/islands": {
+  "demo": "https://www.youtube.com/watch?v=PApL2LFjBPQ",
+  "checked": "2026-06-27"
+ },
+ "junklight/kria_midi": {
+  "demo": "https://www.youtube.com/watch?v=FtyTv8ngdI4",
+  "checked": "2026-06-27"
+ },
+ "justmat/boingg": {
+  "demo": "https://www.youtube.com/watch?v=i2NJwAs8wZ4",
+  "checked": "2026-06-27"
+ },
+ "justmat/bounds": {
+  "demo": "https://www.youtube.com/watch?v=EIEK39qhH6Q",
+  "checked": "2026-06-27"
+ },
+ "justmat/foulplay": {
+  "demo": "https://www.youtube.com/watch?v=6GiOju91V3Y",
+  "checked": "2026-06-27"
+ },
+ "justmat/larc": {
+  "demo": "https://www.youtube.com/watch?v=wFvJGdyOX0A",
+  "checked": "2026-06-27"
+ },
+ "justmat/mangl": {
+  "demo": "https://www.youtube.com/watch?v=H-pc0QaLBpU",
+  "checked": "2026-06-27"
+ },
+ "justmat/otis": {
+  "demo": "https://www.youtube.com/watch?v=NieAhITQFpk",
+  "checked": "2026-06-27"
+ },
+ "justmat/pools": {
+  "demo": "https://www.youtube.com/watch?v=vse-e4BgNao",
+  "checked": "2026-06-27"
+ },
+ "kasperbauer/metrix": {
+  "demo": "https://www.youtube.com/watch?v=niP5hVB43_8",
+  "checked": "2026-06-27"
+ },
+ "kevinlindley/demoncore": {
+  "demo": "https://www.youtube.com/watch?v=AQ0P7R9CfCY",
+  "checked": "2026-06-27"
+ },
+ "kirikoodes/teammate": {
+  "demo": "https://www.youtube.com/watch?v=TbVlwrFNA8E",
+  "checked": "2026-06-27"
+ },
+ "lazzarello/fm7": {
+  "demo": "https://www.youtube.com/watch?v=HI9B-vuWF4A",
+  "checked": "2026-06-27"
+ },
+ "melocoi/_awed": {
+  "demo": "https://www.youtube.com/watch?v=SwtadkessjA",
+  "checked": "2026-06-27"
+ },
+ "melocoi/footfoot": {
+  "demo": "https://www.youtube.com/watch?v=ubLWJrVj3LI",
+  "checked": "2026-06-27"
+ },
+ "millxing/isokb": {
+  "demo": "https://www.youtube.com/watch?v=AAXGvzl_9c8",
+  "checked": "2026-06-27"
+ },
+ "millxing/quence": {
+  "demo": "https://www.youtube.com/watch?v=ogu7FdoMybw",
+  "checked": "2026-06-27"
+ },
+ "mimetaur/onehanded": {
+  "demo": "https://www.youtube.com/watch?v=oBKVeXLxXF4",
+  "checked": "2026-06-27"
+ },
+ "nattog/awake-passersby": {
+  "demo": "https://www.youtube.com/watch?v=BYjTCWS-B7o",
+  "checked": "2026-06-27"
+ },
+ "neauoire/monitor": {
+  "demo": "https://www.youtube.com/watch?v=g_joxEeB3ss",
+  "checked": "2026-06-27"
+ },
+ "neauoire/punchcard": {
+  "demo": "https://www.youtube.com/watch?v=QO7T6MYkqZo",
+  "checked": "2026-06-27"
+ },
+ "northern-information/arcologies": {
+  "demo": "https://www.youtube.com/watch?v=NJlO2jajM6k",
+  "checked": "2026-06-27"
+ },
+ "notrobintaylor/fx_llll": {
+  "demo": "https://www.youtube.com/watch?v=Su__MGkrTwU",
+  "checked": "2026-06-27"
+ },
+ "notrobintaylor/princeton": {
+  "demo": "https://www.youtube.com/watch?v=VqkFejb8owY",
+  "checked": "2026-06-27"
+ },
+ "nvillar/tetra": {
+  "demo": "https://www.youtube.com/watch?v=M0aHRQAvBRA",
+  "checked": "2026-06-27"
+ },
+ "pierrepaslier/aldous": {
+  "demo": "https://www.youtube.com/watch?v=cQojuEV5z34",
+  "checked": "2026-06-27"
+ },
+ "quixotic7/corners": {
+  "demo": "https://www.youtube.com/watch?v=7xcglHWL2no",
+  "checked": "2026-06-27"
+ },
+ "quixotic7/gridstep": {
+  "demo": "https://www.youtube.com/watch?v=RaOxDwYcZiQ",
+  "checked": "2026-06-27"
+ },
+ "quixotic7/groovecats": {
+  "demo": "https://www.youtube.com/watch?v=ip6Ou3-8g_s",
+  "checked": "2026-06-27"
+ },
+ "robmckinnon/molecular": {
+  "demo": "https://www.youtube.com/watch?v=3Z8CuAC_-bg",
+  "checked": "2026-06-27"
+ },
+ "schollz/acid-test": {
+  "demo": "https://vimeo.com/670308126",
+  "checked": "2026-06-27"
+ },
+ "schollz/acrostic": {
+  "demo": "https://vimeo.com/663443176",
+  "checked": "2026-06-27"
+ },
+ "schollz/amen": {
+  "demo": "https://www.youtube.com/watch?v=5SaFTm2bcac",
+  "checked": "2026-06-27"
+ },
+ "schollz/downtown": {
+  "demo": "https://vimeo.com/496475138",
+  "checked": "2026-06-27"
+ },
+ "schollz/glitchlets": {
+  "demo": "https://www.youtube.com/watch?v=1q8Yf-vlZg4",
+  "checked": "2026-06-27"
+ },
+ "schollz/granchild": {
+  "demo": "https://vimeo.com/514823601",
+  "checked": "2026-06-27"
+ },
+ "schollz/internorns": {
+  "demo": "https://vimeo.com/570686702",
+  "checked": "2026-06-27"
+ },
+ "schollz/lorenzos-drums": {
+  "demo": "https://vimeo.com/674023534",
+  "checked": "2026-06-27"
+ },
+ "schollz/moonraker": {
+  "demo": "https://vimeo.com/665254703",
+  "checked": "2026-06-27"
+ },
+ "schollz/mx.samples": {
+  "demo": "https://vimeo.com/509450523",
+  "checked": "2026-06-27"
+ },
+ "schollz/mx.synths": {
+  "demo": "https://vimeo.com/631313246",
+  "checked": "2026-06-27"
+ },
+ "schollz/o-o-o": {
+  "demo": "https://vimeo.com/615483324",
+  "checked": "2026-06-27"
+ },
+ "schollz/oooooo": {
+  "demo": "https://vimeo.com/590419704",
+  "checked": "2026-06-27"
+ },
+ "schollz/plonky": {
+  "demo": "https://vimeo.com/520650445",
+  "checked": "2026-06-27"
+ },
+ "schollz/supertonic": {
+  "demo": "https://vimeo.com/557258118",
+  "checked": "2026-06-27"
+ },
+ "schollz/synthy": {
+  "demo": "https://vimeo.com/593330469",
+  "checked": "2026-06-27"
+ },
+ "schollz/tapedeck": {
+  "demo": "https://vimeo.com/666500841",
+  "checked": "2026-06-27"
+ },
+ "schollz/thirtythree": {
+  "demo": "https://vimeo.com/545281946",
+  "checked": "2026-06-27"
+ },
+ "schollz/wobblewobble": {
+  "demo": "https://vimeo.com/553165797",
+  "checked": "2026-06-27"
+ },
+ "skibu/taweeet": {
+  "demo": "https://www.youtube.com/watch?v=yvc-pNiVl_c",
+  "checked": "2026-06-27"
+ },
+ "sonocircuit/concrete": {
+  "demo": "https://www.youtube.com/watch?v=ZU7BgAiCJ5c",
+  "checked": "2026-06-27"
+ },
+ "sonocircuit/justharmonicon": {
+  "demo": "https://www.youtube.com/watch?v=Fv-vg-ipDS4",
+  "checked": "2026-06-27"
+ },
+ "sonocircuit/mlre": {
+  "demo": "https://www.youtube.com/watch?v=aFzF4Vb15qg",
+  "checked": "2026-06-27"
+ },
+ "sonocircuit/sidvagn": {
+  "demo": "https://www.youtube.com/watch?v=rFfKduXWIq4",
+  "checked": "2026-06-27"
+ },
+ "sonocircuit/stwnsh": {
+  "demo": "https://www.youtube.com/watch?v=Uwdn_cRO0Mk",
+  "checked": "2026-06-27"
+ },
+ "speakerdamage/tunnels": {
+  "demo": "https://www.youtube.com/watch?v=g1Kpk4do1i0",
+  "checked": "2026-06-27"
+ },
+ "spoitras/repeater": {
+  "demo": "https://www.youtube.com/watch?v=AhKVDUIRt5I",
+  "checked": "2026-06-27"
+ },
+ "starfishmod/midisignals": {
+  "demo": "https://www.youtube.com/watch?v=bHUz1Zu7hCg",
+  "checked": "2026-06-27"
+ },
+ "subvertnormality/mosaic": {
+  "demo": "https://www.youtube.com/watch?v=iGx5fmrbatA",
+  "checked": "2026-06-27"
+ },
+ "szymonkaliski/haze": {
+  "demo": "https://vimeo.com/513390690",
+  "checked": "2026-06-27"
+ },
+ "tehn/ash": {
+  "demo": "https://www.youtube.com/watch?v=7HVTXoYaF0I",
+  "checked": "2026-06-27"
+ },
+ "tehn/awake": {
+  "demo": "https://www.youtube.com/watch?v=RXh01HL5D-k",
+  "checked": "2026-06-27"
+ },
+ "tehn/blue": {
+  "demo": "https://www.youtube.com/watch?v=frNbtfMnP20",
+  "checked": "2026-06-27"
+ },
+ "tehn/mlr": {
+  "demo": "https://www.youtube.com/watch?v=ERkJBoqhwyI",
+  "checked": "2026-06-27"
+ },
+ "tlubke/ekombi": {
+  "demo": "https://vimeo.com/426802558",
+  "checked": "2026-06-27"
+ },
+ "tomwaters/spirals": {
+  "demo": "https://www.youtube.com/watch?v=5-2XTOoBuU0",
+  "checked": "2026-06-27"
+ },
+ "xmacex/7uring-machine": {
+  "demo": "https://www.youtube.com/watch?v=va2XAdFtmeU",
+  "checked": "2026-06-27"
+ },
+ "xmacex/monomaniac": {
+  "demo": "https://www.youtube.com/watch?v=54S5h1Zktaw",
+  "checked": "2026-06-27"
+ },
+ "xmacex/paranibbles": {
+  "demo": "https://www.youtube.com/watch?v=EZBpxkxJg0o",
+  "checked": "2026-06-27"
+ },
+ "xmacex/swarmatron": {
+  "demo": "https://www.youtube.com/watch?v=0H5wQOUrlIY",
+  "checked": "2026-06-27"
+ },
+ "xo-xn/nameless-nightmare": {
+  "demo": "https://www.youtube.com/watch?v=YAenlbawxLE",
+  "checked": "2026-06-27"
+ },
+ "zunaito/tpdk": {
+  "demo": "https://vimeo.com/666500841",
+  "checked": "2026-06-27"
+ }
+}
