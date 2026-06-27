@@ -85,6 +85,11 @@ def facets_from_paths(paths):
     has_mod = "lib/mod.lua" in ps
     lib_lua = [p for p in ps if p.lower().endswith(".lua") and re.search(r"(?:^|/)lib/", p)]
     has_engine = any(p.lower().endswith(".sc") for p in ps) or any(re.search(r"(?:^|/)engine/", p) for p in ps)
+    # Monorepo guard: repos with 8+ top-level .lua files are collections (multiple scripts
+    # sharing a repo), not a single installable script. Single scripts with helper modules
+    # at root typically have ≤ 7 files; study series and personal script dumps have many more.
+    if len(top_lua) > 7:
+        return []
     f = []
     if top_lua:
         f.append("script")
@@ -169,16 +174,6 @@ class GH:
         self.s.headers.update(h)
         self.token = token
         self._last_search = 0.0
-        self._self_login = None
-
-    def self_login(self):
-        if self._self_login is None and self.token:
-            try:
-                r = self.s.get("https://api.github.com/user", timeout=15)
-                self._self_login = (r.json().get("login") or "").lower() if r.status_code == 200 else ""
-            except Exception:
-                self._self_login = ""
-        return self._self_login or ""
 
     def _throttle(self, gap):
         d = gap - (time.time() - self._last_search)
@@ -294,13 +289,11 @@ def classify_batch(gh, repos):
             rd = data.get(_gql_alias(i))
             if rd:
                 meta[(o, n)] = rd
-    # build path lists + pre-filter (must have a .lua somewhere, not private, not blocked)
-    self_owner = gh.self_login()
+    # build path lists + pre-filter (not private, not blocked, real norns structure)
     cand = {}
     for key, rd in meta.items():
         o, n = key
-        if rd.get("isPrivate") or f"{o}/{n}".lower() in {b.lower() for b in GH_BLOCK} \
-           or (self_owner and o.lower() == self_owner):
+        if rd.get("isPrivate") or f"{o}/{n}".lower() in {b.lower() for b in GH_BLOCK}:
             continue
         paths = _paths_from_tree(rd.get("object"))
         if not facets_from_paths(paths):   # require a real norns structure (top-level .lua /
