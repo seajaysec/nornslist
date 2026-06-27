@@ -48,6 +48,14 @@ GH_BLOCK = {
     "monome/norns-community", "figrhed/norns-on-raspberry-pi",
     "jguzak/shieldxl_battery",
 }
+# Forks of these are the norns OS/firmware itself (Fates, PiBoy, Bookworm ports, …), not
+# installable scripts — nobody forks the whole operating system to write a script. Caught by
+# parent, so it scales to any future OS port without naming each one (not "dumb hardcoding").
+INFRA_FORK_PARENTS = {
+    "monome/norns", "monome/dust", "monome/norns-shield", "monome/norns-image",
+    "monome/maiden", "monome/crow", "monome/teletype", "monome/softcut",
+    "monome/libmonome", "monome/serialosc", "fates-project/norns", "okyeron/shieldxl",
+}
 VOICE_USE_LIBS = {"mx.samples", "mx.synths"}
 VOICE_CORPUS_MAX_FILES = 16
 USABLE_FACETS = {"script", "mod", "library", "engine"}
@@ -384,6 +392,7 @@ def classify_batch(gh, repos):
     # its parent) — "forked & evolved in a new direction", not a stale mirror or a fork
     # left behind when the parent moved on. Detached forks (parent gone) are independent by
     # definition. One REST compare per fork (forks are a small minority of records). ──
+    drop_infra = []
     for key, rec in records.items():
         if not rec.get("fork"):
             continue
@@ -393,10 +402,15 @@ def classify_batch(gh, repos):
         if not pfull:
             rec["fork_ahead"] = True
             continue
+        if pfull.lower() in {p.lower() for p in INFRA_FORK_PARENTS}:
+            drop_infra.append(key)   # fork of the OS/firmware → not a script
+            continue
         base = (parent.get("defaultBranchRef") or {}).get("name") or "main"
         head = (rd.get("defaultBranchRef") or {}).get("name") or "main"
         ahead = gh.compare_ahead(key[0], key[1], pfull, base, head)
         rec["fork_ahead"] = (ahead is None) or (ahead >= 1)
+    for key in drop_infra:
+        del records[key]
     return records
 
 
