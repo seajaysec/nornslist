@@ -5,15 +5,20 @@ emits a single `catalog.json` feed. Headless — no website.
 
 ## Feed URL
 
-The nightly publishes `catalog.json` as a permanent release asset, so a fixed URL
-always serves the newest catalog:
+`catalog.json` is committed to `main` on every run and also published as a release asset.
 
+**For browser-based consumers** (fetch from a web page — requires CORS):
+```
+https://raw.githubusercontent.com/seajaysec/nornslist/main/catalog.json
+```
+
+**For CLI / non-browser consumers** (curl, wget, scripts):
 ```
 https://github.com/seajaysec/nornslist/releases/latest/download/catalog.json
 ```
 
-A compatible norns browser can load that as an **optional** source. It is off
-by default and not advertised.
+The release asset URL does not send CORS headers and cannot be loaded by browser
+`fetch()`. Use the raw URL when adding this as a feed to a norns browser app.
 
 ## Discovery
 
