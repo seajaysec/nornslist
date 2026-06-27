@@ -10,11 +10,21 @@ name: Daily Catalog Refresh
 
 on:
   schedule:
-    - cron: '30 * * * *'
+    # Every 3 hours. A full discover→classify run is ~40-45 min now that the per-owner
+    # sweep enumerates every known author's repos (vs the old ~18 min). 3h leaves a wide
+    # buffer and keeps API/cost modest; new norns scripts don't appear faster than that.
+    - cron: '30 */3 * * *'
   workflow_dispatch:
 
 permissions:
   contents: write
+
+# A run takes ~20-30 min; the hourly schedule leaves ample gap, but guard against a slow
+# run overlapping the next (which would race on the catalog.json commit). Queue, don't
+# cancel — every scheduled refresh still completes, just serialized.
+concurrency:
+  group: catalog-refresh
+  cancel-in-progress: false
 
 jobs:
   refresh:

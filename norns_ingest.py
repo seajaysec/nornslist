@@ -53,6 +53,34 @@ VOICE_CORPUS_MAX_FILES = 16
 USABLE_FACETS = {"script", "mod", "library", "engine"}
 INSTALL_REDFLAG = re.compile(r"\b(tutorial|study|boilerplate|template|exercise|wip)\b", re.I)
 URL_RE = re.compile(r"https?://\S+", re.I)
+# Richness = how many DISTINCT norns marker categories the code uses (1..N). Used for
+# ranking AND as the weak-match gate in _record. Factored out so the two always agree.
+RICHNESS_RE = re.compile(
+    r"engine\.|softcut\.|screen\.|params:add|function redraw|function enc|function key|"
+    r"grid\.connect|arc\.connect|metro\.|musicutil|controlspec|mod\.hook")
+# STRONG markers are norns-specific Lua that virtually never appears in other languages —
+# a single one confirms norns. The WEAK markers in NORNS_FP (engine./screen./metro.) also
+# match JavaScript, game engines, T-Engine roguelikes, etc., so a repo whose ONLY hit is a
+# weak marker (richness < 2, no strong) is a coincidence and is rejected. This kills false
+# positives (a "Website" repo matching only `screen.`, a roguelike matching only `engine.`)
+# without dropping real scripts, which always carry redraw/enc/key callbacks or params:add.
+NORNS_STRONG = re.compile(
+    r"params:add|function redraw\(|function enc\(|function key\(|softcut\.|"
+    r"grid\.connect|arc\.connect|mod\.hook|mod\.menu|_norns|\bnorns\.")
+# Native norns mods (e.g. ndi-mod, hdmi-mod) carry no Lua — they submodule norns at
+# dep/norns and build against it in C/C++. dep/norns IS the fingerprint (unambiguous).
+DEP_NORNS_RE = re.compile(r"(?:^|/)dep/norns(?:/|$)")
+# Norns-ecosystem context in a repo's name/description/topics. These terms (esp. norns,
+# monome, softcut, seamstress) essentially never appear outside the monome ecosystem, so a
+# repo with norns code structure + ≥1 norns marker + this context is norns even if the
+# sampled corpus only caught a single weak marker. This rescues real-but-minimal scripts,
+# libraries, and iii/crow-ecosystem scripts (reverse_io, glyph, tty-console, iiiano) that a
+# pure-corpus gate would drop, WITHOUT admitting the coincidental matches (a roguelike, a
+# Factorio mod, a website) — those carry no norns context.
+NORNS_CONTEXT = re.compile(
+    r"norns|monome|softcut|seamstress|teletype|matron|maiden|\bcrow\b|\biii\b|\bnb[_\- ]", re.I)
+# Gate for which non-Lua repos in an author sweep are even worth classifying as native mods.
+NORNS_HINT = re.compile(r"norns|monome|softcut|grid|arc|crow|seamstress|\bmod\b", re.I)
 
 # Seed authors for the network expansion — well-known norns contributors. The sweep
 # pulls in the people THEY follow / who follow them (the norns orbit), not a catalog.
@@ -85,6 +113,10 @@ def facets_from_paths(paths):
     has_mod = "lib/mod.lua" in ps
     lib_lua = [p for p in ps if p.lower().endswith(".lua") and re.search(r"(?:^|/)lib/", p)]
     has_engine = any(p.lower().endswith(".sc") for p in ps) or any(re.search(r"(?:^|/)engine/", p) for p in ps)
+    # Native mod: no Lua, but submodules norns at dep/norns and builds against it (C/C++).
+    # The dep/norns submodule is itself the norns proof — these are real installable mods
+    # (ndi-mod, hdmi-mod) the Lua-only facet detector can't see.
+    has_native_mod = any(DEP_NORNS_RE.search(p) for p in ps)
     # Monorepo guard: repos with 8+ top-level .lua files are collections (multiple scripts
     # sharing a repo), not a single installable script. Single scripts with helper modules
     # at root typically have ≤ 7 files; study series and personal script dumps have many more.
@@ -93,9 +125,9 @@ def facets_from_paths(paths):
     f = []
     if top_lua:
         f.append("script")
-    if has_mod:
+    if has_mod or has_native_mod:
         f.append("mod")
-    if not top_lua and not has_mod and lib_lua:
+    if not top_lua and not has_mod and not has_native_mod and lib_lua:
         f.append("library")
     if has_engine:
         f.append("engine")
@@ -243,9 +275,42 @@ class GH:
                 pass
         return out
 
-    def user_lua_repos(self, login):
-        """A user's non-fork Lua repos (names), to feed the candidate set."""
-        return self.search_repos(f"user:{login} language:lua", max_pages=3)
+    def list_owner_repos(self, logins):
+        """For a batch of owner logins, return {login: [(name, lang, isFork, desc), …]} of
+        their own repos via ONE batched GraphQL call (aliased). Far faster than a per-author
+        Search call AND not limited to GitHub's `language:lua` tag, so it surfaces the mods,
+        SC-heavy, and doc-heavy norns repos the old lua-search missed. This replaces the
+        alphabetically-truncated author sweep that was silently dropping ~85% of authors."""
+        out = {}
+        q = "query{" + "".join(
+            f'{_gql_alias(i)}:repositoryOwner(login:{json.dumps(o)}){{'
+            'repositories(first:60,ownerAffiliations:OWNER,'
+            'orderBy:{field:PUSHED_AT,direction:DESC}){nodes{'
+            'name isFork primaryLanguage{name} description}}}'
+            for i, o in enumerate(logins)) + "}"
+        data = (self.graphql(q) or {}).get("data") or {}
+        for i, o in enumerate(logins):
+            node = data.get(_gql_alias(i))
+            if not node:
+                continue
+            out[o] = [(r.get("name"), (r.get("primaryLanguage") or {}).get("name"),
+                       bool(r.get("isFork")), r.get("description") or "")
+                      for r in ((node.get("repositories") or {}).get("nodes") or []) if r.get("name")]
+        return out
+
+    def compare_ahead(self, owner, name, parent_full, base, head):
+        """How many commits the fork's HEAD is ahead of its parent — its own commits, i.e.
+        its own identity. None on error. One REST call; only called for forks (a minority)."""
+        po = parent_full.split("/", 1)[0]
+        try:
+            r = self.s.get(
+                f"https://api.github.com/repos/{owner}/{name}/compare/{po}:{base}...{head}",
+                timeout=30)
+            if r.status_code == 200:
+                return (r.json() or {}).get("ahead_by")
+        except Exception:
+            pass
+        return None
 
     def graphql(self, query):
         for _ in range(3):
@@ -256,7 +321,14 @@ class GH:
                 time.sleep(5)
                 continue
             if r.status_code == 200:
-                return r.json()
+                try:
+                    return r.json()
+                except Exception:
+                    # transient empty/truncated 200 body — retry rather than crash the run.
+                    # (With the per-owner repo sweep issuing many more GraphQL calls, a rare
+                    # bad response is expected; one must never abort the whole catalog build.)
+                    time.sleep(5)
+                    continue
             if r.status_code in (403, 502, 503):
                 time.sleep(int(r.headers.get("Retry-After") or 10))
                 continue
@@ -280,7 +352,7 @@ def classify_batch(gh, repos):
             f'{_gql_alias(i)}:repository(owner:{json.dumps(o)},name:{json.dumps(n)}){{'
             'nameWithOwner pushedAt stargazerCount isPrivate isFork isArchived description '
             'primaryLanguage{name} repositoryTopics(first:20){nodes{topic{name}}} '
-            'defaultBranchRef{name} '
+            'defaultBranchRef{name} parent{nameWithOwner defaultBranchRef{name}} '
             'object(expression:"HEAD:"){... on Tree{entries{name type '
             'object{... on Tree{entries{name type}}}}}}}'
             for i, (o, n) in enumerate(chunk)) + "}"
@@ -308,6 +380,23 @@ def classify_batch(gh, repos):
             rec = _record(key, rd, paths, blobs.get(key, ""))
             if rec:
                 records[key] = rec
+    # ── fork identity: a fork is installable only if it has commits of its own (ahead of
+    # its parent) — "forked & evolved in a new direction", not a stale mirror or a fork
+    # left behind when the parent moved on. Detached forks (parent gone) are independent by
+    # definition. One REST compare per fork (forks are a small minority of records). ──
+    for key, rec in records.items():
+        if not rec.get("fork"):
+            continue
+        rd = meta.get(key) or {}
+        parent = rd.get("parent") or {}
+        pfull = parent.get("nameWithOwner")
+        if not pfull:
+            rec["fork_ahead"] = True
+            continue
+        base = (parent.get("defaultBranchRef") or {}).get("name") or "main"
+        head = (rd.get("defaultBranchRef") or {}).get("name") or "main"
+        ahead = gh.compare_ahead(key[0], key[1], pfull, base, head)
+        rec["fork_ahead"] = (ahead is None) or (ahead >= 1)
     return records
 
 
@@ -337,19 +426,30 @@ def _fetch_corpus(gh, plan):
 
 
 def _record(key, rd, paths, blob):
-    if not NORNS_FP.search(blob or ""):
-        return None
+    blob = blob or ""
     o, n = key
+    native_mod = any(DEP_NORNS_RE.search(str(p)) for p in paths)
+    # norns-richness: distinct fingerprint marker categories present (1..N)
+    richness = len(set(RICHNESS_RE.findall(blob)))
+    topics = " ".join(t["topic"]["name"] for t in
+                      ((rd.get("repositoryTopics") or {}).get("nodes") or []) if t.get("topic"))
+    ctx = bool(NORNS_CONTEXT.search(f"{n} {rd.get('description') or ''} {topics}"))
+    # Norns gate — confirmed iff ANY of:
+    #   • native mod (dep/norns submodule is the proof; no Lua to fingerprint)
+    #   • a STRONG marker (params:add / redraw|enc|key callbacks / softcut. / grid|arc.connect)
+    #   • ≥2 distinct markers (multiple independent norns signals)
+    #   • ≥1 marker AND norns context in name/desc/topics (rescues minimal/iii/crow scripts)
+    # A lone weak marker with no norns context is a coincidence (a roguelike's engine.,
+    # a website's screen., a Factorio mod) — reject.
+    if not (native_mod or NORNS_STRONG.search(blob) or richness >= 2
+            or (NORNS_FP.search(blob) and ctx)):
+        return None
     facets = facets_from_paths(paths)
     if not any(f in USABLE_FACETS for f in facets):
         return None
     bl = bundled_libs(paths)
     voices = detect_voices(blob, paths, bl, facets, n)
     has_i, has_p = has_init_params(blob)
-    # norns-richness: distinct fingerprint marker categories present (1..N)
-    richness = len(set(re.findall(
-        r"engine\.|softcut\.|screen\.|params:add|function redraw|function enc|function key|"
-        r"grid\.connect|arc\.connect|metro\.|musicutil|controlspec|mod\.hook", blob or "")))
     return {
         "owner": o, "name": n, "author": o,
         "desc": strip_urls(rd.get("description") or ""),
@@ -391,38 +491,66 @@ def _chunks(seq, n):
 
 
 # ── discovery ────────────────────────────────────────────────────────────────
-def discover(gh, max_authors=120):
-    cand = set()   # {(owner, name)}
+def known_authors(catalog_path):
+    """Authors of the previous catalog = the persisted set of confirmed norns authors.
+    Sweeping them every run means once an author is found, ALL their scripts stay covered
+    forever — the catalog is its own growing memory, so coverage only improves and never
+    needs hand-tuning. Absent/unreadable catalog (first run) → empty set."""
+    try:
+        with open(catalog_path) as f:
+            data = json.load(f)
+        out = set()
+        for s in data.get("scripts", []):
+            m = re.search(r"github\.com/([^/]+)/", s.get("Project URL", "") or "")
+            if m:
+                out.add(m.group(1))
+        return out
+    except Exception:
+        return set()
+
+
+def discover(gh, catalog_path="catalog.json"):
+    cand = set()     # {(owner, name)}
+    owners = set()   # every owner we should sweep for their other repos
 
     def add_full(full):
         if "/" in full:
             o, n = full.split("/", 1)
             cand.add((o, n))
+            owners.add(o)
 
     log.info("phase 1: keyword/topic search")
     for q in REPO_QUERIES:
         for it in gh.search_repos(q):
             add_full(it.get("full_name") or "")
-    log.info(f"  after keyword search: {len(cand)} candidates")
+    log.info(f"  after keyword search: {len(cand)} repos, {len(owners)} owners")
 
     log.info("phase 2: code search (norns API usage in .lua)")
     for q in CODE_QUERIES:
         for full in gh.search_code(q):
             add_full(full)
-    log.info(f"  after code search: {len(cand)} candidates")
+    log.info(f"  after code search: {len(cand)} repos, {len(owners)} owners")
 
     log.info("phase 3: author network (seed authors' followers/following)")
-    net = set()
     for a in SEED_AUTHORS:
-        net.update(gh.user_network(a))
-    log.info(f"  network authors: {len(net)}")
+        owners.update(gh.user_network(a))
+    owners.update(SEED_AUTHORS)
+    owners.update(known_authors(catalog_path))   # persisted: every author ever cataloged
+    log.info(f"  owner pool: {len(owners)}")
 
-    log.info("phase 4: per-author sweep")
-    owners = sorted({o for o, _ in cand} | net)[:max_authors]
-    for o in owners:
-        for it in gh.user_lua_repos(o):
-            add_full(it.get("full_name") or "")
-    log.info(f"  after author sweep: {len(cand)} candidates")
+    # phase 4: sweep EVERY owner's repos via batched GraphQL (no truncation). Replaces the
+    # old sorted()[:120] cap that silently dropped ~85% of authors alphabetically. The list
+    # is not limited to GitHub's language:lua tag, so it also catches native mods (C/C++) and
+    # SC-heavy repos. The norns fingerprint in classify_batch filters out non-norns Lua repos.
+    log.info("phase 4: per-owner repo sweep (batched GraphQL, no cap)")
+    before = len(cand)
+    for chunk in _chunks(sorted(owners), 12):
+        for o, repos in gh.list_owner_repos(chunk).items():
+            for name, lang, _isfork, desc in repos:
+                if lang in ("Lua", "SuperCollider") or (
+                        lang in ("C", "C++", "CMake") and NORNS_HINT.search(f"{name} {desc}")):
+                    cand.add((o, name))
+    log.info(f"  after sweep: {len(cand)} candidates (+{len(cand) - before})")
 
     log.info(f"classifying {len(cand)} candidates via GraphQL…")
     records = classify_batch(gh, sorted(cand))
@@ -501,7 +629,6 @@ def write_catalog(rows, path):
 def main():
     ap = argparse.ArgumentParser(description="Build a norns script catalog from public GitHub")
     ap.add_argument("--out", default="catalog.json")
-    ap.add_argument("--max-authors", type=int, default=120)
     ap.add_argument("--classify", nargs="*", help="debug: classify these owner/name repos and print")
     a = ap.parse_args()
     token = os.environ.get("GH_PAT") or os.environ.get("GITHUB_TOKEN") or ""
@@ -513,7 +640,9 @@ def main():
             print(json.dumps({**r, "voices": r["voices"]}, indent=1))
         print(f"\n{len(recs)}/{len(repos)} classified as installable norns scripts")
         return
-    rows = discover(gh, max_authors=a.max_authors)
+    # the existing catalog (committed, present on a fresh checkout) seeds the known-author
+    # sweep, so coverage carries forward and grows across runs
+    rows = discover(gh, catalog_path=a.out)
     write_catalog(rows, a.out)
 
 
