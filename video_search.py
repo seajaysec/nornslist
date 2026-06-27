@@ -147,9 +147,12 @@ def select_targets(mode, catalog, demos, state, today):
         st = state.get(repo, {})
         has_demo = bool(demos.get(repo))
         if mode == "daily":
-            # repo changed since we last checked → a demo may have just appeared
+            # repo changed RECENTLY (last 2 days) and we haven't checked since → a demo may
+            # have just appeared. The recency bound matters: with empty state every repo
+            # would otherwise look "changed since last check" and blow the search quota.
             pushed = (s.get("Last Updated") or "")
-            if pushed and pushed > (st.get("checked", "")) and not has_demo:
+            recent = pushed >= (datetime.date.fromisoformat(today) - datetime.timedelta(days=2)).isoformat()
+            if pushed and recent and pushed > st.get("checked", "") and not has_demo:
                 targets.append(s)
         elif mode == "weekly":
             if not has_demo and not st.get("tried_recently"):
@@ -183,8 +186,8 @@ def run(mode):
     searches = found = 0
     for s in targets:
         repo = repo_of(s["Project URL"])
-        if mode != "daily" and searches >= YT_SEARCH_BUDGET:
-            break   # quota guard; remaining drain on the next run
+        if searches >= YT_SEARCH_BUDGET:
+            break   # quota guard (all modes); remaining drain on the next run
         name, author = s.get("Name", ""), s.get("Author", "")
         hit = None
         for vid, title, chan in yt_search(yt_key, name, author):
