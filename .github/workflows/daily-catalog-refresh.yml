@@ -1,10 +1,12 @@
 name: Daily Catalog Refresh
 
-# Nightly discovery -> catalog.json. Sources: keyword/topic + code search +
+# Periodic discovery -> catalog.json. Sources: keyword/topic + code search +
 # author sweep + author network, classified via the norns runtime fingerprint,
-# ranked hidden-gem. catalog.json is committed AND published as the permanent
-# `latest` release asset, so a fixed URL always serves the newest:
-#   https://github.com/seajaysec/nornslist/releases/latest/download/catalog.json
+# ranked hidden-gem. catalog.json is committed to main (browser-fetchable via
+# raw.githubusercontent.com with full CORS support) AND published as a release
+# asset for non-browser consumers:
+#   browser/ingenue: https://raw.githubusercontent.com/seajaysec/nornslist/main/catalog.json
+#   CLI/other:       https://github.com/seajaysec/nornslist/releases/latest/download/catalog.json
 
 on:
   schedule:
