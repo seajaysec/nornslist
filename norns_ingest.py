@@ -490,7 +490,8 @@ def write_catalog(rows, path):
         if r.get("has_params"):
             e["has_params"] = True
         scripts.append(e)
-    json.dump({"file_info": {"version": 2, "kind": "script_catalog"},
+    json.dump({"file_info": {"version": 2, "kind": "script_catalog",
+                             "name": "nornslist", "default_sort": "score:desc"},
                "date": datetime.date.today().isoformat(), "scripts": scripts},
               open(path, "w"), ensure_ascii=False, separators=(",", ":"))
     log.info(f"wrote {path}: {len(scripts)} scripts "
