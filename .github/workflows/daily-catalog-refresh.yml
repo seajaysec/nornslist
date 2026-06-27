@@ -1,0 +1,61 @@
+name: Daily Catalog Refresh
+
+# Nightly discovery -> catalog.json. Sources: keyword/topic + code search +
+# author sweep + author network, classified via the norns runtime fingerprint,
+# ranked hidden-gem. catalog.json is committed AND published as the permanent
+# `latest` release asset, so a fixed URL always serves the newest:
+#   https://github.com/seajaysec/nornslist/releases/latest/download/catalog.json
+
+on:
+  schedule:
+    - cron: '30 13 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Discover + build catalog.json
+        env:
+          # GH_PAT preferred (5000/hr + GraphQL + code-search); falls back to the
+          # auto Actions token if not set.
+          GH_PAT: ${{ secrets.GH_PAT }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python norns_ingest.py --out catalog.json
+
+      - name: Commit catalog.json
+        run: |
+          git config user.email "action@github.com"
+          git config user.name "GitHub Action"
+          git add catalog.json
+          if ! git diff --staged --quiet; then
+            git commit -m "catalog refresh $(date -u +%F)"
+            git pull --rebase origin main || true
+            git push
+          fi
+
+      - name: Publish the permanent 'latest' release asset
+        uses: softprops/action-gh-release@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: latest
+          name: latest catalog
+          body: Always-current norns script catalog. Fixed URL above resolves to this asset.
+          files: catalog.json
+          make_latest: true

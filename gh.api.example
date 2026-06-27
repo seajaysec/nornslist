@@ -1,0 +1,18 @@
+# GitHub Personal Access Token for nornslist discovery (GraphQL classify + code
+# search + repo search). Local use only — in GitHub Actions the workflow uses the
+# auto-provided secrets.GITHUB_TOKEN, so this file is NOT used there.
+#
+# IMPORTANT — use a PUBLIC-ONLY token so the key cannot read private repos at all:
+# 1. Visit https://github.com/settings/tokens
+# 2. "Generate new token" -> "Generate new token (classic)"
+# 3. Name it "norns-ingest" or similar
+# 4. Scopes: select ONLY "public_repo". Do NOT grant "repo" — that scope includes
+#    private access. (As a backstop, nornslist also drops any repo GitHub reports as
+#    private before classifying it, but a public-only key means it can never see one.)
+# 5. Generate, copy the token.
+# 6. Save this file as "gh.api" (drop the .example) and replace the line below with
+#    just the token (no quotes, no newlines).
+#
+# Without a token, discovery falls back to unauthenticated GitHub (60 req/hr) and
+# code search is unavailable, so most scripts won't be found.
+ghp_REPLACE_THIS_WITH_YOUR_TOKEN

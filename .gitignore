@@ -1,0 +1,9 @@
+*.api
+__pycache__/
+*.pyc
+*.xlsx
+catalog_new.json
+.venv
+.claude/
+.playwright-mcp/
+.DS_Store
