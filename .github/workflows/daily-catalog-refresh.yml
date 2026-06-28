@@ -71,3 +71,21 @@ jobs:
           body: Always-current norns script catalog. Fixed URL above resolves to this asset.
           files: catalog.json
           make_latest: true
+
+      # Ping the private churn tracker so it processes this exact fresh catalog
+      # version (it also runs hourly as a fallback, so this is non-fatal).
+      - name: Notify churn tracker
+        if: success()
+        env:
+          CHURN_DISPATCH_TOKEN: ${{ secrets.CHURN_DISPATCH_TOKEN }}
+        run: |
+          if [ -z "$CHURN_DISPATCH_TOKEN" ]; then
+            echo "no CHURN_DISPATCH_TOKEN secret; skipping churn notify"
+            exit 0
+          fi
+          curl -fsS -X POST \
+            -H "Authorization: token $CHURN_DISPATCH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            https://api.github.com/repos/seajaysec/nornslist-churn/dispatches \
+            -d '{"event_type":"catalog-refreshed"}' \
+            && echo "churn notified" || echo "churn dispatch failed (non-fatal)"
