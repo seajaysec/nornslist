@@ -30,11 +30,11 @@ jobs:
   refresh:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: '3.11'
           cache: 'pip'
@@ -55,11 +55,33 @@ jobs:
           git config user.email "action@github.com"
           git config user.name "GitHub Action"
           git add catalog.json
-          if ! git diff --staged --quiet; then
-            git commit -m "catalog refresh $(date -u +%F)"
-            git pull --rebase origin main || true
-            git push
+          if git diff --staged --quiet; then
+            echo "catalog.json unchanged; nothing to commit"
+            exit 0
           fi
+          # catalog.json is a fully generated artifact, so the freshly built version is
+          # always authoritative — never three-way merge it. On any divergence we replay
+          # our file straight onto the latest main (reset --soft, never a rebase that can
+          # strand us on a detached HEAD). Retry to absorb a concurrent video-search push
+          # or a manual commit that lands during this ~40-min run.
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            git reset --soft origin/main
+            git add catalog.json
+            if git diff --staged --quiet; then
+              echo "catalog.json already current on origin/main"
+              exit 0
+            fi
+            git commit -m "catalog refresh $(date -u +%F)"
+            if git push origin HEAD:main; then
+              echo "pushed on attempt $attempt"
+              exit 0
+            fi
+            echo "push rejected (attempt $attempt); refetching and retrying"
+            sleep $((RANDOM % 8 + 3))
+          done
+          echo "::error::could not push catalog.json after 5 attempts"
+          exit 1
 
       - name: Publish the permanent 'latest' release asset
         uses: softprops/action-gh-release@v2

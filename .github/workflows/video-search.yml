@@ -27,9 +27,9 @@ jobs:
   search:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: '3.11'
           cache: 'pip'
@@ -68,8 +68,29 @@ jobs:
           git config user.email "action@github.com"
           git config user.name "GitHub Action"
           git add demos.json video_search_state.json
-          if ! git diff --staged --quiet; then
-            git commit -m "demos: refresh ($(date -u +%F))"
-            git pull --rebase origin main || true
-            git push
+          if git diff --staged --quiet; then
+            echo "no demo updates; nothing to commit"
+            exit 0
           fi
+          # demos.json / video_search_state.json are generated state: the run that just
+          # finished holds the freshest version, so replay it onto the latest main rather
+          # than three-way merging. reset --soft (never rebase) keeps us off a detached
+          # HEAD; retry to absorb a concurrent catalog-refresh push.
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            git reset --soft origin/main
+            git add demos.json video_search_state.json
+            if git diff --staged --quiet; then
+              echo "demo state already current on origin/main"
+              exit 0
+            fi
+            git commit -m "demos: refresh ($(date -u +%F))"
+            if git push origin HEAD:main; then
+              echo "pushed on attempt $attempt"
+              exit 0
+            fi
+            echo "push rejected (attempt $attempt); refetching and retrying"
+            sleep $((RANDOM % 8 + 3))
+          done
+          echo "::error::could not push demo updates after 5 attempts"
+          exit 1
