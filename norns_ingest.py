@@ -439,6 +439,23 @@ def _fetch_corpus(gh, plan):
     return out
 
 
+def detect_caps(blob):
+    """I/O capabilities, detected from the corpus rather than author-set GitHub topics — so
+    coverage is high and consistent, one canonical name each (a consumer can tag/filter on
+    'grid' without every grid script happening to carry a 'grid' or 'monome-grid' topic)."""
+    t = blob or ""
+    caps = []
+    if re.search(r"\bgrid\.connect\b", t):
+        caps.append("grid")
+    if re.search(r"\barc\.connect\b", t):
+        caps.append("arc")
+    if re.search(r"\bcrow\.", t):
+        caps.append("crow")
+    if re.search(r"\bmidi\.connect\b", t):
+        caps.append("midi")
+    return sorted(set(caps))
+
+
 def _record(key, rd, paths, blob):
     blob = blob or ""
     o, n = key
@@ -477,6 +494,7 @@ def _record(key, rd, paths, blob):
                    ((rd.get("repositoryTopics") or {}).get("nodes") or []) if t.get("topic")][:8],
         "facets": facets, "voices": voices, "engine": engine_from_paths(paths),
         "has_init": has_i, "has_params": has_p, "has_image": has_img,
+        "caps": detect_caps(blob),
         "stars": rd.get("stargazerCount") or 0,
         "archived": bool(rd.get("isArchived")), "fork": bool(rd.get("isFork")),
         "fork_ahead": False, "richness": richness, "source": "github",
@@ -652,6 +670,8 @@ def write_catalog(rows, path):
             e["has_params"] = True
         if r.get("has_image"):
             e["has_image"] = True
+        if r.get("caps"):
+            e["caps"] = r["caps"]
         scripts.append(e)
     json.dump({"file_info": {"version": 2, "kind": "script_catalog",
                              "name": "nornslist", "default_sort": "score:desc"},
