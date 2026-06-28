@@ -32,11 +32,15 @@ re-passes the gate. Failure modes observed (2026-06-28):
 - **E. Collection facet** — `len(top_lua) >= 8 -> facet "collection"` (still tracked, still
   installable) instead of dropping. `collection` added to `USABLE_FACETS`.
 
+- **F. Same-name fork filter** — a fork that keeps its parent's name is a personal copy/mirror,
+  not a distinct script: exclude it. Renamed forks (timber→timberfade) are kept. This restores
+  the fork-noise suppression the old bare-name dedup did by accident, which C removed.
+- **G. Full sweep pagination** — `list_owner_repos` cursor-paginates every owner's repos, so a
+  1150-repo author's older scripts surface (the deterministic recall fix; the floor only keeps
+  *already-cataloged* repos). churn re-keyed to owner/name so C can't create phantom drops.
+
 ## Out of scope
-- Raising the 60-repo sweep cap via pagination (the floor makes it moot for *known* repos;
-  discovering brand-new old scripts by prolific authors is a separate follow-up).
 - Storing `richness` in the catalog to keep a carried repo's rank stable (self-heals next run).
-- churn keying change is tracked separately (required so C doesn't create phantom drops).
 
 ## Acceptance criteria
 - [ ] `facets_from_paths` returns `["collection", ...]` for a 9-top-lua repo; `["script"]` for 1.

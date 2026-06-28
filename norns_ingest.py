@@ -56,6 +56,13 @@ INFRA_FORK_PARENTS = {
     "monome/maiden", "monome/crow", "monome/teletype", "monome/softcut",
     "monome/libmonome", "monome/serialosc", "fates-project/norns", "okyeron/shieldxl",
 }
+# A fork is a distinct script only if its CODE has meaningfully diverged from its parent.
+# Measured as .lua/.sc lines changed (additions+deletions) in the fork-vs-parent diff, NOT
+# commit count: a squashed fork that rewrote the script in one commit reads ahead_by=1 but
+# shows its full line delta here (benregnier/plonky +1154, schollz/cheat_codes_2 +156). A fork
+# that changed fewer than this many code lines is a mirror/personal copy and is dropped. Tunable.
+FORK_DIVERGENCE_LINES = 20
+CODE_EXT = (".lua", ".sc")
 VOICE_USE_LIBS = {"mx.samples", "mx.synths"}
 VOICE_CORPUS_MAX_FILES = 16
 USABLE_FACETS = {"script", "collection", "mod", "library", "engine"}
@@ -201,7 +208,7 @@ def has_init_params(blob):
 
 
 def is_installable(rec):
-    if rec.get("fork") and not rec.get("fork_ahead"):
+    if rec.get("fork") and not rec.get("fork_diverged"):
         return False
     if INSTALL_REDFLAG.search(f"{rec.get('name','')} {rec.get('desc','')}"):
         return False
@@ -320,19 +327,24 @@ class GH:
             pending = nxt
         return out
 
-    def compare_ahead(self, owner, name, parent_full, base, head):
-        """How many commits the fork's HEAD is ahead of its parent — its own commits, i.e.
-        its own identity. None on error. One REST call; only called for forks (a minority)."""
+    def compare_code_lines(self, owner, name, parent_full, base, head):
+        """.lua/.sc lines that differ between a fork and its parent (additions+deletions in the
+        cumulative diff) — the fork's actual code divergence. Squash-proof: a fork that rewrote
+        the script in one squashed commit still shows its full line delta here, where commit
+        count (ahead_by) would read 1. None on error (caller keeps the fork rather than drop on
+        a transient failure). One REST call; only for forks (a minority)."""
         po = parent_full.split("/", 1)[0]
         try:
             r = self.s.get(
                 f"https://api.github.com/repos/{owner}/{name}/compare/{po}:{base}...{head}",
                 timeout=30)
-            if r.status_code == 200:
-                return (r.json() or {}).get("ahead_by")
+            if r.status_code != 200:
+                return None
+            files = (r.json() or {}).get("files") or []
+            return sum(f.get("additions", 0) + f.get("deletions", 0) for f in files
+                       if str(f.get("filename", "")).lower().endswith(CODE_EXT))
         except Exception:
-            pass
-        return None
+            return None
 
     def graphql(self, query):
         for _ in range(3):
@@ -426,10 +438,13 @@ def classify_batch(gh, repos, prior=None):
                 # exists (pass A returned it) + has norns structure (it's in `cand`) but no
                 # corpus text this run -> transient fetch flake, keep the confirmed verdict.
                 records[key] = dict(prior[key], carried=True)
-    # ── fork identity: a fork is installable only if it has commits of its own (ahead of
-    # its parent) — "forked & evolved in a new direction", not a stale mirror or a fork
-    # left behind when the parent moved on. Detached forks (parent gone) are independent by
-    # definition. One REST compare per fork (forks are a small minority of records). ──
+    # ── fork identity: a fork is a distinct script only if it has meaningfully DIVERGED from
+    # its parent — "forked & evolved in a new direction", not a personal mirror. The signal is
+    # how far the fork is ahead of its parent (its own commits), NOT whether it kept the name:
+    # the personal copies of orca/awake/cheat_codes_2 sit at ahead_by 1-2 (lazy), while genuine
+    # same-name derivatives (aidanreilly/bowery +22, clickbox/pitfalls +113) sit far higher and
+    # are kept. Detached forks (parent gone) are independent by definition; forks of the OS
+    # firmware are not scripts. One REST compare per fork (a minority of records). ──
     drop_infra = []
     for key, rec in records.items():
         if not rec.get("fork"):
@@ -438,15 +453,15 @@ def classify_batch(gh, repos, prior=None):
         parent = rd.get("parent") or {}
         pfull = parent.get("nameWithOwner")
         if not pfull:
-            rec["fork_ahead"] = True
+            rec["fork_diverged"] = True
             continue
         if pfull.lower() in {p.lower() for p in INFRA_FORK_PARENTS}:
             drop_infra.append(key)   # fork of the OS/firmware → not a script
             continue
         base = (parent.get("defaultBranchRef") or {}).get("name") or "main"
         head = (rd.get("defaultBranchRef") or {}).get("name") or "main"
-        ahead = gh.compare_ahead(key[0], key[1], pfull, base, head)
-        rec["fork_ahead"] = (ahead is None) or (ahead >= 1)
+        changed = gh.compare_code_lines(key[0], key[1], pfull, base, head)
+        rec["fork_diverged"] = (changed is None) or (changed >= FORK_DIVERGENCE_LINES)
     for key in drop_infra:
         del records[key]
     return records
@@ -535,7 +550,7 @@ def _record(key, rd, paths, blob):
         "caps": detect_caps(blob),
         "stars": rd.get("stargazerCount") or 0,
         "archived": bool(rd.get("isArchived")), "fork": bool(rd.get("isFork")),
-        "fork_ahead": False, "richness": richness, "source": "github",
+        "fork_diverged": False, "richness": richness, "source": "github",
     }
 
 
@@ -608,7 +623,7 @@ def prior_records(catalog_path):
             "engine": s.get("engine", ""), "has_init": s.get("has_init", False),
             "has_params": s.get("has_params", False), "has_image": s.get("has_image", False),
             "caps": s.get("caps", []), "stars": s.get("stars", 0),
-            "archived": s.get("status") == "archived", "fork": False, "fork_ahead": False,
+            "archived": s.get("status") == "archived", "fork": False, "fork_diverged": False,
             "richness": 0, "source": "github",
         }
     return out

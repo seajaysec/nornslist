@@ -16,8 +16,9 @@ class FakeGH:
     """Answers the two GraphQL passes classify_batch makes. `exists` maps (o,n)→tree node;
     a repo absent from it 404s. `blobs` maps (o,n)→corpus text ("" simulates a fetch flake)."""
 
-    def __init__(self, exists, blobs):
-        self.exists, self.blobs = exists, blobs
+    def __init__(self, exists, blobs, forks=None, code_lines=200):
+        self.exists, self.blobs, self.forks = exists, blobs, forks or {}
+        self.code_lines = code_lines
 
     def graphql(self, q):
         repos = REPO_RE.findall(q)
@@ -28,18 +29,20 @@ class FakeGH:
             if "... on Blob" in q:                       # pass B: corpus
                 data[alias] = {"f0": {"text": self.blobs.get(key, "")}}
             elif key in self.exists:                     # pass A: metadata
+                pfull = self.forks.get(key)
                 data[alias] = {
                     "nameWithOwner": f"{o}/{n}", "pushedAt": "2024-01-01T00:00:00Z",
-                    "stargazerCount": 0, "isPrivate": False, "isFork": False,
+                    "stargazerCount": 0, "isPrivate": False, "isFork": bool(pfull),
                     "isArchived": False, "description": "", "primaryLanguage": {"name": "Lua"},
                     "repositoryTopics": {"nodes": []}, "defaultBranchRef": {"name": "main"},
-                    "parent": None, "object": self.exists[key],
+                    "parent": {"nameWithOwner": pfull, "defaultBranchRef": {"name": "main"}}
+                    if pfull else None, "object": self.exists[key],
                 }
             # else: omit alias entirely → 404
         return {"data": data}
 
-    def compare_ahead(self, *a, **k):
-        return 1
+    def compare_code_lines(self, *a, **k):
+        return self.code_lines
 
 
 def _prior(*keys):
@@ -47,7 +50,7 @@ def _prior(*keys):
                 f"https://github.com/{k[0]}/{k[1]}", "upd": "2024-01-01", "topics": [],
                 "facets": ["script"], "voices": None, "engine": "", "has_init": False,
                 "has_params": False, "has_image": False, "caps": [], "stars": 0,
-                "archived": False, "fork": False, "fork_ahead": False, "richness": 0,
+                "archived": False, "fork": False, "fork_diverged": False, "richness": 0,
                 "source": "github"} for k in keys}
 
 
@@ -71,6 +74,36 @@ def test_no_longer_norns_is_dropped_not_carried():
     gh = FakeGH(exists={key: SCRIPT_TREE}, blobs={key: "print('not norns')"})
     recs = ni.classify_batch(gh, [key], prior=_prior(key))
     assert key not in recs
+
+
+def test_mirror_fork_is_not_installable():
+    """A fork that changed almost no code (a personal mirror) is dropped, name regardless."""
+    key = ("p3r7", "orca")
+    gh = FakeGH(exists={key: SCRIPT_TREE}, blobs={key: "function redraw() end"},
+                forks={key: "itsyourbedtime/orca"}, code_lines=2)
+    recs = ni.classify_batch(gh, [key])
+    assert recs[key]["fork_diverged"] is False
+    assert not ni.is_installable(recs[key])
+
+
+def test_squashed_divergent_fork_stays_installable():
+    """A fork that rewrote the script in ONE squashed commit (ahead_by would read 1) but
+    changed 156 code lines is real work → kept. This is the case commit-count would drop."""
+    key = ("schollz", "cheat_codes_2")
+    gh = FakeGH(exists={key: SCRIPT_TREE}, blobs={key: "function redraw() end"},
+                forks={key: "dndrks/cheat_codes_2"}, code_lines=156)
+    recs = ni.classify_batch(gh, [key])
+    assert recs[key]["fork_diverged"] is True
+    assert ni.is_installable(recs[key])
+
+
+def test_divergence_failure_keeps_fork():
+    """If the compare can't be measured (None), keep the fork rather than drop on a flake."""
+    key = ("someone", "thing")
+    gh = FakeGH(exists={key: SCRIPT_TREE}, blobs={key: "function redraw() end"},
+                forks={key: "orig/thing"}, code_lines=None)
+    recs = ni.classify_batch(gh, [key])
+    assert recs[key]["fork_diverged"] is True
 
 
 def test_fresh_repo_with_real_corpus_classifies():
@@ -118,9 +151,9 @@ def test_missing_catalog_is_empty():
 
 
 # ── dedup keys on (owner, name), not bare name ──
-def _rec(owner, name, stars=0, facets=("script",), fork=False, fork_ahead=False):
+def _rec(owner, name, stars=0, facets=("script",), fork=False, fork_diverged=False):
     return {"owner": owner, "name": name, "author": owner, "desc": "", "stars": stars,
-            "facets": list(facets), "fork": fork, "fork_ahead": fork_ahead}
+            "facets": list(facets), "fork": fork, "fork_diverged": fork_diverged}
 
 
 def test_same_name_different_owner_both_kept():
@@ -136,7 +169,7 @@ def test_same_owner_name_case_collapses_to_higher_stars():
 
 
 def test_stale_fork_excluded():
-    rows = ni.dedup_installable([_rec("x", "fork", fork=True, fork_ahead=False)])
+    rows = ni.dedup_installable([_rec("x", "fork", fork=True, fork_diverged=False)])
     assert rows == []
 
 

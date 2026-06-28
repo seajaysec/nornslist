@@ -24,10 +24,20 @@ Branch: `fix/catalog-recall-floor` (nornslist) + `fix/churn-owner-name-keys` (no
 - Live: floor re-confirms `schollz/ynth`; a 404 repo is dropped; `TW_Norns` → `collection`.
 - Live migration dry-run: bare-name roster → owner/name maps cleanly onto the catalog.
 
-## Deferred (noted in spec)
-- Paginate `list_owner_repos` past 60 to *discover* brand-new old scripts by 1000-repo
-  authors (the floor already protects already-known ones).
-- Store `richness` in the catalog so a carried repo's rank doesn't dip for one run.
+## Measured on a full run (rule F applied)
+- OLD 1194 -> FINAL 1277 (net +83): 90 added, 7 dropped.
+- adds = 83 new independent scripts (full pagination) + 7 renamed divergent forks.
+- 164 same-name personal forks filtered as noise (rule F).
+- 18 collections restored (TW_Norns, monome/crow-studies, schollz/gatherum, …).
+- caveat: first scratch run had empty prior (--out to a fresh file) so the floor/carry
+  were untested; re-running with real prior to confirm the ~1 flake-drop (quintessence)
+  is protected. Drops should settle to the 6 fork->original swaps.
+
+## Not deferred (done)
+- F same-name fork filter; G full sweep pagination; churn owner/name keying.
+
+## Still open
+- Store `richness` in the catalog so a carried repo's rank doesn't dip for one run (minor).
 
 ## Deploy note
 First nornslist run after merge re-admits the flapped repos (ynth, TW_Norns, …); churn will
