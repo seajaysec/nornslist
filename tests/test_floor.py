@@ -138,3 +138,39 @@ def test_same_owner_name_case_collapses_to_higher_stars():
 def test_stale_fork_excluded():
     rows = ni.dedup_installable([_rec("x", "fork", fork=True, fork_ahead=False)])
     assert rows == []
+
+
+# ── per-owner sweep paginates past one page (the 60→1150 fix) ──
+OWNER_RE = re.compile(r'repositoryOwner\(login:"([^"]+)"\).*?(?:,after:"([^"]+)")?\)\{pageInfo')
+
+
+class PagingGH:
+    """Serves repositoryOwner.repositories pages from an in-memory {login: [repo,...]}."""
+
+    def __init__(self, repos_by_owner, page=100):
+        self.repos, self.page, self.calls = repos_by_owner, page, 0
+
+    def graphql(self, q):
+        self.calls += 1
+        data = {}
+        for i, m in enumerate(OWNER_RE.finditer(q)):
+            login, after = m.group(1), m.group(2)
+            allr = self.repos.get(login, [])
+            start = int(after) if after else 0
+            chunk = allr[start:start + self.page]
+            end = start + len(chunk)
+            data[ni._gql_alias(i)] = {"repositories": {
+                "pageInfo": {"hasNextPage": end < len(allr),
+                             "endCursor": str(end) if end < len(allr) else None},
+                "nodes": [{"name": n, "primaryLanguage": {"name": lang} if lang else None,
+                           "isFork": fk, "description": d} for (n, lang, fk, d) in chunk]}}
+        return {"data": data}
+
+
+def test_list_owner_repos_paginates_all_pages():
+    repos = {"schollz": [(f"r{i}", "Lua", False, "") for i in range(250)]}
+    gh = PagingGH(repos, page=100)
+    out = ni.GH.list_owner_repos(gh, ["schollz"])      # fake stands in for self
+    assert len(out["schollz"]) == 250                  # not truncated at one page
+    assert {r[0] for r in out["schollz"]} == {f"r{i}" for i in range(250)}
+    assert gh.calls == 3                               # 100 + 100 + 50

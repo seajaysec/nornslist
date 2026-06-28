@@ -288,26 +288,36 @@ class GH:
         return out
 
     def list_owner_repos(self, logins):
-        """For a batch of owner logins, return {login: [(name, lang, isFork, desc), …]} of
-        their own repos via ONE batched GraphQL call (aliased). Far faster than a per-author
-        Search call AND not limited to GitHub's `language:lua` tag, so it surfaces the mods,
-        SC-heavy, and doc-heavy norns repos the old lua-search missed. This replaces the
-        alphabetically-truncated author sweep that was silently dropping ~85% of authors."""
-        out = {}
-        q = "query{" + "".join(
-            f'{_gql_alias(i)}:repositoryOwner(login:{json.dumps(o)}){{'
-            'repositories(first:60,ownerAffiliations:OWNER,'
-            'orderBy:{field:PUSHED_AT,direction:DESC}){nodes{'
-            'name isFork primaryLanguage{name} description}}}'
-            for i, o in enumerate(logins)) + "}"
-        data = (self.graphql(q) or {}).get("data") or {}
-        for i, o in enumerate(logins):
-            node = data.get(_gql_alias(i))
-            if not node:
-                continue
-            out[o] = [(r.get("name"), (r.get("primaryLanguage") or {}).get("name"),
-                       bool(r.get("isFork")), r.get("description") or "")
-                      for r in ((node.get("repositories") or {}).get("nodes") or []) if r.get("name")]
+        """For a batch of owner logins, return {login: [(name, lang, isFork, desc), …]} of ALL
+        their own repos via batched, cursor-paginated GraphQL. Not limited to GitHub's
+        `language:lua` tag, so it surfaces mods, SC-heavy, and doc-heavy norns repos the old
+        lua-search missed. Fully paginated: a prolific author (schollz has 1150 repos) used to
+        be truncated at the first 60-by-push, so their OLDER scripts (ynth, …) never surfaced
+        and flapped out of the catalog on discovery variance — now every repo is swept."""
+        out = {o: [] for o in logins}
+        cursors = {}                       # login -> endCursor; present => more pages to fetch
+        pending = list(logins)
+        while pending:
+            q = "query{" + "".join(
+                f'{_gql_alias(i)}:repositoryOwner(login:{json.dumps(o)}){{'
+                'repositories(first:100,ownerAffiliations:OWNER,'
+                'orderBy:{field:PUSHED_AT,direction:DESC}'
+                + (f',after:{json.dumps(cursors[o])}' if o in cursors else '')
+                + '){pageInfo{hasNextPage endCursor} nodes{'
+                'name isFork primaryLanguage{name} description}}}'
+                for i, o in enumerate(pending)) + "}"
+            data = (self.graphql(q) or {}).get("data") or {}
+            nxt = []
+            for i, o in enumerate(pending):
+                repos = (data.get(_gql_alias(i)) or {}).get("repositories") or {}
+                out[o].extend((r.get("name"), (r.get("primaryLanguage") or {}).get("name"),
+                               bool(r.get("isFork")), r.get("description") or "")
+                              for r in (repos.get("nodes") or []) if r.get("name"))
+                pi = repos.get("pageInfo") or {}
+                if pi.get("hasNextPage") and pi.get("endCursor"):
+                    cursors[o] = pi["endCursor"]
+                    nxt.append(o)
+            pending = nxt
         return out
 
     def compare_ahead(self, owner, name, parent_full, base, head):
@@ -633,11 +643,11 @@ def discover(gh, catalog_path="catalog.json"):
     owners.update(known_authors(catalog_path))   # persisted: every author ever cataloged
     log.info(f"  owner pool: {len(owners)}")
 
-    # phase 4: sweep EVERY owner's repos via batched GraphQL (no truncation). Replaces the
-    # old sorted()[:120] cap that silently dropped ~85% of authors alphabetically. The list
-    # is not limited to GitHub's language:lua tag, so it also catches native mods (C/C++) and
-    # SC-heavy repos. The norns fingerprint in classify_batch filters out non-norns Lua repos.
-    log.info("phase 4: per-owner repo sweep (batched GraphQL, no cap)")
+    # phase 4: sweep EVERY owner's repos via batched, fully-paginated GraphQL — no per-author
+    # cap (a 1150-repo author is swept in full, so their older scripts surface instead of being
+    # truncated at the first 60-by-push). Not limited to GitHub's language:lua tag, so it also
+    # catches native mods (C/C++) and SC-heavy repos. classify_batch fingerprints out non-norns.
+    log.info("phase 4: per-owner repo sweep (batched GraphQL, fully paginated)")
     before = len(cand)
     for chunk in _chunks(sorted(owners), 12):
         for o, repos in gh.list_owner_repos(chunk).items():
