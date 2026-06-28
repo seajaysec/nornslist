@@ -58,7 +58,11 @@ INFRA_FORK_PARENTS = {
 }
 VOICE_USE_LIBS = {"mx.samples", "mx.synths"}
 VOICE_CORPUS_MAX_FILES = 16
-USABLE_FACETS = {"script", "mod", "library", "engine"}
+USABLE_FACETS = {"script", "collection", "mod", "library", "engine"}
+# 8+ top-level .lua files = a multi-script collection (personal script dump / study series),
+# not a single installable script. We still TRACK these (they're real norns) but label them
+# 'collection' so a consumer can show or filter them apart from single scripts.
+COLLECTION_MIN = 8
 INSTALL_REDFLAG = re.compile(r"\b(tutorial|study|boilerplate|template|exercise|wip)\b", re.I)
 URL_RE = re.compile(r"https?://\S+", re.I)
 # Richness = how many DISTINCT norns marker categories the code uses (1..N). Used for
@@ -125,13 +129,13 @@ def facets_from_paths(paths):
     # The dep/norns submodule is itself the norns proof — these are real installable mods
     # (ndi-mod, hdmi-mod) the Lua-only facet detector can't see.
     has_native_mod = any(DEP_NORNS_RE.search(p) for p in ps)
-    # Monorepo guard: repos with 8+ top-level .lua files are collections (multiple scripts
-    # sharing a repo), not a single installable script. Single scripts with helper modules
-    # at root typically have ≤ 7 files; study series and personal script dumps have many more.
-    if len(top_lua) > 7:
-        return []
     f = []
-    if top_lua:
+    # 8+ top-level .lua = a multi-script collection, not a single script. Tracked, but
+    # labelled 'collection' so consumers can separate them from single scripts. (Single
+    # scripts with root helper modules typically have ≤ 7 .lua; dumps/study series have more.)
+    if len(top_lua) >= COLLECTION_MIN:
+        f.append("collection")
+    elif top_lua:
         f.append("script")
     if has_mod or has_native_mod:
         f.append("mod")
@@ -181,7 +185,7 @@ def detect_voices(blob, paths, bundled, facets, repo):
         return bool(m and m.group(1).lower() in bundled)
     self_eng = {m.group(1).lower() for p in paths if not is_bp(p)
                 for m in [re.search(r"Engine_([A-Za-z0-9]+)\.sc$", os.path.basename(str(p)))] if m}
-    if self_eng and "script" not in facets:
+    if self_eng and not ({"script", "collection"} & set(facets)):
         provides.append("sc-engine")
     used_eng = {e.lower() for e in re.findall(r"engine\.name\s*=\s*['\"]([A-Za-z0-9]+)['\"]", text)}
     if any(e not in self_eng for e in used_eng):
@@ -348,27 +352,46 @@ def _gql_alias(i):
     return f"r{i}"
 
 
-def classify_batch(gh, repos):
+def _fetch_meta(gh, repos):
+    """Batched metadata + 2-level tree fetch with split-retry. A transient GraphQL error (or
+    one oversized repo) blanks the whole `data` block; without bisection that would look like
+    18 simultaneous deletions and silently drop confirmed repos. Returns {(owner,name): node}
+    for the repos GitHub actually returned (a genuine 404 stays absent even at size 1)."""
+    if not repos:
+        return {}
+    q = "query{" + "".join(
+        f'{_gql_alias(i)}:repository(owner:{json.dumps(o)},name:{json.dumps(n)}){{'
+        'nameWithOwner pushedAt stargazerCount isPrivate isFork isArchived description '
+        'primaryLanguage{name} repositoryTopics(first:20){nodes{topic{name}}} '
+        'defaultBranchRef{name} parent{nameWithOwner defaultBranchRef{name}} '
+        'object(expression:"HEAD:"){... on Tree{entries{name type '
+        'object{... on Tree{entries{name type}}}}}}}'
+        for i, (o, n) in enumerate(repos)) + "}"
+    data = (gh.graphql(q) or {}).get("data") or {}
+    if not data and len(repos) > 1:
+        mid = len(repos) // 2
+        out = _fetch_meta(gh, repos[:mid])
+        out.update(_fetch_meta(gh, repos[mid:]))
+        return out
+    return {key: data[_gql_alias(i)] for i, key in enumerate(repos) if data.get(_gql_alias(i))}
+
+
+def classify_batch(gh, repos, prior=None):
     """repos: list of (owner, name). Returns {(owner,name): record} for norns repos.
     Two GraphQL passes: (A) metadata + tree names for many repos at once, (B) corpus
-    file text for the .lua-bearing candidates. No per-repo REST calls."""
+    file text for the .lua-bearing candidates. No per-repo REST calls.
+
+    `prior`: {(owner,name): record} from the previous catalog. When a prior repo's metadata
+    comes back fine (it still exists) but this run's corpus blob is empty (a transient
+    node/size flake), we carry the prior verdict forward instead of dropping it — a confirmed
+    repo leaves only on a real 404 (absent from pass A) or a genuine gate-fail (non-empty
+    corpus that misses the fingerprint)."""
+    prior = prior or {}
     records = {}
-    # ── pass A: metadata + 2-level tree names ──
+    # ── pass A: metadata + 2-level tree names (split-retry so a flake ≠ mass deletion) ──
     meta = {}
     for chunk in _chunks(repos, 18):
-        q = "query{" + "".join(
-            f'{_gql_alias(i)}:repository(owner:{json.dumps(o)},name:{json.dumps(n)}){{'
-            'nameWithOwner pushedAt stargazerCount isPrivate isFork isArchived description '
-            'primaryLanguage{name} repositoryTopics(first:20){nodes{topic{name}}} '
-            'defaultBranchRef{name} parent{nameWithOwner defaultBranchRef{name}} '
-            'object(expression:"HEAD:"){... on Tree{entries{name type '
-            'object{... on Tree{entries{name type}}}}}}}'
-            for i, (o, n) in enumerate(chunk)) + "}"
-        data = (gh.graphql(q) or {}).get("data") or {}
-        for i, (o, n) in enumerate(chunk):
-            rd = data.get(_gql_alias(i))
-            if rd:
-                meta[(o, n)] = rd
+        meta.update(_fetch_meta(gh, chunk))
     # build path lists + pre-filter (not private, not blocked, real norns structure)
     cand = {}
     for key, rd in meta.items():
@@ -385,9 +408,14 @@ def classify_batch(gh, repos):
                 for key, (rd, paths) in chunk]
         blobs = _fetch_corpus(gh, plan)
         for key, rd, paths, files in plan:
-            rec = _record(key, rd, paths, blobs.get(key, ""))
+            blob = blobs.get(key, "")
+            rec = _record(key, rd, paths, blob)
             if rec:
                 records[key] = rec
+            elif not blob and key in prior:
+                # exists (pass A returned it) + has norns structure (it's in `cand`) but no
+                # corpus text this run -> transient fetch flake, keep the confirmed verdict.
+                records[key] = dict(prior[key], carried=True)
     # ── fork identity: a fork is installable only if it has commits of its own (ahead of
     # its parent) — "forked & evolved in a new direction", not a stale mirror or a fork
     # left behind when the parent moved on. Detached forks (parent gone) are independent by
@@ -545,6 +573,37 @@ def known_authors(catalog_path):
         return set()
 
 
+def prior_records(catalog_path):
+    """Previous catalog entries re-shaped as classifier records, keyed by (owner, name).
+    Two jobs: (1) the floor — every prior repo is re-fed into classification each run so it
+    is re-verified against the live fingerprint instead of relying on this run's search to
+    rediscover it; (2) carry-forward — the value is reused verbatim when this run's corpus
+    fetch flakes (see classify_batch). Absent/unreadable catalog (first run) → empty."""
+    try:
+        with open(catalog_path) as f:
+            data = json.load(f)
+    except Exception:
+        return {}
+    out = {}
+    for s in data.get("scripts", []):
+        m = re.search(r"github\.com/([^/]+)/([^/\s]+)", s.get("Project URL", "") or "")
+        if not m:
+            continue
+        o, n = m.group(1), m.group(2)
+        out[(o, n)] = {
+            "owner": o, "name": n, "author": s.get("Author") or o,
+            "desc": s.get("Description", ""), "proj": s.get("Project URL", ""),
+            "upd": s.get("Last Updated", ""), "topics": s.get("Tags", []),
+            "facets": s.get("facets", []), "voices": s.get("voices"),
+            "engine": s.get("engine", ""), "has_init": s.get("has_init", False),
+            "has_params": s.get("has_params", False), "has_image": s.get("has_image", False),
+            "caps": s.get("caps", []), "stars": s.get("stars", 0),
+            "archived": s.get("status") == "archived", "fork": False, "fork_ahead": False,
+            "richness": 0, "source": "github",
+        }
+    return out
+
+
 def discover(gh, catalog_path="catalog.json"):
     cand = set()     # {(owner, name)}
     owners = set()   # every owner we should sweep for their other repos
@@ -588,21 +647,39 @@ def discover(gh, catalog_path="catalog.json"):
                     cand.add((o, name))
     log.info(f"  after sweep: {len(cand)} candidates (+{len(cand) - before})")
 
-    log.info(f"classifying {len(cand)} candidates via GraphQL…")
-    records = classify_batch(gh, sorted(cand))
-    log.info(f"  norns repos: {len(records)}")
+    # phase 5: floor — re-feed every previously-cataloged repo so it is re-verified this run
+    # regardless of whether search/sweep happened to surface it. This is what stops confirmed
+    # scripts (e.g. an old script by a 1000-repo author) flapping out when discovery misses
+    # them. classify_batch re-checks each against the live fingerprint, so the floor can only
+    # KEEP repos that are still norns — it never admits noise.
+    prior = prior_records(catalog_path)
+    floor_only = set(prior) - cand
+    cand |= set(prior)
+    log.info(f"  floor: +{len(floor_only)} prior repos not surfaced by discovery this run")
 
-    # dedup by lowercase name (forks/case collapse onto the most-starred copy)
-    best = {}
-    for rec in records.values():
-        if not is_installable(rec):
-            continue
-        k = rec["name"].lower()
-        if k not in best or rec["stars"] > best[k]["stars"]:
-            best[k] = rec
-    rows = list(best.values())
+    log.info(f"classifying {len(cand)} candidates via GraphQL…")
+    records = classify_batch(gh, sorted(cand), prior=prior)
+    carried = sum(1 for r in records.values() if r.get("carried"))
+    log.info(f"  norns repos: {len(records)} ({carried} carried forward on corpus flake)")
+
+    rows = dedup_installable(records.values())
     log.info(f"  installable + deduped: {len(rows)}")
     return rank(rows)
+
+
+def dedup_installable(records):
+    """Keep installable records, deduped by (owner, name) — case collapses, but two DIFFERENT
+    owners sharing a name are distinct repos and both kept. Bare-name dedup (the old behaviour)
+    silently dropped the lower-starred one (e.g. two `norns-bookworm`). Fork mirrors are
+    already excluded by is_installable; a divergent fork is a genuine separate repo."""
+    best = {}
+    for rec in records:
+        if not is_installable(rec):
+            continue
+        k = (rec["owner"].lower(), rec["name"].lower())
+        if k not in best or rec["stars"] > best[k]["stars"]:
+            best[k] = rec
+    return list(best.values())
 
 
 def rank(rows):
