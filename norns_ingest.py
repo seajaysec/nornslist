@@ -464,6 +464,10 @@ def _record(key, rd, paths, blob):
     bl = bundled_libs(paths)
     voices = detect_voices(blob, paths, bl, facets, n)
     has_i, has_p = has_init_params(blob)
+    # committed image files (screenshots/, img/, root .png …) — a cheap "has a picture"
+    # signal from the tree we already have, so a consumer can filter for scripts with imagery
+    has_img = any(str(p).lower().endswith((".png", ".jpg", ".jpeg", ".gif", ".webp"))
+                  for p in paths)
     return {
         "owner": o, "name": n, "author": o,
         "desc": strip_urls(rd.get("description") or ""),
@@ -472,7 +476,7 @@ def _record(key, rd, paths, blob):
         "topics": [t["topic"]["name"] for t in
                    ((rd.get("repositoryTopics") or {}).get("nodes") or []) if t.get("topic")][:8],
         "facets": facets, "voices": voices, "engine": engine_from_paths(paths),
-        "has_init": has_i, "has_params": has_p,
+        "has_init": has_i, "has_params": has_p, "has_image": has_img,
         "stars": rd.get("stargazerCount") or 0,
         "archived": bool(rd.get("isArchived")), "fork": bool(rd.get("isFork")),
         "fork_ahead": False, "richness": richness, "source": "github",
@@ -646,6 +650,8 @@ def write_catalog(rows, path):
             e["has_init"] = True
         if r.get("has_params"):
             e["has_params"] = True
+        if r.get("has_image"):
+            e["has_image"] = True
         scripts.append(e)
     json.dump({"file_info": {"version": 2, "kind": "script_catalog",
                              "name": "nornslist", "default_sort": "score:desc"},
