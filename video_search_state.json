@@ -43,6 +43,10 @@
   "checked": "2026-06-27",
   "tried_recently": true
  },
+ "danielrigler/twins": {
+  "checked": "2026-06-28",
+  "tried_recently": true
+ },
  "dndrks/cheat_codes_2": {
   "checked": "2026-06-27",
   "tried_recently": true
@@ -227,6 +231,14 @@
   "checked": "2026-06-27",
   "tried_recently": true
  },
+ "sdorsett/midi-lfo": {
+  "checked": "2026-06-28",
+  "tried_recently": true
+ },
+ "seajaysec/ingenue": {
+  "checked": "2026-06-28",
+  "tried_recently": true
+ },
  "sixolet/doubledecker": {
   "checked": "2026-06-27",
   "tried_recently": true
@@ -245,6 +257,10 @@
  },
  "sixolet/sacred_cyborg_harmony": {
   "checked": "2026-06-27",
+  "tried_recently": true
+ },
+ "sonocircuit/nb_mesamis": {
+  "checked": "2026-06-28",
   "tried_recently": true
  },
  "sonocircuit/nisho": {
