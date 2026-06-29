@@ -7,14 +7,6 @@
   "checked": "2026-06-27",
   "demo": "https://www.youtube.com/watch?v=AmQ7AMnooj0"
  },
- "256k/prolly": {
-  "checked": "2026-06-29",
-  "demo": "https://www.youtube.com/watch?v=4aEEepxPnwg"
- },
- "2roundrobins/messiaen": {
-  "checked": "2026-06-29",
-  "demo": "https://www.youtube.com/watch?v=QMTE1_UY9yY"
- },
  "adamstaff/scholastic": {
   "checked": "2026-06-27",
   "demo": "https://www.youtube.com/watch?v=vvl44pg3hMM"
@@ -91,14 +83,6 @@
   "checked": "2026-06-27",
   "demo": "https://www.youtube.com/watch?v=rEwJrVEmEVU"
  },
- "cfdrake/bistro": {
-  "checked": "2026-06-29",
-  "demo": "https://www.youtube.com/watch?v=Zw37RrUKMG0"
- },
- "cfdrake/blippoo": {
-  "checked": "2026-06-29",
-  "demo": "https://www.youtube.com/watch?v=8Qwrdf0mRl8"
- },
  "cfdrake/kollide": {
   "checked": "2026-06-27",
   "demo": "https://www.youtube.com/watch?v=MxSnN6wv9QA"
@@ -107,17 +91,9 @@
   "checked": "2026-06-27",
   "demo": "https://www.youtube.com/watch?v=3cvGZqBzMBc"
  },
- "cfdrake/shnth": {
-  "checked": "2026-06-29",
-  "demo": "https://www.youtube.com/watch?v=kwlRebLRnF8"
- },
  "danielrigler/twins": {
   "checked": "2026-06-28",
   "demo": "https://www.youtube.com/watch?v=jQ8Qr_RtQCY"
- },
- "dansimco/meadowphysics": {
-  "checked": "2026-06-29",
-  "demo": "https://www.youtube.com/watch?v=WoD9GZ4Zw28"
  },
  "distropolis/pixels": {
   "checked": "2026-06-27",
@@ -295,22 +271,6 @@
   "checked": "2026-06-27",
   "demo": "https://www.youtube.com/watch?v=HI9B-vuWF4A"
  },
- "linusschrab/initenere": {
-  "checked": "2026-06-29",
-  "demo": "https://www.youtube.com/watch?v=m2FeHA2F-WQ"
- },
- "lylepmills/buoys": {
-  "checked": "2026-06-29",
-  "demo": "https://www.youtube.com/watch?v=Ms3wGS6T3R0"
- },
- "markwheeler/loom": {
-  "checked": "2026-06-29",
-  "demo": "https://www.youtube.com/watch?v=QlUjojOXOoM"
- },
- "markwheeler/overwintering": {
-  "checked": "2026-06-29",
-  "demo": "https://www.youtube.com/watch?v=ILxht5gEs8I"
- },
  "markwheeler/passersby": {
   "checked": "2026-06-27",
   "demo": "https://www.youtube.com/watch?v=9V8iaksThec"
@@ -367,18 +327,6 @@
   "checked": "2026-06-27",
   "demo": "https://www.youtube.com/watch?v=2AGFFk7Cmqw"
  },
- "northern-information/goldeneye": {
-  "checked": "2026-06-29",
-  "demo": "https://www.youtube.com/watch?v=2RjbyvAPXM4"
- },
- "northern-information/tulpamancer": {
-  "checked": "2026-06-29",
-  "demo": "https://www.youtube.com/watch?v=bSH4VcB5VeI"
- },
- "northern-information/yggdrasil": {
-  "checked": "2026-06-29",
-  "demo": "https://www.youtube.com/watch?v=QXBmo6vsdDU"
- },
  "notrobintaylor/fx_llll": {
   "checked": "2026-06-27",
   "demo": "https://www.youtube.com/watch?v=Su__MGkrTwU"
@@ -390,18 +338,6 @@
  "nvillar/tetra": {
   "checked": "2026-06-27",
   "demo": "https://www.youtube.com/watch?v=M0aHRQAvBRA"
- },
- "nzimas/floodplains": {
-  "checked": "2026-06-29",
-  "demo": "https://www.youtube.com/watch?v=KBXtcdcboyE"
- },
- "oliviercreurer/compass": {
-  "checked": "2026-06-29",
-  "demo": "https://www.youtube.com/watch?v=Xjv0fVLBLqs"
- },
- "oliviercreurer/dunes": {
-  "checked": "2026-06-29",
-  "demo": "https://www.youtube.com/watch?v=V1MUW9b7fjg"
  },
  "pierrepaslier/aldous": {
   "checked": "2026-06-27",
@@ -547,10 +483,6 @@
   "checked": "2026-06-27",
   "demo": "https://www.youtube.com/watch?v=JiZXjg9UtMs"
  },
- "semierendonmez-commits/rungler": {
-  "checked": "2026-06-29",
-  "demo": "https://www.youtube.com/watch?v=hD_bQfqZnzM"
- },
  "sixolet/emplaitress": {
   "checked": "2026-06-27",
   "demo": "https://www.youtube.com/watch?v=Nza0k0ZhVIo"
@@ -595,10 +527,6 @@
   "checked": "2026-06-27",
   "demo": "https://www.youtube.com/watch?v=iGx5fmrbatA"
  },
- "synthetiv/euclidigons": {
-  "checked": "2026-06-29",
-  "demo": "https://www.youtube.com/watch?v=7MZBpy3K5jw"
- },
  "szymonkaliski/haze": {
   "checked": "2026-06-27",
   "demo": "https://vimeo.com/513390690"
@@ -614,10 +542,6 @@
  "tehn/blue": {
   "checked": "2026-06-27",
   "demo": "https://www.youtube.com/watch?v=frNbtfMnP20"
- },
- "tehn/isms": {
-  "checked": "2026-06-29",
-  "demo": "https://www.youtube.com/watch?v=PVZzZfC5cBk"
  },
  "tehn/mlr": {
   "checked": "2026-06-27",
@@ -654,10 +578,6 @@
  "yams7457/colorwheel": {
   "checked": "2026-06-27",
   "demo": "https://www.youtube.com/watch?v=XBnaCXEn_LU"
- },
- "zjb-s/sempra": {
-  "checked": "2026-06-29",
-  "demo": "https://www.youtube.com/watch?v=ylj5nLv6IEg"
  },
  "zunaito/tpdk": {
   "checked": "2026-06-27",
