@@ -75,6 +75,14 @@
   "checked": "2026-07-01",
   "tried_recently": false
  },
+ "evnoj/7u-patch-companion": {
+  "checked": "2026-07-02",
+  "tried_recently": true
+ },
+ "evnoj/norns-hid-merger": {
+  "checked": "2026-07-02",
+  "tried_recently": true
+ },
  "illges/d2ms": {
   "checked": "2026-07-01",
   "tried_recently": false
@@ -388,8 +396,8 @@
   "tried_recently": false
  },
  "waternogetenemy/tintin": {
-  "checked": "2026-06-30",
-  "tried_recently": false
+  "checked": "2026-07-02",
+  "tried_recently": true
  },
  "williamthazard/schicksalslied": {
   "checked": "2026-07-01",
