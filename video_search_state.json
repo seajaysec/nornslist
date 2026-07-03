@@ -39,6 +39,10 @@
   "checked": "2026-06-27",
   "tried_recently": false
  },
+ "boorch/dronage-norns": {
+  "checked": "2026-07-03",
+  "tried_recently": true
+ },
  "catfact/zebra": {
   "checked": "2026-06-27",
   "tried_recently": false
@@ -74,6 +78,14 @@
  "etsuko-fm/eterna": {
   "checked": "2026-07-01",
   "tried_recently": false
+ },
+ "evnoj/7u-patch-companion": {
+  "checked": "2026-07-03",
+  "tried_recently": true
+ },
+ "evnoj/norns-hid-merger": {
+  "checked": "2026-07-03",
+  "tried_recently": true
  },
  "illges/d2ms": {
   "checked": "2026-07-01",
@@ -171,6 +183,10 @@
   "checked": "2026-07-01",
   "tried_recently": false
  },
+ "notrobintaylor/media": {
+  "checked": "2026-07-03",
+  "tried_recently": true
+ },
  "okyeron/mi-eng": {
   "checked": "2026-07-01",
   "tried_recently": false
@@ -178,6 +194,10 @@
  "okyeron/oscgrid": {
   "checked": "2026-07-01",
   "tried_recently": false
+ },
+ "om-i-god/synth-quest": {
+  "checked": "2026-07-03",
+  "tried_recently": true
  },
  "schollz/abacus": {
   "checked": "2026-07-01",
@@ -336,8 +356,12 @@
   "tried_recently": false
  },
  "seajaysec/ingenue": {
-  "checked": "2026-06-30",
-  "tried_recently": false
+  "checked": "2026-07-03",
+  "tried_recently": true
+ },
+ "seajaysec/warp_pipe": {
+  "checked": "2026-07-03",
+  "tried_recently": true
  },
  "sixolet/doubledecker": {
   "checked": "2026-07-01",
@@ -388,8 +412,8 @@
   "tried_recently": false
  },
  "waternogetenemy/tintin": {
-  "checked": "2026-06-30",
-  "tried_recently": false
+  "checked": "2026-07-03",
+  "tried_recently": true
  },
  "williamthazard/schicksalslied": {
   "checked": "2026-07-01",
