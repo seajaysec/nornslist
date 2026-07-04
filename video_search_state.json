@@ -40,7 +40,7 @@
   "tried_recently": false
  },
  "boorch/dronage-norns": {
-  "checked": "2026-07-03",
+  "checked": "2026-07-04",
   "tried_recently": true
  },
  "catfact/zebra": {
@@ -59,6 +59,10 @@
   "checked": "2026-06-28",
   "tried_recently": false
  },
+ "discepoli/permute": {
+  "checked": "2026-07-04",
+  "tried_recently": true
+ },
  "dndrks/cheat_codes": {
   "checked": "2026-07-01",
   "tried_recently": false
@@ -74,6 +78,10 @@
  "dstroud/dreamsequence": {
   "checked": "2026-07-01",
   "tried_recently": false
+ },
+ "echophon/potionshop": {
+  "checked": "2026-07-04",
+  "tried_recently": true
  },
  "etsuko-fm/eterna": {
   "checked": "2026-07-01",
@@ -147,6 +155,10 @@
   "checked": "2026-07-01",
   "tried_recently": false
  },
+ "magicking/o-cube": {
+  "checked": "2026-07-04",
+  "tried_recently": true
+ },
  "markwheeler/molly_the_poly": {
   "checked": "2026-06-27",
   "tried_recently": false
@@ -196,7 +208,7 @@
   "tried_recently": false
  },
  "om-i-god/synth-quest": {
-  "checked": "2026-07-03",
+  "checked": "2026-07-04",
   "tried_recently": true
  },
  "schollz/abacus": {
