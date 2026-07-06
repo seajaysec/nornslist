@@ -7,6 +7,10 @@
   "checked": "2026-06-27",
   "demo": "https://www.youtube.com/watch?v=AmQ7AMnooj0"
  },
+ "256k/prolly": {
+  "checked": "2026-07-06",
+  "demo": "https://www.youtube.com/watch?v=4aEEepxPnwg"
+ },
  "adamstaff/scholastic": {
   "checked": "2026-06-27",
   "demo": "https://www.youtube.com/watch?v=vvl44pg3hMM"
@@ -30,6 +34,10 @@
  "andr-ew/eels": {
   "checked": "2026-06-27",
   "demo": "https://www.youtube.com/watch?v=NxpqsLtH880"
+ },
+ "andr-ew/grvl": {
+  "checked": "2026-07-06",
+  "demo": "https://www.youtube.com/watch?v=QyFRGN2-JeE"
  },
  "andr-ew/ndls": {
   "checked": "2026-07-01",
@@ -82,6 +90,14 @@
  "catfact/zebra": {
   "checked": "2026-06-27",
   "demo": "https://www.youtube.com/watch?v=rEwJrVEmEVU"
+ },
+ "cfdrake/bistro": {
+  "checked": "2026-07-06",
+  "demo": "https://www.youtube.com/watch?v=Zw37RrUKMG0"
+ },
+ "cfdrake/blippoo": {
+  "checked": "2026-07-06",
+  "demo": "https://www.youtube.com/watch?v=8Qwrdf0mRl8"
  },
  "cfdrake/kollide": {
   "checked": "2026-06-27",
@@ -275,6 +291,10 @@
   "checked": "2026-07-01",
   "demo": "https://www.youtube.com/watch?v=Ms3wGS6T3R0"
  },
+ "markwheeler/loom": {
+  "checked": "2026-07-06",
+  "demo": "https://www.youtube.com/watch?v=LG6SJWUdWek"
+ },
  "markwheeler/passersby": {
   "checked": "2026-07-01",
   "demo": "https://www.youtube.com/watch?v=9V8iaksThec"
@@ -331,6 +351,10 @@
   "checked": "2026-07-01",
   "demo": "https://www.youtube.com/watch?v=2AGFFk7Cmqw"
  },
+ "northern-information/goldeneye": {
+  "checked": "2026-07-06",
+  "demo": "https://www.youtube.com/watch?v=2RjbyvAPXM4"
+ },
  "notrobintaylor/fx_llll": {
   "checked": "2026-06-27",
   "demo": "https://www.youtube.com/watch?v=Su__MGkrTwU"
@@ -342,6 +366,10 @@
  "nvillar/tetra": {
   "checked": "2026-06-27",
   "demo": "https://www.youtube.com/watch?v=M0aHRQAvBRA"
+ },
+ "oliviercreurer/dunes": {
+  "checked": "2026-07-06",
+  "demo": "https://www.youtube.com/watch?v=V1MUW9b7fjg"
  },
  "pierrepaslier/aldous": {
   "checked": "2026-06-27",
@@ -531,6 +559,10 @@
   "checked": "2026-06-27",
   "demo": "https://www.youtube.com/watch?v=iGx5fmrbatA"
  },
+ "synthetiv/euclidigons": {
+  "checked": "2026-07-06",
+  "demo": "https://www.youtube.com/watch?v=7MZBpy3K5jw"
+ },
  "szymonkaliski/haze": {
   "checked": "2026-06-27",
   "demo": "https://vimeo.com/513390690"
@@ -546,6 +578,10 @@
  "tehn/blue": {
   "checked": "2026-06-27",
   "demo": "https://www.youtube.com/watch?v=frNbtfMnP20"
+ },
+ "tehn/isms": {
+  "checked": "2026-07-06",
+  "demo": "https://www.youtube.com/watch?v=PVZzZfC5cBk"
  },
  "tehn/mlr": {
   "checked": "2026-06-27",
