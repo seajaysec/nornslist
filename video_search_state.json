@@ -79,8 +79,12 @@
   "checked": "2026-06-28",
   "tried_recently": false
  },
+ "dhruuuuuv/tuning-in": {
+  "checked": "2026-07-07",
+  "tried_recently": true
+ },
  "discepoli/permute": {
-  "checked": "2026-07-04",
+  "checked": "2026-07-07",
   "tried_recently": true
  },
  "dndrks/cheat_codes": {
@@ -108,7 +112,7 @@
   "tried_recently": true
  },
  "echophon/potionshop": {
-  "checked": "2026-07-04",
+  "checked": "2026-07-07",
   "tried_recently": true
  },
  "etsuko-fm/eterna": {
@@ -116,7 +120,11 @@
   "tried_recently": false
  },
  "evnoj/7u-patch-companion": {
-  "checked": "2026-07-03",
+  "checked": "2026-07-07",
+  "tried_recently": true
+ },
+ "evnoj/n-orbs": {
+  "checked": "2026-07-07",
   "tried_recently": true
  },
  "evnoj/norns-hid-merger": {
@@ -460,7 +468,7 @@
   "tried_recently": false
  },
  "seajaysec/ingenue": {
-  "checked": "2026-07-03",
+  "checked": "2026-07-07",
   "tried_recently": true
  },
  "seajaysec/warp_pipe": {
@@ -515,6 +523,10 @@
   "checked": "2026-06-28",
   "tried_recently": false
  },
+ "sonocircuit/nb_monamie": {
+  "checked": "2026-07-07",
+  "tried_recently": true
+ },
  "sonocircuit/nb_mxsamples": {
   "checked": "2026-07-06",
   "tried_recently": true
@@ -549,6 +561,10 @@
  },
  "synthi/ltra": {
   "checked": "2026-07-06",
+  "tried_recently": true
+ },
+ "synthi/ncoco": {
+  "checked": "2026-07-07",
   "tried_recently": true
  },
  "tehn/isms": {
