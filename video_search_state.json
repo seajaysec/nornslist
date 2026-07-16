@@ -15,6 +15,10 @@
   "checked": "2026-07-14",
   "tried_recently": true
  },
+ "aidanreilly/ortho": {
+  "checked": "2026-07-16",
+  "tried_recently": true
+ },
  "aidanreilly/sines": {
   "checked": "2026-06-27",
   "tried_recently": false
@@ -255,6 +259,10 @@
   "checked": "2026-07-06",
   "tried_recently": true
  },
+ "moncalamari/airclkr": {
+  "checked": "2026-07-16",
+  "tried_recently": true
+ },
  "nattog/passthrough": {
   "checked": "2026-07-06",
   "tried_recently": true
@@ -304,7 +312,7 @@
   "tried_recently": true
  },
  "om-i-god/synth-quest": {
-  "checked": "2026-07-15",
+  "checked": "2026-07-16",
   "tried_recently": true
  },
  "p3r7/argen": {
