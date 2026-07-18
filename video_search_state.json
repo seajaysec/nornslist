@@ -51,6 +51,14 @@
   "checked": "2026-06-27",
   "tried_recently": false
  },
+ "bobodrone/aminor": {
+  "checked": "2026-07-18",
+  "tried_recently": true
+ },
+ "bobodrone/drifting": {
+  "checked": "2026-07-18",
+  "tried_recently": true
+ },
  "boorch/dronage-norns": {
   "checked": "2026-07-05",
   "tried_recently": true
@@ -120,7 +128,7 @@
   "tried_recently": true
  },
  "echophon/potionshop": {
-  "checked": "2026-07-11",
+  "checked": "2026-07-18",
   "tried_recently": true
  },
  "etburke/roomplay": {
@@ -192,7 +200,7 @@
   "tried_recently": true
  },
  "julesdg6/endlessdj-norns": {
-  "checked": "2026-07-13",
+  "checked": "2026-07-18",
   "tried_recently": true
  },
  "justmat/combos": {
@@ -312,7 +320,7 @@
   "tried_recently": true
  },
  "om-i-god/synth-quest": {
-  "checked": "2026-07-16",
+  "checked": "2026-07-18",
   "tried_recently": true
  },
  "p3r7/argen": {
