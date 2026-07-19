@@ -59,8 +59,12 @@
   "checked": "2026-07-18",
   "tried_recently": true
  },
+ "bobodrone/illfanas": {
+  "checked": "2026-07-19",
+  "tried_recently": true
+ },
  "boorch/dronage-norns": {
-  "checked": "2026-07-05",
+  "checked": "2026-07-19",
   "tried_recently": true
  },
  "catfact/thebangs": {
@@ -613,6 +617,10 @@
  },
  "synthetiv/fretwork": {
   "checked": "2026-07-06",
+  "tried_recently": true
+ },
+ "synthi/h-stex": {
+  "checked": "2026-07-19",
   "tried_recently": true
  },
  "synthi/ltra": {
