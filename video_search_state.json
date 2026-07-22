@@ -347,6 +347,10 @@
   "checked": "2026-07-17",
   "tried_recently": true
  },
+ "quixotic7/elasticat": {
+  "checked": "2026-07-22",
+  "tried_recently": true
+ },
  "quixotic7/loopwarp": {
   "checked": "2026-07-20",
   "tried_recently": true
@@ -580,7 +584,7 @@
   "tried_recently": false
  },
  "sonocircuit/nb_monamie": {
-  "checked": "2026-07-07",
+  "checked": "2026-07-22",
   "tried_recently": true
  },
  "sonocircuit/nb_mxsamples": {
