@@ -155,6 +155,10 @@
   "checked": "2026-07-03",
   "tried_recently": true
  },
+ "groundforms/agnes": {
+  "checked": "2026-07-24",
+  "tried_recently": true
+ },
  "groundforms/sines-tarn": {
   "checked": "2026-07-21",
   "tried_recently": true
@@ -263,6 +267,10 @@
   "checked": "2026-07-01",
   "tried_recently": false
  },
+ "maxbecq/mx.samples.maxbecq": {
+  "checked": "2026-07-24",
+  "tried_recently": true
+ },
  "melocoi/revaew": {
   "checked": "2026-07-13",
   "tried_recently": true
@@ -272,7 +280,7 @@
   "tried_recently": true
  },
  "moncalamari/airclkr": {
-  "checked": "2026-07-16",
+  "checked": "2026-07-24",
   "tried_recently": true
  },
  "nattog/passthrough": {
@@ -332,7 +340,7 @@
   "tried_recently": true
  },
  "p3r7/gridkeys": {
-  "checked": "2026-07-06",
+  "checked": "2026-07-24",
   "tried_recently": true
  },
  "p3r7/washi": {
@@ -348,7 +356,7 @@
   "tried_recently": true
  },
  "quixotic7/elasticat": {
-  "checked": "2026-07-22",
+  "checked": "2026-07-24",
   "tried_recently": true
  },
  "quixotic7/loopwarp": {
@@ -535,6 +543,10 @@
   "checked": "2026-07-03",
   "tried_recently": true
  },
+ "seinzu/drifting-memory-norns": {
+  "checked": "2026-07-24",
+  "tried_recently": true
+ },
  "sixolet/doubledecker": {
   "checked": "2026-07-06",
   "tried_recently": true
@@ -620,7 +632,7 @@
   "tried_recently": true
  },
  "synthetiv/fretware": {
-  "checked": "2026-07-06",
+  "checked": "2026-07-24",
   "tried_recently": true
  },
  "synthetiv/fretwork": {
@@ -628,7 +640,7 @@
   "tried_recently": true
  },
  "synthi/h-stex": {
-  "checked": "2026-07-20",
+  "checked": "2026-07-24",
   "tried_recently": true
  },
  "synthi/ltra": {
