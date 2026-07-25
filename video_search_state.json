@@ -623,6 +623,10 @@
   "checked": "2026-07-01",
   "tried_recently": false
  },
+ "sumik-svg/ambient_organism": {
+  "checked": "2026-07-25",
+  "tried_recently": true
+ },
  "sumik-svg/kesh-jig-ambient0": {
   "checked": "2026-07-13",
   "tried_recently": true
@@ -637,6 +641,10 @@
  },
  "synthetiv/fretwork": {
   "checked": "2026-07-06",
+  "tried_recently": true
+ },
+ "synthi/audrey": {
+  "checked": "2026-07-25",
   "tried_recently": true
  },
  "synthi/h-stex": {
