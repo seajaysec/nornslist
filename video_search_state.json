@@ -135,6 +135,10 @@
   "checked": "2026-07-01",
   "tried_recently": false
  },
+ "echoesfromtheshield/baitandbeat": {
+  "checked": "2026-08-03",
+  "tried_recently": true
+ },
  "echoesfromtheshield/fake": {
   "checked": "2026-07-06",
   "tried_recently": true
@@ -150,6 +154,10 @@
  "etsuko-fm/eterna": {
   "checked": "2026-07-01",
   "tried_recently": false
+ },
+ "evnoj/3u-patch-companion": {
+  "checked": "2026-08-03",
+  "tried_recently": true
  },
  "evnoj/7u-patch-companion": {
   "checked": "2026-07-10",
@@ -660,7 +668,7 @@
   "tried_recently": true
  },
  "synthi/h-stex": {
-  "checked": "2026-08-02",
+  "checked": "2026-08-03",
   "tried_recently": true
  },
  "synthi/ltra": {
