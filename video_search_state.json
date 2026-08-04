@@ -160,7 +160,7 @@
   "tried_recently": true
  },
  "evnoj/7u-patch-companion": {
-  "checked": "2026-07-10",
+  "checked": "2026-08-04",
   "tried_recently": true
  },
  "evnoj/n-orbs": {
@@ -169,6 +169,10 @@
  },
  "evnoj/norns-hid-merger": {
   "checked": "2026-07-03",
+  "tried_recently": true
+ },
+ "evnoj/norns-modmenu": {
+  "checked": "2026-08-04",
   "tried_recently": true
  },
  "groundforms/agnes": {
