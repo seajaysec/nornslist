@@ -179,8 +179,16 @@
   "checked": "2026-08-04",
   "tried_recently": true
  },
+ "generaatorpipeline/pebbles": {
+  "checked": "2026-08-07",
+  "tried_recently": true
+ },
  "groundforms/agnes": {
   "checked": "2026-07-24",
+  "tried_recently": true
+ },
+ "groundforms/audrey": {
+  "checked": "2026-08-07",
   "tried_recently": true
  },
  "groundforms/sines-tarn": {
@@ -712,7 +720,7 @@
   "tried_recently": false
  },
  "xmacex/connect-opz": {
-  "checked": "2026-07-06",
+  "checked": "2026-08-07",
   "tried_recently": true
  },
  "xmacex/fixed-filter-banking-crisis": {
