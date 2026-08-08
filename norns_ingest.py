@@ -56,9 +56,20 @@ INFRA_FORK_PARENTS = {
     "monome/maiden", "monome/crow", "monome/teletype", "monome/softcut",
     "monome/libmonome", "monome/serialosc", "fates-project/norns", "okyeron/shieldxl",
 }
+# A fork is a distinct script only if its CODE has meaningfully diverged from its parent.
+# Measured as .lua/.sc lines changed (additions+deletions) in the fork-vs-parent diff, NOT
+# commit count: a squashed fork that rewrote the script in one commit reads ahead_by=1 but
+# shows its full line delta here (benregnier/plonky +1154, schollz/cheat_codes_2 +156). A fork
+# that changed fewer than this many code lines is a mirror/personal copy and is dropped. Tunable.
+FORK_DIVERGENCE_LINES = 20
+CODE_EXT = (".lua", ".sc")
 VOICE_USE_LIBS = {"mx.samples", "mx.synths"}
 VOICE_CORPUS_MAX_FILES = 16
-USABLE_FACETS = {"script", "mod", "library", "engine"}
+USABLE_FACETS = {"script", "collection", "mod", "library", "engine"}
+# 8+ top-level .lua files = a multi-script collection (personal script dump / study series),
+# not a single installable script. We still TRACK these (they're real norns) but label them
+# 'collection' so a consumer can show or filter them apart from single scripts.
+COLLECTION_MIN = 8
 INSTALL_REDFLAG = re.compile(r"\b(tutorial|study|boilerplate|template|exercise|wip)\b", re.I)
 URL_RE = re.compile(r"https?://\S+", re.I)
 # Richness = how many DISTINCT norns marker categories the code uses (1..N). Used for
@@ -125,13 +136,13 @@ def facets_from_paths(paths):
     # The dep/norns submodule is itself the norns proof — these are real installable mods
     # (ndi-mod, hdmi-mod) the Lua-only facet detector can't see.
     has_native_mod = any(DEP_NORNS_RE.search(p) for p in ps)
-    # Monorepo guard: repos with 8+ top-level .lua files are collections (multiple scripts
-    # sharing a repo), not a single installable script. Single scripts with helper modules
-    # at root typically have ≤ 7 files; study series and personal script dumps have many more.
-    if len(top_lua) > 7:
-        return []
     f = []
-    if top_lua:
+    # 8+ top-level .lua = a multi-script collection, not a single script. Tracked, but
+    # labelled 'collection' so consumers can separate them from single scripts. (Single
+    # scripts with root helper modules typically have ≤ 7 .lua; dumps/study series have more.)
+    if len(top_lua) >= COLLECTION_MIN:
+        f.append("collection")
+    elif top_lua:
         f.append("script")
     if has_mod or has_native_mod:
         f.append("mod")
@@ -181,7 +192,7 @@ def detect_voices(blob, paths, bundled, facets, repo):
         return bool(m and m.group(1).lower() in bundled)
     self_eng = {m.group(1).lower() for p in paths if not is_bp(p)
                 for m in [re.search(r"Engine_([A-Za-z0-9]+)\.sc$", os.path.basename(str(p)))] if m}
-    if self_eng and "script" not in facets:
+    if self_eng and not ({"script", "collection"} & set(facets)):
         provides.append("sc-engine")
     used_eng = {e.lower() for e in re.findall(r"engine\.name\s*=\s*['\"]([A-Za-z0-9]+)['\"]", text)}
     if any(e not in self_eng for e in used_eng):
@@ -197,7 +208,7 @@ def has_init_params(blob):
 
 
 def is_installable(rec):
-    if rec.get("fork") and not rec.get("fork_ahead"):
+    if rec.get("fork") and not rec.get("fork_diverged"):
         return False
     if INSTALL_REDFLAG.search(f"{rec.get('name','')} {rec.get('desc','')}"):
         return False
@@ -284,41 +295,56 @@ class GH:
         return out
 
     def list_owner_repos(self, logins):
-        """For a batch of owner logins, return {login: [(name, lang, isFork, desc), …]} of
-        their own repos via ONE batched GraphQL call (aliased). Far faster than a per-author
-        Search call AND not limited to GitHub's `language:lua` tag, so it surfaces the mods,
-        SC-heavy, and doc-heavy norns repos the old lua-search missed. This replaces the
-        alphabetically-truncated author sweep that was silently dropping ~85% of authors."""
-        out = {}
-        q = "query{" + "".join(
-            f'{_gql_alias(i)}:repositoryOwner(login:{json.dumps(o)}){{'
-            'repositories(first:60,ownerAffiliations:OWNER,'
-            'orderBy:{field:PUSHED_AT,direction:DESC}){nodes{'
-            'name isFork primaryLanguage{name} description}}}'
-            for i, o in enumerate(logins)) + "}"
-        data = (self.graphql(q) or {}).get("data") or {}
-        for i, o in enumerate(logins):
-            node = data.get(_gql_alias(i))
-            if not node:
-                continue
-            out[o] = [(r.get("name"), (r.get("primaryLanguage") or {}).get("name"),
-                       bool(r.get("isFork")), r.get("description") or "")
-                      for r in ((node.get("repositories") or {}).get("nodes") or []) if r.get("name")]
+        """For a batch of owner logins, return {login: [(name, lang, isFork, desc), …]} of ALL
+        their own repos via batched, cursor-paginated GraphQL. Not limited to GitHub's
+        `language:lua` tag, so it surfaces mods, SC-heavy, and doc-heavy norns repos the old
+        lua-search missed. Fully paginated: a prolific author (schollz has 1150 repos) used to
+        be truncated at the first 60-by-push, so their OLDER scripts (ynth, …) never surfaced
+        and flapped out of the catalog on discovery variance — now every repo is swept."""
+        out = {o: [] for o in logins}
+        cursors = {}                       # login -> endCursor; present => more pages to fetch
+        pending = list(logins)
+        while pending:
+            q = "query{" + "".join(
+                f'{_gql_alias(i)}:repositoryOwner(login:{json.dumps(o)}){{'
+                'repositories(first:100,ownerAffiliations:OWNER,'
+                'orderBy:{field:PUSHED_AT,direction:DESC}'
+                + (f',after:{json.dumps(cursors[o])}' if o in cursors else '')
+                + '){pageInfo{hasNextPage endCursor} nodes{'
+                'name isFork primaryLanguage{name} description}}}'
+                for i, o in enumerate(pending)) + "}"
+            data = (self.graphql(q) or {}).get("data") or {}
+            nxt = []
+            for i, o in enumerate(pending):
+                repos = (data.get(_gql_alias(i)) or {}).get("repositories") or {}
+                out[o].extend((r.get("name"), (r.get("primaryLanguage") or {}).get("name"),
+                               bool(r.get("isFork")), r.get("description") or "")
+                              for r in (repos.get("nodes") or []) if r.get("name"))
+                pi = repos.get("pageInfo") or {}
+                if pi.get("hasNextPage") and pi.get("endCursor"):
+                    cursors[o] = pi["endCursor"]
+                    nxt.append(o)
+            pending = nxt
         return out
 
-    def compare_ahead(self, owner, name, parent_full, base, head):
-        """How many commits the fork's HEAD is ahead of its parent — its own commits, i.e.
-        its own identity. None on error. One REST call; only called for forks (a minority)."""
+    def compare_code_lines(self, owner, name, parent_full, base, head):
+        """.lua/.sc lines that differ between a fork and its parent (additions+deletions in the
+        cumulative diff) — the fork's actual code divergence. Squash-proof: a fork that rewrote
+        the script in one squashed commit still shows its full line delta here, where commit
+        count (ahead_by) would read 1. None on error (caller keeps the fork rather than drop on
+        a transient failure). One REST call; only for forks (a minority)."""
         po = parent_full.split("/", 1)[0]
         try:
             r = self.s.get(
                 f"https://api.github.com/repos/{owner}/{name}/compare/{po}:{base}...{head}",
                 timeout=30)
-            if r.status_code == 200:
-                return (r.json() or {}).get("ahead_by")
+            if r.status_code != 200:
+                return None
+            files = (r.json() or {}).get("files") or []
+            return sum(f.get("additions", 0) + f.get("deletions", 0) for f in files
+                       if str(f.get("filename", "")).lower().endswith(CODE_EXT))
         except Exception:
-            pass
-        return None
+            return None
 
     def graphql(self, query):
         for _ in range(3):
@@ -348,27 +374,46 @@ def _gql_alias(i):
     return f"r{i}"
 
 
-def classify_batch(gh, repos):
+def _fetch_meta(gh, repos):
+    """Batched metadata + 2-level tree fetch with split-retry. A transient GraphQL error (or
+    one oversized repo) blanks the whole `data` block; without bisection that would look like
+    18 simultaneous deletions and silently drop confirmed repos. Returns {(owner,name): node}
+    for the repos GitHub actually returned (a genuine 404 stays absent even at size 1)."""
+    if not repos:
+        return {}
+    q = "query{" + "".join(
+        f'{_gql_alias(i)}:repository(owner:{json.dumps(o)},name:{json.dumps(n)}){{'
+        'nameWithOwner pushedAt stargazerCount isPrivate isFork isArchived description '
+        'primaryLanguage{name} repositoryTopics(first:20){nodes{topic{name}}} '
+        'defaultBranchRef{name} parent{nameWithOwner defaultBranchRef{name}} '
+        'object(expression:"HEAD:"){... on Tree{entries{name type '
+        'object{... on Tree{entries{name type}}}}}}}'
+        for i, (o, n) in enumerate(repos)) + "}"
+    data = (gh.graphql(q) or {}).get("data") or {}
+    if not data and len(repos) > 1:
+        mid = len(repos) // 2
+        out = _fetch_meta(gh, repos[:mid])
+        out.update(_fetch_meta(gh, repos[mid:]))
+        return out
+    return {key: data[_gql_alias(i)] for i, key in enumerate(repos) if data.get(_gql_alias(i))}
+
+
+def classify_batch(gh, repos, prior=None):
     """repos: list of (owner, name). Returns {(owner,name): record} for norns repos.
     Two GraphQL passes: (A) metadata + tree names for many repos at once, (B) corpus
-    file text for the .lua-bearing candidates. No per-repo REST calls."""
+    file text for the .lua-bearing candidates. No per-repo REST calls.
+
+    `prior`: {(owner,name): record} from the previous catalog. When a prior repo's metadata
+    comes back fine (it still exists) but this run's corpus blob is empty (a transient
+    node/size flake), we carry the prior verdict forward instead of dropping it — a confirmed
+    repo leaves only on a real 404 (absent from pass A) or a genuine gate-fail (non-empty
+    corpus that misses the fingerprint)."""
+    prior = prior or {}
     records = {}
-    # ── pass A: metadata + 2-level tree names ──
+    # ── pass A: metadata + 2-level tree names (split-retry so a flake ≠ mass deletion) ──
     meta = {}
     for chunk in _chunks(repos, 18):
-        q = "query{" + "".join(
-            f'{_gql_alias(i)}:repository(owner:{json.dumps(o)},name:{json.dumps(n)}){{'
-            'nameWithOwner pushedAt stargazerCount isPrivate isFork isArchived description '
-            'primaryLanguage{name} repositoryTopics(first:20){nodes{topic{name}}} '
-            'defaultBranchRef{name} parent{nameWithOwner defaultBranchRef{name}} '
-            'object(expression:"HEAD:"){... on Tree{entries{name type '
-            'object{... on Tree{entries{name type}}}}}}}'
-            for i, (o, n) in enumerate(chunk)) + "}"
-        data = (gh.graphql(q) or {}).get("data") or {}
-        for i, (o, n) in enumerate(chunk):
-            rd = data.get(_gql_alias(i))
-            if rd:
-                meta[(o, n)] = rd
+        meta.update(_fetch_meta(gh, chunk))
     # build path lists + pre-filter (not private, not blocked, real norns structure)
     cand = {}
     for key, rd in meta.items():
@@ -385,13 +430,21 @@ def classify_batch(gh, repos):
                 for key, (rd, paths) in chunk]
         blobs = _fetch_corpus(gh, plan)
         for key, rd, paths, files in plan:
-            rec = _record(key, rd, paths, blobs.get(key, ""))
+            blob = blobs.get(key, "")
+            rec = _record(key, rd, paths, blob)
             if rec:
                 records[key] = rec
-    # ── fork identity: a fork is installable only if it has commits of its own (ahead of
-    # its parent) — "forked & evolved in a new direction", not a stale mirror or a fork
-    # left behind when the parent moved on. Detached forks (parent gone) are independent by
-    # definition. One REST compare per fork (forks are a small minority of records). ──
+            elif not blob and key in prior:
+                # exists (pass A returned it) + has norns structure (it's in `cand`) but no
+                # corpus text this run -> transient fetch flake, keep the confirmed verdict.
+                records[key] = dict(prior[key], carried=True)
+    # ── fork identity: a fork is a distinct script only if it has meaningfully DIVERGED from
+    # its parent — "forked & evolved in a new direction", not a personal mirror. The signal is
+    # how far the fork is ahead of its parent (its own commits), NOT whether it kept the name:
+    # the personal copies of orca/awake/cheat_codes_2 sit at ahead_by 1-2 (lazy), while genuine
+    # same-name derivatives (aidanreilly/bowery +22, clickbox/pitfalls +113) sit far higher and
+    # are kept. Detached forks (parent gone) are independent by definition; forks of the OS
+    # firmware are not scripts. One REST compare per fork (a minority of records). ──
     drop_infra = []
     for key, rec in records.items():
         if not rec.get("fork"):
@@ -400,15 +453,15 @@ def classify_batch(gh, repos):
         parent = rd.get("parent") or {}
         pfull = parent.get("nameWithOwner")
         if not pfull:
-            rec["fork_ahead"] = True
+            rec["fork_diverged"] = True
             continue
         if pfull.lower() in {p.lower() for p in INFRA_FORK_PARENTS}:
             drop_infra.append(key)   # fork of the OS/firmware → not a script
             continue
         base = (parent.get("defaultBranchRef") or {}).get("name") or "main"
         head = (rd.get("defaultBranchRef") or {}).get("name") or "main"
-        ahead = gh.compare_ahead(key[0], key[1], pfull, base, head)
-        rec["fork_ahead"] = (ahead is None) or (ahead >= 1)
+        changed = gh.compare_code_lines(key[0], key[1], pfull, base, head)
+        rec["fork_diverged"] = (changed is None) or (changed >= FORK_DIVERGENCE_LINES)
     for key in drop_infra:
         del records[key]
     return records
@@ -497,7 +550,7 @@ def _record(key, rd, paths, blob):
         "caps": detect_caps(blob),
         "stars": rd.get("stargazerCount") or 0,
         "archived": bool(rd.get("isArchived")), "fork": bool(rd.get("isFork")),
-        "fork_ahead": False, "richness": richness, "source": "github",
+        "fork_diverged": False, "richness": richness, "source": "github",
     }
 
 
@@ -545,6 +598,37 @@ def known_authors(catalog_path):
         return set()
 
 
+def prior_records(catalog_path):
+    """Previous catalog entries re-shaped as classifier records, keyed by (owner, name).
+    Two jobs: (1) the floor — every prior repo is re-fed into classification each run so it
+    is re-verified against the live fingerprint instead of relying on this run's search to
+    rediscover it; (2) carry-forward — the value is reused verbatim when this run's corpus
+    fetch flakes (see classify_batch). Absent/unreadable catalog (first run) → empty."""
+    try:
+        with open(catalog_path) as f:
+            data = json.load(f)
+    except Exception:
+        return {}
+    out = {}
+    for s in data.get("scripts", []):
+        m = re.search(r"github\.com/([^/]+)/([^/\s]+)", s.get("Project URL", "") or "")
+        if not m:
+            continue
+        o, n = m.group(1), m.group(2)
+        out[(o, n)] = {
+            "owner": o, "name": n, "author": s.get("Author") or o,
+            "desc": s.get("Description", ""), "proj": s.get("Project URL", ""),
+            "upd": s.get("Last Updated", ""), "topics": s.get("Tags", []),
+            "facets": s.get("facets", []), "voices": s.get("voices"),
+            "engine": s.get("engine", ""), "has_init": s.get("has_init", False),
+            "has_params": s.get("has_params", False), "has_image": s.get("has_image", False),
+            "caps": s.get("caps", []), "stars": s.get("stars", 0),
+            "archived": s.get("status") == "archived", "fork": False, "fork_diverged": False,
+            "richness": 0, "source": "github",
+        }
+    return out
+
+
 def discover(gh, catalog_path="catalog.json"):
     cand = set()     # {(owner, name)}
     owners = set()   # every owner we should sweep for their other repos
@@ -574,11 +658,11 @@ def discover(gh, catalog_path="catalog.json"):
     owners.update(known_authors(catalog_path))   # persisted: every author ever cataloged
     log.info(f"  owner pool: {len(owners)}")
 
-    # phase 4: sweep EVERY owner's repos via batched GraphQL (no truncation). Replaces the
-    # old sorted()[:120] cap that silently dropped ~85% of authors alphabetically. The list
-    # is not limited to GitHub's language:lua tag, so it also catches native mods (C/C++) and
-    # SC-heavy repos. The norns fingerprint in classify_batch filters out non-norns Lua repos.
-    log.info("phase 4: per-owner repo sweep (batched GraphQL, no cap)")
+    # phase 4: sweep EVERY owner's repos via batched, fully-paginated GraphQL — no per-author
+    # cap (a 1150-repo author is swept in full, so their older scripts surface instead of being
+    # truncated at the first 60-by-push). Not limited to GitHub's language:lua tag, so it also
+    # catches native mods (C/C++) and SC-heavy repos. classify_batch fingerprints out non-norns.
+    log.info("phase 4: per-owner repo sweep (batched GraphQL, fully paginated)")
     before = len(cand)
     for chunk in _chunks(sorted(owners), 12):
         for o, repos in gh.list_owner_repos(chunk).items():
@@ -588,21 +672,39 @@ def discover(gh, catalog_path="catalog.json"):
                     cand.add((o, name))
     log.info(f"  after sweep: {len(cand)} candidates (+{len(cand) - before})")
 
-    log.info(f"classifying {len(cand)} candidates via GraphQL…")
-    records = classify_batch(gh, sorted(cand))
-    log.info(f"  norns repos: {len(records)}")
+    # phase 5: floor — re-feed every previously-cataloged repo so it is re-verified this run
+    # regardless of whether search/sweep happened to surface it. This is what stops confirmed
+    # scripts (e.g. an old script by a 1000-repo author) flapping out when discovery misses
+    # them. classify_batch re-checks each against the live fingerprint, so the floor can only
+    # KEEP repos that are still norns — it never admits noise.
+    prior = prior_records(catalog_path)
+    floor_only = set(prior) - cand
+    cand |= set(prior)
+    log.info(f"  floor: +{len(floor_only)} prior repos not surfaced by discovery this run")
 
-    # dedup by lowercase name (forks/case collapse onto the most-starred copy)
-    best = {}
-    for rec in records.values():
-        if not is_installable(rec):
-            continue
-        k = rec["name"].lower()
-        if k not in best or rec["stars"] > best[k]["stars"]:
-            best[k] = rec
-    rows = list(best.values())
+    log.info(f"classifying {len(cand)} candidates via GraphQL…")
+    records = classify_batch(gh, sorted(cand), prior=prior)
+    carried = sum(1 for r in records.values() if r.get("carried"))
+    log.info(f"  norns repos: {len(records)} ({carried} carried forward on corpus flake)")
+
+    rows = dedup_installable(records.values())
     log.info(f"  installable + deduped: {len(rows)}")
     return rank(rows)
+
+
+def dedup_installable(records):
+    """Keep installable records, deduped by (owner, name) — case collapses, but two DIFFERENT
+    owners sharing a name are distinct repos and both kept. Bare-name dedup (the old behaviour)
+    silently dropped the lower-starred one (e.g. two `norns-bookworm`). Fork mirrors are
+    already excluded by is_installable; a divergent fork is a genuine separate repo."""
+    best = {}
+    for rec in records:
+        if not is_installable(rec):
+            continue
+        k = (rec["owner"].lower(), rec["name"].lower())
+        if k not in best or rec["stars"] > best[k]["stars"]:
+            best[k] = rec
+    return list(best.values())
 
 
 def rank(rows):
