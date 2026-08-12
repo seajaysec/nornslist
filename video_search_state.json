@@ -16,7 +16,7 @@
   "tried_recently": true
  },
  "adriendoerig/norns_bliss": {
-  "checked": "2026-08-06",
+  "checked": "2026-08-12",
   "tried_recently": true
  },
  "aidanreilly/ortho": {
@@ -105,6 +105,10 @@
  },
  "cfurrow7/midi-garage-jukebox": {
   "checked": "2026-08-01",
+  "tried_recently": true
+ },
+ "chailight/euclidean-triggers": {
+  "checked": "2026-08-12",
   "tried_recently": true
  },
  "danielrigler/twins": {
@@ -720,7 +724,7 @@
   "tried_recently": true
  },
  "water-feature/arpeggii": {
-  "checked": "2026-08-10",
+  "checked": "2026-08-12",
   "tried_recently": true
  },
  "waternogetenemy/tintin": {
