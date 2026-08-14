@@ -16,7 +16,7 @@
   "tried_recently": true
  },
  "adriendoerig/norns_bliss": {
-  "checked": "2026-08-12",
+  "checked": "2026-08-14",
   "tried_recently": true
  },
  "aidanreilly/ortho": {
@@ -114,6 +114,10 @@
  "danielrigler/twins": {
   "checked": "2026-06-28",
   "tried_recently": false
+ },
+ "danutpadel-oss/breakbeat": {
+  "checked": "2026-08-14",
+  "tried_recently": true
  },
  "dhruuuuuv/tuning-in": {
   "checked": "2026-07-07",
@@ -279,6 +283,10 @@
   "checked": "2026-07-01",
   "tried_recently": false
  },
+ "lylepmills/buoys-rmx": {
+  "checked": "2026-08-14",
+  "tried_recently": true
+ },
  "magicking/o-cube": {
   "checked": "2026-07-04",
   "tried_recently": true
@@ -405,6 +413,10 @@
  },
  "quixotic7/elasticat": {
   "checked": "2026-08-02",
+  "tried_recently": true
+ },
+ "quixotic7/griii": {
+  "checked": "2026-08-14",
   "tried_recently": true
  },
  "quixotic7/loopwarp": {
@@ -644,7 +656,7 @@
   "tried_recently": false
  },
  "sonocircuit/nb_monamie": {
-  "checked": "2026-07-22",
+  "checked": "2026-08-14",
   "tried_recently": true
  },
  "sonocircuit/nb_mxsamples": {
@@ -700,7 +712,7 @@
   "tried_recently": true
  },
  "synthi/h-stex": {
-  "checked": "2026-08-03",
+  "checked": "2026-08-14",
   "tried_recently": true
  },
  "synthi/ltra": {
