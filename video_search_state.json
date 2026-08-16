@@ -115,6 +115,10 @@
   "checked": "2026-06-28",
   "tried_recently": false
  },
+ "dansimco/teletype-norns": {
+  "checked": "2026-08-16",
+  "tried_recently": true
+ },
  "danutpadel-oss/breakbeat": {
   "checked": "2026-08-14",
   "tried_recently": true
@@ -289,6 +293,10 @@
  },
  "lylepmills/buoys-rmx": {
   "checked": "2026-08-14",
+  "tried_recently": true
+ },
+ "lynnavery/awake_osc": {
+  "checked": "2026-08-16",
   "tried_recently": true
  },
  "magicking/o-cube": {
