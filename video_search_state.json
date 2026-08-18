@@ -19,6 +19,10 @@
   "checked": "2026-08-14",
   "tried_recently": true
  },
+ "aidanreilly/graindr": {
+  "checked": "2026-08-18",
+  "tried_recently": true
+ },
  "aidanreilly/ortho": {
   "checked": "2026-07-16",
   "tried_recently": true
@@ -109,6 +113,10 @@
  },
  "chailight/euclidean-triggers": {
   "checked": "2026-08-12",
+  "tried_recently": true
+ },
+ "chailight/nb_txo": {
+  "checked": "2026-08-18",
   "tried_recently": true
  },
  "danielrigler/twins": {
@@ -439,6 +447,10 @@
   "checked": "2026-07-20",
   "tried_recently": true
  },
+ "quixotic7/rake": {
+  "checked": "2026-08-18",
+  "tried_recently": true
+ },
  "robbielyman/waver": {
   "checked": "2026-07-06",
   "tried_recently": true
@@ -757,6 +769,10 @@
  },
  "water-feature/arpeggii": {
   "checked": "2026-08-12",
+  "tried_recently": true
+ },
+ "waternogetenemy/snowy": {
+  "checked": "2026-08-18",
   "tried_recently": true
  },
  "waternogetenemy/tintin": {
