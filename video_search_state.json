@@ -20,7 +20,7 @@
   "tried_recently": true
  },
  "aidanreilly/graindr": {
-  "checked": "2026-08-18",
+  "checked": "2026-08-20",
   "tried_recently": true
  },
  "aidanreilly/ortho": {
@@ -311,6 +311,10 @@
   "checked": "2026-08-16",
   "tried_recently": true
  },
+ "lynnavery/minisequencer": {
+  "checked": "2026-08-20",
+  "tried_recently": true
+ },
  "magicking/o-cube": {
   "checked": "2026-07-04",
   "tried_recently": true
@@ -441,6 +445,10 @@
  },
  "quixotic7/griii": {
   "checked": "2026-08-14",
+  "tried_recently": true
+ },
+ "quixotic7/iii_mod": {
+  "checked": "2026-08-20",
   "tried_recently": true
  },
  "quixotic7/loopwarp": {
@@ -693,6 +701,10 @@
  },
  "sonocircuit/nb_mxsynths": {
   "checked": "2026-07-06",
+  "tried_recently": true
+ },
+ "sonocircuit/nb_plak": {
+  "checked": "2026-08-20",
   "tried_recently": true
  },
  "sonocircuit/nb_polyform": {
