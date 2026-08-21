@@ -119,6 +119,10 @@
   "checked": "2026-08-18",
   "tried_recently": true
  },
+ "danielrigler/grains": {
+  "checked": "2026-08-21",
+  "tried_recently": true
+ },
  "danielrigler/twins": {
   "checked": "2026-06-28",
   "tried_recently": false
@@ -200,7 +204,7 @@
   "tried_recently": true
  },
  "evnoj/orison": {
-  "checked": "2026-08-19",
+  "checked": "2026-08-21",
   "tried_recently": true
  },
  "generaatorpipeline/m185": {
@@ -765,6 +769,10 @@
  },
  "tehn/isms": {
   "checked": "2026-07-06",
+  "tried_recently": true
+ },
+ "tweeedo911/pocketgrid": {
+  "checked": "2026-08-21",
   "tried_recently": true
  },
  "unluogomoderatamentesicuro/alambicco": {
