@@ -120,7 +120,7 @@
   "tried_recently": true
  },
  "danielrigler/grains": {
-  "checked": "2026-08-21",
+  "checked": "2026-08-23",
   "tried_recently": true
  },
  "danielrigler/twins": {
@@ -204,7 +204,7 @@
   "tried_recently": true
  },
  "evnoj/orison": {
-  "checked": "2026-08-21",
+  "checked": "2026-08-23",
   "tried_recently": true
  },
  "generaatorpipeline/m185": {
@@ -443,6 +443,10 @@
   "checked": "2026-07-17",
   "tried_recently": true
  },
+ "quixotic7/choralroot": {
+  "checked": "2026-08-23",
+  "tried_recently": true
+ },
  "quixotic7/elasticat": {
   "checked": "2026-08-02",
   "tried_recently": true
@@ -452,7 +456,7 @@
   "tried_recently": true
  },
  "quixotic7/iii_mod": {
-  "checked": "2026-08-20",
+  "checked": "2026-08-23",
   "tried_recently": true
  },
  "quixotic7/loopwarp": {
