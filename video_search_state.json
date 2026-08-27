@@ -59,6 +59,10 @@
   "checked": "2026-06-27",
   "tried_recently": false
  },
+ "asymmetriccut/dual-random-sequencer": {
+  "checked": "2026-08-27",
+  "tried_recently": true
+ },
  "bobodrone/aminor": {
   "checked": "2026-07-18",
   "tried_recently": true
@@ -737,6 +741,14 @@
  },
  "sumik-svg/geo_poly": {
   "checked": "2026-08-10",
+  "tried_recently": true
+ },
+ "sumik-svg/kastle_arp_norns": {
+  "checked": "2026-08-27",
+  "tried_recently": true
+ },
+ "sumik-svg/kastle_norns": {
+  "checked": "2026-08-27",
   "tried_recently": true
  },
  "sumik-svg/kesh-jig-ambient0": {
