@@ -728,7 +728,7 @@
   "tried_recently": true
  },
  "sonocircuit/nisho": {
-  "checked": "2026-07-06",
+  "checked": "2026-08-28",
   "tried_recently": true
  },
  "sonocircuit/sidvagn": {
@@ -836,11 +836,15 @@
   "tried_recently": true
  },
  "xmacex/fixed-filter-banking-crisis": {
-  "checked": "2026-07-06",
+  "checked": "2026-08-28",
   "tried_recently": true
  },
  "xmacex/lnra-8": {
   "checked": "2026-07-06",
+  "tried_recently": true
+ },
+ "xmacex/wifihifi": {
+  "checked": "2026-08-28",
   "tried_recently": true
  },
  "yams7457/colorwheel": {
