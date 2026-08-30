@@ -124,7 +124,7 @@
   "tried_recently": true
  },
  "danielrigler/grains": {
-  "checked": "2026-08-25",
+  "checked": "2026-08-30",
   "tried_recently": true
  },
  "danielrigler/twins": {
@@ -309,6 +309,10 @@
  },
  "justmat/silos": {
   "checked": "2026-07-06",
+  "tried_recently": true
+ },
+ "leontoddjohnson/movements": {
+  "checked": "2026-08-30",
   "tried_recently": true
  },
  "lylepmills/buoys": {
@@ -748,7 +752,7 @@
   "tried_recently": true
  },
  "sumik-svg/kastle_arp_norns": {
-  "checked": "2026-08-27",
+  "checked": "2026-08-30",
   "tried_recently": true
  },
  "sumik-svg/kastle_norns": {
