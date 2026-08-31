@@ -124,7 +124,7 @@
   "tried_recently": true
  },
  "danielrigler/grains": {
-  "checked": "2026-08-30",
+  "checked": "2026-08-31",
   "tried_recently": true
  },
  "danielrigler/twins": {
@@ -215,6 +215,10 @@
   "checked": "2026-08-29",
   "tried_recently": true
  },
+ "foundsoundsmm/woodland": {
+  "checked": "2026-08-31",
+  "tried_recently": true
+ },
  "generaatorpipeline/m185": {
   "checked": "2026-08-11",
   "tried_recently": true
@@ -281,6 +285,14 @@
  },
  "jaseknighter/splnkr": {
   "checked": "2026-07-06",
+  "tried_recently": true
+ },
+ "jstefani/paperboy": {
+  "checked": "2026-08-31",
+  "tried_recently": true
+ },
+ "jstefani/scope": {
+  "checked": "2026-08-31",
   "tried_recently": true
  },
  "julesdg6/endlessdj-norns": {
