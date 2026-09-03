@@ -124,8 +124,8 @@
   "tried_recently": false
  },
  "danielrigler/grains": {
-  "checked": "2026-09-01",
-  "tried_recently": false
+  "checked": "2026-09-03",
+  "tried_recently": true
  },
  "danielrigler/twins": {
   "checked": "2026-06-28",
@@ -138,6 +138,14 @@
  "danutpadel-oss/breakbeat": {
   "checked": "2026-08-14",
   "tried_recently": false
+ },
+ "desioart/sath-lemon": {
+  "checked": "2026-09-03",
+  "tried_recently": true
+ },
+ "desioart/sath_haze": {
+  "checked": "2026-09-03",
+  "tried_recently": true
  },
  "dhruuuuuv/tuning-in": {
   "checked": "2026-07-07",
@@ -216,8 +224,8 @@
   "tried_recently": false
  },
  "foundsoundsmm/woodland": {
-  "checked": "2026-09-01",
-  "tried_recently": false
+  "checked": "2026-09-03",
+  "tried_recently": true
  },
  "generaatorpipeline/m185": {
   "checked": "2026-08-11",
