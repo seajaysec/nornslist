@@ -123,8 +123,12 @@
   "checked": "2026-08-18",
   "tried_recently": false
  },
+ "daniel-mckemie/norns_csound": {
+  "checked": "2026-09-05",
+  "tried_recently": true
+ },
  "danielrigler/grains": {
-  "checked": "2026-09-03",
+  "checked": "2026-09-05",
   "tried_recently": true
  },
  "danielrigler/twins": {
@@ -224,7 +228,7 @@
   "tried_recently": false
  },
  "foundsoundsmm/woodland": {
-  "checked": "2026-09-03",
+  "checked": "2026-09-05",
   "tried_recently": true
  },
  "generaatorpipeline/m185": {
@@ -301,6 +305,10 @@
  },
  "jstefani/ksample": {
   "checked": "2026-09-02",
+  "tried_recently": true
+ },
+ "jstefani/midirec": {
+  "checked": "2026-09-05",
   "tried_recently": true
  },
  "jstefani/paperboy": {
@@ -772,8 +780,8 @@
   "tried_recently": false
  },
  "sonocircuit/nisho": {
-  "checked": "2026-09-01",
-  "tried_recently": false
+  "checked": "2026-09-05",
+  "tried_recently": true
  },
  "sonocircuit/sidvagn": {
   "checked": "2026-07-01",
