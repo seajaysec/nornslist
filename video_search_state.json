@@ -19,6 +19,10 @@
   "checked": "2026-08-14",
   "tried_recently": false
  },
+ "adriendoerig/norns_nayar": {
+  "checked": "2026-09-06",
+  "tried_recently": true
+ },
  "aidanreilly/graindr": {
   "checked": "2026-08-20",
   "tried_recently": false
@@ -223,9 +227,17 @@
   "checked": "2026-08-25",
   "tried_recently": false
  },
+ "foundsoundsmm/canopy": {
+  "checked": "2026-09-06",
+  "tried_recently": true
+ },
  "foundsoundsmm/pappus": {
   "checked": "2026-08-29",
   "tried_recently": false
+ },
+ "foundsoundsmm/tahned": {
+  "checked": "2026-09-06",
+  "tried_recently": true
  },
  "foundsoundsmm/woodland": {
   "checked": "2026-09-05",
@@ -308,7 +320,7 @@
   "tried_recently": true
  },
  "jstefani/midirec": {
-  "checked": "2026-09-05",
+  "checked": "2026-09-06",
   "tried_recently": true
  },
  "jstefani/paperboy": {
@@ -348,8 +360,8 @@
   "tried_recently": false
  },
  "leontoddjohnson/movements": {
-  "checked": "2026-09-01",
-  "tried_recently": false
+  "checked": "2026-09-06",
+  "tried_recently": true
  },
  "lylepmills/buoys": {
   "checked": "2026-09-01",
@@ -518,6 +530,10 @@
  "quixotic7/rake": {
   "checked": "2026-08-18",
   "tried_recently": false
+ },
+ "rehresman/32-harmony": {
+  "checked": "2026-09-06",
+  "tried_recently": true
  },
  "robbielyman/waver": {
   "checked": "2026-07-06",
