@@ -67,6 +67,10 @@
   "checked": "2026-08-27",
   "tried_recently": false
  },
+ "asymmetriccut/spore": {
+  "checked": "2026-09-07",
+  "tried_recently": true
+ },
  "bobodrone/aminor": {
   "checked": "2026-07-18",
   "tried_recently": false
@@ -132,7 +136,7 @@
   "tried_recently": true
  },
  "danielrigler/grains": {
-  "checked": "2026-09-05",
+  "checked": "2026-09-07",
   "tried_recently": true
  },
  "danielrigler/twins": {
