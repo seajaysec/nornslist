@@ -95,6 +95,10 @@
   "checked": "2026-07-19",
   "tried_recently": false
  },
+ "c4pt0r/grainloom": {
+  "checked": "2026-09-11",
+  "tried_recently": true
+ },
  "catfact/thebangs": {
   "checked": "2026-07-06",
   "tried_recently": false
@@ -140,7 +144,7 @@
   "tried_recently": true
  },
  "danielrigler/grains": {
-  "checked": "2026-09-07",
+  "checked": "2026-09-11",
   "tried_recently": true
  },
  "danielrigler/twins": {
