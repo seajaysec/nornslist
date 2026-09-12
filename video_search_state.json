@@ -96,7 +96,7 @@
   "tried_recently": false
  },
  "c4pt0r/grainloom": {
-  "checked": "2026-09-11",
+  "checked": "2026-09-12",
   "tried_recently": true
  },
  "catfact/thebangs": {
@@ -390,6 +390,10 @@
  "lynnavery/minisequencer": {
   "checked": "2026-08-20",
   "tried_recently": false
+ },
+ "magicking/norns-usb-audio-mod": {
+  "checked": "2026-09-12",
+  "tried_recently": true
  },
  "magicking/o-cube": {
   "checked": "2026-07-04",
@@ -882,6 +886,10 @@
  "unluogomoderatamentesicuro/tralascia": {
   "checked": "2026-08-01",
   "tried_recently": false
+ },
+ "vehka/nispm": {
+  "checked": "2026-09-12",
+  "tried_recently": true
  },
  "vinnystocker/ab-spectrum": {
   "checked": "2026-08-26",
