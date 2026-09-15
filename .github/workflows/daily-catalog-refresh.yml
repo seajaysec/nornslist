@@ -40,7 +40,13 @@ jobs:
           cache: 'pip'
 
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: pip install -r requirements.txt -r requirements-dev.txt
+
+      - name: Test (classifier recall + precision + floor)
+        # Offline guard: fails the run before we overwrite catalog.json if a change makes the
+        # classifier start dropping known-good repos (the recall regression that used to slip
+        # through unnoticed) or admitting noise.
+        run: python -m pytest tests/ -q
 
       - name: Discover + build catalog.json
         env:
