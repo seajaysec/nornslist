@@ -791,6 +791,10 @@
   "checked": "2026-07-06",
   "tried_recently": false
  },
+ "sonocircuit/midiplayer": {
+  "checked": "2026-09-19",
+  "tried_recently": true
+ },
  "sonocircuit/mlre": {
   "checked": "2026-09-01",
   "tried_recently": false
