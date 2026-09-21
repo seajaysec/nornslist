@@ -332,7 +332,7 @@
   "tried_recently": true
  },
  "jstefani/dx100": {
-  "checked": "2026-09-20",
+  "checked": "2026-09-21",
   "tried_recently": true
  },
  "jstefani/ksample": {
@@ -838,6 +838,10 @@
  "sumik-svg/ambient_organism": {
   "checked": "2026-07-25",
   "tried_recently": false
+ },
+ "sumik-svg/buclarp": {
+  "checked": "2026-09-21",
+  "tried_recently": true
  },
  "sumik-svg/geo_poly": {
   "checked": "2026-08-10",
