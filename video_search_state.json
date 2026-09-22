@@ -148,7 +148,7 @@
   "tried_recently": true
  },
  "danielrigler/hands": {
-  "checked": "2026-09-20",
+  "checked": "2026-09-22",
   "tried_recently": true
  },
  "danielrigler/twins": {
@@ -283,9 +283,21 @@
   "checked": "2026-07-21",
   "tried_recently": false
  },
+ "hanjo-synth/mdbass": {
+  "checked": "2026-09-22",
+  "tried_recently": true
+ },
+ "hanjo-synth/mdgen": {
+  "checked": "2026-09-22",
+  "tried_recently": true
+ },
  "illges/d2ms": {
   "checked": "2026-07-01",
   "tried_recently": false
+ },
+ "insectstheory/euclid": {
+  "checked": "2026-09-22",
+  "tried_recently": true
  },
  "itsyourbedtime/fugu": {
   "checked": "2026-07-06",
@@ -786,6 +798,10 @@
  "sonocircuit/concrete": {
   "checked": "2026-09-01",
   "tried_recently": false
+ },
+ "sonocircuit/fx_dverb": {
+  "checked": "2026-09-22",
+  "tried_recently": true
  },
  "sonocircuit/lanes": {
   "checked": "2026-07-06",
