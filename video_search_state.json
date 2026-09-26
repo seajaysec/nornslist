@@ -863,6 +863,10 @@
   "checked": "2026-09-21",
   "tried_recently": true
  },
+ "sumik-svg/furiko": {
+  "checked": "2026-09-26",
+  "tried_recently": true
+ },
  "sumik-svg/geo_poly": {
   "checked": "2026-08-10",
   "tried_recently": false
@@ -950,6 +954,10 @@
  "whitmo/re.kriate": {
   "checked": "2026-07-12",
   "tried_recently": false
+ },
+ "wildseyed/rotatable": {
+  "checked": "2026-09-26",
+  "tried_recently": true
  },
  "williamthazard/schicksalslied": {
   "checked": "2026-09-01",
