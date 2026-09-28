@@ -271,6 +271,10 @@
   "checked": "2026-08-17",
   "tried_recently": false
  },
+ "generalindustry1910/estuary-for-norns": {
+  "checked": "2026-09-28",
+  "tried_recently": true
+ },
  "groundforms/agnes": {
   "checked": "2026-07-24",
   "tried_recently": false
@@ -466,6 +470,10 @@
  "moncalamari/airclkr": {
   "checked": "2026-07-24",
   "tried_recently": false
+ },
+ "mrglennjones/midarto": {
+  "checked": "2026-09-28",
+  "tried_recently": true
  },
  "nattog/passthrough": {
   "checked": "2026-07-06",
@@ -956,7 +964,7 @@
   "tried_recently": false
  },
  "wildseyed/rotatable": {
-  "checked": "2026-09-26",
+  "checked": "2026-09-28",
   "tried_recently": true
  },
  "williamthazard/schicksalslied": {
