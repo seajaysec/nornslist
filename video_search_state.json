@@ -399,6 +399,18 @@
   "checked": "2026-09-23",
   "tried_recently": true
  },
+ "khoparzi/spectral_cc_norns": {
+  "checked": "2026-09-30",
+  "tried_recently": true
+ },
+ "khoparzi/spectral_note": {
+  "checked": "2026-09-30",
+  "tried_recently": true
+ },
+ "kodebeer/vinker": {
+  "checked": "2026-09-30",
+  "tried_recently": true
+ },
  "leontoddjohnson/movements": {
   "checked": "2026-09-06",
   "tried_recently": true
@@ -939,6 +951,10 @@
   "checked": "2026-08-01",
   "tried_recently": false
  },
+ "vehka/nb_fluid": {
+  "checked": "2026-09-30",
+  "tried_recently": true
+ },
  "vehka/nispm": {
   "checked": "2026-09-12",
   "tried_recently": true
@@ -964,7 +980,7 @@
   "tried_recently": false
  },
  "wildseyed/rotatable": {
-  "checked": "2026-09-28",
+  "checked": "2026-09-30",
   "tried_recently": true
  },
  "williamthazard/schicksalslied": {
