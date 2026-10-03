@@ -144,8 +144,8 @@
   "tried_recently": false
  },
  "danielrigler/grains": {
-  "checked": "2026-10-01",
-  "tried_recently": false
+  "checked": "2026-10-03",
+  "tried_recently": true
  },
  "danielrigler/hands": {
   "checked": "2026-09-29",
@@ -936,8 +936,8 @@
   "tried_recently": false
  },
  "synthi/ncoco": {
-  "checked": "2026-07-29",
-  "tried_recently": false
+  "checked": "2026-10-03",
+  "tried_recently": true
  },
  "tehn/isms": {
   "checked": "2026-07-06",
