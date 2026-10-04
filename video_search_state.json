@@ -967,6 +967,14 @@
   "checked": "2026-09-12",
   "tried_recently": false
  },
+ "vehka/norns-deps": {
+  "checked": "2026-10-04",
+  "tried_recently": true
+ },
+ "vehka/speech": {
+  "checked": "2026-10-04",
+  "tried_recently": true
+ },
  "vinnystocker/ab-spectrum": {
   "checked": "2026-09-16",
   "tried_recently": false
