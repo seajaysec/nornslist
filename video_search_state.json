@@ -39,6 +39,10 @@
   "checked": "2026-10-01",
   "tried_recently": false
  },
+ "aidanreilly/wavetables": {
+  "checked": "2026-10-05",
+  "tried_recently": true
+ },
  "andr-ew/eggs": {
   "checked": "2026-07-06",
   "tried_recently": false
@@ -76,16 +80,16 @@
   "tried_recently": false
  },
  "bobodrone/aminor": {
-  "checked": "2026-07-18",
-  "tried_recently": false
+  "checked": "2026-10-05",
+  "tried_recently": true
  },
  "bobodrone/drifting": {
   "checked": "2026-07-18",
   "tried_recently": false
  },
  "bobodrone/i-am-not-bore": {
-  "checked": "2026-07-30",
-  "tried_recently": false
+  "checked": "2026-10-05",
+  "tried_recently": true
  },
  "bobodrone/illfanas": {
   "checked": "2026-07-19",
@@ -246,6 +250,10 @@
  "foundsoundsmm/canopy": {
   "checked": "2026-09-08",
   "tried_recently": false
+ },
+ "foundsoundsmm/drumdrum": {
+  "checked": "2026-10-05",
+  "tried_recently": true
  },
  "foundsoundsmm/pappus": {
   "checked": "2026-08-29",
@@ -515,17 +523,21 @@
   "checked": "2026-07-06",
   "tried_recently": false
  },
+ "notrobintaylor/fx_reflex": {
+  "checked": "2026-10-05",
+  "tried_recently": true
+ },
  "notrobintaylor/media": {
-  "checked": "2026-07-13",
-  "tried_recently": false
+  "checked": "2026-10-05",
+  "tried_recently": true
  },
  "notrobintaylor/princeton": {
   "checked": "2026-10-01",
   "tried_recently": false
  },
  "notrobintaylor/squid": {
-  "checked": "2026-07-15",
-  "tried_recently": false
+  "checked": "2026-10-05",
+  "tried_recently": true
  },
  "okyeron/mi-eng": {
   "checked": "2026-10-01",
@@ -936,7 +948,7 @@
   "tried_recently": false
  },
  "synthi/ncoco": {
-  "checked": "2026-10-03",
+  "checked": "2026-10-05",
   "tried_recently": true
  },
  "tehn/isms": {
