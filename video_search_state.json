@@ -424,8 +424,8 @@
   "tried_recently": false
  },
  "kodebeer/vinker": {
-  "checked": "2026-09-30",
-  "tried_recently": false
+  "checked": "2026-10-07",
+  "tried_recently": true
  },
  "leontoddjohnson/movements": {
   "checked": "2026-09-06",
@@ -992,8 +992,8 @@
   "tried_recently": true
  },
  "vehka/nispm": {
-  "checked": "2026-09-12",
-  "tried_recently": false
+  "checked": "2026-10-07",
+  "tried_recently": true
  },
  "vehka/norns-deps": {
   "checked": "2026-10-06",
