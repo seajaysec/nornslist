@@ -495,6 +495,10 @@
   "checked": "2026-08-10",
   "tried_recently": false
  },
+ "minimalresonancefold/muta": {
+  "checked": "2026-10-08",
+  "tried_recently": true
+ },
  "moncalamari/airclkr": {
   "checked": "2026-07-24",
   "tried_recently": false
@@ -999,8 +1003,12 @@
   "checked": "2026-10-06",
   "tried_recently": true
  },
+ "vehka/norns-uc4": {
+  "checked": "2026-10-08",
+  "tried_recently": true
+ },
  "vehka/speech": {
-  "checked": "2026-10-06",
+  "checked": "2026-10-08",
   "tried_recently": true
  },
  "vinnystocker/ab-spectrum": {
