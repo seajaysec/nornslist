@@ -40,7 +40,7 @@
   "tried_recently": false
  },
  "aidanreilly/wavetables": {
-  "checked": "2026-10-05",
+  "checked": "2026-10-09",
   "tried_recently": true
  },
  "andr-ew/eggs": {
@@ -311,6 +311,10 @@
   "checked": "2026-09-22",
   "tried_recently": false
  },
+ "insectstheory/magnetic-echo": {
+  "checked": "2026-10-09",
+  "tried_recently": true
+ },
  "itsyourbedtime/fugu": {
   "checked": "2026-07-06",
   "tried_recently": false
@@ -350,6 +354,10 @@
  "jaseknighter/splnkr": {
   "checked": "2026-07-06",
   "tried_recently": false
+ },
+ "jguzak/crow_friends": {
+  "checked": "2026-10-09",
+  "tried_recently": true
  },
  "jstefani/coolwave": {
   "checked": "2026-09-15",
@@ -424,7 +432,7 @@
   "tried_recently": false
  },
  "kodebeer/vinker": {
-  "checked": "2026-10-07",
+  "checked": "2026-10-09",
   "tried_recently": true
  },
  "leontoddjohnson/movements": {
@@ -626,6 +634,10 @@
  "robbielyman/waver": {
   "checked": "2026-07-06",
   "tried_recently": false
+ },
+ "roge-rm/nidhogg": {
+  "checked": "2026-10-09",
+  "tried_recently": true
  },
  "roiyaru-bokujin/duatone": {
   "checked": "2026-10-02",
@@ -992,7 +1004,7 @@
   "tried_recently": false
  },
  "vehka/nb_pp": {
-  "checked": "2026-10-06",
+  "checked": "2026-10-09",
   "tried_recently": true
  },
  "vehka/nispm": {
@@ -1014,6 +1026,10 @@
  "vinnystocker/ab-spectrum": {
   "checked": "2026-09-16",
   "tried_recently": false
+ },
+ "vrcvs/neve": {
+  "checked": "2026-10-09",
+  "tried_recently": true
  },
  "water-feature/arpeggii": {
   "checked": "2026-08-12",
