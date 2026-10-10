@@ -148,7 +148,7 @@
   "tried_recently": false
  },
  "danielrigler/grains": {
-  "checked": "2026-10-03",
+  "checked": "2026-10-10",
   "tried_recently": true
  },
  "danielrigler/hands": {
@@ -282,6 +282,10 @@
  "generalindustry1910/estuary-for-norns": {
   "checked": "2026-09-28",
   "tried_recently": false
+ },
+ "giovannilami/shoal-norns": {
+  "checked": "2026-10-10",
+  "tried_recently": true
  },
  "groundforms/agnes": {
   "checked": "2026-07-24",
@@ -875,6 +879,10 @@
   "checked": "2026-07-06",
   "tried_recently": false
  },
+ "sonocircuit/loopywe": {
+  "checked": "2026-10-10",
+  "tried_recently": true
+ },
  "sonocircuit/midiplayer": {
   "checked": "2026-09-19",
   "tried_recently": false
@@ -912,8 +920,8 @@
   "tried_recently": false
  },
  "sonocircuit/nisho": {
-  "checked": "2026-10-01",
-  "tried_recently": false
+  "checked": "2026-10-10",
+  "tried_recently": true
  },
  "sonocircuit/sidvagn": {
   "checked": "2026-10-01",
@@ -996,7 +1004,7 @@
   "tried_recently": false
  },
  "vehka/modhousekeeper": {
-  "checked": "2026-10-06",
+  "checked": "2026-10-10",
   "tried_recently": true
  },
  "vehka/nb_fluid": {
@@ -1012,7 +1020,7 @@
   "tried_recently": true
  },
  "vehka/norns-deps": {
-  "checked": "2026-10-06",
+  "checked": "2026-10-10",
   "tried_recently": true
  },
  "vehka/norns-uc4": {
