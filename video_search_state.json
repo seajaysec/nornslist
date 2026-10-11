@@ -79,6 +79,10 @@
   "checked": "2026-09-07",
   "tried_recently": false
  },
+ "billwolfhub/zzup": {
+  "checked": "2026-10-11",
+  "tried_recently": true
+ },
  "bobodrone/aminor": {
   "checked": "2026-10-05",
   "tried_recently": true
@@ -436,7 +440,7 @@
   "tried_recently": false
  },
  "kodebeer/vinker": {
-  "checked": "2026-10-09",
+  "checked": "2026-10-11",
   "tried_recently": true
  },
  "leontoddjohnson/movements": {
@@ -640,7 +644,7 @@
   "tried_recently": false
  },
  "roge-rm/nidhogg": {
-  "checked": "2026-10-09",
+  "checked": "2026-10-11",
   "tried_recently": true
  },
  "roiyaru-bokujin/duatone": {
