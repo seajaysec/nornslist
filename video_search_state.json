@@ -152,12 +152,12 @@
   "tried_recently": false
  },
  "danielrigler/grains": {
-  "checked": "2026-10-10",
+  "checked": "2026-10-12",
   "tried_recently": true
  },
  "danielrigler/hands": {
-  "checked": "2026-09-29",
-  "tried_recently": false
+  "checked": "2026-10-12",
+  "tried_recently": true
  },
  "danielrigler/twins": {
   "checked": "2026-10-01",
@@ -288,7 +288,7 @@
   "tried_recently": false
  },
  "giovannilami/shoal-norns": {
-  "checked": "2026-10-10",
+  "checked": "2026-10-12",
   "tried_recently": true
  },
  "groundforms/agnes": {
@@ -440,7 +440,7 @@
   "tried_recently": false
  },
  "kodebeer/vinker": {
-  "checked": "2026-10-11",
+  "checked": "2026-10-12",
   "tried_recently": true
  },
  "leontoddjohnson/movements": {
@@ -1060,8 +1060,8 @@
   "tried_recently": false
  },
  "wildseyed/rotatable": {
-  "checked": "2026-10-01",
-  "tried_recently": false
+  "checked": "2026-10-12",
+  "tried_recently": true
  },
  "williamthazard/schicksalslied": {
   "checked": "2026-10-01",
