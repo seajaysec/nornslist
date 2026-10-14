@@ -147,12 +147,16 @@
   "checked": "2026-08-18",
   "tried_recently": false
  },
+ "chailight/txokit": {
+  "checked": "2026-10-14",
+  "tried_recently": true
+ },
  "daniel-mckemie/norns_csound": {
   "checked": "2026-09-05",
   "tried_recently": false
  },
  "danielrigler/grains": {
-  "checked": "2026-10-12",
+  "checked": "2026-10-14",
   "tried_recently": true
  },
  "danielrigler/hands": {
@@ -666,6 +670,10 @@
  "rync/magnetar": {
   "checked": "2026-09-13",
   "tried_recently": false
+ },
+ "sasha-ilatovskii/oscgard": {
+  "checked": "2026-10-14",
+  "tried_recently": true
  },
  "schollz/abacus": {
   "checked": "2026-10-01",
