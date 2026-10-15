@@ -291,6 +291,10 @@
   "checked": "2026-09-28",
   "tried_recently": false
  },
+ "giovannilami/nb_synthy": {
+  "checked": "2026-10-15",
+  "tried_recently": true
+ },
  "giovannilami/shoal-norns": {
   "checked": "2026-10-12",
   "tried_recently": true
@@ -506,6 +510,10 @@
  "maxbecq/mx.samples.maxbecq": {
   "checked": "2026-07-24",
   "tried_recently": false
+ },
+ "mchibouni/norns-remote": {
+  "checked": "2026-10-15",
+  "tried_recently": true
  },
  "melocoi/revaew": {
   "checked": "2026-07-13",
@@ -1032,12 +1040,12 @@
   "tried_recently": false
  },
  "vehka/modhousekeeper": {
-  "checked": "2026-10-10",
+  "checked": "2026-10-15",
   "tried_recently": true
  },
  "vehka/nb_fluid": {
-  "checked": "2026-09-30",
-  "tried_recently": false
+  "checked": "2026-10-15",
+  "tried_recently": true
  },
  "vehka/nb_pp": {
   "checked": "2026-10-09",
@@ -1048,7 +1056,7 @@
   "tried_recently": true
  },
  "vehka/norns-deps": {
-  "checked": "2026-10-10",
+  "checked": "2026-10-15",
   "tried_recently": true
  },
  "vehka/norns-uc4": {
