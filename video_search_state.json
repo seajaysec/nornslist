@@ -451,6 +451,10 @@
   "checked": "2026-10-13",
   "tried_recently": true
  },
+ "kvomuetliberg-repo/raum": {
+  "checked": "2026-10-16",
+  "tried_recently": true
+ },
  "leontoddjohnson/movements": {
   "checked": "2026-09-06",
   "tried_recently": false
@@ -907,6 +911,10 @@
   "checked": "2026-09-22",
   "tried_recently": false
  },
+ "sonocircuit/fx_rele": {
+  "checked": "2026-10-16",
+  "tried_recently": true
+ },
  "sonocircuit/lanes": {
   "checked": "2026-10-12",
   "tried_recently": true
@@ -1098,6 +1106,10 @@
  "williamthazard/schicksalslied": {
   "checked": "2026-10-01",
   "tried_recently": false
+ },
+ "williamthazard/schicksalslied_2": {
+  "checked": "2026-10-16",
+  "tried_recently": true
  },
  "xmacex/connect-opz": {
   "checked": "2026-10-12",
