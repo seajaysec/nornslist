@@ -19,21 +19,25 @@
   "checked": "2026-07-14",
   "tried_recently": false
  },
+ "2roundrobins/messiaen": {
+  "checked": "2026-10-19",
+  "tried_recently": true
+ },
  "adh82/kria": {
   "checked": "2026-09-10",
   "tried_recently": false
  },
  "adriendoerig/norns_bliss": {
-  "checked": "2026-08-14",
-  "tried_recently": false
+  "checked": "2026-10-19",
+  "tried_recently": true
  },
  "adriendoerig/norns_nayar": {
   "checked": "2026-09-06",
   "tried_recently": false
  },
  "aidanreilly/graindr": {
-  "checked": "2026-08-20",
-  "tried_recently": false
+  "checked": "2026-10-19",
+  "tried_recently": true
  },
  "aidanreilly/ortho": {
   "checked": "2026-07-16",
@@ -66,6 +70,10 @@
  "andr-ew/orgn": {
   "checked": "2026-10-01",
   "tried_recently": false
+ },
+ "andr-ew/reversesea": {
+  "checked": "2026-10-19",
+  "tried_recently": true
  },
  "andr-ew/rpls": {
   "checked": "2026-10-12",
@@ -116,8 +124,8 @@
   "tried_recently": true
  },
  "catfact/z_tuning": {
-  "checked": "2026-07-06",
-  "tried_recently": false
+  "checked": "2026-10-19",
+  "tried_recently": true
  },
  "catfact/zebra": {
   "checked": "2026-06-27",
@@ -139,6 +147,14 @@
   "checked": "2026-10-12",
   "tried_recently": true
  },
+ "cfdrake/shnth": {
+  "checked": "2026-10-19",
+  "tried_recently": true
+ },
+ "cfdrake/twine": {
+  "checked": "2026-10-19",
+  "tried_recently": true
+ },
  "cfurrow7/midi-garage-jukebox": {
   "checked": "2026-08-01",
   "tried_recently": false
@@ -153,6 +169,10 @@
  },
  "chailight/txokit": {
   "checked": "2026-10-14",
+  "tried_recently": true
+ },
+ "crimclark/timeparty": {
+  "checked": "2026-10-19",
   "tried_recently": true
  },
  "daniel-mckemie/norns_csound": {
@@ -170,6 +190,10 @@
  "danielrigler/twins": {
   "checked": "2026-10-01",
   "tried_recently": false
+ },
+ "dansimco/meadowphysics": {
+  "checked": "2026-10-19",
+  "tried_recently": true
  },
  "dansimco/teletype-norns": {
   "checked": "2026-08-16",
@@ -319,13 +343,17 @@
   "checked": "2026-08-07",
   "tried_recently": false
  },
+ "groundforms/polyphase": {
+  "checked": "2026-10-19",
+  "tried_recently": true
+ },
  "groundforms/sines-tarn": {
-  "checked": "2026-07-21",
-  "tried_recently": false
+  "checked": "2026-10-19",
+  "tried_recently": true
  },
  "hanjo-synth/mdbass": {
-  "checked": "2026-09-25",
-  "tried_recently": false
+  "checked": "2026-10-19",
+  "tried_recently": true
  },
  "hanjo-synth/mdgen": {
   "checked": "2026-09-22",
@@ -363,12 +391,20 @@
   "checked": "2026-10-01",
   "tried_recently": false
  },
+ "jaseknighter/clipper": {
+  "checked": "2026-10-19",
+  "tried_recently": true
+ },
  "jaseknighter/flora": {
   "checked": "2026-10-01",
   "tried_recently": false
  },
  "jaseknighter/flora_seamstress": {
   "checked": "2026-10-12",
+  "tried_recently": true
+ },
+ "jaseknighter/habitus_workshop": {
+  "checked": "2026-10-19",
   "tried_recently": true
  },
  "jaseknighter/kinesis": {
@@ -392,16 +428,16 @@
   "tried_recently": false
  },
  "jstefani/dx100": {
-  "checked": "2026-09-27",
-  "tried_recently": false
+  "checked": "2026-10-19",
+  "tried_recently": true
  },
  "jstefani/feedback4": {
   "checked": "2026-10-06",
   "tried_recently": true
  },
  "jstefani/ksample": {
-  "checked": "2026-09-02",
-  "tried_recently": false
+  "checked": "2026-10-19",
+  "tried_recently": true
  },
  "jstefani/midirec": {
   "checked": "2026-09-06",
@@ -412,12 +448,16 @@
   "tried_recently": true
  },
  "jstefani/paperboy": {
-  "checked": "2026-08-31",
-  "tried_recently": false
+  "checked": "2026-10-19",
+  "tried_recently": true
  },
  "jstefani/scope": {
   "checked": "2026-08-31",
   "tried_recently": false
+ },
+ "juhavaaraniemi/giro": {
+  "checked": "2026-10-19",
+  "tried_recently": true
  },
  "julesdg6/endlessdj-norns": {
   "checked": "2026-08-02",
@@ -431,6 +471,10 @@
   "checked": "2026-10-01",
   "tried_recently": false
  },
+ "justmat/greyhole": {
+  "checked": "2026-10-19",
+  "tried_recently": true
+ },
  "justmat/mangl": {
   "checked": "2026-10-01",
   "tried_recently": false
@@ -443,8 +487,20 @@
   "checked": "2026-10-01",
   "tried_recently": false
  },
+ "justmat/phyllis": {
+  "checked": "2026-10-19",
+  "tried_recently": true
+ },
+ "justmat/showers": {
+  "checked": "2026-10-19",
+  "tried_recently": true
+ },
  "justmat/silos": {
   "checked": "2026-10-12",
+  "tried_recently": true
+ },
+ "justmat/strides": {
+  "checked": "2026-10-19",
   "tried_recently": true
  },
  "katspaugh/krill-clouds": {
@@ -468,11 +524,15 @@
   "tried_recently": true
  },
  "leontoddjohnson/movements": {
-  "checked": "2026-09-06",
-  "tried_recently": false
+  "checked": "2026-10-19",
+  "tried_recently": true
  },
  "linusschrab/initenere": {
   "checked": "2026-10-12",
+  "tried_recently": true
+ },
+ "loudnumbers/loudnumbers_norns": {
+  "checked": "2026-10-19",
   "tried_recently": true
  },
  "lylepmills/buoys": {
@@ -503,12 +563,20 @@
   "checked": "2026-10-12",
   "tried_recently": true
  },
+ "markwheeler/drum_room": {
+  "checked": "2026-10-19",
+  "tried_recently": true
+ },
  "markwheeler/loom": {
   "checked": "2026-07-06",
   "tried_recently": false
  },
  "markwheeler/molly_the_poly": {
   "checked": "2026-10-12",
+  "tried_recently": true
+ },
+ "markwheeler/overwintering": {
+  "checked": "2026-10-19",
   "tried_recently": true
  },
  "markwheeler/passersby": {
@@ -518,6 +586,10 @@
  "markwheeler/timber": {
   "checked": "2026-10-01",
   "tried_recently": false
+ },
+ "markwheeler/tuner": {
+  "checked": "2026-10-19",
+  "tried_recently": true
  },
  "mattb/beets": {
   "checked": "2026-10-01",
@@ -539,9 +611,17 @@
   "checked": "2026-10-12",
   "tried_recently": true
  },
+ "midouest/just-play": {
+  "checked": "2026-10-19",
+  "tried_recently": true
+ },
  "midouest/wstretch": {
   "checked": "2026-08-10",
   "tried_recently": false
+ },
+ "mimetaur/arcify": {
+  "checked": "2026-10-19",
+  "tried_recently": true
  },
  "minimalresonancefold/muta": {
   "checked": "2026-10-08",
@@ -550,6 +630,10 @@
  "moncalamari/airclkr": {
   "checked": "2026-07-24",
   "tried_recently": false
+ },
+ "monome-community/nc03-ds": {
+  "checked": "2026-10-19",
+  "tried_recently": true
  },
  "mrglennjones/midarto": {
   "checked": "2026-09-29",
@@ -579,6 +663,10 @@
   "checked": "2026-07-06",
   "tried_recently": false
  },
+ "northern-information/tulpamancer": {
+  "checked": "2026-10-19",
+  "tried_recently": true
+ },
  "northern-information/yggdrasil": {
   "checked": "2026-10-12",
   "tried_recently": true
@@ -599,6 +687,10 @@
   "checked": "2026-10-05",
   "tried_recently": true
  },
+ "nzimas/floodplains": {
+  "checked": "2026-10-19",
+  "tried_recently": true
+ },
  "okyeron/game-emulators": {
   "checked": "2026-10-12",
   "tried_recently": true
@@ -611,6 +703,10 @@
   "checked": "2026-10-12",
   "tried_recently": true
  },
+ "okyeron/torii": {
+  "checked": "2026-10-19",
+  "tried_recently": true
+ },
  "oliviercreurer/compass": {
   "checked": "2026-10-12",
   "tried_recently": true
@@ -618,6 +714,10 @@
  "oliviercreurer/dunes": {
   "checked": "2026-07-06",
   "tried_recently": false
+ },
+ "oliviercreurer/patchwork": {
+  "checked": "2026-10-19",
+  "tried_recently": true
  },
  "om-i-god/synth-quest": {
   "checked": "2026-07-18",
@@ -639,6 +739,10 @@
   "checked": "2026-10-12",
   "tried_recently": true
  },
+ "p3r7/wavematrix": {
+  "checked": "2026-10-19",
+  "tried_recently": true
+ },
  "pedroteche-ih/un-natural": {
   "checked": "2026-07-11",
   "tried_recently": false
@@ -648,8 +752,8 @@
   "tried_recently": false
  },
  "quixotic7/choralroot": {
-  "checked": "2026-09-04",
-  "tried_recently": false
+  "checked": "2026-10-19",
+  "tried_recently": true
  },
  "quixotic7/elasticat": {
   "checked": "2026-10-12",
@@ -676,8 +780,12 @@
   "tried_recently": false
  },
  "rehresman/32-harmony": {
-  "checked": "2026-09-06",
-  "tried_recently": false
+  "checked": "2026-10-19",
+  "tried_recently": true
+ },
+ "robbielyman/bitters": {
+  "checked": "2026-10-19",
+  "tried_recently": true
  },
  "robbielyman/waver": {
   "checked": "2026-10-12",
@@ -694,6 +802,10 @@
  "rync/magnetar": {
   "checked": "2026-09-13",
   "tried_recently": false
+ },
+ "sarweiler/zellen": {
+  "checked": "2026-10-19",
+  "tried_recently": true
  },
  "sasha-ilatovskii/oscgard": {
   "checked": "2026-10-14",
@@ -721,6 +833,10 @@
  },
  "schollz/autojack": {
   "checked": "2026-10-12",
+  "tried_recently": true
+ },
+ "schollz/awake-icarus": {
+  "checked": "2026-10-19",
   "tried_recently": true
  },
  "schollz/barcode": {
@@ -767,8 +883,16 @@
   "checked": "2026-10-01",
   "tried_recently": false
  },
+ "schollz/lightsout": {
+  "checked": "2026-10-19",
+  "tried_recently": true
+ },
  "schollz/makebreakbeat": {
   "checked": "2026-10-12",
+  "tried_recently": true
+ },
+ "schollz/marimba": {
+  "checked": "2026-10-19",
   "tried_recently": true
  },
  "schollz/mididim": {
@@ -782,6 +906,10 @@
  "schollz/mx.samples": {
   "checked": "2026-10-01",
   "tried_recently": false
+ },
+ "schollz/mx.samples2": {
+  "checked": "2026-10-19",
+  "tried_recently": true
  },
  "schollz/mx.synths": {
   "checked": "2026-10-01",
@@ -828,8 +956,12 @@
   "tried_recently": false
  },
  "schollz/pt2399": {
-  "checked": "2026-09-01",
-  "tried_recently": false
+  "checked": "2026-10-19",
+  "tried_recently": true
+ },
+ "schollz/qwertymidi": {
+  "checked": "2026-10-19",
+  "tried_recently": true
  },
  "schollz/rachim": {
   "checked": "2026-06-27",
@@ -841,6 +973,10 @@
  },
  "schollz/sampswap": {
   "checked": "2026-10-12",
+  "tried_recently": true
+ },
+ "schollz/splines": {
+  "checked": "2026-10-19",
   "tried_recently": true
  },
  "schollz/supertonic": {
@@ -855,9 +991,17 @@
   "checked": "2026-10-01",
   "tried_recently": false
  },
+ "schollz/taperoll": {
+  "checked": "2026-10-19",
+  "tried_recently": true
+ },
  "schollz/thirtythree": {
   "checked": "2026-10-01",
   "tried_recently": false
+ },
+ "schollz/turnstile": {
+  "checked": "2026-10-19",
+  "tried_recently": true
  },
  "schollz/wobblewobble": {
   "checked": "2026-10-01",
@@ -883,6 +1027,10 @@
   "checked": "2026-07-24",
   "tried_recently": false
  },
+ "semierendonmez-commits/rungler": {
+  "checked": "2026-10-19",
+  "tried_recently": true
+ },
  "sixolet/doubledecker": {
   "checked": "2026-10-12",
   "tried_recently": true
@@ -895,12 +1043,24 @@
   "checked": "2026-10-12",
   "tried_recently": true
  },
+ "sixolet/lepidoptery": {
+  "checked": "2026-10-19",
+  "tried_recently": true
+ },
  "sixolet/matrix": {
   "checked": "2026-10-12",
   "tried_recently": true
  },
  "sixolet/minim": {
   "checked": "2026-10-12",
+  "tried_recently": true
+ },
+ "sixolet/nb_crow": {
+  "checked": "2026-10-19",
+  "tried_recently": true
+ },
+ "sixolet/nbin": {
+  "checked": "2026-10-19",
   "tried_recently": true
  },
  "sixolet/nydl": {
@@ -913,6 +1073,10 @@
  },
  "sixolet/sacred_cyborg_harmony": {
   "checked": "2026-10-12",
+  "tried_recently": true
+ },
+ "sixolet/toolkit": {
+  "checked": "2026-10-19",
   "tried_recently": true
  },
  "sonocircuit/concrete": {
@@ -960,16 +1124,28 @@
   "tried_recently": true
  },
  "sonocircuit/nb_plak": {
-  "checked": "2026-08-22",
-  "tried_recently": false
+  "checked": "2026-10-19",
+  "tried_recently": true
  },
  "sonocircuit/nb_polyform": {
-  "checked": "2026-07-06",
-  "tried_recently": false
+  "checked": "2026-10-19",
+  "tried_recently": true
+ },
+ "sonocircuit/nb_sidfm": {
+  "checked": "2026-10-19",
+  "tried_recently": true
+ },
+ "sonocircuit/nb_smpkit": {
+  "checked": "2026-10-19",
+  "tried_recently": true
  },
  "sonocircuit/nb_smpkyz": {
   "checked": "2026-07-09",
   "tried_recently": false
+ },
+ "sonocircuit/nb_tonic": {
+  "checked": "2026-10-19",
+  "tried_recently": true
  },
  "sonocircuit/nisho": {
   "checked": "2026-10-19",
@@ -978,6 +1154,10 @@
  "sonocircuit/sidvagn": {
   "checked": "2026-10-01",
   "tried_recently": false
+ },
+ "stvnrlly/subharmoniclone": {
+  "checked": "2026-10-19",
+  "tried_recently": true
  },
  "sumik-svg/ambient_organism": {
   "checked": "2026-07-25",
@@ -996,12 +1176,12 @@
   "tried_recently": false
  },
  "sumik-svg/kastle_arp_norns": {
-  "checked": "2026-08-30",
-  "tried_recently": false
+  "checked": "2026-10-19",
+  "tried_recently": true
  },
  "sumik-svg/kastle_norns": {
-  "checked": "2026-08-27",
-  "tried_recently": false
+  "checked": "2026-10-19",
+  "tried_recently": true
  },
  "sumik-svg/kesh-jig-ambient0": {
   "checked": "2026-07-13",
@@ -1042,6 +1222,22 @@
  "tehn/isms": {
   "checked": "2026-07-06",
   "tried_recently": false
+ },
+ "tehn/mlriii": {
+  "checked": "2026-10-19",
+  "tried_recently": true
+ },
+ "tehn/plasma": {
+  "checked": "2026-10-19",
+  "tried_recently": true
+ },
+ "tomwaters/get_in_the_sea": {
+  "checked": "2026-10-19",
+  "tried_recently": true
+ },
+ "tuesdaynightmachines/nmmelodymagic": {
+  "checked": "2026-10-19",
+  "tried_recently": true
  },
  "tweeedo911/pocketgrid": {
   "checked": "2026-08-21",
@@ -1123,6 +1319,14 @@
   "checked": "2026-10-16",
   "tried_recently": true
  },
+ "williamthazard/shnthsalslied": {
+  "checked": "2026-10-19",
+  "tried_recently": true
+ },
+ "williamthazard/tetrabotis": {
+  "checked": "2026-10-19",
+  "tried_recently": true
+ },
  "xmacex/connect-opz": {
   "checked": "2026-10-12",
   "tried_recently": true
@@ -1136,11 +1340,15 @@
   "tried_recently": true
  },
  "xmacex/fx_comb": {
-  "checked": "2026-09-20",
-  "tried_recently": false
+  "checked": "2026-10-19",
+  "tried_recently": true
  },
  "xmacex/lnra-8": {
   "checked": "2026-10-12",
+  "tried_recently": true
+ },
+ "xmacex/serialism": {
+  "checked": "2026-10-19",
   "tried_recently": true
  },
  "xmacex/wifihifi": {
@@ -1152,8 +1360,8 @@
   "tried_recently": false
  },
  "yams7457/erasmus": {
-  "checked": "2026-07-06",
-  "tried_recently": false
+  "checked": "2026-10-19",
+  "tried_recently": true
  },
  "yukesmusic-max/freshlook": {
   "checked": "2026-10-06",
