@@ -1,4 +1,8 @@
 {
+ "0xmch/norns-remote": {
+  "checked": "2026-10-19",
+  "tried_recently": true
+ },
  "21echoes/cyrene": {
   "checked": "2026-10-12",
   "tried_recently": true
@@ -236,8 +240,8 @@
   "tried_recently": false
  },
  "evnoj/7u-patch-companion": {
-  "checked": "2026-08-04",
-  "tried_recently": false
+  "checked": "2026-10-19",
+  "tried_recently": true
  },
  "evnoj/n-orbs": {
   "checked": "2026-07-07",
@@ -297,6 +301,10 @@
  },
  "giovannilami/nb_synthy": {
   "checked": "2026-10-15",
+  "tried_recently": true
+ },
+ "giovannilami/shoal": {
+  "checked": "2026-10-19",
   "tried_recently": true
  },
  "giovannilami/shoal-norns": {
@@ -484,8 +492,8 @@
   "tried_recently": false
  },
  "magicking/norns-usb-audio-mod": {
-  "checked": "2026-09-12",
-  "tried_recently": false
+  "checked": "2026-10-19",
+  "tried_recently": true
  },
  "magicking/o-cube": {
   "checked": "2026-09-16",
@@ -964,7 +972,7 @@
   "tried_recently": false
  },
  "sonocircuit/nisho": {
-  "checked": "2026-10-10",
+  "checked": "2026-10-19",
   "tried_recently": true
  },
  "sonocircuit/sidvagn": {
@@ -1104,7 +1112,7 @@
   "tried_recently": false
  },
  "wildseyed/rotatable": {
-  "checked": "2026-10-12",
+  "checked": "2026-10-19",
   "tried_recently": true
  },
  "williamthazard/schicksalslied": {
