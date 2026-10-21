@@ -164,7 +164,7 @@
   "tried_recently": false
  },
  "danielrigler/grains": {
-  "checked": "2026-10-18",
+  "checked": "2026-10-21",
   "tried_recently": true
  },
  "danielrigler/hands": {
@@ -326,6 +326,10 @@
  "groundforms/sines-tarn": {
   "checked": "2026-07-21",
   "tried_recently": false
+ },
+ "ha1dcre/verdandi": {
+  "checked": "2026-10-21",
+  "tried_recently": true
  },
  "hanjo-synth/mdbass": {
   "checked": "2026-09-25",
@@ -582,6 +586,10 @@
  "northern-information/goldeneye": {
   "checked": "2026-07-06",
   "tried_recently": false
+ },
+ "northern-information/tulpamancer": {
+  "checked": "2026-10-21",
+  "tried_recently": true
  },
  "northern-information/yggdrasil": {
   "checked": "2026-10-12",
@@ -928,7 +936,7 @@
   "tried_recently": false
  },
  "sonocircuit/fx_rele": {
-  "checked": "2026-10-16",
+  "checked": "2026-10-21",
   "tried_recently": true
  },
  "sonocircuit/lanes": {
