@@ -111,6 +111,10 @@
   "checked": "2026-09-12",
   "tried_recently": false
  },
+ "carlosedp/fx_miugens": {
+  "checked": "2026-10-22",
+  "tried_recently": true
+ },
  "carlosedp/terrarium": {
   "checked": "2026-10-20",
   "tried_recently": true
@@ -696,7 +700,7 @@
   "tried_recently": true
  },
  "roge-rm/nidhogg": {
-  "checked": "2026-10-11",
+  "checked": "2026-10-22",
   "tried_recently": true
  },
  "roiyaru-bokujin/duatone": {
@@ -935,6 +939,10 @@
   "checked": "2026-09-22",
   "tried_recently": false
  },
+ "sonocircuit/fx_pete": {
+  "checked": "2026-10-22",
+  "tried_recently": true
+ },
  "sonocircuit/fx_rele": {
   "checked": "2026-10-21",
   "tried_recently": true
@@ -1089,6 +1097,10 @@
  },
  "vehka/norns-deps": {
   "checked": "2026-10-15",
+  "tried_recently": true
+ },
+ "vehka/norns-hud": {
+  "checked": "2026-10-22",
   "tried_recently": true
  },
  "vehka/norns-uc4": {
