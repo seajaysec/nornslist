@@ -115,6 +115,10 @@
   "checked": "2026-10-22",
   "tried_recently": true
  },
+ "carlosedp/norns-mi-ugens": {
+  "checked": "2026-10-23",
+  "tried_recently": true
+ },
  "carlosedp/terrarium": {
   "checked": "2026-10-20",
   "tried_recently": true
@@ -332,7 +336,7 @@
   "tried_recently": false
  },
  "ha1dcre/verdandi": {
-  "checked": "2026-10-21",
+  "checked": "2026-10-23",
   "tried_recently": true
  },
  "hanjo-synth/mdbass": {
@@ -939,12 +943,16 @@
   "checked": "2026-09-22",
   "tried_recently": false
  },
+ "sonocircuit/fx_koro": {
+  "checked": "2026-10-23",
+  "tried_recently": true
+ },
  "sonocircuit/fx_pete": {
   "checked": "2026-10-22",
   "tried_recently": true
  },
  "sonocircuit/fx_rele": {
-  "checked": "2026-10-21",
+  "checked": "2026-10-23",
   "tried_recently": true
  },
  "sonocircuit/lanes": {
@@ -1160,8 +1168,8 @@
   "tried_recently": true
  },
  "xmacex/fx_comb": {
-  "checked": "2026-09-20",
-  "tried_recently": false
+  "checked": "2026-10-23",
+  "tried_recently": true
  },
  "xmacex/lnra-8": {
   "checked": "2026-10-12",
