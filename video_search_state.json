@@ -172,7 +172,7 @@
   "tried_recently": false
  },
  "danielrigler/grains": {
-  "checked": "2026-10-21",
+  "checked": "2026-10-24",
   "tried_recently": true
  },
  "danielrigler/hands": {
@@ -1071,6 +1071,10 @@
   "checked": "2026-07-06",
   "tried_recently": false
  },
+ "tsgplus100/norns-": {
+  "checked": "2026-10-24",
+  "tried_recently": true
+ },
  "tweeedo911/pocketgrid": {
   "checked": "2026-08-21",
   "tried_recently": false
@@ -1147,12 +1151,16 @@
   "checked": "2026-10-19",
   "tried_recently": true
  },
+ "williamthazard/justdraw": {
+  "checked": "2026-10-24",
+  "tried_recently": true
+ },
  "williamthazard/schicksalslied": {
   "checked": "2026-10-01",
   "tried_recently": false
  },
  "williamthazard/schicksalslied_2": {
-  "checked": "2026-10-16",
+  "checked": "2026-10-24",
   "tried_recently": true
  },
  "xmacex/connect-opz": {
