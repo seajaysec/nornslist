@@ -43,6 +43,10 @@
   "checked": "2026-10-01",
   "tried_recently": false
  },
+ "aidanreilly/talbot": {
+  "checked": "2026-10-26",
+  "tried_recently": true
+ },
  "aidanreilly/wavetables": {
   "checked": "2026-10-09",
   "tried_recently": true
@@ -172,7 +176,7 @@
   "tried_recently": false
  },
  "danielrigler/grains": {
-  "checked": "2026-10-24",
+  "checked": "2026-10-26",
   "tried_recently": true
  },
  "danielrigler/hands": {
@@ -491,6 +495,10 @@
   "checked": "2026-10-12",
   "tried_recently": true
  },
+ "loopmasta/smplr": {
+  "checked": "2026-10-26",
+  "tried_recently": true
+ },
  "lylepmills/buoys": {
   "checked": "2026-10-01",
   "tried_recently": false
@@ -657,6 +665,10 @@
  },
  "p3r7/washi": {
   "checked": "2026-10-12",
+  "tried_recently": true
+ },
+ "pastitas/cafeteria": {
+  "checked": "2026-10-26",
   "tried_recently": true
  },
  "pedroteche-ih/un-natural": {
@@ -887,6 +899,10 @@
   "checked": "2026-10-01",
   "tried_recently": false
  },
+ "schrab/beads-norns": {
+  "checked": "2026-10-26",
+  "tried_recently": true
+ },
  "sdorsett/midi-lfo": {
   "checked": "2026-07-27",
   "tried_recently": false
@@ -1023,6 +1039,10 @@
   "checked": "2026-08-10",
   "tried_recently": false
  },
+ "sumik-svg/helix": {
+  "checked": "2026-10-26",
+  "tried_recently": true
+ },
  "sumik-svg/kastle_arp_norns": {
   "checked": "2026-08-30",
   "tried_recently": false
@@ -1119,6 +1139,10 @@
   "checked": "2026-10-08",
   "tried_recently": true
  },
+ "vehka/rhythms": {
+  "checked": "2026-10-26",
+  "tried_recently": true
+ },
  "vehka/speech": {
   "checked": "2026-10-08",
   "tried_recently": true
@@ -1152,7 +1176,7 @@
   "tried_recently": true
  },
  "williamthazard/justdraw": {
-  "checked": "2026-10-25",
+  "checked": "2026-10-26",
   "tried_recently": true
  },
  "williamthazard/schicksalslied": {
@@ -1164,7 +1188,7 @@
   "tried_recently": true
  },
  "williamthazard/tabletseq": {
-  "checked": "2026-10-25",
+  "checked": "2026-10-26",
   "tried_recently": true
  },
  "xmacex/connect-opz": {
