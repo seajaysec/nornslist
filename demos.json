@@ -11,10 +11,6 @@
   "checked": "2026-07-06",
   "demo": "https://www.youtube.com/watch?v=4aEEepxPnwg"
  },
- "2roundrobins/messiaen": {
-  "checked": "2026-10-26",
-  "demo": "https://www.youtube.com/watch?v=QMTE1_UY9yY"
- },
  "adamstaff/scholastic": {
   "checked": "2026-06-27",
   "demo": "https://www.youtube.com/watch?v=vvl44pg3hMM"
@@ -127,21 +123,9 @@
   "checked": "2026-10-01",
   "demo": "https://www.youtube.com/watch?v=3cvGZqBzMBc"
  },
- "cfdrake/shnth": {
-  "checked": "2026-10-26",
-  "demo": "https://www.youtube.com/watch?v=zAgWjj_FCxg"
- },
- "cfdrake/twine": {
-  "checked": "2026-10-26",
-  "demo": "https://www.youtube.com/watch?v=hzFiChYH-fY"
- },
  "danielrigler/twins": {
   "checked": "2026-06-28",
   "demo": "https://www.youtube.com/watch?v=jQ8Qr_RtQCY"
- },
- "dansimco/meadowphysics": {
-  "checked": "2026-10-26",
-  "demo": "https://www.youtube.com/watch?v=2aAew9pnT-g"
  },
  "danutpadel-oss/breakbeat": {
   "checked": "2026-08-14",
@@ -323,10 +307,6 @@
   "checked": "2026-06-27",
   "demo": "https://www.youtube.com/watch?v=vse-e4BgNao"
  },
- "justmat/showers": {
-  "checked": "2026-10-26",
-  "demo": "https://www.youtube.com/watch?v=L9yvxjVQkuU"
- },
  "kasperbauer/metrix": {
   "checked": "2026-06-27",
   "demo": "https://www.youtube.com/watch?v=niP5hVB43_8"
@@ -354,10 +334,6 @@
  "markwheeler/loom": {
   "checked": "2026-07-06",
   "demo": "https://www.youtube.com/watch?v=LG6SJWUdWek"
- },
- "markwheeler/overwintering": {
-  "checked": "2026-10-26",
-  "demo": "https://www.youtube.com/watch?v=ILxht5gEs8I"
  },
  "markwheeler/passersby": {
   "checked": "2026-07-01",
@@ -435,10 +411,6 @@
   "checked": "2026-06-27",
   "demo": "https://www.youtube.com/watch?v=M0aHRQAvBRA"
  },
- "nzimas/floodplains": {
-  "checked": "2026-10-26",
-  "demo": "https://www.youtube.com/watch?v=KBXtcdcboyE"
- },
  "oliviercreurer/compass": {
   "checked": "2026-10-12",
   "demo": "https://www.youtube.com/watch?v=msauivpbtI8"
@@ -446,10 +418,6 @@
  "oliviercreurer/dunes": {
   "checked": "2026-07-06",
   "demo": "https://www.youtube.com/watch?v=V1MUW9b7fjg"
- },
- "oliviercreurer/patchwork": {
-  "checked": "2026-10-26",
-  "demo": "https://www.youtube.com/watch?v=a2-xlKkjimA"
  },
  "pierrepaslier/aldous": {
   "checked": "2026-06-27",
@@ -474,10 +442,6 @@
  "roiyaru-bokujin/duatone": {
   "checked": "2026-10-02",
   "demo": "https://www.youtube.com/watch?v=sIEU94lM-Ks"
- },
- "sarweiler/zellen": {
-  "checked": "2026-10-26",
-  "demo": "https://www.youtube.com/watch?v=0YFQPW84zM8"
  },
  "schollz/abacus": {
   "checked": "2026-10-01",
@@ -603,21 +567,9 @@
   "checked": "2026-10-01",
   "demo": "https://www.youtube.com/watch?v=JiZXjg9UtMs"
  },
- "semierendonmez-commits/rungler": {
-  "checked": "2026-10-26",
-  "demo": "https://www.youtube.com/watch?v=hD_bQfqZnzM"
- },
  "sixolet/emplaitress": {
   "checked": "2026-06-27",
   "demo": "https://www.youtube.com/watch?v=Nza0k0ZhVIo"
- },
- "sixolet/lepidoptery": {
-  "checked": "2026-10-26",
-  "demo": "https://www.youtube.com/watch?v=0ey5iNtXPO4"
- },
- "sixolet/toolkit": {
-  "checked": "2026-10-26",
-  "demo": "https://www.youtube.com/watch?v=P1aRZ7mYXbo"
  },
  "skibu/taweeet": {
   "checked": "2026-06-27",
@@ -706,10 +658,6 @@
  "williamthazard/schicksalslied": {
   "checked": "2026-10-01",
   "demo": "https://www.youtube.com/watch?v=S1aKwR3Spus"
- },
- "williamthazard/shnthsalslied": {
-  "checked": "2026-10-26",
-  "demo": "https://www.youtube.com/watch?v=T5zg_Nl8zuI"
  },
  "xmacex/7uring-machine": {
   "checked": "2026-06-27",
