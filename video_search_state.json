@@ -487,6 +487,14 @@
   "checked": "2026-10-16",
   "tried_recently": true
  },
+ "laderast/microshimmer": {
+  "checked": "2026-10-27",
+  "tried_recently": true
+ },
+ "laderast/nanoblossom": {
+  "checked": "2026-10-27",
+  "tried_recently": true
+ },
  "leontoddjohnson/movements": {
   "checked": "2026-09-06",
   "tried_recently": false
@@ -604,7 +612,7 @@
   "tried_recently": false
  },
  "northern-information/tulpamancer": {
-  "checked": "2026-10-21",
+  "checked": "2026-10-27",
   "tried_recently": true
  },
  "northern-information/yggdrasil": {
@@ -1092,7 +1100,7 @@
   "tried_recently": false
  },
  "tsgplus100/norns-": {
-  "checked": "2026-10-24",
+  "checked": "2026-10-27",
   "tried_recently": true
  },
  "tweeedo911/pocketgrid": {
@@ -1222,6 +1230,10 @@
  "yams7457/erasmus": {
   "checked": "2026-07-06",
   "tried_recently": false
+ },
+ "yratof/beads": {
+  "checked": "2026-10-27",
+  "tried_recently": true
  },
  "yukesmusic-max/freshlook": {
   "checked": "2026-10-06",
