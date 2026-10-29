@@ -492,7 +492,7 @@
   "tried_recently": true
  },
  "laderast/nanoblossom": {
-  "checked": "2026-10-27",
+  "checked": "2026-10-29",
   "tried_recently": true
  },
  "leontoddjohnson/movements": {
@@ -503,8 +503,12 @@
   "checked": "2026-10-12",
   "tried_recently": true
  },
+ "loopmasta/bt-1o1": {
+  "checked": "2026-10-29",
+  "tried_recently": true
+ },
  "loopmasta/smplr": {
-  "checked": "2026-10-26",
+  "checked": "2026-10-29",
   "tried_recently": true
  },
  "lylepmills/buoys": {
@@ -1114,6 +1118,10 @@
  "unluogomoderatamentesicuro/animula": {
   "checked": "2026-08-17",
   "tried_recently": false
+ },
+ "unluogomoderatamentesicuro/micelio": {
+  "checked": "2026-10-29",
+  "tried_recently": true
  },
  "unluogomoderatamentesicuro/tralascia": {
   "checked": "2026-08-01",
