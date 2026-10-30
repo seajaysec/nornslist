@@ -123,6 +123,10 @@
   "checked": "2026-10-23",
   "tried_recently": true
  },
+ "carlosedp/pollen": {
+  "checked": "2026-10-30",
+  "tried_recently": true
+ },
  "carlosedp/terrarium": {
   "checked": "2026-10-20",
   "tried_recently": true
@@ -320,7 +324,7 @@
   "tried_recently": true
  },
  "giovannilami/shoal": {
-  "checked": "2026-10-19",
+  "checked": "2026-10-30",
   "tried_recently": true
  },
  "giovannilami/shoal-norns": {
@@ -505,6 +509,10 @@
  },
  "loopmasta/bt-1o1": {
   "checked": "2026-10-29",
+  "tried_recently": true
+ },
+ "loopmasta/shield": {
+  "checked": "2026-10-30",
   "tried_recently": true
  },
  "loopmasta/smplr": {
@@ -722,6 +730,10 @@
  "rehresman/32-harmony": {
   "checked": "2026-09-06",
   "tried_recently": false
+ },
+ "rizqadeeb38-dev/rebelwar_ui": {
+  "checked": "2026-10-30",
+  "tried_recently": true
  },
  "robbielyman/waver": {
   "checked": "2026-10-12",
@@ -1104,7 +1116,7 @@
   "tried_recently": false
  },
  "tsgplus100/norns-": {
-  "checked": "2026-10-27",
+  "checked": "2026-10-30",
   "tried_recently": true
  },
  "tweeedo911/pocketgrid": {
@@ -1118,6 +1130,10 @@
  "unluogomoderatamentesicuro/animula": {
   "checked": "2026-08-17",
   "tried_recently": false
+ },
+ "unluogomoderatamentesicuro/ermo": {
+  "checked": "2026-10-30",
+  "tried_recently": true
  },
  "unluogomoderatamentesicuro/micelio": {
   "checked": "2026-10-29",
