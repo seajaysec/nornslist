@@ -511,6 +511,10 @@
   "checked": "2026-10-29",
   "tried_recently": true
  },
+ "loopmasta/loops": {
+  "checked": "2026-10-31",
+  "tried_recently": true
+ },
  "loopmasta/shield": {
   "checked": "2026-10-30",
   "tried_recently": true
@@ -732,7 +736,7 @@
   "tried_recently": false
  },
  "rizqadeeb38-dev/rebelwar_ui": {
-  "checked": "2026-10-30",
+  "checked": "2026-10-31",
   "tried_recently": true
  },
  "robbielyman/waver": {
@@ -1127,6 +1131,10 @@
   "checked": "2026-07-30",
   "tried_recently": false
  },
+ "unluogomoderatamentesicuro/anamnesi": {
+  "checked": "2026-10-31",
+  "tried_recently": true
+ },
  "unluogomoderatamentesicuro/animula": {
   "checked": "2026-08-17",
   "tried_recently": false
@@ -1160,7 +1168,7 @@
   "tried_recently": true
  },
  "vehka/norns-deps": {
-  "checked": "2026-10-15",
+  "checked": "2026-10-31",
   "tried_recently": true
  },
  "vehka/norns-hud": {
