@@ -736,7 +736,7 @@
   "tried_recently": false
  },
  "rizqadeeb38-dev/rebelwar_ui": {
-  "checked": "2026-10-31",
+  "checked": "2026-11-01",
   "tried_recently": true
  },
  "robbielyman/waver": {
@@ -1181,6 +1181,10 @@
  },
  "vehka/rhythms": {
   "checked": "2026-10-26",
+  "tried_recently": true
+ },
+ "vehka/rumpali": {
+  "checked": "2026-11-01",
   "tried_recently": true
  },
  "vehka/speech": {
