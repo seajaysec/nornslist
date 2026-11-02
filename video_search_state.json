@@ -180,8 +180,8 @@
   "tried_recently": false
  },
  "danielrigler/grains": {
-  "checked": "2026-10-28",
-  "tried_recently": false
+  "checked": "2026-11-02",
+  "tried_recently": true
  },
  "danielrigler/hands": {
   "checked": "2026-10-12",
@@ -520,8 +520,8 @@
   "tried_recently": false
  },
  "loopmasta/smplr": {
-  "checked": "2026-10-29",
-  "tried_recently": false
+  "checked": "2026-11-02",
+  "tried_recently": true
  },
  "lylepmills/buoys": {
   "checked": "2026-11-01",
@@ -736,8 +736,8 @@
   "tried_recently": false
  },
  "rizqadeeb38-dev/rebelwar_ui": {
-  "checked": "2026-11-01",
-  "tried_recently": false
+  "checked": "2026-11-02",
+  "tried_recently": true
  },
  "robbielyman/waver": {
   "checked": "2026-10-12",
@@ -758,6 +758,10 @@
  "sasha-ilatovskii/oscgard": {
   "checked": "2026-10-14",
   "tried_recently": false
+ },
+ "sceneton/geode": {
+  "checked": "2026-11-02",
+  "tried_recently": true
  },
  "schollz/abacus": {
   "checked": "2026-11-01",
@@ -1188,8 +1192,8 @@
   "tried_recently": false
  },
  "vehka/rumpali": {
-  "checked": "2026-11-01",
-  "tried_recently": false
+  "checked": "2026-11-02",
+  "tried_recently": true
  },
  "vehka/speech": {
   "checked": "2026-10-08",
