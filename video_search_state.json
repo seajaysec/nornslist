@@ -35,6 +35,10 @@
   "checked": "2026-08-20",
   "tried_recently": false
  },
+ "aidanreilly/nb_wavetables": {
+  "checked": "2026-11-04",
+  "tried_recently": true
+ },
  "aidanreilly/ortho": {
   "checked": "2026-07-16",
   "tried_recently": false
@@ -675,6 +679,14 @@
   "checked": "2026-07-06",
   "tried_recently": false
  },
+ "om-i-god/estuary": {
+  "checked": "2026-11-04",
+  "tried_recently": true
+ },
+ "om-i-god/gradient": {
+  "checked": "2026-11-04",
+  "tried_recently": true
+ },
  "om-i-god/synth-quest": {
   "checked": "2026-07-18",
   "tried_recently": false
@@ -1168,8 +1180,8 @@
   "tried_recently": false
  },
  "vehka/nb_fluid": {
-  "checked": "2026-10-15",
-  "tried_recently": false
+  "checked": "2026-11-04",
+  "tried_recently": true
  },
  "vehka/nb_pp": {
   "checked": "2026-10-09",
