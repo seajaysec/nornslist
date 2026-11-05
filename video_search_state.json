@@ -132,8 +132,8 @@
   "tried_recently": false
  },
  "carlosedp/pollen": {
-  "checked": "2026-10-30",
-  "tried_recently": false
+  "checked": "2026-11-05",
+  "tried_recently": true
  },
  "carlosedp/terrarium": {
   "checked": "2026-10-20",
@@ -494,6 +494,10 @@
  "kodebeer/vinker": {
   "checked": "2026-10-13",
   "tried_recently": false
+ },
+ "kuangmk11/edgefield": {
+  "checked": "2026-11-05",
+  "tried_recently": true
  },
  "kvomuetliberg-repo/raum": {
   "checked": "2026-10-16",
