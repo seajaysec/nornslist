@@ -1,7 +1,7 @@
 {
  "0xmch/norns-remote": {
-  "checked": "2026-10-19",
-  "tried_recently": false
+  "checked": "2026-11-06",
+  "tried_recently": true
  },
  "21echoes/cyrene": {
   "checked": "2026-11-02",
@@ -684,11 +684,11 @@
   "tried_recently": false
  },
  "om-i-god/estuary": {
-  "checked": "2026-11-04",
+  "checked": "2026-11-06",
   "tried_recently": true
  },
  "om-i-god/gradient": {
-  "checked": "2026-11-04",
+  "checked": "2026-11-06",
   "tried_recently": true
  },
  "om-i-god/synth-quest": {
@@ -780,7 +780,7 @@
   "tried_recently": false
  },
  "sceneton/geode": {
-  "checked": "2026-11-02",
+  "checked": "2026-11-06",
   "tried_recently": true
  },
  "schollz/abacus": {
