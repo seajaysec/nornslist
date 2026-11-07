@@ -511,6 +511,10 @@
   "checked": "2026-10-29",
   "tried_recently": false
  },
+ "laserpirate/sonar": {
+  "checked": "2026-11-07",
+  "tried_recently": true
+ },
  "leontoddjohnson/movements": {
   "checked": "2026-09-06",
   "tried_recently": false
@@ -688,7 +692,7 @@
   "tried_recently": true
  },
  "om-i-god/gradient": {
-  "checked": "2026-11-06",
+  "checked": "2026-11-07",
   "tried_recently": true
  },
  "om-i-god/synth-quest": {
