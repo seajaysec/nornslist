@@ -188,7 +188,7 @@
   "tried_recently": false
  },
  "danielrigler/grains": {
-  "checked": "2026-11-02",
+  "checked": "2026-11-08",
   "tried_recently": true
  },
  "danielrigler/hands": {
@@ -366,6 +366,10 @@
  "illges/d2ms": {
   "checked": "2026-07-01",
   "tried_recently": false
+ },
+ "insectstheory/bloop": {
+  "checked": "2026-11-08",
+  "tried_recently": true
  },
  "insectstheory/euclid": {
   "checked": "2026-09-22",
@@ -619,8 +623,12 @@
   "checked": "2026-09-29",
   "tried_recently": false
  },
+ "murdenihcam/mdusr": {
+  "checked": "2026-11-08",
+  "tried_recently": true
+ },
  "nattog/passthrough": {
-  "checked": "2026-11-02",
+  "checked": "2026-11-08",
   "tried_recently": true
  },
  "niklaskramer/rounds": {
@@ -765,6 +773,10 @@
  },
  "robbielyman/waver": {
   "checked": "2026-11-02",
+  "tried_recently": true
+ },
+ "roge-rm/acidulous-norns": {
+  "checked": "2026-11-08",
   "tried_recently": true
  },
  "roge-rm/nidhogg": {
@@ -1076,7 +1088,7 @@
   "tried_recently": false
  },
  "sonocircuit/nisho": {
-  "checked": "2026-11-02",
+  "checked": "2026-11-08",
   "tried_recently": true
  },
  "sonocircuit/sidvagn": {
@@ -1114,6 +1126,10 @@
  "sumik-svg/kesh-jig-ambient0": {
   "checked": "2026-07-13",
   "tried_recently": false
+ },
+ "sumik-svg/pastral": {
+  "checked": "2026-11-08",
+  "tried_recently": true
  },
  "sumik-svg/rebound_midi": {
   "checked": "2026-11-02",
