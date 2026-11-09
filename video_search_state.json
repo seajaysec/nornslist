@@ -183,6 +183,10 @@
   "checked": "2026-10-14",
   "tried_recently": false
  },
+ "cyberduck79/macrocosm": {
+  "checked": "2026-11-09",
+  "tried_recently": true
+ },
  "daniel-mckemie/norns_csound": {
   "checked": "2026-09-05",
   "tried_recently": false
@@ -302,6 +306,10 @@
  "foundsoundsmm/tahned": {
   "checked": "2026-09-06",
   "tried_recently": false
+ },
+ "foundsoundsmm/vibecomposer": {
+  "checked": "2026-11-09",
+  "tried_recently": true
  },
  "foundsoundsmm/woodland": {
   "checked": "2026-09-05",
@@ -695,12 +703,16 @@
   "checked": "2026-07-06",
   "tried_recently": false
  },
+ "om-i-god/breakage": {
+  "checked": "2026-11-09",
+  "tried_recently": true
+ },
  "om-i-god/estuary": {
-  "checked": "2026-11-06",
+  "checked": "2026-11-09",
   "tried_recently": true
  },
  "om-i-god/gradient": {
-  "checked": "2026-11-07",
+  "checked": "2026-11-09",
   "tried_recently": true
  },
  "om-i-god/synth-quest": {
