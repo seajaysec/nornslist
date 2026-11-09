@@ -19,21 +19,25 @@
   "checked": "2026-07-14",
   "tried_recently": false
  },
+ "2roundrobins/messiaen": {
+  "checked": "2026-11-09",
+  "tried_recently": true
+ },
  "adh82/kria": {
   "checked": "2026-09-10",
   "tried_recently": false
  },
  "adriendoerig/norns_bliss": {
-  "checked": "2026-08-14",
-  "tried_recently": false
+  "checked": "2026-11-09",
+  "tried_recently": true
  },
  "adriendoerig/norns_nayar": {
   "checked": "2026-09-06",
   "tried_recently": false
  },
  "aidanreilly/graindr": {
-  "checked": "2026-08-20",
-  "tried_recently": false
+  "checked": "2026-11-09",
+  "tried_recently": true
  },
  "aidanreilly/nb_wavetables": {
   "checked": "2026-11-04",
@@ -52,8 +56,8 @@
   "tried_recently": true
  },
  "aidanreilly/wavetables": {
-  "checked": "2026-10-09",
-  "tried_recently": false
+  "checked": "2026-11-09",
+  "tried_recently": true
  },
  "andr-ew/eggs": {
   "checked": "2026-11-02",
@@ -74,6 +78,10 @@
  "andr-ew/orgn": {
   "checked": "2026-11-01",
   "tried_recently": false
+ },
+ "andr-ew/reversesea": {
+  "checked": "2026-11-09",
+  "tried_recently": true
  },
  "andr-ew/rpls": {
   "checked": "2026-10-12",
@@ -144,8 +152,8 @@
   "tried_recently": true
  },
  "catfact/z_tuning": {
-  "checked": "2026-07-06",
-  "tried_recently": false
+  "checked": "2026-11-09",
+  "tried_recently": true
  },
  "catfact/zebra": {
   "checked": "2026-06-27",
@@ -165,6 +173,14 @@
  },
  "cfdrake/rudiments": {
   "checked": "2026-11-02",
+  "tried_recently": true
+ },
+ "cfdrake/shnth": {
+  "checked": "2026-11-09",
+  "tried_recently": true
+ },
+ "cfdrake/twine": {
+  "checked": "2026-11-09",
   "tried_recently": true
  },
  "cfurrow7/midi-garage-jukebox": {
@@ -202,6 +218,10 @@
  "danielrigler/twins": {
   "checked": "2026-11-01",
   "tried_recently": false
+ },
+ "dansimco/meadowphysics": {
+  "checked": "2026-11-09",
+  "tried_recently": true
  },
  "dansimco/teletype-norns": {
   "checked": "2026-08-16",
@@ -355,17 +375,21 @@
   "checked": "2026-08-07",
   "tried_recently": false
  },
+ "groundforms/polyphase": {
+  "checked": "2026-11-09",
+  "tried_recently": true
+ },
  "groundforms/sines-tarn": {
-  "checked": "2026-07-21",
-  "tried_recently": false
+  "checked": "2026-11-09",
+  "tried_recently": true
  },
  "ha1dcre/verdandi": {
   "checked": "2026-10-25",
   "tried_recently": false
  },
  "hanjo-synth/mdbass": {
-  "checked": "2026-09-25",
-  "tried_recently": false
+  "checked": "2026-11-09",
+  "tried_recently": true
  },
  "hanjo-synth/mdgen": {
   "checked": "2026-09-22",
@@ -407,12 +431,20 @@
   "checked": "2026-11-01",
   "tried_recently": false
  },
+ "jaseknighter/clipper": {
+  "checked": "2026-11-09",
+  "tried_recently": true
+ },
  "jaseknighter/flora": {
   "checked": "2026-11-01",
   "tried_recently": false
  },
  "jaseknighter/flora_seamstress": {
   "checked": "2026-11-02",
+  "tried_recently": true
+ },
+ "jaseknighter/habitus_workshop": {
+  "checked": "2026-11-09",
   "tried_recently": true
  },
  "jaseknighter/kinesis": {
@@ -436,16 +468,16 @@
   "tried_recently": false
  },
  "jstefani/dx100": {
-  "checked": "2026-09-27",
-  "tried_recently": false
+  "checked": "2026-11-09",
+  "tried_recently": true
  },
  "jstefani/feedback4": {
   "checked": "2026-10-06",
   "tried_recently": false
  },
  "jstefani/ksample": {
-  "checked": "2026-09-02",
-  "tried_recently": false
+  "checked": "2026-11-09",
+  "tried_recently": true
  },
  "jstefani/midirec": {
   "checked": "2026-09-06",
@@ -456,12 +488,16 @@
   "tried_recently": false
  },
  "jstefani/paperboy": {
-  "checked": "2026-08-31",
-  "tried_recently": false
+  "checked": "2026-11-09",
+  "tried_recently": true
  },
  "jstefani/scope": {
   "checked": "2026-08-31",
   "tried_recently": false
+ },
+ "juhavaaraniemi/giro": {
+  "checked": "2026-11-09",
+  "tried_recently": true
  },
  "julesdg6/endlessdj-norns": {
   "checked": "2026-08-02",
@@ -475,6 +511,10 @@
   "checked": "2026-11-01",
   "tried_recently": false
  },
+ "justmat/greyhole": {
+  "checked": "2026-11-09",
+  "tried_recently": true
+ },
  "justmat/mangl": {
   "checked": "2026-11-01",
   "tried_recently": false
@@ -487,8 +527,20 @@
   "checked": "2026-11-01",
   "tried_recently": false
  },
+ "justmat/phyllis": {
+  "checked": "2026-11-09",
+  "tried_recently": true
+ },
+ "justmat/showers": {
+  "checked": "2026-11-09",
+  "tried_recently": true
+ },
  "justmat/silos": {
   "checked": "2026-11-02",
+  "tried_recently": true
+ },
+ "justmat/strides": {
+  "checked": "2026-11-09",
   "tried_recently": true
  },
  "katspaugh/krill-clouds": {
@@ -528,8 +580,8 @@
   "tried_recently": true
  },
  "leontoddjohnson/movements": {
-  "checked": "2026-09-06",
-  "tried_recently": false
+  "checked": "2026-11-09",
+  "tried_recently": true
  },
  "linusschrab/initenere": {
   "checked": "2026-10-12",
@@ -549,6 +601,10 @@
  },
  "loopmasta/smplr": {
   "checked": "2026-11-02",
+  "tried_recently": true
+ },
+ "loudnumbers/loudnumbers_norns": {
+  "checked": "2026-11-09",
   "tried_recently": true
  },
  "lylepmills/buoys": {
@@ -579,12 +635,20 @@
   "checked": "2026-11-02",
   "tried_recently": true
  },
+ "markwheeler/drum_room": {
+  "checked": "2026-11-09",
+  "tried_recently": true
+ },
  "markwheeler/loom": {
   "checked": "2026-07-06",
   "tried_recently": false
  },
  "markwheeler/molly_the_poly": {
   "checked": "2026-11-02",
+  "tried_recently": true
+ },
+ "markwheeler/overwintering": {
+  "checked": "2026-11-09",
   "tried_recently": true
  },
  "markwheeler/passersby": {
@@ -594,6 +658,10 @@
  "markwheeler/timber": {
   "checked": "2026-11-01",
   "tried_recently": false
+ },
+ "markwheeler/tuner": {
+  "checked": "2026-11-09",
+  "tried_recently": true
  },
  "mattb/beets": {
   "checked": "2026-11-01",
@@ -615,9 +683,17 @@
   "checked": "2026-11-02",
   "tried_recently": true
  },
+ "midouest/just-play": {
+  "checked": "2026-11-09",
+  "tried_recently": true
+ },
  "midouest/wstretch": {
   "checked": "2026-08-10",
   "tried_recently": false
+ },
+ "mimetaur/arcify": {
+  "checked": "2026-11-09",
+  "tried_recently": true
  },
  "minimalresonancefold/muta": {
   "checked": "2026-10-08",
@@ -626,6 +702,10 @@
  "moncalamari/airclkr": {
   "checked": "2026-07-24",
   "tried_recently": false
+ },
+ "monome-community/nc03-ds": {
+  "checked": "2026-11-09",
+  "tried_recently": true
  },
  "mrglennjones/midarto": {
   "checked": "2026-09-29",
@@ -668,8 +748,8 @@
   "tried_recently": false
  },
  "notrobintaylor/fx_reflex": {
-  "checked": "2026-10-05",
-  "tried_recently": false
+  "checked": "2026-11-09",
+  "tried_recently": true
  },
  "notrobintaylor/media": {
   "checked": "2026-11-02",
@@ -683,9 +763,13 @@
   "checked": "2026-11-02",
   "tried_recently": true
  },
+ "nzimas/floodplains": {
+  "checked": "2026-11-09",
+  "tried_recently": true
+ },
  "okyeron/game-emulators": {
-  "checked": "2026-10-12",
-  "tried_recently": false
+  "checked": "2026-11-09",
+  "tried_recently": true
  },
  "okyeron/mi-eng": {
   "checked": "2026-11-02",
@@ -695,6 +779,10 @@
   "checked": "2026-11-02",
   "tried_recently": true
  },
+ "okyeron/torii": {
+  "checked": "2026-11-09",
+  "tried_recently": true
+ },
  "oliviercreurer/compass": {
   "checked": "2026-10-12",
   "tried_recently": false
@@ -702,6 +790,10 @@
  "oliviercreurer/dunes": {
   "checked": "2026-07-06",
   "tried_recently": false
+ },
+ "oliviercreurer/patchwork": {
+  "checked": "2026-11-09",
+  "tried_recently": true
  },
  "om-i-god/breakage": {
   "checked": "2026-11-09",
@@ -724,8 +816,8 @@
   "tried_recently": false
  },
  "p3r7/argen": {
-  "checked": "2026-10-12",
-  "tried_recently": false
+  "checked": "2026-11-09",
+  "tried_recently": true
  },
  "p3r7/gridkeys": {
   "checked": "2026-11-02",
@@ -733,6 +825,10 @@
  },
  "p3r7/washi": {
   "checked": "2026-11-02",
+  "tried_recently": true
+ },
+ "p3r7/wavematrix": {
+  "checked": "2026-11-09",
   "tried_recently": true
  },
  "pastitas/cafeteria": {
@@ -764,8 +860,8 @@
   "tried_recently": false
  },
  "quixotic7/iii_mod": {
-  "checked": "2026-10-12",
-  "tried_recently": false
+  "checked": "2026-11-09",
+  "tried_recently": true
  },
  "quixotic7/loopwarp": {
   "checked": "2026-07-20",
@@ -781,6 +877,10 @@
  },
  "rizqadeeb38-dev/rebelwar_ui": {
   "checked": "2026-11-03",
+  "tried_recently": true
+ },
+ "robbielyman/bitters": {
+  "checked": "2026-11-09",
   "tried_recently": true
  },
  "robbielyman/waver": {
@@ -800,8 +900,12 @@
   "tried_recently": false
  },
  "rync/magnetar": {
-  "checked": "2026-09-13",
-  "tried_recently": false
+  "checked": "2026-11-09",
+  "tried_recently": true
+ },
+ "sarweiler/zellen": {
+  "checked": "2026-11-09",
+  "tried_recently": true
  },
  "sasha-ilatovskii/oscgard": {
   "checked": "2026-10-14",
@@ -879,6 +983,10 @@
   "checked": "2026-11-01",
   "tried_recently": false
  },
+ "schollz/lightsout": {
+  "checked": "2026-11-09",
+  "tried_recently": true
+ },
  "schollz/makebreakbeat": {
   "checked": "2026-11-02",
   "tried_recently": true
@@ -894,6 +1002,10 @@
  "schollz/mx.samples": {
   "checked": "2026-11-01",
   "tried_recently": false
+ },
+ "schollz/mx.samples2": {
+  "checked": "2026-11-09",
+  "tried_recently": true
  },
  "schollz/mx.synths": {
   "checked": "2026-11-01",
@@ -943,6 +1055,10 @@
   "checked": "2026-11-02",
   "tried_recently": true
  },
+ "schollz/qwertymidi": {
+  "checked": "2026-11-09",
+  "tried_recently": true
+ },
  "schollz/rachim": {
   "checked": "2026-06-27",
   "tried_recently": false
@@ -967,9 +1083,17 @@
   "checked": "2026-11-01",
   "tried_recently": false
  },
+ "schollz/taperoll": {
+  "checked": "2026-11-09",
+  "tried_recently": true
+ },
  "schollz/thirtythree": {
   "checked": "2026-11-01",
   "tried_recently": false
+ },
+ "schollz/turnstile": {
+  "checked": "2026-11-09",
+  "tried_recently": true
  },
  "schollz/wobblewobble": {
   "checked": "2026-11-01",
@@ -1011,12 +1135,24 @@
   "checked": "2026-11-02",
   "tried_recently": true
  },
+ "sixolet/lepidoptery": {
+  "checked": "2026-11-09",
+  "tried_recently": true
+ },
  "sixolet/matrix": {
   "checked": "2026-11-02",
   "tried_recently": true
  },
  "sixolet/minim": {
   "checked": "2026-11-02",
+  "tried_recently": true
+ },
+ "sixolet/nb_crow": {
+  "checked": "2026-11-09",
+  "tried_recently": true
+ },
+ "sixolet/nbin": {
+  "checked": "2026-11-09",
   "tried_recently": true
  },
  "sixolet/nydl": {
@@ -1029,6 +1165,10 @@
  },
  "sixolet/sacred_cyborg_harmony": {
   "checked": "2026-11-02",
+  "tried_recently": true
+ },
+ "sixolet/toolkit": {
+  "checked": "2026-11-09",
   "tried_recently": true
  },
  "sonocircuit/concrete": {
@@ -1060,8 +1200,8 @@
   "tried_recently": true
  },
  "sonocircuit/loopywe": {
-  "checked": "2026-10-10",
-  "tried_recently": false
+  "checked": "2026-11-09",
+  "tried_recently": true
  },
  "sonocircuit/midiplayer": {
   "checked": "2026-11-02",
@@ -1080,20 +1220,28 @@
   "tried_recently": true
  },
  "sonocircuit/nb_mxsamples": {
-  "checked": "2026-10-12",
-  "tried_recently": false
+  "checked": "2026-11-09",
+  "tried_recently": true
  },
  "sonocircuit/nb_mxsynths": {
-  "checked": "2026-10-12",
-  "tried_recently": false
+  "checked": "2026-11-09",
+  "tried_recently": true
  },
  "sonocircuit/nb_plak": {
-  "checked": "2026-08-22",
-  "tried_recently": false
+  "checked": "2026-11-09",
+  "tried_recently": true
  },
  "sonocircuit/nb_polyform": {
-  "checked": "2026-07-06",
-  "tried_recently": false
+  "checked": "2026-11-09",
+  "tried_recently": true
+ },
+ "sonocircuit/nb_sidfm": {
+  "checked": "2026-11-09",
+  "tried_recently": true
+ },
+ "sonocircuit/nb_smpkit": {
+  "checked": "2026-11-09",
+  "tried_recently": true
  },
  "sonocircuit/nb_smpkyz": {
   "checked": "2026-07-09",
@@ -1106,6 +1254,10 @@
  "sonocircuit/sidvagn": {
   "checked": "2026-11-01",
   "tried_recently": false
+ },
+ "stvnrlly/subharmoniclone": {
+  "checked": "2026-11-09",
+  "tried_recently": true
  },
  "sumik-svg/ambient_organism": {
   "checked": "2026-07-25",
@@ -1128,12 +1280,12 @@
   "tried_recently": false
  },
  "sumik-svg/kastle_arp_norns": {
-  "checked": "2026-08-30",
-  "tried_recently": false
+  "checked": "2026-11-09",
+  "tried_recently": true
  },
  "sumik-svg/kastle_norns": {
-  "checked": "2026-08-27",
-  "tried_recently": false
+  "checked": "2026-11-09",
+  "tried_recently": true
  },
  "sumik-svg/kesh-jig-ambient0": {
   "checked": "2026-07-13",
@@ -1175,13 +1327,25 @@
   "checked": "2026-10-05",
   "tried_recently": false
  },
+ "synthi/spre": {
+  "checked": "2026-11-09",
+  "tried_recently": true
+ },
  "tehn/isms": {
   "checked": "2026-07-06",
   "tried_recently": false
  },
+ "tehn/mlriii": {
+  "checked": "2026-11-09",
+  "tried_recently": true
+ },
  "tsgplus100/norns-": {
   "checked": "2026-10-30",
   "tried_recently": false
+ },
+ "tuesdaynightmachines/nmmelodymagic": {
+  "checked": "2026-11-09",
+  "tried_recently": true
  },
  "tweeedo911/pocketgrid": {
   "checked": "2026-08-21",
@@ -1224,16 +1388,16 @@
   "tried_recently": false
  },
  "vehka/nispm": {
-  "checked": "2026-10-07",
-  "tried_recently": false
+  "checked": "2026-11-09",
+  "tried_recently": true
  },
  "vehka/norns-deps": {
   "checked": "2026-10-31",
   "tried_recently": false
  },
  "vehka/norns-hud": {
-  "checked": "2026-10-22",
-  "tried_recently": false
+  "checked": "2026-11-09",
+  "tried_recently": true
  },
  "vehka/norns-uc4": {
   "checked": "2026-10-08",
@@ -1280,20 +1444,24 @@
   "tried_recently": false
  },
  "williamthazard/justdraw": {
-  "checked": "2026-10-26",
-  "tried_recently": false
+  "checked": "2026-11-09",
+  "tried_recently": true
  },
  "williamthazard/schicksalslied": {
   "checked": "2026-11-01",
   "tried_recently": false
  },
  "williamthazard/schicksalslied_2": {
-  "checked": "2026-10-24",
-  "tried_recently": false
+  "checked": "2026-11-09",
+  "tried_recently": true
+ },
+ "williamthazard/shnthsalslied": {
+  "checked": "2026-11-09",
+  "tried_recently": true
  },
  "williamthazard/tabletseq": {
-  "checked": "2026-10-26",
-  "tried_recently": false
+  "checked": "2026-11-09",
+  "tried_recently": true
  },
  "williamthazard/tetrabotis": {
   "checked": "2026-11-02",
@@ -1312,8 +1480,8 @@
   "tried_recently": true
  },
  "xmacex/fx_comb": {
-  "checked": "2026-10-23",
-  "tried_recently": false
+  "checked": "2026-11-09",
+  "tried_recently": true
  },
  "xmacex/lnra-8": {
   "checked": "2026-11-02",
