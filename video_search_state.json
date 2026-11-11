@@ -139,6 +139,10 @@
   "checked": "2026-10-23",
   "tried_recently": false
  },
+ "carlosedp/norns-web": {
+  "checked": "2026-11-11",
+  "tried_recently": true
+ },
  "carlosedp/pollen": {
   "checked": "2026-11-05",
   "tried_recently": true
@@ -200,7 +204,11 @@
   "tried_recently": false
  },
  "cyberduck79/macrocosm": {
-  "checked": "2026-11-09",
+  "checked": "2026-11-11",
+  "tried_recently": true
+ },
+ "cyberduck79/orbits": {
+  "checked": "2026-11-11",
   "tried_recently": true
  },
  "daniel-mckemie/norns_csound": {
@@ -328,7 +336,7 @@
   "tried_recently": false
  },
  "foundsoundsmm/vibecomposer": {
-  "checked": "2026-11-09",
+  "checked": "2026-11-11",
   "tried_recently": true
  },
  "foundsoundsmm/woodland": {
@@ -366,6 +374,22 @@
  "giovannilami/shoal-norns": {
   "checked": "2026-10-12",
   "tried_recently": false
+ },
+ "glassgarden/fx_miugens": {
+  "checked": "2026-11-11",
+  "tried_recently": true
+ },
+ "glassgarden/norns-mi-ugens": {
+  "checked": "2026-11-11",
+  "tried_recently": true
+ },
+ "glassgarden/pollen": {
+  "checked": "2026-11-11",
+  "tried_recently": true
+ },
+ "glassgarden/terrarium": {
+  "checked": "2026-11-11",
+  "tried_recently": true
  },
  "groundforms/agnes": {
   "checked": "2026-07-24",
@@ -576,7 +600,7 @@
   "tried_recently": false
  },
  "laserpirate/sonar": {
-  "checked": "2026-11-07",
+  "checked": "2026-11-11",
   "tried_recently": true
  },
  "leontoddjohnson/movements": {
@@ -800,11 +824,11 @@
   "tried_recently": true
  },
  "om-i-god/estuary": {
-  "checked": "2026-11-09",
+  "checked": "2026-11-11",
   "tried_recently": true
  },
  "om-i-god/gradient": {
-  "checked": "2026-11-09",
+  "checked": "2026-11-11",
   "tried_recently": true
  },
  "om-i-god/synth-quest": {
@@ -1248,7 +1272,7 @@
   "tried_recently": false
  },
  "sonocircuit/nisho": {
-  "checked": "2026-11-08",
+  "checked": "2026-11-11",
   "tried_recently": true
  },
  "sonocircuit/sidvagn": {
