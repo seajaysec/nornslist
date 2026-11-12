@@ -216,7 +216,7 @@
   "tried_recently": false
  },
  "danielrigler/grains": {
-  "checked": "2026-11-08",
+  "checked": "2026-11-12",
   "tried_recently": true
  },
  "danielrigler/hands": {
@@ -820,7 +820,7 @@
   "tried_recently": true
  },
  "om-i-god/breakage": {
-  "checked": "2026-11-09",
+  "checked": "2026-11-12",
   "tried_recently": true
  },
  "om-i-god/estuary": {
@@ -828,7 +828,7 @@
   "tried_recently": true
  },
  "om-i-god/gradient": {
-  "checked": "2026-11-11",
+  "checked": "2026-11-12",
   "tried_recently": true
  },
  "om-i-god/synth-quest": {
