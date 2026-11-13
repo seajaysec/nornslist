@@ -204,11 +204,15 @@
   "tried_recently": false
  },
  "cyberduck79/macrocosm": {
-  "checked": "2026-11-11",
+  "checked": "2026-11-13",
   "tried_recently": true
  },
  "cyberduck79/orbits": {
   "checked": "2026-11-11",
+  "tried_recently": true
+ },
+ "cyberduck79/sculpt": {
+  "checked": "2026-11-13",
   "tried_recently": true
  },
  "daniel-mckemie/norns_csound": {
@@ -229,6 +233,10 @@
  },
  "dansimco/meadowphysics": {
   "checked": "2026-11-09",
+  "tried_recently": true
+ },
+ "dansimco/murder": {
+  "checked": "2026-11-13",
   "tried_recently": true
  },
  "dansimco/teletype-norns": {
@@ -895,6 +903,10 @@
   "checked": "2026-08-18",
   "tried_recently": false
  },
+ "rastapopolix/tessera-norns": {
+  "checked": "2026-11-13",
+  "tried_recently": true
+ },
  "rehresman/32-harmony": {
   "checked": "2026-11-02",
   "tried_recently": true
@@ -1272,7 +1284,7 @@
   "tried_recently": false
  },
  "sonocircuit/nisho": {
-  "checked": "2026-11-11",
+  "checked": "2026-11-13",
   "tried_recently": true
  },
  "sonocircuit/sidvagn": {
@@ -1404,7 +1416,7 @@
   "tried_recently": false
  },
  "vehka/nb_fluid": {
-  "checked": "2026-11-04",
+  "checked": "2026-11-13",
   "tried_recently": true
  },
  "vehka/nb_pp": {
