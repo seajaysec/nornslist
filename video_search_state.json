@@ -220,7 +220,7 @@
   "tried_recently": false
  },
  "danielrigler/grains": {
-  "checked": "2026-11-12",
+  "checked": "2026-11-14",
   "tried_recently": true
  },
  "danielrigler/hands": {
@@ -384,7 +384,7 @@
   "tried_recently": false
  },
  "glassgarden/fx_miugens": {
-  "checked": "2026-11-11",
+  "checked": "2026-11-14",
   "tried_recently": true
  },
  "glassgarden/norns-mi-ugens": {
@@ -392,7 +392,7 @@
   "tried_recently": true
  },
  "glassgarden/pollen": {
-  "checked": "2026-11-11",
+  "checked": "2026-11-14",
   "tried_recently": true
  },
  "glassgarden/terrarium": {
@@ -630,6 +630,10 @@
  "loopmasta/shield": {
   "checked": "2026-10-30",
   "tried_recently": false
+ },
+ "loopmasta/signal": {
+  "checked": "2026-11-14",
+  "tried_recently": true
  },
  "loopmasta/smplr": {
   "checked": "2026-11-02",
@@ -1438,6 +1442,10 @@
  "vehka/norns-uc4": {
   "checked": "2026-10-08",
   "tried_recently": false
+ },
+ "vehka/nullcast": {
+  "checked": "2026-11-14",
+  "tried_recently": true
  },
  "vehka/rhythms": {
   "checked": "2026-10-26",
