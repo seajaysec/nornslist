@@ -1,6 +1,6 @@
 {
  "0xmch/norns-remote": {
-  "checked": "2026-11-06",
+  "checked": "2026-11-15",
   "tried_recently": true
  },
  "21echoes/cyrene": {
@@ -212,7 +212,7 @@
   "tried_recently": true
  },
  "cyberduck79/sculpt": {
-  "checked": "2026-11-13",
+  "checked": "2026-11-15",
   "tried_recently": true
  },
  "daniel-mckemie/norns_csound": {
@@ -757,6 +757,22 @@
  },
  "niklaskramer/rounds": {
   "checked": "2026-11-02",
+  "tried_recently": true
+ },
+ "nolliegray/arpiii": {
+  "checked": "2026-11-15",
+  "tried_recently": true
+ },
+ "nolliegray/loopiii": {
+  "checked": "2026-11-15",
+  "tried_recently": true
+ },
+ "nolliegray/muses": {
+  "checked": "2026-11-15",
+  "tried_recently": true
+ },
+ "nolliegray/stepiii": {
+  "checked": "2026-11-15",
   "tried_recently": true
  },
  "norns-study-group/pirate-radio": {
@@ -1432,8 +1448,8 @@
   "tried_recently": true
  },
  "vehka/norns-deps": {
-  "checked": "2026-10-31",
-  "tried_recently": false
+  "checked": "2026-11-15",
+  "tried_recently": true
  },
  "vehka/norns-hud": {
   "checked": "2026-11-09",
