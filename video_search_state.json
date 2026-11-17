@@ -31,6 +31,10 @@
   "checked": "2026-11-09",
   "tried_recently": true
  },
+ "acadmyn/lagom": {
+  "checked": "2026-11-17",
+  "tried_recently": true
+ },
  "adh82/kria": {
   "checked": "2026-09-10",
   "tried_recently": false
@@ -65,6 +69,10 @@
  },
  "aidanreilly/wavetables": {
   "checked": "2026-11-09",
+  "tried_recently": true
+ },
+ "alejo-end/four": {
+  "checked": "2026-11-17",
   "tried_recently": true
  },
  "andr-ew/cartographer": {
@@ -430,6 +438,10 @@
  "generalindustry1910/estuary-for-norns": {
   "checked": "2026-09-28",
   "tried_recently": false
+ },
+ "giovannilami/anima": {
+  "checked": "2026-11-17",
+  "tried_recently": true
  },
  "giovannilami/nb_synthy": {
   "checked": "2026-10-15",
@@ -1527,6 +1539,10 @@
   "checked": "2026-08-10",
   "tried_recently": false
  },
+ "sumik-svg/glitchchop": {
+  "checked": "2026-11-17",
+  "tried_recently": true
+ },
  "sumik-svg/helix": {
   "checked": "2026-11-16",
   "tried_recently": true
@@ -1644,8 +1660,8 @@
   "tried_recently": false
  },
  "vehka/modhousekeeper": {
-  "checked": "2026-10-15",
-  "tried_recently": false
+  "checked": "2026-11-17",
+  "tried_recently": true
  },
  "vehka/nb_fluid": {
   "checked": "2026-11-13",
@@ -1672,7 +1688,7 @@
   "tried_recently": false
  },
  "vehka/nullcast": {
-  "checked": "2026-11-14",
+  "checked": "2026-11-17",
   "tried_recently": true
  },
  "vehka/rhythms": {
