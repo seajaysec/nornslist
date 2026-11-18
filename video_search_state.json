@@ -32,7 +32,7 @@
   "tried_recently": true
  },
  "acadmyn/lagom": {
-  "checked": "2026-11-17",
+  "checked": "2026-11-18",
   "tried_recently": true
  },
  "adh82/kria": {
@@ -447,6 +447,10 @@
   "checked": "2026-10-15",
   "tried_recently": false
  },
+ "giovannilami/nbin4": {
+  "checked": "2026-11-18",
+  "tried_recently": true
+ },
  "giovannilami/shoal": {
   "checked": "2026-11-16",
   "tried_recently": true
@@ -610,6 +614,10 @@
  "julesdg6/endlessdj-norns": {
   "checked": "2026-08-02",
   "tried_recently": false
+ },
+ "julianrubisch/bifurcation-norns": {
+  "checked": "2026-11-18",
+  "tried_recently": true
  },
  "justmat/combos": {
   "checked": "2026-11-02",
@@ -871,6 +879,10 @@
   "checked": "2026-11-15",
   "tried_recently": true
  },
+ "nomorenamesstudio/plakt": {
+  "checked": "2026-11-18",
+  "tried_recently": true
+ },
  "norns-study-group/pirate-radio": {
   "checked": "2026-06-27",
   "tried_recently": false
@@ -964,15 +976,19 @@
   "tried_recently": true
  },
  "om-i-god/breakage": {
-  "checked": "2026-11-12",
+  "checked": "2026-11-18",
+  "tried_recently": true
+ },
+ "om-i-god/causeway": {
+  "checked": "2026-11-18",
   "tried_recently": true
  },
  "om-i-god/estuary": {
-  "checked": "2026-11-11",
+  "checked": "2026-11-18",
   "tried_recently": true
  },
  "om-i-god/gradient": {
-  "checked": "2026-11-12",
+  "checked": "2026-11-18",
   "tried_recently": true
  },
  "om-i-god/lifestrings": {
@@ -1726,6 +1742,10 @@
  "waternogetenemy/tintin": {
   "checked": "2026-07-10",
   "tried_recently": false
+ },
+ "waxnwire/buffrice": {
+  "checked": "2026-11-18",
+  "tried_recently": true
  },
  "whitmo/re.kriate": {
   "checked": "2026-07-12",
