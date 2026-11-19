@@ -280,7 +280,7 @@
   "tried_recently": false
  },
  "danielrigler/grains": {
-  "checked": "2026-11-16",
+  "checked": "2026-11-19",
   "tried_recently": true
  },
  "danielrigler/hands": {
@@ -306,6 +306,10 @@
  "danutpadel-oss/breakbeat": {
   "checked": "2026-08-14",
   "tried_recently": false
+ },
+ "de-pattern/rift-norns": {
+  "checked": "2026-11-19",
+  "tried_recently": true
  },
  "desioart/sath-lemon": {
   "checked": "2026-09-03",
@@ -468,7 +472,7 @@
   "tried_recently": true
  },
  "glassgarden/pollen": {
-  "checked": "2026-11-14",
+  "checked": "2026-11-19",
   "tried_recently": true
  },
  "glassgarden/terrarium": {
