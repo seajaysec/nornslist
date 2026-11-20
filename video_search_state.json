@@ -35,6 +35,10 @@
   "checked": "2026-11-18",
   "tried_recently": true
  },
+ "acadmyn/tx6rec": {
+  "checked": "2026-11-20",
+  "tried_recently": true
+ },
  "adh82/kria": {
   "checked": "2026-09-10",
   "tried_recently": false
@@ -72,7 +76,7 @@
   "tried_recently": true
  },
  "alejo-end/four": {
-  "checked": "2026-11-17",
+  "checked": "2026-11-20",
   "tried_recently": true
  },
  "andr-ew/cartographer": {
@@ -1096,7 +1100,7 @@
   "tried_recently": true
  },
  "roge-rm/acidulous-norns": {
-  "checked": "2026-11-08",
+  "checked": "2026-11-20",
   "tried_recently": true
  },
  "roge-rm/nidhogg": {
@@ -1528,7 +1532,7 @@
   "tried_recently": true
  },
  "sonocircuit/nisho": {
-  "checked": "2026-11-13",
+  "checked": "2026-11-20",
   "tried_recently": true
  },
  "sonocircuit/sidvagn": {
