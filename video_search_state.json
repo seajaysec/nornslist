@@ -32,7 +32,7 @@
   "tried_recently": true
  },
  "acadmyn/lagom": {
-  "checked": "2026-11-18",
+  "checked": "2026-11-21",
   "tried_recently": true
  },
  "acadmyn/tx6rec": {
@@ -992,11 +992,11 @@
   "tried_recently": true
  },
  "om-i-god/estuary": {
-  "checked": "2026-11-18",
+  "checked": "2026-11-21",
   "tried_recently": true
  },
  "om-i-god/gradient": {
-  "checked": "2026-11-18",
+  "checked": "2026-11-21",
   "tried_recently": true
  },
  "om-i-god/lifestrings": {
@@ -1675,9 +1675,17 @@
   "checked": "2026-10-30",
   "tried_recently": false
  },
+ "unluogomoderatamentesicuro/jetvox": {
+  "checked": "2026-11-21",
+  "tried_recently": true
+ },
  "unluogomoderatamentesicuro/micelio": {
   "checked": "2026-10-29",
   "tried_recently": false
+ },
+ "unluogomoderatamentesicuro/tapeworks": {
+  "checked": "2026-11-21",
+  "tried_recently": true
  },
  "unluogomoderatamentesicuro/tralascia": {
   "checked": "2026-08-01",
