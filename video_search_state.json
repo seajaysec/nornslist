@@ -76,7 +76,7 @@
   "tried_recently": true
  },
  "alejo-end/four": {
-  "checked": "2026-11-20",
+  "checked": "2026-11-22",
   "tried_recently": true
  },
  "andr-ew/cartographer": {
@@ -284,7 +284,7 @@
   "tried_recently": false
  },
  "danielrigler/grains": {
-  "checked": "2026-11-19",
+  "checked": "2026-11-22",
   "tried_recently": true
  },
  "danielrigler/hands": {
@@ -872,11 +872,11 @@
   "tried_recently": true
  },
  "nolliegray/arpiii": {
-  "checked": "2026-11-15",
+  "checked": "2026-11-22",
   "tried_recently": true
  },
  "nolliegray/loopiii": {
-  "checked": "2026-11-15",
+  "checked": "2026-11-22",
   "tried_recently": true
  },
  "nolliegray/muses": {
@@ -884,7 +884,11 @@
   "tried_recently": true
  },
  "nolliegray/stepiii": {
-  "checked": "2026-11-15",
+  "checked": "2026-11-22",
+  "tried_recently": true
+ },
+ "nolliegray/tropiii": {
+  "checked": "2026-11-22",
   "tried_recently": true
  },
  "nomorenamesstudio/plakt": {
@@ -1111,8 +1115,16 @@
   "checked": "2026-10-02",
   "tried_recently": false
  },
+ "rync/coverts": {
+  "checked": "2026-11-22",
+  "tried_recently": true
+ },
  "rync/magnetar": {
   "checked": "2026-11-09",
+  "tried_recently": true
+ },
+ "rync/nompler": {
+  "checked": "2026-11-22",
   "tried_recently": true
  },
  "sarweiler/zellen": {
