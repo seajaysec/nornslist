@@ -79,6 +79,10 @@
   "checked": "2026-11-22",
   "tried_recently": true
  },
+ "andr-ew/arqueggiator": {
+  "checked": "2026-11-23",
+  "tried_recently": true
+ },
  "andr-ew/cartographer": {
   "checked": "2026-11-16",
   "tried_recently": true
@@ -87,12 +91,20 @@
   "checked": "2026-11-02",
   "tried_recently": true
  },
+ "andr-ew/eggsrpls": {
+  "checked": "2026-11-23",
+  "tried_recently": true
+ },
  "andr-ew/grvl": {
   "checked": "2026-07-06",
   "tried_recently": false
  },
  "andr-ew/iiitoii": {
   "checked": "2026-11-16",
+  "tried_recently": true
+ },
+ "andr-ew/lib-grvl": {
+  "checked": "2026-11-23",
   "tried_recently": true
  },
  "andr-ew/ndls": {
@@ -123,6 +135,10 @@
   "checked": "2026-06-27",
   "tried_recently": false
  },
+ "antonhornquist/moln": {
+  "checked": "2026-11-23",
+  "tried_recently": true
+ },
  "antonhornquist/roar": {
   "checked": "2026-11-16",
   "tried_recently": true
@@ -143,8 +159,24 @@
   "checked": "2026-09-07",
   "tried_recently": false
  },
+ "audiowanderer/ball-o-rama": {
+  "checked": "2026-11-23",
+  "tried_recently": true
+ },
+ "audiowanderer/ball-o-rama-twins": {
+  "checked": "2026-11-23",
+  "tried_recently": true
+ },
+ "beatrossmy/superbrain": {
+  "checked": "2026-11-23",
+  "tried_recently": true
+ },
  "beatrossmy/zorns": {
   "checked": "2026-11-16",
+  "tried_recently": true
+ },
+ "behindkeyframes/headloop": {
+  "checked": "2026-11-23",
   "tried_recently": true
  },
  "billwolfhub/zzup": {
@@ -152,8 +184,8 @@
   "tried_recently": false
  },
  "bobodrone/aminor": {
-  "checked": "2026-10-05",
-  "tried_recently": false
+  "checked": "2026-11-23",
+  "tried_recently": true
  },
  "bobodrone/drifting": {
   "checked": "2026-07-18",
@@ -199,6 +231,10 @@
   "checked": "2026-10-20",
   "tried_recently": false
  },
+ "catfact/drumf": {
+  "checked": "2026-11-23",
+  "tried_recently": true
+ },
  "catfact/norns-composer": {
   "checked": "2026-11-16",
   "tried_recently": true
@@ -237,6 +273,10 @@
  },
  "cfdrake/twine": {
   "checked": "2026-11-09",
+  "tried_recently": true
+ },
+ "cfurrow7/italo-sines": {
+  "checked": "2026-11-23",
   "tried_recently": true
  },
  "cfurrow7/midi-garage-jukebox": {
@@ -288,8 +328,8 @@
   "tried_recently": true
  },
  "danielrigler/hands": {
-  "checked": "2026-10-12",
-  "tried_recently": false
+  "checked": "2026-11-23",
+  "tried_recently": true
  },
  "danielrigler/twins": {
   "checked": "2026-11-01",
@@ -313,6 +353,10 @@
  },
  "de-pattern/rift-norns": {
   "checked": "2026-11-19",
+  "tried_recently": true
+ },
+ "deeg-deeg-deeg/chaosop": {
+  "checked": "2026-11-23",
   "tried_recently": true
  },
  "desioart/sath-lemon": {
@@ -355,6 +399,14 @@
   "checked": "2026-11-01",
   "tried_recently": false
  },
+ "dstroud/dreamsequence_dev": {
+  "checked": "2026-11-23",
+  "tried_recently": true
+ },
+ "ecforrestoakland/norns-dev": {
+  "checked": "2026-11-23",
+  "tried_recently": true
+ },
  "echoesfromtheshield/baitandbeat": {
   "checked": "2026-08-03",
   "tried_recently": false
@@ -369,6 +421,10 @@
  },
  "echophon/potionshop": {
   "checked": "2026-11-16",
+  "tried_recently": true
+ },
+ "eethann/orca-norns": {
+  "checked": "2026-11-23",
   "tried_recently": true
  },
  "etburke/roomplay": {
@@ -408,8 +464,8 @@
   "tried_recently": false
  },
  "foundsoundsmm/drumdrum": {
-  "checked": "2026-10-06",
-  "tried_recently": false
+  "checked": "2026-11-23",
+  "tried_recently": true
  },
  "foundsoundsmm/pappus": {
   "checked": "2026-11-01",
@@ -452,8 +508,8 @@
   "tried_recently": true
  },
  "giovannilami/nb_synthy": {
-  "checked": "2026-10-15",
-  "tried_recently": false
+  "checked": "2026-11-23",
+  "tried_recently": true
  },
  "giovannilami/nbin4": {
   "checked": "2026-11-18",
@@ -527,6 +583,10 @@
   "checked": "2026-10-09",
   "tried_recently": false
  },
+ "insectstheory/snow": {
+  "checked": "2026-11-23",
+  "tried_recently": true
+ },
  "itsyourbedtime/fugu": {
   "checked": "2026-11-02",
   "tried_recently": true
@@ -584,36 +644,36 @@
   "tried_recently": true
  },
  "jstefani/coolwave": {
-  "checked": "2026-09-15",
-  "tried_recently": false
+  "checked": "2026-11-23",
+  "tried_recently": true
  },
  "jstefani/dx100": {
   "checked": "2026-11-09",
   "tried_recently": true
  },
  "jstefani/feedback4": {
-  "checked": "2026-10-06",
-  "tried_recently": false
+  "checked": "2026-11-23",
+  "tried_recently": true
  },
  "jstefani/ksample": {
   "checked": "2026-11-09",
   "tried_recently": true
  },
  "jstefani/midirec": {
-  "checked": "2026-09-06",
-  "tried_recently": false
+  "checked": "2026-11-23",
+  "tried_recently": true
  },
  "jstefani/nofriends": {
-  "checked": "2026-10-06",
-  "tried_recently": false
+  "checked": "2026-11-23",
+  "tried_recently": true
  },
  "jstefani/paperboy": {
   "checked": "2026-11-09",
   "tried_recently": true
  },
  "jstefani/scope": {
-  "checked": "2026-08-31",
-  "tried_recently": false
+  "checked": "2026-11-23",
+  "tried_recently": true
  },
  "juhavaaraniemi/giro": {
   "checked": "2026-11-09",
@@ -629,6 +689,10 @@
  },
  "justmat/combos": {
   "checked": "2026-11-02",
+  "tried_recently": true
+ },
+ "justmat/crow_talk": {
+  "checked": "2026-11-23",
   "tried_recently": true
  },
  "justmat/foulplay": {
@@ -715,6 +779,10 @@
   "checked": "2026-10-12",
   "tried_recently": false
  },
+ "lish-ship-it/nexus": {
+  "checked": "2026-11-23",
+  "tried_recently": true
+ },
  "loopmasta/bt-1o1": {
   "checked": "2026-10-29",
   "tried_recently": false
@@ -760,8 +828,12 @@
   "tried_recently": false
  },
  "magicking/o-cube": {
-  "checked": "2026-09-16",
-  "tried_recently": false
+  "checked": "2026-11-23",
+  "tried_recently": true
+ },
+ "markijzerman/tidbit": {
+  "checked": "2026-11-23",
+  "tried_recently": true
  },
  "markwheeler/arp_index": {
   "checked": "2026-11-02",
@@ -828,8 +900,12 @@
   "tried_recently": true
  },
  "midouest/wstretch": {
-  "checked": "2026-08-10",
-  "tried_recently": false
+  "checked": "2026-11-23",
+  "tried_recently": true
+ },
+ "miker2049/midigrid": {
+  "checked": "2026-11-23",
+  "tried_recently": true
  },
  "mimetaur/arcify": {
   "checked": "2026-11-09",
@@ -847,6 +923,10 @@
   "checked": "2026-11-09",
   "tried_recently": true
  },
+ "monome/meadowphysics-seamstress": {
+  "checked": "2026-11-23",
+  "tried_recently": true
+ },
  "mrglennjones/midarto": {
   "checked": "2026-09-29",
   "tried_recently": false
@@ -861,6 +941,10 @@
  },
  "nattog/passthrough": {
   "checked": "2026-11-08",
+  "tried_recently": true
+ },
+ "neauoire/linn": {
+  "checked": "2026-11-23",
   "tried_recently": true
  },
  "niklaskramer/particles": {
@@ -911,9 +995,17 @@
   "checked": "2026-11-01",
   "tried_recently": false
  },
+ "northern-information/fiahod": {
+  "checked": "2026-11-23",
+  "tried_recently": true
+ },
  "northern-information/goldeneye": {
   "checked": "2026-07-06",
   "tried_recently": false
+ },
+ "northern-information/soot": {
+  "checked": "2026-11-23",
+  "tried_recently": true
  },
  "northern-information/splicer": {
   "checked": "2026-11-16",
@@ -951,12 +1043,24 @@
   "checked": "2026-11-16",
   "tried_recently": true
  },
+ "nzimas/compass-quad": {
+  "checked": "2026-11-23",
+  "tried_recently": true
+ },
  "nzimas/floodplains": {
   "checked": "2026-11-09",
   "tried_recently": true
  },
+ "nzimas/lothario": {
+  "checked": "2026-11-23",
+  "tried_recently": true
+ },
  "okyeron/game-emulators": {
   "checked": "2026-11-09",
+  "tried_recently": true
+ },
+ "okyeron/grid-test": {
+  "checked": "2026-11-23",
   "tried_recently": true
  },
  "okyeron/hid-demo": {
@@ -965,6 +1069,10 @@
  },
  "okyeron/mi-eng": {
   "checked": "2026-11-02",
+  "tried_recently": true
+ },
+ "okyeron/midi-monitor": {
+  "checked": "2026-11-23",
   "tried_recently": true
  },
  "okyeron/oscgrid": {
@@ -1023,8 +1131,20 @@
   "checked": "2026-11-02",
   "tried_recently": true
  },
+ "p3r7/jftu": {
+  "checked": "2026-11-23",
+  "tried_recently": true
+ },
+ "p3r7/meend": {
+  "checked": "2026-11-23",
+  "tried_recently": true
+ },
  "p3r7/repl": {
   "checked": "2026-11-16",
+  "tried_recently": true
+ },
+ "p3r7/rpmate": {
+  "checked": "2026-11-23",
   "tried_recently": true
  },
  "p3r7/washi": {
@@ -1033,6 +1153,10 @@
  },
  "p3r7/wavematrix": {
   "checked": "2026-11-09",
+  "tried_recently": true
+ },
+ "pangrus/hachi": {
+  "checked": "2026-11-23",
   "tried_recently": true
  },
  "pastitas/cafeteria": {
@@ -1123,6 +1247,10 @@
   "checked": "2026-11-09",
   "tried_recently": true
  },
+ "rync/narf": {
+  "checked": "2026-11-23",
+  "tried_recently": true
+ },
  "rync/nompler": {
   "checked": "2026-11-22",
   "tried_recently": true
@@ -1193,6 +1321,10 @@
  },
  "schollz/clcks": {
   "checked": "2026-11-02",
+  "tried_recently": true
+ },
+ "schollz/firefly": {
+  "checked": "2026-11-23",
   "tried_recently": true
  },
  "schollz/glitchlets": {
@@ -1303,6 +1435,10 @@
   "checked": "2026-11-02",
   "tried_recently": true
  },
+ "schollz/playback": {
+  "checked": "2026-11-23",
+  "tried_recently": true
+ },
  "schollz/plonky": {
   "checked": "2026-11-01",
   "tried_recently": false
@@ -1359,6 +1495,10 @@
   "checked": "2026-11-01",
   "tried_recently": false
  },
+ "schollz/tidbit-marimba": {
+  "checked": "2026-11-23",
+  "tried_recently": true
+ },
  "schollz/turnstile": {
   "checked": "2026-11-09",
   "tried_recently": true
@@ -1380,8 +1520,8 @@
   "tried_recently": false
  },
  "seajaysec/ingenue": {
-  "checked": "2026-07-07",
-  "tried_recently": false
+  "checked": "2026-11-23",
+  "tried_recently": true
  },
  "seajaysec/warp_pipe": {
   "checked": "2026-07-03",
@@ -1403,6 +1543,10 @@
   "checked": "2026-11-16",
   "tried_recently": true
  },
+ "sixolet/borgue": {
+  "checked": "2026-11-23",
+  "tried_recently": true
+ },
  "sixolet/doubledecker": {
   "checked": "2026-11-02",
   "tried_recently": true
@@ -1417,6 +1561,10 @@
  },
  "sixolet/fx_grains": {
   "checked": "2026-11-16",
+  "tried_recently": true
+ },
+ "sixolet/fx_resonator": {
+  "checked": "2026-11-23",
   "tried_recently": true
  },
  "sixolet/lepidoptery": {
@@ -1443,6 +1591,10 @@
   "checked": "2026-11-09",
   "tried_recently": true
  },
+ "sixolet/nbout": {
+  "checked": "2026-11-23",
+  "tried_recently": true
+ },
  "sixolet/nydl": {
   "checked": "2026-11-02",
   "tried_recently": true
@@ -1457,6 +1609,10 @@
  },
  "sixolet/toolkit": {
   "checked": "2026-11-09",
+  "tried_recently": true
+ },
+ "slowscape/clocked-looper-timber-sampler": {
+  "checked": "2026-11-23",
   "tried_recently": true
  },
  "sonocircuit/concrete": {
@@ -1517,6 +1673,10 @@
  },
  "sonocircuit/nb_plak": {
   "checked": "2026-11-09",
+  "tried_recently": true
+ },
+ "sonocircuit/nb_plyprc": {
+  "checked": "2026-11-23",
   "tried_recently": true
  },
  "sonocircuit/nb_polyform": {
@@ -1603,6 +1763,10 @@
   "checked": "2026-11-02",
   "tried_recently": true
  },
+ "synthetiv/caliper": {
+  "checked": "2026-11-23",
+  "tried_recently": true
+ },
  "synthetiv/euclidigons": {
   "checked": "2026-07-06",
   "tried_recently": false
@@ -1624,8 +1788,8 @@
   "tried_recently": false
  },
  "synthi/ltra": {
-  "checked": "2026-07-06",
-  "tried_recently": false
+  "checked": "2026-11-23",
+  "tried_recently": true
  },
  "synthi/ncoco": {
   "checked": "2026-11-16",
@@ -1633,6 +1797,14 @@
  },
  "synthi/spre": {
   "checked": "2026-11-09",
+  "tried_recently": true
+ },
+ "tai-studio/haven": {
+  "checked": "2026-11-23",
+  "tried_recently": true
+ },
+ "tai-studio/lissadron": {
+  "checked": "2026-11-23",
   "tried_recently": true
  },
  "tehn/isms": {
@@ -1651,8 +1823,20 @@
   "checked": "2026-11-16",
   "tried_recently": true
  },
+ "tlubke/ekombi-old": {
+  "checked": "2026-11-23",
+  "tried_recently": true
+ },
+ "tlubke/mello": {
+  "checked": "2026-11-23",
+  "tried_recently": true
+ },
  "tlubke/shapes": {
   "checked": "2026-11-16",
+  "tried_recently": true
+ },
+ "tomwaters/awake-mx.samples": {
+  "checked": "2026-11-23",
   "tried_recently": true
  },
  "tomwaters/get_in_the_sea": {
@@ -1667,33 +1851,37 @@
   "checked": "2026-11-09",
   "tried_recently": true
  },
+ "tuesdaynightmachines/nmsmartypants": {
+  "checked": "2026-11-23",
+  "tried_recently": true
+ },
  "tweeedo911/pocketgrid": {
   "checked": "2026-08-21",
   "tried_recently": false
  },
  "unluogomoderatamentesicuro/alambicco": {
-  "checked": "2026-07-30",
-  "tried_recently": false
+  "checked": "2026-11-23",
+  "tried_recently": true
  },
  "unluogomoderatamentesicuro/anamnesi": {
-  "checked": "2026-10-31",
-  "tried_recently": false
+  "checked": "2026-11-23",
+  "tried_recently": true
  },
  "unluogomoderatamentesicuro/animula": {
-  "checked": "2026-08-17",
-  "tried_recently": false
+  "checked": "2026-11-23",
+  "tried_recently": true
  },
  "unluogomoderatamentesicuro/ermo": {
-  "checked": "2026-10-30",
-  "tried_recently": false
+  "checked": "2026-11-23",
+  "tried_recently": true
  },
  "unluogomoderatamentesicuro/jetvox": {
   "checked": "2026-11-21",
   "tried_recently": true
  },
  "unluogomoderatamentesicuro/micelio": {
-  "checked": "2026-10-29",
-  "tried_recently": false
+  "checked": "2026-11-23",
+  "tried_recently": true
  },
  "unluogomoderatamentesicuro/tapeworks": {
   "checked": "2026-11-21",
@@ -1702,6 +1890,10 @@
  "unluogomoderatamentesicuro/tralascia": {
   "checked": "2026-08-01",
   "tried_recently": false
+ },
+ "vehka/awake_fx": {
+  "checked": "2026-11-23",
+  "tried_recently": true
  },
  "vehka/modhousekeeper": {
   "checked": "2026-11-17",
@@ -1759,6 +1951,10 @@
   "checked": "2026-10-09",
   "tried_recently": false
  },
+ "wangpy/toga": {
+  "checked": "2026-11-23",
+  "tried_recently": true
+ },
  "water-feature/arpeggii": {
   "checked": "2026-08-12",
   "tried_recently": false
@@ -1776,8 +1972,8 @@
   "tried_recently": true
  },
  "whitmo/re.kriate": {
-  "checked": "2026-07-12",
-  "tried_recently": false
+  "checked": "2026-11-23",
+  "tried_recently": true
  },
  "wildseyed/rotatable": {
   "checked": "2026-10-19",
@@ -1833,6 +2029,14 @@
  },
  "xmacex/lnra-8": {
   "checked": "2026-11-02",
+  "tried_recently": true
+ },
+ "xmacex/ma-trix": {
+  "checked": "2026-11-23",
+  "tried_recently": true
+ },
+ "xmacex/nts1-companion": {
+  "checked": "2026-11-23",
   "tried_recently": true
  },
  "xmacex/serialism": {
