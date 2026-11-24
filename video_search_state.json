@@ -32,7 +32,7 @@
   "tried_recently": true
  },
  "acadmyn/lagom": {
-  "checked": "2026-11-21",
+  "checked": "2026-11-24",
   "tried_recently": true
  },
  "acadmyn/tx6rec": {
@@ -76,7 +76,7 @@
   "tried_recently": true
  },
  "alejo-end/four": {
-  "checked": "2026-11-22",
+  "checked": "2026-11-24",
   "tried_recently": true
  },
  "andr-ew/arqueggiator": {
@@ -964,7 +964,7 @@
   "tried_recently": true
  },
  "nolliegray/muses": {
-  "checked": "2026-11-23",
+  "checked": "2026-11-24",
   "tried_recently": true
  },
  "nolliegray/stepiii": {
@@ -972,7 +972,7 @@
   "tried_recently": true
  },
  "nolliegray/tropiii": {
-  "checked": "2026-11-22",
+  "checked": "2026-11-24",
   "tried_recently": true
  },
  "nomorenamesstudio/plakt": {
@@ -1722,6 +1722,10 @@
  "sumik-svg/ambient_organism": {
   "checked": "2026-07-25",
   "tried_recently": false
+ },
+ "sumik-svg/bitstep": {
+  "checked": "2026-11-24",
+  "tried_recently": true
  },
  "sumik-svg/buclarp": {
   "checked": "2026-09-21",
