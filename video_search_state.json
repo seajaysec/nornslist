@@ -324,7 +324,7 @@
   "tried_recently": false
  },
  "danielrigler/grains": {
-  "checked": "2026-11-23",
+  "checked": "2026-11-25",
   "tried_recently": true
  },
  "danielrigler/hands": {
@@ -1167,6 +1167,26 @@
   "checked": "2026-07-11",
   "tried_recently": false
  },
+ "pinktentacle/nianfo": {
+  "checked": "2026-11-25",
+  "tried_recently": true
+ },
+ "pinktentacle/no12": {
+  "checked": "2026-11-25",
+  "tried_recently": true
+ },
+ "pinktentacle/poche": {
+  "checked": "2026-11-25",
+  "tried_recently": true
+ },
+ "pinktentacle/rainforest": {
+  "checked": "2026-11-25",
+  "tried_recently": true
+ },
+ "pinktentacle/remous": {
+  "checked": "2026-11-25",
+  "tried_recently": true
+ },
  "puyoma/spre": {
   "checked": "2026-07-17",
   "tried_recently": false
@@ -1894,6 +1914,10 @@
  "unluogomoderatamentesicuro/tralascia": {
   "checked": "2026-08-01",
   "tried_recently": false
+ },
+ "vehka/aurotate": {
+  "checked": "2026-11-25",
+  "tried_recently": true
  },
  "vehka/awake_fx": {
   "checked": "2026-11-23",
