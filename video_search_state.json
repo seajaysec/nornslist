@@ -76,7 +76,7 @@
   "tried_recently": true
  },
  "alejo-end/four": {
-  "checked": "2026-11-24",
+  "checked": "2026-11-26",
   "tried_recently": true
  },
  "andr-ew/arqueggiator": {
@@ -684,7 +684,7 @@
   "tried_recently": false
  },
  "julianrubisch/bifurcation-norns": {
-  "checked": "2026-11-18",
+  "checked": "2026-11-26",
   "tried_recently": true
  },
  "justmat/combos": {
@@ -748,8 +748,8 @@
   "tried_recently": false
  },
  "kodebeer/vinker": {
-  "checked": "2026-10-13",
-  "tried_recently": false
+  "checked": "2026-11-26",
+  "tried_recently": true
  },
  "kuangmk11/edgefield": {
   "checked": "2026-11-05",
@@ -960,11 +960,11 @@
   "tried_recently": true
  },
  "nolliegray/loopiii": {
-  "checked": "2026-11-22",
+  "checked": "2026-11-26",
   "tried_recently": true
  },
  "nolliegray/muses": {
-  "checked": "2026-11-24",
+  "checked": "2026-11-26",
   "tried_recently": true
  },
  "nolliegray/stepiii": {
