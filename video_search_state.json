@@ -684,7 +684,7 @@
   "tried_recently": false
  },
  "julianrubisch/bifurcation-norns": {
-  "checked": "2026-11-26",
+  "checked": "2026-11-27",
   "tried_recently": true
  },
  "justmat/combos": {
@@ -956,7 +956,11 @@
   "tried_recently": true
  },
  "nolliegray/arpiii": {
-  "checked": "2026-11-22",
+  "checked": "2026-11-27",
+  "tried_recently": true
+ },
+ "nolliegray/flipiii": {
+  "checked": "2026-11-27",
   "tried_recently": true
  },
  "nolliegray/loopiii": {
@@ -968,7 +972,7 @@
   "tried_recently": true
  },
  "nolliegray/stepiii": {
-  "checked": "2026-11-22",
+  "checked": "2026-11-27",
   "tried_recently": true
  },
  "nolliegray/tropiii": {
@@ -1996,7 +2000,7 @@
   "tried_recently": false
  },
  "waxnwire/buffrice": {
-  "checked": "2026-11-18",
+  "checked": "2026-11-27",
   "tried_recently": true
  },
  "whitmo/re.kriate": {
