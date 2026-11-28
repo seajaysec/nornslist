@@ -32,7 +32,11 @@
   "tried_recently": true
  },
  "acadmyn/lagom": {
-  "checked": "2026-11-24",
+  "checked": "2026-11-28",
+  "tried_recently": true
+ },
+ "acadmyn/slagverk": {
+  "checked": "2026-11-28",
   "tried_recently": true
  },
  "acadmyn/tx6rec": {
@@ -76,7 +80,7 @@
   "tried_recently": true
  },
  "alejo-end/four": {
-  "checked": "2026-11-26",
+  "checked": "2026-11-28",
   "tried_recently": true
  },
  "andr-ew/arqueggiator": {
@@ -316,7 +320,7 @@
   "tried_recently": true
  },
  "cyberduck79/sculpt": {
-  "checked": "2026-11-23",
+  "checked": "2026-11-28",
   "tried_recently": true
  },
  "daniel-mckemie/norns_csound": {
@@ -875,6 +879,10 @@
   "checked": "2026-11-01",
   "tried_recently": false
  },
+ "mattbx/grey-area": {
+  "checked": "2026-11-28",
+  "tried_recently": true
+ },
  "maxbecq/mx.samples.maxbecq": {
   "checked": "2026-07-24",
   "tried_recently": false
@@ -960,7 +968,7 @@
   "tried_recently": true
  },
  "nolliegray/flipiii": {
-  "checked": "2026-11-27",
+  "checked": "2026-11-28",
   "tried_recently": true
  },
  "nolliegray/loopiii": {
@@ -1128,7 +1136,7 @@
   "tried_recently": false
  },
  "p3r7/argen": {
-  "checked": "2026-11-09",
+  "checked": "2026-11-28",
   "tried_recently": true
  },
  "p3r7/gridkeys": {
@@ -1170,6 +1178,14 @@
  "pedroteche-ih/un-natural": {
   "checked": "2026-07-11",
   "tried_recently": false
+ },
+ "pinktentacle/fireflies": {
+  "checked": "2026-11-28",
+  "tried_recently": true
+ },
+ "pinktentacle/mycelium": {
+  "checked": "2026-11-28",
+  "tried_recently": true
  },
  "pinktentacle/nianfo": {
   "checked": "2026-11-25",
@@ -1932,7 +1948,7 @@
   "tried_recently": true
  },
  "vehka/nb_fluid": {
-  "checked": "2026-11-13",
+  "checked": "2026-11-28",
   "tried_recently": true
  },
  "vehka/nb_pp": {
